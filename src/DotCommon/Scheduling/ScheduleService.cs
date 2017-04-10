@@ -1,26 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-#if NET45
 using DotCommon.Logging;
-#else
-using Microsoft.Extensions.Logging;
-#endif
-using DotCommon.Components;
 
 namespace DotCommon.Scheduling
 {
     public class ScheduleService : IScheduleService
     {
         private readonly object _lockObject = new object();
-
+        private readonly ILogger _logger;
         private readonly Dictionary<string, TimerBasedTask> _taskDict =
             new Dictionary<string, TimerBasedTask>();
-        private readonly ILogger _logger;
 
-        public ScheduleService()
+        public ScheduleService(ILogger logger)
         {
-            _logger = ContainerManager.Resolve<ILoggerFactory>().CreateLogger<ScheduleService>();
+            _logger = logger;
         }
 
         public void StartTask(string name, Action action, int dueTime, int period)
@@ -75,8 +69,7 @@ namespace DotCommon.Scheduling
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(
-                        $"Task has exception, name: {task.Name}, due: {task.DueTime}, period: {task.Period},error detail:{ex.Message}");
+                    throw new Exception($"Task has exception, name: {task.Name}, due: {task.DueTime}, period: {task.Period},error detail:{ex.Message}");
                 }
                 finally
                 {
@@ -92,8 +85,7 @@ namespace DotCommon.Scheduling
                     }
                     catch (Exception ex)
                     {
-                        _logger?.LogError(
-                            $"Timer change has exception, name: {task.Name}, due: {task.DueTime}, period: {task.Period},error detail:{ex.Message}");
+                        throw new Exception($"Timer change has exception, name: {task.Name}, due: {task.DueTime}, period: {task.Period},error detail:{ex.Message}");
                     }
                 }
             }

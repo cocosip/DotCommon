@@ -1,5 +1,4 @@
-﻿#if NET45
-using System;
+﻿using System;
 namespace DotCommon.Logging
 {
     /// <summary>An empty implementation of ILoggerFactory.
@@ -24,4 +23,3 @@ namespace DotCommon.Logging
         }
     }
 }
-#endif

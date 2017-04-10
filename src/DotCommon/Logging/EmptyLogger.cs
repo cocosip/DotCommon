@@ -1,5 +1,4 @@
-﻿#if NET45
-using System;
+﻿using System;
 
 namespace DotCommon.Logging
 {
@@ -52,4 +51,3 @@ namespace DotCommon.Logging
         #endregion
     }
 }
-#endif

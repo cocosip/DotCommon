@@ -2,12 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using DotCommon.Components;
-#if NET45
 using DotCommon.Logging;
-#else
-using Microsoft.Extensions.Logging;
-#endif
 
 namespace DotCommon.Utility
 {
@@ -18,7 +13,6 @@ namespace DotCommon.Utility
         private ConcurrentQueue<TMessage> _processQueue;
         private readonly Action<TMessage> _handleMessageAction;
         private readonly string _name;
-        private readonly ILogger _logger;
         private int _isProcesingMessage;
 
         public BufferQueue(string name, int requestsWriteThreshold, Action<TMessage> handleMessageAction)
@@ -28,7 +22,7 @@ namespace DotCommon.Utility
             _handleMessageAction = handleMessageAction;
             _inputQueue = new ConcurrentQueue<TMessage>();
             _processQueue = new ConcurrentQueue<TMessage>();
-            _logger = ContainerManager.Resolve<ILoggerFactory>().CreateLogger(GetType().Name);
+            
         }
 
         public void EnqueueMessage(TMessage message)
@@ -67,15 +61,13 @@ namespace DotCommon.Utility
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logger?.LogError(
-                                        $"{_name} process message has exception. error detail:{ex.Message}");
+                                    throw new Exception($"{_name} process message has exception. error detail:{ex.Message}");
                                 }
                                 finally
                                 {
                                     count++;
                                 }
                             }
-                            _logger?.LogDebug("BufferQueue[name={0}], batch process {1} messages.", _name, count);
                         }
                     }
                     finally

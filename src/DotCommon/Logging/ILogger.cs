@@ -1,5 +1,4 @@
-﻿#if NET45
-
+﻿ 
 using System;
 namespace DotCommon.Logging
 {
@@ -72,4 +71,4 @@ namespace DotCommon.Logging
  
     }
 }
-#endif
+ 

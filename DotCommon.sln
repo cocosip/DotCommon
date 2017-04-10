@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon", "src\DotCommon\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.Test", "test\DotCommon.Test\DotCommon.Test.csproj", "{0F36994D-849F-436E-97A6-530A05A02EFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.Autofac", "src\DotCommon.Autofac\DotCommon.Autofac.csproj", "{DC93C579-C4D7-4317-A20F-F443A9ED0FAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0F36994D-849F-436E-97A6-530A05A02EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F36994D-849F-436E-97A6-530A05A02EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F36994D-849F-436E-97A6-530A05A02EFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC93C579-C4D7-4317-A20F-F443A9ED0FAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC93C579-C4D7-4317-A20F-F443A9ED0FAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC93C579-C4D7-4317-A20F-F443A9ED0FAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC93C579-C4D7-4317-A20F-F443A9ED0FAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
