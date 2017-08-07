@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotCommon.Calendar
+namespace DotCommon.Utility
 {
     #region ChineseCalendarException
 
