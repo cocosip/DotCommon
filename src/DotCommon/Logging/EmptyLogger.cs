@@ -6,48 +6,72 @@ namespace DotCommon.Logging
     /// </summary>
     public class EmptyLogger : ILogger
     {
+
         #region ILogger Members
 
-        public bool IsDebugEnabled => false;
+        public bool IsDebugEnabled
+        {
+            get
+            {
+                return false;
+            }
+        }
+        public void Debug(object message)
+        {
+        }
+        public void DebugFormat(string format, params object[] args)
+        {
+        }
+        public void Debug(object message, Exception exception)
+        {
+        }
+        public void Info(object message)
+        {
+        }
+        public void InfoFormat(string format, params object[] args)
+        {
+        }
+        public void Info(object message, Exception exception)
+        {
+        }
+        public void Error(object message)
+        {
+        }
+        public void ErrorFormat(string format, params object[] args)
+        {
+        }
+        public void Error(object message, Exception exception)
+        {
+        }
+        public void Warn(object message)
+        {
+        }
+        public void WarnFormat(string format, params object[] args)
+        {
+        }
+        public void Warn(object message, Exception exception)
+        {
+        }
+        public void Fatal(object message)
+        {
+        }
+        public void FatalFormat(string format, params object[] args)
+        {
+        }
+        public void Fatal(object message, Exception exception)
+        {
+        }
 
-        public void LogDebug(object message)
+        public void Log(LogSeverity logSeverity, object message, Exception exception)
         {
+            
         }
-        public void LogDebug(string format, params object[] args)
-        {
-        }
-        public void LogDebug(object message, Exception exception)
-        {
-        }
-        public void LogInformation(object message)
-        {
-        }
-        public void LogInformation(string format, params object[] args)
-        {
-        }
-        public void LogInformation(object message, Exception exception)
-        {
-        }
-        public void LogError(object message)
-        {
-        }
-        public void LogError(string format, params object[] args)
-        {
-        }
-        public void LogError(object message, Exception exception)
-        {
-        }
-        public void LogWarning(object message)
-        {
-        }
-        public void LogWarning(string format, params object[] args)
-        {
-        }
-        public void LogWarning(object message, Exception exception)
-        {
 
+        public void Log(LogSeverity logSeverity, object message)
+        {
         }
 
         #endregion
+
     }
 }

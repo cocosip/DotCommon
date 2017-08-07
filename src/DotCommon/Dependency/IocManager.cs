@@ -2,12 +2,19 @@
 {
     public class IocManager
     {
-        public static IIocContainer IocContainer { get; private set; }
+        private static IIocContainer _iocContainer;
 
-        public static void SetContainer(IIocContainer iocContainer)
+        public static void SetContainer(IIocContainer container)
         {
-            IocContainer = iocContainer;
+            if (_iocContainer == null)
+            {
+                _iocContainer = container;
+            }
         }
 
+        public static IIocContainer GetContainer()
+        {
+            return _iocContainer;
+        }
     }
 }

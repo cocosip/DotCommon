@@ -4,8 +4,8 @@
     /// </summary>
     public enum DependencyLifeStyle
     {
-        Singleton,
-        Transient,
-        Scoped,
+        Singleton = 1,
+
+        Transient = 2
     }
 }

@@ -11,11 +11,27 @@ namespace DotCommon.Encrypt
         private string PrivateKeyPem { get; set; }
         private string PublicKeyPem { get; set; }
         private string HashAlg { get; set; } = "RSA2";
+        public RsaEncryptor()
+        {
 
+        }
         public RsaEncryptor(string privateKeyPem, string publicKeyPem)
         {
             PrivateKeyPem = privateKeyPem;
             PublicKeyPem = publicKeyPem;
+        }
+
+        public RsaEncryptor(string privateKeyPem, string publicKeyPem, string hashAlg) : this(privateKeyPem, publicKeyPem)
+        {
+            HashAlg = hashAlg;
+        }
+
+        /// <summary>设置算法
+        /// </summary>
+        public RsaEncryptor SetHashAlg(string hashAlg)
+        {
+            HashAlg = hashAlg;
+            return this;
         }
 
         #region 加载公钥和私钥
@@ -35,14 +51,14 @@ namespace DotCommon.Encrypt
         #region 签名与验证签名
         /// <summary>对数据签名
         /// </summary>
-        public string Sign(string data, string code = "utf-8")
+        public string SignData(string data, string code = "utf-8")
         {
-            return Sign(Encoding.GetEncoding(code).GetBytes(data));
+            return SignData(Encoding.GetEncoding(code).GetBytes(data));
         }
 
         /// <summary>对数据签名
         /// </summary>
-        public string Sign(byte[] data)
+        public string SignData(byte[] data)
         {
             var rsa = CreateRsaFromPrivateKey(PrivateKeyPem);
             var signedData = rsa.SignData(data, GetHashAlgorithmName(HashAlg), RSASignaturePadding.Pkcs1);
@@ -51,7 +67,7 @@ namespace DotCommon.Encrypt
 
         /// <summary>验证签名
         /// </summary>
-        public bool Verify(byte[] data, byte[] signature)
+        public bool VerifyData(byte[] data, byte[] signature)
         {
             var rsa = CreateRsaFromPublicKey(PublicKeyPem);
             return rsa.VerifyData(data, signature, GetHashAlgorithmName(HashAlg), RSASignaturePadding.Pkcs1);
@@ -59,9 +75,9 @@ namespace DotCommon.Encrypt
 
         /// <summary>验证签名
         /// </summary>
-        public bool Verify(string data, string signature, string code = "utf-8")
+        public bool VerifyData(string data, string signature, string code = "utf-8")
         {
-            return Verify(Encoding.GetEncoding(code).GetBytes(data), (Convert.FromBase64String(signature)));
+            return VerifyData(Encoding.GetEncoding(code).GetBytes(data), (Convert.FromBase64String(signature)));
         }
         #endregion
 

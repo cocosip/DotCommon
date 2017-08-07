@@ -1,74 +1,33 @@
-﻿ 
+﻿
 using System;
 namespace DotCommon.Logging
 {
-    /// <summary>Represents a logger interface.
-    /// </summary>
     public interface ILogger
     {
-        /// <summary>Represents whether the debug log level is enabled.
-        /// </summary>
+
         bool IsDebugEnabled { get; }
-        /// <summary>Write a debug level log message.
-        /// </summary>
-        /// <param name="message"></param>
-        void LogDebug(object message);
-        /// <summary>Write a debug level log message.
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
-        void LogDebug(string format, params object[] args);
-        /// <summary>Write a debug level log message.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="exception"></param>
-        void LogDebug(object message, Exception exception);
+        void Debug(object message);
+        void DebugFormat(string format, params object[] args);
+        void Debug(object message, Exception exception);
+        void Info(object message);
+        void InfoFormat(string format, params object[] args);
+        void Info(object message, Exception exception);
 
-        /// <summary>Write a info level log message.
-        /// </summary>
-        /// <param name="message"></param>
-        void LogInformation(object message);
-        /// <summary>Write a info level log message.
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
-        void LogInformation(string format, params object[] args);
-        /// <summary>Write a info level log message.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="exception"></param>
-        void LogInformation(object message, Exception exception);
+        void Error(object message);
+        void ErrorFormat(string format, params object[] args);
+        void Error(object message, Exception exception);
+        void Warn(object message);
+        void WarnFormat(string format, params object[] args);
+        void Warn(object message, Exception exception);
 
-        /// <summary>Write an error level log message.
-        /// </summary>
-        /// <param name="message"></param>
-        void LogError(object message);
-        /// <summary>Write an error level log message.
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
-        void LogError(string format, params object[] args);
-        /// <summary>Write an error level log message.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="exception"></param>
-        void LogError(object message, Exception exception);
+        void Fatal(object message);
+        void FatalFormat(string format, params object[] args);
+        void Fatal(object message, Exception exception);
 
-        /// <summary>Write a warnning level log message.
-        /// </summary>
-        /// <param name="message"></param>
-        void LogWarning(object message);
-        /// <summary>Write a warnning level log message.
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
-        void LogWarning(string format, params object[] args);
-        /// <summary>Write a warnning level log message.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="exception"></param>
-        void LogWarning(object message, Exception exception);
- 
+        void Log(LogSeverity logSeverity, object message, Exception exception);
+
+        void Log(LogSeverity logSeverity, object message);
+
+
     }
 }
- 

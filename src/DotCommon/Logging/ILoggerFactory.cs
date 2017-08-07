@@ -4,8 +4,11 @@ namespace DotCommon.Logging
 {
     public interface ILoggerFactory
     {
-        ILogger CreateLogger(string name);
-        ILogger CreateLogger(Type type);
-        ILogger CreateLogger<T>();
+        /// <summary>Create a logger with the given logger name.
+        /// </summary>
+        ILogger Create(string name);
+        /// <summary>Create a logger with the given type.
+        /// </summary>
+        ILogger Create(Type type);
     }
 }

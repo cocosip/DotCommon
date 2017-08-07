@@ -4,7 +4,9 @@ using System.Runtime.Serialization;
 
 namespace DotCommon.Serializing
 {
-    public class XmlSerializer : IXmlSerializer
+    /// <summary>Serialize by DataContractSerializer
+    /// </summary>
+    public class DefaultXmlSerializer : IXmlSerializer
     {
         public string Serialize(object obj)
         {
@@ -18,19 +20,21 @@ namespace DotCommon.Serializing
             stream.Dispose();
             return resultStr;
         }
-        public T Deserialize<T>(string value) where T : class
-        {
-            var serializer = new DataContractSerializer(typeof(T));
-            var ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(value.ToCharArray()));
-            var obj = (T)serializer.ReadObject(ms);
-            ms.Dispose();
-            return obj;
-        }
+
         public object Deserialize(string value, Type type)
         {
             var serializer = new DataContractSerializer(type);
             var ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(value.ToCharArray()));
             var obj = serializer.ReadObject(ms);
+            ms.Dispose();
+            return obj;
+        }
+
+        public T Deserialize<T>(string value) where T : class
+        {
+            var serializer = new DataContractSerializer(typeof(T));
+            var ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(value.ToCharArray()));
+            var obj = (T)serializer.ReadObject(ms);
             ms.Dispose();
             return obj;
         }
