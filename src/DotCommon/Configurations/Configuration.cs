@@ -1,4 +1,5 @@
 ﻿using DotCommon.Dependency;
+using DotCommon.Extensions;
 using DotCommon.Logging;
 using DotCommon.Requests;
 using DotCommon.Runtime;
@@ -42,7 +43,8 @@ namespace DotCommon.Configurations
             container.Register<IBinarySerializer, ProtocolBufSerializer>(DependencyLifeStyle.Transient);
 
             //日志
-            container.Register<ILoggerFactory, EmptyLoggerFactory>(DependencyLifeStyle.Singleton);
+            container.Register<ILoggerFactory, Log4NetLoggerFactory>(DependencyLifeStyle.Singleton);
+            container.Register<ILogger, Log4NetLogger>(DependencyLifeStyle.Transient);
             //container.Register<ILogger, EmptyLogger>(DependencyLifeStyle.Transient);
 
             //定时器
@@ -64,15 +66,15 @@ namespace DotCommon.Configurations
         }
 
         #region Log4Net配置
-        public Configuration UseLog4Net(string configFile)
+        public Configuration UseLog4Net(string configFile = "")
         {
             var container = IocManager.GetContainer();
+            if (configFile.IsNullOrEmpty())
+            {
+                configFile = "log4net.config";
+            }
             container.Register<ILoggerFactory, Log4NetLoggerFactory>(new Log4NetLoggerFactory(configFile));
             return this;
-        }
-        public Configuration UseLog4Net()
-        {
-            return UseLog4Net("log4net.config");
         }
         #endregion
 

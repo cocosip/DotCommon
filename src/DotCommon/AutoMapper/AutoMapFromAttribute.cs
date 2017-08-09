@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using System;
 using DotCommon.Extensions;
+using System;
 
 namespace DotCommon.AutoMapper
 {

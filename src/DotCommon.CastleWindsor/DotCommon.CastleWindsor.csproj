@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.6;net45</TargetFrameworks>
-    <AssemblyName>DotCommon.Autofac</AssemblyName>
-    <PackageId>DotCommon.Autofac</PackageId>
+    <AssemblyName>DotCommon.CastleWindsor</AssemblyName>
+    <PackageId>DotCommon.CastleWindsor</PackageId>
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.6' ">1.6.1</NetStandardImplicitPackageVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -11,11 +11,11 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
     <Version>2.6.0</Version>
-    <Description>通用.net类库Autofac注入</Description>
+    <Description>通用.net类库CastleWindsor注入</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.5.0" />
+    <PackageReference Include="Castle.Windsor" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>

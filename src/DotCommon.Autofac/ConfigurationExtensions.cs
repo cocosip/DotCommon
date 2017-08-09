@@ -1,9 +1,6 @@
 ﻿using Autofac;
 using DotCommon.Configurations;
 using DotCommon.Dependency;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DotCommon.Autofac
 {
