@@ -10,8 +10,6 @@ using DotCommon.Runtime.Remoting;
 using DotCommon.Scheduling;
 using DotCommon.Serializing;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DotCommon.Configurations
 {
@@ -35,16 +33,16 @@ namespace DotCommon.Configurations
             var container = IocManager.GetContainer();
             //模拟请求
             container.Register<IRequestClient, RequestClient>();
-            //Json序列化
-            container.Register<IJsonSerializer, NewtonsoftJsonSerializer>(DependencyLifeStyle.Transient);
+            //Json序列化(默认)
+            container.Register<IJsonSerializer, DefaultJsonSerializer>(DependencyLifeStyle.Transient);
             //Xml序列化
             container.Register<IXmlSerializer, DefaultXmlSerializer>(DependencyLifeStyle.Transient);
             //二进制序列化
-            container.Register<IBinarySerializer, ProtocolBufSerializer>(DependencyLifeStyle.Transient);
+            container.Register<IBinarySerializer, DefaultBinarySerializer>(DependencyLifeStyle.Transient);
 
             //日志
-            container.Register<ILoggerFactory, Log4NetLoggerFactory>(DependencyLifeStyle.Singleton);
-            container.Register<ILogger, Log4NetLogger>(DependencyLifeStyle.Transient);
+            container.Register<ILoggerFactory, EmptyLoggerFactory>(DependencyLifeStyle.Singleton);
+            container.Register<ILogger, EmptyLogger>(DependencyLifeStyle.Transient);
             //container.Register<ILogger, EmptyLogger>(DependencyLifeStyle.Transient);
 
             //定时器
@@ -64,6 +62,31 @@ namespace DotCommon.Configurations
             container.Register<DotCommonMemoryCache>(DependencyLifeStyle.Transient);
             return this;
         }
+
+        #region 使用Json4Net
+        /// <summary>使用Json4Net
+        /// </summary>
+        public Configuration UseJson4Net()
+        {
+            var container = IocManager.GetContainer();
+            container.Register<IJsonSerializer, NewtonsoftJsonSerializer>(DependencyLifeStyle.Transient);
+            return this;
+        }
+
+        #endregion
+
+        #region 使用Protobuf.net
+        /// <summary>使用ProtoBuf
+        /// </summary>
+        public Configuration UseProtoBuf()
+        {
+            var container = IocManager.GetContainer();
+            container.Register<IBinarySerializer, ProtocolBufSerializer>(DependencyLifeStyle.Transient);
+            return this;
+        }
+        #endregion
+
+
 
         #region Log4Net配置
         public Configuration UseLog4Net(string configFile = "")

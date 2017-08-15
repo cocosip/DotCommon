@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon", "src\DotCommon\DotCommon.csproj", "{5D5012F3-65B7-42FB-A2D8-6BEA1C45AC7F}"
 EndProject
@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.Test", "test\DotC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.Autofac", "src\DotCommon.Autofac\DotCommon.Autofac.csproj", "{DC93C579-C4D7-4317-A20F-F443A9ED0FAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.CastleWindsor", "src\DotCommon.CastleWindsor\DotCommon.CastleWindsor.csproj", "{F00E372E-D458-4730-9926-00A8BDFF82FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.CastleWindsor", "src\DotCommon.CastleWindsor\DotCommon.CastleWindsor.csproj", "{F00E372E-D458-4730-9926-00A8BDFF82FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {17831D3C-78C0-4535-AC9A-7CA19B13DA03}
 	EndGlobalSection
 EndGlobal

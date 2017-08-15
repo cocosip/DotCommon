@@ -45,5 +45,11 @@
         {
             public const string ImageJpeg = "image/jpeg";
         }
+
+        public class Methods
+        {
+            public const string Post = "POST";
+            public const string Get = "GET";
+        }
     }
 }
