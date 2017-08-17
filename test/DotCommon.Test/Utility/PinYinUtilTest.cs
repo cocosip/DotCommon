@@ -1,7 +1,4 @@
 ﻿using DotCommon.Utility;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace DotCommon.Test.Utility
@@ -11,18 +8,24 @@ namespace DotCommon.Test.Utility
 
         [Theory]
         [InlineData("中国", "ZhongGuo")]
-        public void ConvertChTest(string chStr, string pinyinStr)
+        [InlineData("美国", "MeiGuo")]
+        [InlineData("浙江人", "ZheJiangRen")]
+        [InlineData("在风光如画的天府之国", "ZaiFengGuangRuHuaDeTianFuZhiGuo")]
+        [InlineData("Zh", "Zh")]
+        public void ConvertToPinYin(string chStr, string pinyinStr)
         {
-            var actual = PinYinUtil.ConvertCh(chStr);
+            var actual = PinYinUtil.ConvertToPinYin(chStr);
             Assert.Equal(pinyinStr, actual);
         }
 
         [Theory]
-        [InlineData("中国", "Z")]
-        //[InlineData("美", "M")]
+        [InlineData("中", "Z")]
+        [InlineData("美", "M")]
+        [InlineData("日本人", "RBR")]
+        [InlineData("哈利路Y", "HLLY")]
         public void GetFirstLetterTest(string chStr, string letter)
         {
-            var actual = PinYinUtil.GetFirstLetter(chStr);
+            var actual = PinYinUtil.GetCodstring(chStr);
             Assert.Equal(letter, actual);
         }
     }

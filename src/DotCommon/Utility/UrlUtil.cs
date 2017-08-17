@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotCommon.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static bool IsUrl(string strUrl)
         {
-            if (!string.IsNullOrEmpty(strUrl))
+            if (!strUrl.IsNullOrEmpty())
             {
                 strUrl = strUrl.ToLower();
                 return Regex.IsMatch(strUrl,
@@ -27,7 +28,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static bool IsMainDomain(string strUrl)
         {
-            if (!string.IsNullOrEmpty(strUrl))
+            if (!strUrl.IsNullOrEmpty())
             {
                 strUrl = strUrl.ToLower();
                 var reg = new Regex(
@@ -131,7 +132,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static string UrlAttachParameter(string url, string key, string value, bool replaceSame = false)
         {
-            return UrlAttachParameters(url, new Dictionary<string, string>() {{key, value}}, replaceSame);
+            return UrlAttachParameters(url, new Dictionary<string, string>() { { key, value } }, replaceSame);
         }
 
         /// <summary>将参数附加到url上
