@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotCommon.Extensions;
+using System;
 using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
@@ -21,12 +22,12 @@ namespace DotCommon.Utility
 		}
 
 
-	    /// <summary>非空
-		/// </summary>
-		private static bool NotNull(string source)
-	    {
-		    return !string.IsNullOrWhiteSpace(source);
-	    }
+        /// <summary>非空
+        /// </summary>
+        private static bool NotNull(string source)
+        {
+            return !source.IsNullOrWhiteSpace();
+        }
 
 
 	    /// <summary>验证是否为手机号码

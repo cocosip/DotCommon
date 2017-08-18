@@ -1,4 +1,4 @@
-﻿#if NET45
+﻿#if !NETSTANDARD2_0
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -34,11 +34,11 @@ namespace DotCommon.Img
         /// <returns></returns>
         public static string GetImageExtension(Image img)
         {
-            Type type = typeof (ImageFormat);
+            Type type = typeof(ImageFormat);
             var imageFormatList = type.GetProperties(BindingFlags.Static | BindingFlags.Public);
             for (int i = 0; i != imageFormatList.Length; i++)
             {
-                ImageFormat formatClass = (ImageFormat) imageFormatList[i].GetValue(null, null);
+                ImageFormat formatClass = (ImageFormat)imageFormatList[i].GetValue(null, null);
                 if (formatClass.Guid.Equals(img.RawFormat.Guid))
                 {
                     return imageFormatList[i].Name;
@@ -58,11 +58,11 @@ namespace DotCommon.Img
         /// <returns></returns>
         public static ImageFormat GetImageFormate(Image img)
         {
-            var type = typeof (ImageFormat);
+            var type = typeof(ImageFormat);
             var imageFormatList = type.GetProperties(BindingFlags.Static | BindingFlags.Public);
             for (int i = 0; i != imageFormatList.Length; i++)
             {
-                ImageFormat formatClass = (ImageFormat) imageFormatList[i].GetValue(null, null);
+                ImageFormat formatClass = (ImageFormat)imageFormatList[i].GetValue(null, null);
                 if (formatClass.Guid.Equals(img.RawFormat.Guid))
                 {
                     return formatClass;

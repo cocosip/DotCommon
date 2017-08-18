@@ -1,4 +1,4 @@
-﻿#if NET45
+﻿#if !NETSTANDARD2_0
 namespace DotCommon.Img
 {
     public enum ThumbnailMode

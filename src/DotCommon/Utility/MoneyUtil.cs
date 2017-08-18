@@ -9,7 +9,7 @@ namespace DotCommon.Utility
         #region 将decimal类型的数据转换成中文人民币
         /// <summary> 转换人民币大小金额 
         /// </summary> 
-        public static string CmycurD(decimal num)
+        public static string GetRmb(decimal num)
         {
             string str1 = "零壹贰叁肆伍陆柒捌玖";            //0-9所对应的汉字 
             string str2 = "万仟佰拾亿仟佰拾万仟佰拾元角分"; //数字位所对应的汉字 
@@ -128,19 +128,10 @@ namespace DotCommon.Utility
         /// <summary> 
         /// 一个重载，将字符串先转换成数字在调用CmycurD(decimal num) 
         /// </summary> 
-        /// <param name="numstr">用户输入的金额，字符串形式未转成decimal</param>
-        /// <returns></returns> 
-        public static string CmycurD(string numstr)
+        public static string GetRmb(string numstr)
         {
-            try
-            {
-                decimal num = Convert.ToDecimal(numstr);
-                return CmycurD(num);
-            }
-            catch
-            {
-                return "非数字形式！";
-            }
+            decimal num = Convert.ToDecimal(numstr);
+            return GetRmb(num);
         }
         #endregion
     }

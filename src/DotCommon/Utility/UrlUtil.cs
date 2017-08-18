@@ -40,10 +40,10 @@ namespace DotCommon.Utility
 
         /// <summary>将url转换成对应的协议模式下的url
         /// </summary>
-        public static string ToUrl(string strUrl, string http = @"http://")
+        public static string PadLeftUrl(string strUrl, string http = @"http://")
         {
             strUrl = strUrl.ToLower();
-            if (!strUrl.StartsWith(http))
+            if (!strUrl.StartsWith("http://") && !strUrl.StartsWith("https://"))
             {
                 strUrl = $"{http}{strUrl}";
             }
@@ -86,8 +86,8 @@ namespace DotCommon.Utility
         {
             if (!string.IsNullOrWhiteSpace(url1) && !string.IsNullOrWhiteSpace(url2))
             {
-                url1 = ToUrl(url1);
-                url2 = ToUrl(url2);
+                url1 = PadLeftUrl(url1);
+                url2 = PadLeftUrl(url2);
                 var uri1 = new Uri(url1);
                 var uri2 = new Uri(url2);
                 if (uri1.Authority.ToLower().Equals(uri2.Authority.ToLower()))
@@ -98,17 +98,9 @@ namespace DotCommon.Utility
             return false;
         }
 
-        /// <summary>参数过滤,并且去除不合法的参数
-        /// </summary>
-        public static Dictionary<string, string> FilterParam(Dictionary<string, string> dicArrayPre)
-        {
-            return dicArrayPre.Where(temp => !string.IsNullOrEmpty(temp.Value))
-                .ToDictionary(temp => temp.Key, temp => System.Net.WebUtility.HtmlEncode(temp.Value));
-        }
-
         /// <summary>获取url地址中的全部参数
         /// </summary>
-        public static Dictionary<string, string> GetParameters(string url)
+        public static Dictionary<string, string> GetUrlParameters(string url)
         {
             var paramUrl = Regex.Match(url, @"\?(\w*=?\w*&?)*").Value.Replace("?", "");
             var paramArray = paramUrl.Split('&');
@@ -121,9 +113,9 @@ namespace DotCommon.Utility
 
         /// <summary>获取除某些参数以外的参数集合
         /// </summary>
-        public static Dictionary<string, string> GetExpectParameters(string url, params string[] excepts)
+        public static Dictionary<string, string> GetExpectUrlParameters(string url, params string[] excepts)
         {
-            var parameters = GetParameters(url);
+            var parameters = GetUrlParameters(url);
             var lowerExpects = excepts.Select(x => x.ToLower()).ToList();
             return parameters.Where(x => !lowerExpects.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
         }
@@ -140,7 +132,7 @@ namespace DotCommon.Utility
         public static string UrlAttachParameters(string url, Dictionary<string, string> paramDict,
             bool replaceSame = false)
         {
-            var parameters = GetParameters(url);
+            var parameters = GetUrlParameters(url);
             var sortParameters = new SortedDictionary<string, string>(parameters);
             foreach (var kv in paramDict)
             {

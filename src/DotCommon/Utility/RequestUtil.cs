@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-#if NET45
+#if !NETSTANDARD2_0
 using System.Reflection;
 using System.Web;
 #endif
@@ -20,7 +20,7 @@ namespace DotCommon.Utility
         public static Dictionary<string, string> UserAgents => UserAgentsLazy.Value;
 
 
-#if NET45
+#if !NETSTANDARD2_0
         #region Get请求获取参数
 
         /// <summary> 获取某个请求参数的值,返回int类型
@@ -492,11 +492,11 @@ namespace DotCommon.Utility
         public static string GetMobileType(string userAgent)
         {
             var agentFlag = "";
-            string[] weixinKeys = {"MicroMessenger"};
-            string[] windowsKeys = {"Windows NT", "compatible;", "MSIE", ".NET CLR"};
-            string[] androidKeys = {"Android"};
-            string[] iphoneKeys = {"iPhone", "iPad", "iPod"};
-            string[] macKeys = {"Macintosh"};
+            string[] weixinKeys = { "MicroMessenger" };
+            string[] windowsKeys = { "Windows NT", "compatible;", "MSIE", ".NET CLR" };
+            string[] androidKeys = { "Android" };
+            string[] iphoneKeys = { "iPhone", "iPad", "iPod" };
+            string[] macKeys = { "Macintosh" };
             if (weixinKeys.Any(item => userAgent != null && userAgent.Contains(item)))
             {
                 return "weixin";

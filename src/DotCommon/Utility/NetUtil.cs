@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-#if NET45
+#if !NETSTANDARD2_0
 using System.Management;
 using System.Web;
 #endif
@@ -187,7 +187,7 @@ namespace DotCommon.Utility
 
         #endregion
 
-#if NET45
+#if !NETSTANDARD2_0
 
         #region 获取本机所有的MAC地址
 
