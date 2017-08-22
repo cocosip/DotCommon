@@ -77,7 +77,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static bool IsInt32(string source)
         {
-			const string pattern = @"^[0-9]*$";
+			const string pattern = @"^(\-|\+)?[0-9]*$";
 			return  IsMatch(source, pattern);
         }
 
