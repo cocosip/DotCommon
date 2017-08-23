@@ -27,6 +27,11 @@ namespace DotCommon.Autofac
             _container = (IContainer)engine;
         }
 
+        public void Build()
+        {
+            _container = _builder.Build();
+        }
+
         public T GetEngine<T>()
         {
             return (T)_container;

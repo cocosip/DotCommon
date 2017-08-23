@@ -22,5 +22,14 @@ namespace DotCommon.Autofac
             IocManager.GetContainer().UseEngine(container);
             return configuration;
         }
+
+        /// <summary>容器生效
+        /// </summary>
+        public static Configuration AutofacBuild(this Configuration configuration)
+        {
+            var container = (AutofacIocContainer)IocManager.GetContainer();
+            container.Build();
+            return configuration;
+        }
     }
 }
