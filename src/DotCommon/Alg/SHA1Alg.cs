@@ -36,6 +36,15 @@ namespace DotCommon.Alg
             var bytes = encode.GetBytes(str);
             return GetSha1Hash(bytes);
         }
+
+        /// <summary> 获取字符的Hash值
+        /// </summary>
+        public static string GetStringSha1(string str, string encode = "utf-8")
+        {
+            var encoding = Encoding.GetEncoding(encode);
+            var bytes = encoding.GetBytes(str);
+            return GetSha1Hash(bytes);
+        }
         #endregion
 
         #region +将数据源计算出来的哈希值 存储为一个十六进制的字符串
