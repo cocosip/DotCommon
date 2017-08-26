@@ -18,15 +18,7 @@ namespace DotCommon.Reflecting
         public static List<PropertyInfo> GetProperties(Type type,
             BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public)
         {
-            List<PropertyInfo> properties;
-            var key = new Tuple<Type, BindingFlags>(type, bindingFlags);
-            //如果缓存中存在该类型则直接返回
-            if (TypeProperties.TryGetValue(key, out properties))
-            {
-                return properties;
-            }
-            properties = type.GetTypeInfo().GetProperties(bindingFlags).ToArray().ToList();
-            TypeProperties.Add(key, properties);
+            var properties = type.GetTypeInfo().GetProperties(bindingFlags).ToArray().ToList();
             return properties;
         }
 

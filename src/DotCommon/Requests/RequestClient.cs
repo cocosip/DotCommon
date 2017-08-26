@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -43,30 +42,7 @@ namespace DotCommon.Requests
             return client;
         }
 
-#if NET45
-        private WebRequestHandler ParseHandler(ClientConfig config)
-        {
-            var handler = new WebRequestHandler()
-            {
-                AllowAutoRedirect = config.AllowAutoRedirect,
-                MaxRequestContentBufferSize = config.MaxRequestContentBufferSize,
-                MaxAutomaticRedirections = config.MaxAutomaticRedirections
-            };
-            //如果使用SSL则需要添加证书
-            if (config.IsSsl)
-            {
-                if (config.Cers.Any())
-                {
-                    foreach (var cer in config.Cers)
-                    {
-                        handler.ClientCertificates.Add(cer);
-                    }
-                }
-                handler.ServerCertificateValidationCallback = (a, b, c, d) => true;
-            }
-            return handler;
-        }
-#else
+#if NETSTANDARD2_0
         private HttpClientHandler ParseHandler(ClientConfig config)
         {
             var handler = new HttpClientHandler
@@ -86,6 +62,29 @@ namespace DotCommon.Requests
                     }
                 }
                 handler.ServerCertificateCustomValidationCallback += (a, b, c, d) => true;
+            }
+            return handler;
+        }
+#else
+        private WebRequestHandler ParseHandler(ClientConfig config)
+        {
+            var handler = new WebRequestHandler()
+            {
+                AllowAutoRedirect = config.AllowAutoRedirect,
+                MaxRequestContentBufferSize = config.MaxRequestContentBufferSize,
+                MaxAutomaticRedirections = config.MaxAutomaticRedirections
+            };
+            //如果使用SSL则需要添加证书
+            if (config.IsSsl)
+            {
+                if (config.Cers.Any())
+                {
+                    foreach (var cer in config.Cers)
+                    {
+                        handler.ClientCertificates.Add(cer);
+                    }
+                }
+                handler.ServerCertificateValidationCallback = (a, b, c, d) => true;
             }
             return handler;
         }

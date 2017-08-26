@@ -36,6 +36,7 @@
             /// <summary>NTLM认证
             /// </summary>
             public const string Ntlm = "Ntlm";
+
             /// <summary>Bearer
             /// </summary>
             public const string Bearer = "Bearer";
@@ -50,6 +51,9 @@
         {
             public const string Post = "POST";
             public const string Get = "GET";
+            public const string Delete = "DELETE";
+            public const string Put = "PUT";
+            public const string Patch = "PATCH";
         }
     }
 }
