@@ -1,4 +1,4 @@
-﻿#if NET45
+﻿#if !NETSTANDARD2_0
 using System;
 using System.Runtime.Caching;
 namespace DotCommon.Runtime.Caching.Memory
