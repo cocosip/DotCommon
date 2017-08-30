@@ -454,23 +454,6 @@ namespace DotCommon.Utility
 
         /*****************请求相关的数据****************/
 
-        #region 检测是否是正确的Url
-
-        /// <summary>检测是否是正确的Url
-        /// </summary>
-        public static bool IsUrl(string strUrl)
-        {
-            if (!string.IsNullOrEmpty(strUrl))
-            {
-                strUrl = strUrl.ToLower();
-                return Regex.IsMatch(strUrl,
-                    @"^http(s)?\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|localhost|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{1,10}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&%\$#\=~_\-]+))*$");
-            }
-            return false;
-        }
-
-        #endregion
-
         #region 判断是否为手机用户
 
         /// <summary>判断是否为手机用户
@@ -487,40 +470,58 @@ namespace DotCommon.Utility
 
         #region 获取手机的类型
 
-        /// <summary>根据UserAgent获取手机的类型
+        /// <summary>根据UserAgent获取平台类型
         /// </summary>
-        public static string GetMobileType(string userAgent)
+        public static string GetPlatform(string userAgent)
         {
             var agentFlag = "";
-            string[] weixinKeys = { "MicroMessenger" };
             string[] windowsKeys = { "Windows NT", "compatible;", "MSIE", ".NET CLR" };
             string[] androidKeys = { "Android" };
             string[] iphoneKeys = { "iPhone", "iPad", "iPod" };
             string[] macKeys = { "Macintosh" };
-            if (weixinKeys.Any(item => userAgent != null && userAgent.Contains(item)))
-            {
-                return "weixin";
-            }
             if (windowsKeys.Any(item => userAgent != null && userAgent.Contains(item)))
             {
-                return "windows";
+                return MobilePlatform.Windows;
             }
             if (androidKeys.Any(item => userAgent != null && userAgent.Contains(item)))
             {
-                return "android";
+                return MobilePlatform.Android;
             }
             if (iphoneKeys.Any(item => userAgent != null && userAgent.Contains(item)))
             {
-                return "iphone";
+                return MobilePlatform.IPhone;
             }
             if (macKeys.Any(item => userAgent != null && userAgent.Contains(item)))
             {
-                return "macbook";
+                return MobilePlatform.MacBook;
             }
             return agentFlag;
         }
 
+        /// <summary>是否在微信中
+        /// </summary>
+        public bool IsWechatPlatform(string userAgent)
+        {
+            string[] weixinKeys = { "MicroMessenger" };
+            if (weixinKeys.Any(item => userAgent != null && userAgent.Contains(item)))
+            {
+                return true;
+            }
+            return false;
+        }
         #endregion
 
     }
+
+    public class MobilePlatform
+    {
+        public const string Android = "Android";
+
+        public const string IPhone = "IPhone";
+
+        public const string MacBook = "MacBook";
+
+        public const string Windows = "Windows";
+    }
+
 }

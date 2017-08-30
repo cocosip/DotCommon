@@ -54,6 +54,7 @@
             public const string Delete = "DELETE";
             public const string Put = "PUT";
             public const string Patch = "PATCH";
+            public const string Trace = "TRACE";
         }
     }
 }

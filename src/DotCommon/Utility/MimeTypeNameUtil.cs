@@ -358,13 +358,12 @@ namespace DotCommon.Utility
         /// </summary>
         public static string GetMimeName(string extension)
         {
-            var contentType = "";
             extension = extension.ToLower();
             if (!extension.StartsWith("."))
             {
                 extension = "." + extension;
             }
-            ContentTypesLazy.Value.TryGetValue(extension, out contentType);
+            ContentTypesLazy.Value.TryGetValue(extension, out string contentType);
             return contentType;
         }
     }
