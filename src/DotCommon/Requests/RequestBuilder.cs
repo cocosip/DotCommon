@@ -8,12 +8,12 @@ namespace DotCommon.Requests
 {
     public class RequestBuilder
     {
-        private readonly Lazy<RequestOptions> _options = new Lazy<RequestOptions>();
+        private readonly RequestOptions _options = new RequestOptions();
 
         public RequestBuilder(string url, string httpMethod)
         {
-            _options.Value.Url = url;
-            _options.Value.HttpMethod = httpMethod;
+            _options.Url = url;
+            _options.HttpMethod = httpMethod;
         }
 
         public static RequestBuilder Instance(string url, string httpMethod)
@@ -23,18 +23,18 @@ namespace DotCommon.Requests
 
         public RequestOptions GetOptions()
         {
-            return _options.Value;
+            return _options;
         }
 
         public RequestBuilder SetEncode(string encode = "utf-8")
         {
-            _options.Value.Encode = encode;
+            _options.Encode = encode;
             return this;
         }
 
         public RequestBuilder AttachHeader(string key, string value)
         {
-            _options.Value.RequestHeaders.Value.Add(key, value);
+            _options.RequestHeaders.Add(key, value);
             return this;
         }
 
@@ -52,7 +52,7 @@ namespace DotCommon.Requests
 
         public RequestBuilder AttachParam(string key, string value)
         {
-            _options.Value.RequestParameters.Value.Add(key, value);
+            _options.RequestParameters.Add(key, value);
             return this;
         }
 
@@ -70,7 +70,7 @@ namespace DotCommon.Requests
 
         public RequestBuilder AttachFile(RequestFile file)
         {
-            _options.Value.RequestFiles.Value.Add(file);
+            _options.RequestFiles.Add(file);
             return this;
         }
 
@@ -89,57 +89,66 @@ namespace DotCommon.Requests
 
         public RequestBuilder SetUserAgent(string userAgent)
         {
-            _options.Value.UserAgent = userAgent;
+            _options.UserAgent = userAgent;
             return this;
         }
 
         public RequestBuilder SetReferer(string referer)
         {
-            _options.Value.Referer = referer;
+            _options.Referer = referer;
             return this;
         }
 
         public RequestBuilder SetCookie(Cookie cookie)
         {
-            if (_options.Value.Cookie == null)
+            if (_options.Cookie == null)
             {
-                _options.Value.Cookie = cookie;
+                _options.Cookie = cookie;
             }
             return this;
         }
 
         public RequestBuilder SetPost(PostType postType, string postString)
         {
-            if (_options.Value.HttpMethod.ToUpper() == "POST")
+            if (_options.HttpMethod.ToUpper() != RequestConsts.Methods.Get)
             {
-                _options.Value.PostType = postType;
-                _options.Value.PostString = postString;
+                _options.PostType = postType;
+                _options.PostString = postString;
             }
             return this;
         }
 
         public RequestBuilder SetPost(PostType postType)
         {
-            if (_options.Value.HttpMethod.ToUpper() == "POST")
+            if (_options.HttpMethod.ToUpper() != RequestConsts.Methods.Get)
             {
-                _options.Value.PostType = postType;
+                _options.PostType = postType;
             }
             return this;
         }
 
+        /// <summary>设置Url请求参数进行编码
+        /// </summary>
         public RequestBuilder SetUrlEncode(string encode = "utf-8")
         {
-            _options.Value.IsUrlEncode = true;
-            _options.Value.UrlEncode = encode;
+            _options.IsUrlEncode = true;
+            _options.UrlEncode = encode;
             return this;
         }
 
+        /// <summary>设置Url操作
+        /// </summary>
+        public RequestBuilder SetUrlHandler(Func<KeyValuePair<string, string>, string> urlHandler)
+        {
+            _options.UrlHandler = urlHandler;
+            return this;
+        }
 
         /// <summary>设置KeepAlive
         /// </summary>
         public RequestBuilder SetKeepAlive()
         {
-            _options.Value.KeepAlive = true;
+            _options.KeepAlive = true;
             return this;
         }
 
@@ -147,8 +156,8 @@ namespace DotCommon.Requests
         /// </summary>
         public RequestBuilder SetRange(long from, long to)
         {
-            _options.Value.RangeFrom = from;
-            _options.Value.RangeTo = to;
+            _options.RangeFrom = from;
+            _options.RangeTo = to;
             return this;
         }
 
@@ -156,21 +165,21 @@ namespace DotCommon.Requests
         /// </summary>
         public RequestBuilder SetCacheControlNocache(bool cacheControlNocache)
         {
-            _options.Value.CacheControlNocache = cacheControlNocache;
+            _options.CacheControlNocache = cacheControlNocache;
             return this;
         }
         /// <summary>设置CacheControl
         /// </summary>
         public RequestBuilder SetCacheControlNostore(bool cacheControlNostore)
         {
-            _options.Value.CacheControlNostore = cacheControlNostore;
+            _options.CacheControlNostore = cacheControlNostore;
             return this;
         }
         /// <summary>设置Accept
         /// </summary>
         public RequestBuilder SetAccept(string accept)
         {
-            _options.Value.Accept = accept;
+            _options.Accept = accept;
             return this;
         }
 
@@ -178,8 +187,8 @@ namespace DotCommon.Requests
         /// </summary>
         public RequestBuilder SetCer(X509Certificate cer)
         {
-            _options.Value.Cer = cer;
-            _options.Value.IsSsl = true;
+            _options.Cer = cer;
+            _options.IsSsl = true;
             return this;
         }
 
@@ -189,8 +198,8 @@ namespace DotCommon.Requests
         /// </summary>
         public RequestBuilder SetAuthorization(string schema, string parameter)
         {
-            _options.Value.AuthorizationSchema = schema;
-            _options.Value.AuthorizationParameter = parameter;
+            _options.AuthorizationSchema = schema;
+            _options.AuthorizationParameter = parameter;
             return this;
         }
 
@@ -200,7 +209,6 @@ namespace DotCommon.Requests
         {
             return SetAuthorization(RequestConsts.AuthenticationSchema.Basic, parameter);
         }
-
 
     }
 }

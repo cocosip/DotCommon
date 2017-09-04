@@ -1,4 +1,5 @@
-﻿using DotCommon.Utility;
+﻿using DotCommon.Extensions;
+using DotCommon.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace DotCommon.Requests
             //判断是否为Get请求
             if (httpMethod == HttpMethod.Get)
             {
-                var url = BuildGetUrl(options.Url, options.RequestParameters.Value, options.IsUrlEncode);
+                var url = BuildGetUrl(options.Url, options.RequestParameters, options.IsUrlEncode, options.UrlHandler);
                 message = new HttpRequestMessage(httpMethod, url);
             }
             else
@@ -67,7 +68,7 @@ namespace DotCommon.Requests
                 message.Headers.Add(RequestConsts.UserAgent, options.UserAgent);
             }
             //添加header
-            foreach (var header in options.RequestHeaders.Value)
+            foreach (var header in options.RequestHeaders)
             {
                 message.Headers.Add(header.Key, header.Value);
             }
@@ -112,7 +113,7 @@ namespace DotCommon.Requests
                 case PostType.Multipart:
                     var boundary = "--------" + DateTime.Now.Ticks.ToString("x");
                     var content = new MultipartFormDataContent(boundary);
-                    foreach (var file in options.RequestFiles.Value)
+                    foreach (var file in options.RequestFiles)
                     {
                         content.Add(CreateStreamContent(file), file.ParamName, file.FileName);
                     }
@@ -122,7 +123,7 @@ namespace DotCommon.Requests
                     return new StringContent(options.PostString, Encoding.GetEncoding(options.Encode));
                 case PostType.FormUrlEncoded:
                 default:
-                    return new FormUrlEncodedContent(options.RequestParameters.Value);
+                    return new FormUrlEncodedContent(options.RequestParameters);
             }
         }
 
@@ -151,7 +152,7 @@ namespace DotCommon.Requests
                 {
                     Success = message.IsSuccessStatusCode,
                     ContentType = message.Content.Headers.ContentType.ToString(),
-                    StatusCode = (int) message.StatusCode,
+                    StatusCode = (int)message.StatusCode,
                     Cookies = GetResponseCookie(message),
                     Server = message.Headers.Server.ToString(),
                     ResponseData = await message.Content.ReadAsByteArrayAsync()
@@ -191,13 +192,13 @@ namespace DotCommon.Requests
 
         /// <summary>获取Get请求的Url地址
         /// </summary>
-        private static string BuildGetUrl(string url, Dictionary<string, string> paramTemp, bool isUrlEncode = false)
+        private static string BuildGetUrl(string url, Dictionary<string, string> paramTemp, bool isUrlEncode, Func<KeyValuePair<string, string>, string> urlHandler)
         {
             //过滤与排序之后的集合
             var sParam = FilterParams(paramTemp);
             //参数组合
-            var linkString = CreateLinkString(sParam, isUrlEncode);
-            var conbine = string.IsNullOrWhiteSpace(linkString) ? "" : "?";
+            var linkString = CreateLinkString(sParam, isUrlEncode, urlHandler);
+            var conbine = linkString.IsNullOrWhiteSpace() ? "" : "?";
             return $"{url}{conbine}{linkString}";
         }
 
@@ -213,18 +214,26 @@ namespace DotCommon.Requests
 
         /// <summary> 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串，并对参数值做urlencode
         /// </summary>
-        private static string CreateLinkString(SortedDictionary<string, string> paramTemp, bool isUrlEncode = false)
+        private static string CreateLinkString(SortedDictionary<string, string> paramTemp, bool isUrlEncode, Func<KeyValuePair<string, string>, string> urlHandler)
         {
             var sb = new StringBuilder();
-            foreach (var temp in paramTemp)
+            foreach (var kv in paramTemp)
             {
-                if (isUrlEncode)
+                if (urlHandler == null)
                 {
-                    sb.Append(temp.Key + "=" + temp.Value + "&");
+                    //使用默认的UrlEncode
+                    if (isUrlEncode)
+                    {
+                        sb.Append(kv.Key + "=" + WebUtility.UrlEncode(kv.Value) + "&");
+                    }
+                    else
+                    {
+                        sb.Append(kv.Key + "=" + kv.Value + "&");
+                    }
                 }
                 else
                 {
-                    sb.Append(temp.Key + "=" + WebUtility.UrlEncode(temp.Value) + "&");
+                    sb.Append(urlHandler.Invoke(kv));
                 }
             }
             //去掉最後一個&字符

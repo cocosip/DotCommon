@@ -21,15 +21,15 @@ namespace DotCommon.Requests
 
         /// <summary>请求参数
         /// </summary>
-        public Lazy<Dictionary<string, string>> RequestParameters = new Lazy<Dictionary<string, string>>();
+        public Dictionary<string, string> RequestParameters = new Dictionary<string, string>();
 
         /// <summary>请求头部
         /// </summary>
-        public Lazy<Dictionary<string, string>> RequestHeaders = new Lazy<Dictionary<string, string>>();
+        public Dictionary<string, string> RequestHeaders = new Dictionary<string, string>();
 
         /// <summary>请求的文件
         /// </summary>
-        public Lazy<List<RequestFile>> RequestFiles = new Lazy<List<RequestFile>>();
+        public List<RequestFile> RequestFiles = new List<RequestFile>();
 
         /// <summary>UserAgent
         /// </summary>
@@ -46,6 +46,10 @@ namespace DotCommon.Requests
         /// <summary>是否进行Url编码
         /// </summary>
         public bool IsUrlEncode { get; set; }
+
+        /// <summary>GET请求参数设置参数操作
+        /// </summary>
+        public Func<KeyValuePair<string, string>, string> UrlHandler { get; set; } = null;
 
         /// <summary>Url编码格式
         /// </summary>
