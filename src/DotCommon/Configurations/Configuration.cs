@@ -3,9 +3,6 @@ using DotCommon.Extensions;
 using DotCommon.Logging;
 using DotCommon.Requests;
 using DotCommon.Runtime;
-using DotCommon.Runtime.Caching;
-using DotCommon.Runtime.Caching.Configuration;
-using DotCommon.Runtime.Caching.Memory;
 using DotCommon.Runtime.Remoting;
 using DotCommon.Scheduling;
 using DotCommon.Serializing;
@@ -56,10 +53,6 @@ namespace DotCommon.Configurations
 #endif
             container.Register(typeof(IAmbientScopeProvider<>), typeof(DataContextAmbientScopeProvider<>), DependencyLifeStyle.Transient);
 
-            //缓存
-            container.Register<ICachingConfiguration, CachingConfiguration>();
-            container.Register<ICacheManager, DotCommonMemoryCacheManager>();
-            container.Register<DotCommonMemoryCache>(DependencyLifeStyle.Transient);
             return this;
         }
 
@@ -87,25 +80,6 @@ namespace DotCommon.Configurations
             return this;
         }
         #endregion
-
-
-        /// <summary>缓存配置
-        /// </summary>
-        public Configuration CacheConfigure(string cacheName, Action<ICache> initAction)
-        {
-            var container = IocManager.GetContainer();
-            container.Resolve<ICachingConfiguration>().Configure(cacheName, initAction);
-            return this;
-        }
-
-        /// <summary>缓存配置
-        /// </summary>
-        public void CacheConfigureAll(Action<ICache> initAction)
-        {
-            var container = IocManager.GetContainer();
-            container.Resolve<ICachingConfiguration>().ConfigureAll(initAction);
-        }
-
 
     }
 }

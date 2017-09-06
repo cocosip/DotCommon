@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.Autofac", "src\Do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.CastleWindsor", "src\DotCommon.CastleWindsor\DotCommon.CastleWindsor.csproj", "{F00E372E-D458-4730-9926-00A8BDFF82FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.AutoMapper", "src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj", "{3F0FB329-AB91-4386-B176-387CF7D61B00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AutoMapper", "src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj", "{3F0FB329-AB91-4386-B176-387CF7D61B00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.ProtoBuf", "src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj", "{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ProtoBuf", "src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj", "{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.Caching", "src\DotCommon.Caching\DotCommon.Caching.csproj", "{8D1DA3E5-8F7A-4E77-8C9D-2478B62B80DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D1DA3E5-8F7A-4E77-8C9D-2478B62B80DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D1DA3E5-8F7A-4E77-8C9D-2478B62B80DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D1DA3E5-8F7A-4E77-8C9D-2478B62B80DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D1DA3E5-8F7A-4E77-8C9D-2478B62B80DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

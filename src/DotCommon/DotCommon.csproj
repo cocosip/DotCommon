@@ -7,14 +7,11 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.7.1</Version>
+    <Version>2.7.2</Version>
     <Description>通用的.net类库</Description>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="Nito.AsyncEx.Context" Version="1.1.0" />
-    <PackageReference Include="Nito.AsyncEx.Coordination" Version="1.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.0.0" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
 
@@ -33,7 +30,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
-    <PackageReference Include="Nito.AsyncEx" Version="3.0.1" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.8" />
