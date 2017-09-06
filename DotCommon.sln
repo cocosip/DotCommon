@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.3
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon", "src\DotCommon\DotCommon.csproj", "{5D5012F3-65B7-42FB-A2D8-6BEA1C45AC7F}"
 EndProject
@@ -10,6 +10,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.Autofac", "src\DotCommon.Autofac\DotCommon.Autofac.csproj", "{DC93C579-C4D7-4317-A20F-F443A9ED0FAD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.CastleWindsor", "src\DotCommon.CastleWindsor\DotCommon.CastleWindsor.csproj", "{F00E372E-D458-4730-9926-00A8BDFF82FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.AutoMapper", "src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj", "{3F0FB329-AB91-4386-B176-387CF7D61B00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.ProtoBuf", "src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj", "{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{F00E372E-D458-4730-9926-00A8BDFF82FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F00E372E-D458-4730-9926-00A8BDFF82FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F00E372E-D458-4730-9926-00A8BDFF82FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F0FB329-AB91-4386-B176-387CF7D61B00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F0FB329-AB91-4386-B176-387CF7D61B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F0FB329-AB91-4386-B176-387CF7D61B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F0FB329-AB91-4386-B176-387CF7D61B00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,7 +9,7 @@ using System.Security;
 
 namespace DotCommon.Reflecting
 {
-	public class DictionaryEmit
+    public class DictionaryEmit
 	{
 		private static readonly IDictionary<Type, Delegate> ObjectToDictionaryDict =
 			new ConcurrentDictionary<Type, Delegate>();

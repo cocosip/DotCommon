@@ -1,8 +1,8 @@
 ﻿using Autofac;
-using DotCommon.Configurations;
+using DotCommon.Autofac;
 using DotCommon.Dependency;
 
-namespace DotCommon.Autofac
+namespace DotCommon.Configurations
 {
     public static class ConfigurationExtensions
     {

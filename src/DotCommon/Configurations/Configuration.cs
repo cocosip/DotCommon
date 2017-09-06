@@ -75,20 +75,7 @@ namespace DotCommon.Configurations
 
         #endregion
 
-        #region 使用Protobuf.net
-        /// <summary>使用ProtoBuf
-        /// </summary>
-        public Configuration UseProtoBuf()
-        {
-            var container = IocManager.GetContainer();
-            container.Register<IBinarySerializer, ProtocolBufSerializer>(DependencyLifeStyle.Transient);
-            return this;
-        }
-        #endregion
-
-
-
-        #region Log4Net配置
+        #region 使用Log4Net
         public Configuration UseLog4Net(string configFile = "")
         {
             var container = IocManager.GetContainer();
