@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace DotCommon.AutoMapper
 {
-    public class AutoAttributeAutoMapperHelper
+    public class AutoAttributeMapperHelper
     {
         private static readonly object SyncObj = new object();
         //已经被映射过的程序集
