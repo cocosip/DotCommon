@@ -34,9 +34,9 @@ namespace DotCommon.Encrypt
         }
         /// <summary>加密
         /// </summary>
-        public string Encrypt(string data, string encoding = "utf-8")
+        public string Encrypt(string data, string encode = "utf-8")
         {
-            var dataBytes = Encoding.GetEncoding(encoding).GetBytes(data);
+            var dataBytes = Encoding.GetEncoding(encode).GetBytes(data);
             var encryptedData = EncryptBytes(dataBytes);
             return Convert.ToBase64String(encryptedData);
         }
@@ -50,11 +50,11 @@ namespace DotCommon.Encrypt
 
         /// <summary>解密
         /// </summary>
-        public string Decrypt(string data, string encoding = "utf-8")
+        public string Decrypt(string data, string encode = "utf-8")
         {
             var dataBytes = Convert.FromBase64String(data);
             var dataSource = DecryptBytes(dataBytes);
-            return Encoding.GetEncoding(encoding).GetString(dataSource);
+            return Encoding.GetEncoding(encode).GetString(dataSource);
         }
 
 
