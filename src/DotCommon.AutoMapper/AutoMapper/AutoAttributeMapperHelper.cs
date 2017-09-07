@@ -13,7 +13,7 @@ namespace DotCommon.AutoMapper
         private static List<Assembly> MappedAssemblies = new List<Assembly>();
 
 
-        //private void Test()
+        //private void Demo()
         //{
         //    Mapper.Initialize(cfg =>
         //    {
@@ -40,9 +40,11 @@ namespace DotCommon.AutoMapper
             lock (SyncObj)
             {
                 //未被映射过的程序集
-                var notMappedAssemblies = assemblies.Where(x => !MappedAssemblies.Contains(x));
+                var notMappedAssemblies = assemblies.Where(x => !MappedAssemblies.Contains(x)).ToList();
                 //创建映射
-                FindAndAutoMapTypes(assemblies, configuration);
+                FindAndAutoMapTypes(notMappedAssemblies, configuration);
+                //把这些映射添加到已经映射的程序集
+                MappedAssemblies.AddRange(notMappedAssemblies);
             }
         }
 
