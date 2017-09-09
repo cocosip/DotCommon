@@ -1,5 +1,4 @@
-﻿#if !NETSTANDARD2_0
-using System;
+﻿using System;
 using System.Collections.Specialized;
 
 
@@ -148,4 +147,3 @@ namespace DotCommon.Utility
         #endregion
     }
 }
-#endif

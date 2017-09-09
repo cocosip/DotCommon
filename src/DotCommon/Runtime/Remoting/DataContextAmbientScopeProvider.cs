@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DotCommon.Extensions;
+using System;
 using System.Collections.Concurrent;
-using DotCommon.Extensions;
 namespace DotCommon.Runtime.Remoting
 {
     public class DataContextAmbientScopeProvider<T> : IAmbientScopeProvider<T>

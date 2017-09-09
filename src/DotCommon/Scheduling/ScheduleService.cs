@@ -1,7 +1,7 @@
-﻿using System;
+﻿using DotCommon.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading;
-using DotCommon.Logging;
 
 namespace DotCommon.Scheduling
 {

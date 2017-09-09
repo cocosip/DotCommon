@@ -5,10 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-#if !NETSTANDARD2_0
-using System.Management;
-using System.Web;
-#endif
 
 
 namespace DotCommon.Utility
@@ -187,41 +183,5 @@ namespace DotCommon.Utility
 
         #endregion
 
-#if !NETSTANDARD2_0
-
-        #region 获取本机所有的MAC地址
-
-        /// <summary>获取本机所有的MAC地址
-        /// </summary>
-        public static List<string> GetMac()
-        {
-            var macList = new List<string>();
-            var nisc = new ManagementObjectSearcher("select * from Win32_NetworkAdapterConfiguration");
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var o in nisc.Get())
-            {
-                var nic = (ManagementObject) o;
-                if (Convert.ToBoolean(nic["ipEnabled"]))
-                {
-                    macList.Add(nic["MACAddress"].ToString());
-                }
-            }
-            return macList;
-        }
-
-        #endregion
-
-        #region 获得当前完整Url地址
-
-        /// <summary>获得当前完整Url地址
-        /// </summary>
-        public static string GetUrl()
-        {
-            return HttpContext.Current.Request.Url.ToString();
-        }
-
-        #endregion
-
-#endif
     }
 }

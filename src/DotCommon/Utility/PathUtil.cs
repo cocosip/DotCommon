@@ -16,11 +16,7 @@ namespace DotCommon.Utility
         {
             if (!Path.IsPathRooted(path))
             {
-#if NETSTANDARD2_0
                 path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-#else
-                path = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, path);
-#endif
             }
             return path;
         }

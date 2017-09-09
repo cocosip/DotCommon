@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DotCommon.ProtoBuf</AssemblyName>
     <PackageId>DotCommon.ProtoBuf</PackageId>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.7.2</Version>
+    <Version>2.7.3</Version>
     <Description>通用.net类库ProtoBuf扩展</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>

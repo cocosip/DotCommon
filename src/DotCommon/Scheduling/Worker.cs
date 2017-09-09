@@ -1,6 +1,7 @@
-﻿using System;
-using System.Threading;
+﻿using DotCommon.Dependency;
 using DotCommon.Logging;
+using System;
+using System.Threading;
 
 namespace DotCommon.Scheduling
 {
@@ -9,6 +10,7 @@ namespace DotCommon.Scheduling
     public class Worker
     {
         private readonly object _lockObject = new object();
+        private readonly ILogger _logger;
         private readonly string _actionName;
         private readonly Action _action;
         private Status _status;
@@ -24,7 +26,7 @@ namespace DotCommon.Scheduling
             _actionName = actionName;
             _action = action;
             _status = Status.Initial;
-            //_logger = IocManager.Resolve<ILoggerFactory>().CreateLogger(GetType().Name);
+            _logger = IocManager.GetContainer().Resolve<ILoggerFactory>().Create(nameof(Worker));
         }
 
         /// <summary>Start the worker if it is not running.
@@ -69,12 +71,12 @@ namespace DotCommon.Scheduling
                 {
                     _action();
                 }
-                //                catch (ThreadAbortException)
-                //                {
-                //                    _logger.InfoFormat("Worker thread caught ThreadAbortException, try to resetting, actionName:{0}", _actionName);
-                //                    Thread.ResetAbort();
-                //                    _logger.InfoFormat("Worker thread ThreadAbortException resetted, actionName:{0}", _actionName);
-                //                }
+                catch (ThreadAbortException)
+                {
+                    _logger.InfoFormat("Worker thread caught ThreadAbortException, try to resetting, actionName:{0}", _actionName);
+                    Thread.ResetAbort();
+                    _logger.InfoFormat("Worker thread ThreadAbortException resetted, actionName:{0}", _actionName);
+                }
                 catch (Exception ex)
                 {
                     throw new Exception($"Worker thread has exception, actionName:{_actionName},error:{ex.Message}");

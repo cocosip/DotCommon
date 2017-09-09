@@ -1,7 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using DotCommon.Runtime.Caching.Configuration;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using DotCommon.Runtime.Caching.Configuration;
 
 namespace DotCommon.Runtime.Caching
 {

@@ -1,11 +1,13 @@
-﻿#if !NETSTANDARD2_0
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using System;
-using System.Runtime.Caching;
+
 namespace DotCommon.Runtime.Caching.Memory
 {
-    public class DotCommonMemoryCache : CacheBase
+    public class DotCommonMemoryCache: CacheBase
     {
         private MemoryCache _memoryCache;
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -13,7 +15,7 @@ namespace DotCommon.Runtime.Caching.Memory
         public DotCommonMemoryCache(string name)
             : base(name)
         {
-            _memoryCache = new MemoryCache(Name);
+            _memoryCache = new MemoryCache(new OptionsWrapper<MemoryCacheOptions>(new MemoryCacheOptions()));
         }
 
         public override object GetOrDefault(string key)
@@ -28,26 +30,24 @@ namespace DotCommon.Runtime.Caching.Memory
                 throw new ArgumentException("Can not insert null values to the cache!");
             }
 
-            var cachePolicy = new CacheItemPolicy();
-
             if (absoluteExpireTime != null)
             {
-                cachePolicy.AbsoluteExpiration = DateTimeOffset.Now.Add(absoluteExpireTime.Value);
+                _memoryCache.Set(key, value, DateTimeOffset.Now.Add(absoluteExpireTime.Value));
             }
             else if (slidingExpireTime != null)
             {
-                cachePolicy.SlidingExpiration = slidingExpireTime.Value;
+                _memoryCache.Set(key, value, slidingExpireTime.Value);
+                //cachePolicy.SlidingExpiration = slidingExpireTime.Value; // TODO: How to set sliding time?
             }
             else if (DefaultAbsoluteExpireTime != null)
             {
-                cachePolicy.AbsoluteExpiration = DateTimeOffset.Now.Add(DefaultAbsoluteExpireTime.Value);
+                _memoryCache.Set(key, value, DateTimeOffset.Now.Add(DefaultAbsoluteExpireTime.Value));
             }
             else
             {
-                cachePolicy.SlidingExpiration = DefaultSlidingExpireTime;
+                _memoryCache.Set(key, value, DefaultSlidingExpireTime);
+                //cachePolicy.SlidingExpiration = DefaultSlidingExpireTime; // TODO: How to set sliding time?
             }
-
-            _memoryCache.Set(key, value, cachePolicy);
         }
 
         public override void Remove(string key)
@@ -58,7 +58,7 @@ namespace DotCommon.Runtime.Caching.Memory
         public override void Clear()
         {
             _memoryCache.Dispose();
-            _memoryCache = new MemoryCache(Name);
+            _memoryCache = new MemoryCache(new OptionsWrapper<MemoryCacheOptions>(new MemoryCacheOptions()));
         }
 
         public override void Dispose()
@@ -68,4 +68,3 @@ namespace DotCommon.Runtime.Caching.Memory
         }
     }
 }
-#endif

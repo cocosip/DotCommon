@@ -42,7 +42,6 @@ namespace DotCommon.Requests
             return client;
         }
 
-#if NETSTANDARD2_0
         private HttpClientHandler ParseHandler(ClientConfig config)
         {
             var handler = new HttpClientHandler
@@ -65,30 +64,7 @@ namespace DotCommon.Requests
             }
             return handler;
         }
-#else
-        private WebRequestHandler ParseHandler(ClientConfig config)
-        {
-            var handler = new WebRequestHandler()
-            {
-                AllowAutoRedirect = config.AllowAutoRedirect,
-                MaxRequestContentBufferSize = config.MaxRequestContentBufferSize,
-                MaxAutomaticRedirections = config.MaxAutomaticRedirections
-            };
-            //如果使用SSL则需要添加证书
-            if (config.IsSsl)
-            {
-                if (config.Cers.Any())
-                {
-                    foreach (var cer in config.Cers)
-                    {
-                        handler.ClientCertificates.Add(cer);
-                    }
-                }
-                handler.ServerCertificateValidationCallback = (a, b, c, d) => true;
-            }
-            return handler;
-        }
-#endif
+
 
         private void CheckSslRequest(RequestOptions options)
         {

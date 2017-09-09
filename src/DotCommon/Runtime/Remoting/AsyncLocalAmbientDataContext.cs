@@ -1,5 +1,4 @@
-﻿#if NETSTANDARD2_0
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Threading;
 
 namespace DotCommon.Runtime.Remoting
@@ -20,4 +19,3 @@ namespace DotCommon.Runtime.Remoting
         }
     }
 }
-#endif

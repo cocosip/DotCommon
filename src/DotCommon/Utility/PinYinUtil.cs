@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
@@ -10,9 +9,7 @@ namespace DotCommon.Utility
     {
         static PinYinUtil()
         {
-#if NETSTANDARD2_0
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-#endif
         }
 
         #region 拼音相关数组

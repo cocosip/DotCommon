@@ -1,5 +1,4 @@
-﻿#if NETSTANDARD2_0
-using System;
+﻿using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -292,4 +291,3 @@ namespace DotCommon.Encrypt
 
     }
 }
-#endif
