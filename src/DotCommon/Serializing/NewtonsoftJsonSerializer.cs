@@ -43,9 +43,15 @@ namespace DotCommon.Serializing
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var jsonProperty = base.CreateProperty(member, memberSerialization);
-                if (jsonProperty.Writable) return jsonProperty;
+                if (jsonProperty.Writable)
+                {
+                    return jsonProperty;
+                }
                 var property = member as PropertyInfo;
-                if (property == null) return jsonProperty;
+                if (property == null)
+                {
+                    return jsonProperty;
+                }
                 var hasPrivateSetter = property.GetSetMethod(true) != null;
                 jsonProperty.Writable = hasPrivateSetter;
                 return jsonProperty;
