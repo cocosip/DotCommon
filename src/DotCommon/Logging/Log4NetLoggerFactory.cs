@@ -5,28 +5,21 @@ using log4net.Layout;
 using log4net.Repository;
 using System;
 using System.IO;
-using System.Reflection;
 
 namespace DotCommon.Logging
 {
     public class Log4NetLoggerFactory : ILoggerFactory
     {
         private readonly ILoggerRepository _loggerRepository;
-        public Log4NetLoggerFactory(string configFile)
+        public Log4NetLoggerFactory(string configFile, string loggerRepositoryName = "DotCommonRepository")
         {
 
-            _loggerRepository = LogManager.CreateRepository(
-               Assembly.GetEntryAssembly(),
-               typeof(log4net.Repository.Hierarchy.Hierarchy));
+            _loggerRepository = LogManager.CreateRepository(loggerRepositoryName);
 
             var file = new FileInfo(configFile);
             if (!file.Exists)
             {
-#if NET45
-                file = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configFile));
-#else
                 file = new FileInfo(Path.Combine(AppContext.BaseDirectory, configFile));
-#endif
             }
             if (file.Exists)
             {
