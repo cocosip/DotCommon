@@ -1,12 +1,10 @@
 ﻿using DotCommon.Dependency;
-using DotCommon.Extensions;
 using DotCommon.Logging;
 using DotCommon.Requests;
 using DotCommon.Runtime;
 using DotCommon.Runtime.Remoting;
 using DotCommon.Scheduling;
 using DotCommon.Serializing;
-using System;
 
 namespace DotCommon.Configurations
 {
@@ -39,7 +37,7 @@ namespace DotCommon.Configurations
 
             //日志
             container.Register<ILoggerFactory, EmptyLoggerFactory>(DependencyLifeStyle.Singleton);
-            container.Register<ILogger, EmptyLogger>(DependencyLifeStyle.Transient);
+            //container.Register<ILogger, EmptyLogger>(DependencyLifeStyle.Transient);
             //container.Register<ILogger, EmptyLogger>(DependencyLifeStyle.Transient);
 
             //定时器
@@ -55,31 +53,6 @@ namespace DotCommon.Configurations
 
             return this;
         }
-
-        #region 使用Json4Net
-        /// <summary>使用Json4Net
-        /// </summary>
-        public Configuration UseJson4Net()
-        {
-            var container = IocManager.GetContainer();
-            container.Register<IJsonSerializer, NewtonsoftJsonSerializer>(DependencyLifeStyle.Transient);
-            return this;
-        }
-
-        #endregion
-
-        #region 使用Log4Net
-        public Configuration UseLog4Net(string configFile = "")
-        {
-            var container = IocManager.GetContainer();
-            if (configFile.IsNullOrEmpty())
-            {
-                configFile = "log4net.config";
-            }
-            container.Register<ILoggerFactory, Log4NetLoggerFactory>(new Log4NetLoggerFactory(configFile));
-            return this;
-        }
-        #endregion
 
     }
 }
