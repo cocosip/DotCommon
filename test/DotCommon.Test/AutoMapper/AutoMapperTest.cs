@@ -25,7 +25,6 @@ namespace DotCommon.Test.AutoMapper
                 });
             });
 
-
         }
 
         [Fact]
