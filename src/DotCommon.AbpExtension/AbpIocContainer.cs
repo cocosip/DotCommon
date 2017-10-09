@@ -3,13 +3,12 @@ using Castle.Windsor;
 using DotCommon.Dependency;
 using System;
 
-namespace DotCommon.CastleWindsor
+namespace DotCommon.AbpExtension
 {
-    public class CastleIocContainer : IIocContainer
+    public class AbpIocContainer : IIocContainer
     {
         private IWindsorContainer _container { get; set; }
-
-        public CastleIocContainer(IWindsorContainer container)
+        public AbpIocContainer(IWindsorContainer container)
         {
             _container = container;
         }
@@ -143,4 +142,5 @@ namespace DotCommon.CastleWindsor
             }
         }
     }
+
 }

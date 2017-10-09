@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using DotCommon.AbpExtension;
 using DotCommon.Autofac;
 using DotCommon.Configurations;
 using DotCommon.Dependency;
@@ -14,8 +15,10 @@ namespace DotCommon.Test
         {
             //Autofac Builder
             var builder = new ContainerBuilder();
+
             Configuration.Create()
-                .UseAutofac(builder)
+                //.UseAutofac(builder)
+                .UseAbpContainer(Abp.Dependency.IocManager.Instance.IocContainer)
                 .RegisterCommonComponent()
                 .UseJson4Net()
                 .UseLog4Net()
