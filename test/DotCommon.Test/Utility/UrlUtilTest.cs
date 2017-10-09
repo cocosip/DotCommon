@@ -55,7 +55,7 @@ namespace DotCommon.Test.Utility
             Assert.Equal("1", dict1["id"]);
             Assert.Equal("zhangsan", dict1["name"]);
             Assert.Equal("val", dict1["value"]);
-            Assert.Throws(typeof(System.Collections.Generic.KeyNotFoundException), () => { Assert.Equal("", dict1["key"]); });
+            Assert.Throws<KeyNotFoundException>(() => { Assert.Equal("", dict1["key"]); });
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace DotCommon.Test.Utility
             var dict1 = UrlUtil.GetExpectUrlParameters(url1, new[] { "age" });
             Assert.Equal("3", dict1["id"]);
             Assert.Equal("n1", dict1["name"]);
-            Assert.Throws(typeof(System.Collections.Generic.KeyNotFoundException), () => { Assert.Equal("20", dict1["age"]); });
+            Assert.Throws<KeyNotFoundException>(() => { Assert.Equal("20", dict1["age"]); });
         }
 
         [Theory]
