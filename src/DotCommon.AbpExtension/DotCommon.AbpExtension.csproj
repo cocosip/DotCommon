@@ -1,20 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>DotCommon.ProtoBuf</AssemblyName>
-    <PackageId>DotCommon.ProtoBuf</PackageId>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <AssemblyName>DotCommon.AbpExtension</AssemblyName>
+    <PackageId>DotCommon.AbpExtension</PackageId>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
     <Version>2.7.5</Version>
-    <Description>通用.net类库ProtoBuf扩展</Description>
-    <RootNamespace>DotCommon</RootNamespace>
+    <Description>通用类库Abp扩展</Description>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="protobuf-net" Version="2.3.2" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="Abp" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Abp" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>

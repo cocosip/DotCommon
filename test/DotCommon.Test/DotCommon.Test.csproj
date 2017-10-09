@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DotCommon.AbpExtension\DotCommon.AbpExtension.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.Autofac\DotCommon.Autofac.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.Caching\DotCommon.Caching.csproj" />
