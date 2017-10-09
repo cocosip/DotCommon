@@ -8,7 +8,6 @@ namespace DotCommon.Test.Utility
         [Theory]
         [InlineData("5", 10, 2, "101")]
         [InlineData("15", 10, 8, "17")]
-        [InlineData("15", 10, 8, "17")]
         [InlineData("101001", 2, 16, "29")]
         public void HexConvertTest(string value, int fromBase, int toBase, string expected)
         {
