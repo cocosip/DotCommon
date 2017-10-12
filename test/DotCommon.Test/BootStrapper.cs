@@ -7,6 +7,8 @@ using DotCommon.Runtime.Caching;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Xunit;
+
 namespace DotCommon.Test
 {
     public class BootStrapper
@@ -49,5 +51,16 @@ namespace DotCommon.Test
             var user = cacheManager.GetCache("user").Get<long, AutoMapper.TestUser>(1, x => null);
             var order = cacheManager.GetCache("order").Get("100", x => null);
         }
+
+
+        [Fact]
+        public void StartTest()
+        {
+            Configuration.Create()
+              .UseAbpContainer(Abp.Dependency.IocManager.Instance.IocContainer)
+              .RegisterCommonComponent();
+
+        }
+
     }
 }
