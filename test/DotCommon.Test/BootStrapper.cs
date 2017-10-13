@@ -13,7 +13,7 @@ namespace DotCommon.Test
 {
     public class BootStrapper
     {
-        public void Run()
+        private  void Run()
         {
             //Autofac Builder
             var builder = new ContainerBuilder();

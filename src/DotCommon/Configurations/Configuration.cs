@@ -5,6 +5,11 @@ using DotCommon.Runtime;
 using DotCommon.Runtime.Remoting;
 using DotCommon.Scheduling;
 using DotCommon.Serializing;
+using DotCommon.Threading.BackgroundWorkers;
+using DotCommon.Threading.Timers;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace DotCommon.Configurations
 {
@@ -38,21 +43,39 @@ namespace DotCommon.Configurations
             //日志
             container.Register<ILoggerFactory, EmptyLoggerFactory>(DependencyLifeStyle.Singleton);
             //container.Register<ILogger, EmptyLogger>(DependencyLifeStyle.Transient);
-            //container.Register<ILogger, EmptyLogger>(DependencyLifeStyle.Transient);
 
             //定时器
             container.Register<IScheduleService, ScheduleService>();
 
-            //IAmbientDataContext
-#if NET45
-            container.Register<IAmbientDataContext, CallContextAmbientDataContext>();
-#else
+            //后台任务管理器
+            container.Register<DotCommonTimer>(DependencyLifeStyle.Transient);
+            container.Register<IBackgroundWorkerManager, BackgroundWorkerManager>();
+
+            //Use(var ctx= ...)
             container.Register<IAmbientDataContext, AsyncLocalAmbientDataContext>();
-#endif
             container.Register(typeof(IAmbientScopeProvider<>), typeof(DataContextAmbientScopeProvider<>), DependencyLifeStyle.Transient);
 
             return this;
         }
+
+        /// <summary>注册定时任务
+        /// </summary>
+        public Configuration RegisterBackgroundWorkers(List<Assembly> assemblies)
+        {
+            var container = IocManager.GetContainer();
+
+            var allTypies = assemblies.SelectMany(x => x.GetTypes());
+            foreach (var type in allTypies)
+            {
+                if (typeof(IBackgroundWorker).IsAssignableFrom(type) && typeof(PeriodicBackgroundWorkerBase).IsAssignableFrom(type) && !type.GetTypeInfo().IsAbstract)
+                {
+                    container.Register(type, DependencyLifeStyle.Singleton);
+                }
+            }
+            return this;
+        }
+
+
 
     }
 }
