@@ -11,7 +11,7 @@ namespace DotCommon.Extensions
     /// </summary>
     public static class DictionaryExtensions
     {
-        internal static bool TryGetValue<T>(this IDictionary<string, object> dictionary, string key, out T value)
+        public static bool TryGetValue<T>(this IDictionary<string, object> dictionary, string key, out T value)
         {
             object valueObj;
             if (dictionary.TryGetValue(key, out valueObj) && valueObj is T)
@@ -19,7 +19,6 @@ namespace DotCommon.Extensions
                 value = (T)valueObj;
                 return true;
             }
-
             value = default(T);
             return false;
         }

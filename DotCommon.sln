@@ -13,13 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AutoMapper", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ProtoBuf", "src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj", "{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.Caching", "src\DotCommon.Caching\DotCommon.Caching.csproj", "{8D1DA3E5-8F7A-4E77-8C9D-2478B62B80DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.Caching", "src\DotCommon.Caching\DotCommon.Caching.csproj", "{8D1DA3E5-8F7A-4E77-8C9D-2478B62B80DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.Log4Net", "src\DotCommon.Log4Net\DotCommon.Log4Net.csproj", "{E59C052F-3002-4FCB-86E8-23913FBC7048}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.Log4Net", "src\DotCommon.Log4Net\DotCommon.Log4Net.csproj", "{E59C052F-3002-4FCB-86E8-23913FBC7048}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.Json4Net", "src\DotCommon.Json4Net\DotCommon.Json4Net.csproj", "{E95B72F2-5334-4FF4-BB08-669B1C425775}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.Json4Net", "src\DotCommon.Json4Net\DotCommon.Json4Net.csproj", "{E95B72F2-5334-4FF4-BB08-669B1C425775}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.AbpExtension", "src\DotCommon.AbpExtension\DotCommon.AbpExtension.csproj", "{6559EFE6-FB3D-4E6A-ACAF-5B6AEA0C44BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AbpExtension", "src\DotCommon.AbpExtension\DotCommon.AbpExtension.csproj", "{6559EFE6-FB3D-4E6A-ACAF-5B6AEA0C44BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
