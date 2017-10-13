@@ -3,5 +3,6 @@
     public interface IBackgroundWorkerManager : IRunnable
     {
         void Add(IBackgroundWorker worker);
+ 
     }
 }

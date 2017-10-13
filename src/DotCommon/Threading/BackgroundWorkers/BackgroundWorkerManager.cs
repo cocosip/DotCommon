@@ -1,4 +1,7 @@
-﻿using System;
+﻿using DotCommon.Configurations;
+using DotCommon.Dependency;
+using DotCommon.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace DotCommon.Threading.BackgroundWorkers
@@ -52,7 +55,7 @@ namespace DotCommon.Threading.BackgroundWorkers
 
             _isDisposed = true;
             //释放对象
-           // _backgroundJobs.ForEach();
+            // _backgroundJobs.ForEach();
             _backgroundJobs.Clear();
         }
     }

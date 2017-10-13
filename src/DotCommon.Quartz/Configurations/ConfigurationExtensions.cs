@@ -24,7 +24,7 @@ namespace DotCommon.Configurations
             //Quartz配置
             container.Register<IQuartzScheduleJobManager, QuartzScheduleJobManager>();
             //Quartz管理,属于定时类型
-            configuration.Startup.Get<BackgroundWorkerConfiguration>(nameof(BackgroundWorkerConfiguration)).AddType(typeof(QuartzScheduleJobManager));
+            configuration.Startup.GetOrCreate<BackgroundWorkerConfiguration>(nameof(BackgroundWorkerConfiguration), () => new BackgroundWorkerConfiguration()).AddType(typeof(IQuartzScheduleJobManager));
             return configuration;
         }
 

@@ -1,4 +1,5 @@
 ﻿using DotCommon.Dependency;
+using DotCommon.Extensions;
 using DotCommon.Logging;
 using DotCommon.Requests;
 using DotCommon.Runtime;
@@ -62,7 +63,6 @@ namespace DotCommon.Configurations
         public Configuration RegisterPeriodicBackgroundWorkers(List<Assembly> assemblies)
         {
             var container = IocManager.GetContainer();
-
             var allTypies = assemblies.SelectMany(x => x.GetTypes());
             foreach (var type in allTypies)
             {
@@ -77,10 +77,21 @@ namespace DotCommon.Configurations
         }
 
 
+        public Configuration BackgroundWorkersAttechAndRun()
+        {
+            var backgroundWorkerConfiguration = Configurations.Configuration.Instance.Startup.Get<BackgroundWorkerConfiguration>(nameof(BackgroundWorkerConfiguration));
+            var backgroundWorkTypies = backgroundWorkerConfiguration.GetBackgroundWorkTypies();
+            var container = IocManager.GetContainer();
 
-
-
-
+            var manager = container.Resolve<IBackgroundWorkerManager>();
+            foreach (var backgroundWorkType in backgroundWorkTypies)
+            {
+                var backgroundWorker = container.Resolve(backgroundWorkType).As<IBackgroundWorker>();
+                manager.Add(backgroundWorker);
+            }
+            manager.Start();
+            return this;
+        }
 
     }
 }

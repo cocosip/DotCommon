@@ -1,6 +1,7 @@
 ﻿using DotCommon.Dependency;
 using DotCommon.Logging;
 using Quartz;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,6 +19,7 @@ namespace DotCommon.Quartz
         public Task JobToBeExecuted(IJobExecutionContext context, CancellationToken cancellationToken = default(CancellationToken))
         {
             Logger.Debug($"Job {context.JobDetail.JobType.Name} executing...");
+
             return Task.FromResult(0);
         }
 

@@ -20,22 +20,24 @@ namespace DotCommon.ConsoleTest
             Configurations.Configuration.Create()
                 .UseAutofac(builder)
                 .RegisterCommonComponent()
-                //.RegisterBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
-                //.RegisterQuartzJobs(new List<Assembly>() { typeof(TestQuartzJob).Assembly })
+                .RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
                 .UseLog4Net()
                 .UseJson4Net()
                 .UseMemoryCache()
-                .AutofacBuild();
+                .UseQuartz()
+                .RegisterQuartzJobs(new List<Assembly>() { typeof(TestQuartzJob).Assembly })
+                .AutofacBuild()
+                .BackgroundWorkersAttechAndRun()
+                .AddQuartzListener();
             Console.WriteLine("初始化完成");
             var container = IocManager.GetContainer();
 
-            //var manager = IocManager.GetContainer().Resolve<IBackgroundWorkerManager>();
-            //manager.Add(container.Resolve<TestBackgroundWorker>());
-            //manager.Start();
+            //var workManager = IocManager.GetContainer().Resolve<IBackgroundWorkerManager>();
+            //Schedule();
+            //workManager.Start();
 
-            var manager = IocManager.GetContainer().Resolve<IQuartzScheduleJobManager>();
 
-            var backgroundWorks = IocManager.GetContainer().Resolve(typeof(TestBackgroundWorker)).As<IBackgroundWorker>();
+            //var backgroundWorks = IocManager.GetContainer().Resolve(typeof(TestBackgroundWorker)).As<IBackgroundWorker>();
 
 
             Console.ReadLine();
@@ -54,7 +56,7 @@ namespace DotCommon.ConsoleTest
                     .WithSimpleSchedule(schedule =>
                     {
                         schedule.RepeatForever()
-                            .WithIntervalInSeconds(5)
+                            .WithIntervalInSeconds(1)
                             .Build();
                     });
              });

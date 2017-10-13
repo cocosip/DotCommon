@@ -19,5 +19,12 @@ namespace DotCommon.Configurations
             }
         }
 
+        /// <summary>获取注册的全部类型
+        /// </summary>
+        public List<Type> GetBackgroundWorkTypies()
+        {
+            return BackgroundWorkTypies;
+        }
+
     }
 }
