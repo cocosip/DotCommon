@@ -10,20 +10,21 @@ namespace DotCommon.Configurations
 {
     public static class ConfigurationExtensions
     {
+
         /// <summary>Quartz
         /// </summary>
         public static Configuration UseQuartz(this Configuration configuration)
         {
             var container = IocManager.GetContainer();
             container.Register<IJobListener, DotCommonQuartzJobListener>();
-
-            var quartzConfiguration = new DotCommonQuartzConfiguration();
-            quartzConfiguration.CreateScheduler();
+            //Quartz配置
+            var quartzConfiguration = configuration.Startup.GetOrCreate<DotCommonQuartzConfiguration>(nameof(DotCommonQuartzConfiguration), () => new DotCommonQuartzConfiguration());
+            quartzConfiguration.InitScheduler();
             quartzConfiguration.Scheduler.JobFactory = new DotCommonQuartzJobFactory();
-
-            container.Register<IDotCommonQuartzConfiguration, DotCommonQuartzConfiguration>(quartzConfiguration);
-
+            //Quartz配置
             container.Register<IQuartzScheduleJobManager, QuartzScheduleJobManager>();
+            //Quartz管理,属于定时类型
+            configuration.Startup.Get<BackgroundWorkerConfiguration>(nameof(BackgroundWorkerConfiguration)).AddType(typeof(QuartzScheduleJobManager));
             return configuration;
         }
 
@@ -44,13 +45,12 @@ namespace DotCommon.Configurations
         }
 
 
-
         /// <summary>添加Quartz监听
         /// </summary>
         public static Configuration AddQuartzListener(this Configuration configuration)
         {
             var container = IocManager.GetContainer();
-            container.Resolve<IDotCommonQuartzConfiguration>().Scheduler.ListenerManager.AddJobListener(container.Resolve<IJobListener>());
+            configuration.Startup.Get<DotCommonQuartzConfiguration>(nameof(DotCommonQuartzConfiguration)).Scheduler.ListenerManager.AddJobListener(container.Resolve<IJobListener>());
             return configuration;
         }
 

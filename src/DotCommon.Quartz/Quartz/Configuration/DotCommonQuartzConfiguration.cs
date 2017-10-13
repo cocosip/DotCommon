@@ -1,32 +1,17 @@
 ﻿using Quartz;
 using Quartz.Impl;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DotCommon.Quartz.Configuration
 {
-    public class DotCommonQuartzConfiguration : IDotCommonQuartzConfiguration
+    public class DotCommonQuartzConfiguration
     {
-        private IScheduler _scheduler;
-
-        public IScheduler Scheduler
+        public DotCommonQuartzConfiguration()
         {
-            get
-            {
-                if (_scheduler == null)
-                {
-                    throw new ArgumentException($"Scheduler is null .");
-                }
-                return _scheduler;
-            }
-        }
 
-        public async void CreateScheduler()
-        {
-            _scheduler = await StdSchedulerFactory.GetDefaultScheduler();
         }
+        public IScheduler Scheduler { get; private set; }
+
+        public async void InitScheduler() => Scheduler = await StdSchedulerFactory.GetDefaultScheduler();
 
     }
 }

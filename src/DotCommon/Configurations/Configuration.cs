@@ -17,9 +17,8 @@ namespace DotCommon.Configurations
     /// </summary>
     public class Configuration
     {
-        /// <summary>Provides the singleton access instance.
-        /// </summary>
         public static Configuration Instance { get; private set; }
+        public StartupConfiguration Startup { get; set; } = new StartupConfiguration();
         private Configuration() { }
 
         public static Configuration Create()
@@ -47,7 +46,7 @@ namespace DotCommon.Configurations
             //定时器
             container.Register<IScheduleService, ScheduleService>();
 
-            //后台任务管理器
+            //后台定时任务
             container.Register<DotCommonTimer>(DependencyLifeStyle.Transient);
             container.Register<IBackgroundWorkerManager, BackgroundWorkerManager>();
 
@@ -60,7 +59,7 @@ namespace DotCommon.Configurations
 
         /// <summary>注册定时任务
         /// </summary>
-        public Configuration RegisterBackgroundWorkers(List<Assembly> assemblies)
+        public Configuration RegisterPeriodicBackgroundWorkers(List<Assembly> assemblies)
         {
             var container = IocManager.GetContainer();
 
@@ -70,10 +69,16 @@ namespace DotCommon.Configurations
                 if (typeof(IBackgroundWorker).IsAssignableFrom(type) && typeof(PeriodicBackgroundWorkerBase).IsAssignableFrom(type) && !type.GetTypeInfo().IsAbstract)
                 {
                     container.Register(type, DependencyLifeStyle.Singleton);
+                    //后台工作任务
+                    Startup.GetOrCreate<BackgroundWorkerConfiguration>(nameof(BackgroundWorkerConfiguration), () => new BackgroundWorkerConfiguration()).AddType(type);
                 }
             }
             return this;
         }
+
+
+
+
 
 
 

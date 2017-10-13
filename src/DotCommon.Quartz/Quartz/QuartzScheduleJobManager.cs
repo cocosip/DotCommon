@@ -1,5 +1,4 @@
-﻿using DotCommon.Dependency;
-using DotCommon.Quartz.Configuration;
+﻿using DotCommon.Quartz.Configuration;
 using DotCommon.Threading.BackgroundWorkers;
 using Quartz;
 using System;
@@ -9,14 +8,13 @@ namespace DotCommon.Quartz
 {
     public class QuartzScheduleJobManager : BackgroundWorkerBase, IQuartzScheduleJobManager
     {
-        private readonly IDotCommonQuartzConfiguration _quartzConfiguration;
+        private readonly DotCommonQuartzConfiguration _quartzConfiguration;
         public QuartzScheduleJobManager()
         {
-            _quartzConfiguration = IocManager.GetContainer().Resolve<IDotCommonQuartzConfiguration>();
+            _quartzConfiguration = DotCommon.Configurations.Configuration.Instance.Startup.Get<DotCommonQuartzConfiguration>(nameof(DotCommonQuartzConfiguration));
         }
 
-        /// <summary>
-        /// </summary>
+
         public Task ScheduleAsync<TJob>(Action<JobBuilder> configureJob, Action<TriggerBuilder> configureTrigger) where TJob : IJob
         {
             var jobToBuild = JobBuilder.Create<TJob>();

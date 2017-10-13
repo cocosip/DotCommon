@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DotCommon.Extensions;
+using DotCommon.Quartz.Configuration;
 
 namespace DotCommon.ConsoleTest
 {
@@ -20,7 +21,7 @@ namespace DotCommon.ConsoleTest
                 .UseAutofac(builder)
                 .RegisterCommonComponent()
                 //.RegisterBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
-                .RegisterQuartzJobs(new List<Assembly>() { typeof(TestQuartzJob).Assembly })
+                //.RegisterQuartzJobs(new List<Assembly>() { typeof(TestQuartzJob).Assembly })
                 .UseLog4Net()
                 .UseJson4Net()
                 .UseMemoryCache()
@@ -35,7 +36,6 @@ namespace DotCommon.ConsoleTest
             var manager = IocManager.GetContainer().Resolve<IQuartzScheduleJobManager>();
 
             var backgroundWorks = IocManager.GetContainer().Resolve(typeof(TestBackgroundWorker)).As<IBackgroundWorker>();
-
 
 
             Console.ReadLine();
