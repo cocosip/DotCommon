@@ -17,9 +17,9 @@ namespace DotCommon.ConsoleTest
     {
         static void Main(string[] args)
         {
-            var builder = new ContainerBuilder();
+            //var builder = new ContainerBuilder();
             Configurations.Configuration.Create()
-                .UseAutofac(builder)
+                .UseAbpContainer(Abp.Dependency.IocManager.Instance.IocContainer)
                 .RegisterCommonComponent()
                 .RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
                 .UseLog4Net()
@@ -27,12 +27,12 @@ namespace DotCommon.ConsoleTest
                 .UseMemoryCache()
                 //.UseQuartz()
                 //.RegisterQuartzJobs(new List<Assembly>() { typeof(TestQuartzJob).Assembly })
-                .AutofacBuild()
+                //.AutofacBuild()
                 //.AddQuartzListener()
                 .BackgroundWorkersAttechAndRun();
             Console.WriteLine("初始化完成");
             var container = IocManager.GetContainer();
-           // var logger = container.Resolve<ILoggerFactory>().Create("defaultAppender");
+            // var logger = container.Resolve<ILoggerFactory>().Create("defaultAppender");
             //var workManager = IocManager.GetContainer().Resolve<IBackgroundWorkerManager>();
             //Schedule();
             //workManager.Start();

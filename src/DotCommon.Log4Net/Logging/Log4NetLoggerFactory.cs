@@ -13,9 +13,7 @@ namespace DotCommon.Logging
         private readonly ILoggerRepository _loggerRepository;
         public Log4NetLoggerFactory(string configFile, string loggerRepositoryName = "DotCommonRepository")
         {
-
             _loggerRepository = LogManager.CreateRepository(loggerRepositoryName);
-
             var file = new FileInfo(configFile);
             if (!file.Exists)
             {

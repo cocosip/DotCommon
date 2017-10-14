@@ -63,7 +63,7 @@ namespace DotCommon.AbpExtension
             _container.Register(ApplyLifestyle(registration, lifeStyle));
         }
 
-        public void Register(Type type, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = false)
+        public void Register(Type type, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true)
         {
             var registration = Component.For(type);
             if (serviceName != null)
@@ -73,12 +73,12 @@ namespace DotCommon.AbpExtension
             _container.Register(ApplyLifestyle(registration, lifeStyle));
         }
 
-        public void Register<T>(T impl, bool propertiesAutowired = false) where T : class
+        public void Register<T>(T impl, bool propertiesAutowired = true) where T : class
         {
-            _container.Register(ApplyLifestyle(Component.For<T>().Instance(impl), 0));
+            _container.Register(ApplyLifestyle(Component.For<T>().Instance(impl), DependencyLifeStyle.Singleton));
         }
 
-        public void Register<TType, TImpl>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = false)
+        public void Register<TType, TImpl>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true)
             where TType : class
             where TImpl : class, TType
         {
@@ -90,35 +90,16 @@ namespace DotCommon.AbpExtension
             _container.Register(ApplyLifestyle(registration, lifeStyle));
         }
 
-        public void Register<TType, TImpl>(TImpl impl, bool propertiesAutowired = false)
+        public void Register<TType, TImpl>(TImpl impl, bool propertiesAutowired = true)
          where TType : class
          where TImpl : class, TType
         {
-            _container.Register(ApplyLifestyle(Component.For<TType, TImpl>().ImplementedBy<TImpl>().Instance(impl), 0));
+            _container.Register(ApplyLifestyle(Component.For<TType>().Instance(impl).IsDefault(), DependencyLifeStyle.Singleton));
         }
 
 
-        public void Register(Type type, Type impl, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = false)
+        public void Register(Type type, Type impl, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true)
         {
-            //if (type.GetTypeInfo().IsGenericTypeDefinition && type.GetTypeInfo().IsGenericTypeDefinition)
-            //{
-            //    var genericBuilder = _builder.RegisterGeneric(impl).As(type);
-            //    //是否属性注入
-            //    if (propertiesAutowired)
-            //    {
-            //        genericBuilder.PropertiesAutowired();
-            //    }
-            //    if (lifeStyle != DependencyLifeStyle.Singleton)
-            //    {
-            //        genericBuilder.InstancePerDependency();
-            //    }
-            //    return;
-            //}
-            //var registrationBuilder = _builder.RegisterType(impl).As(type);
-            //if (lifeStyle != DependencyLifeStyle.Singleton)
-            //{
-            //    registrationBuilder.InstancePerDependency();
-            //}
             var registration = Component.For(type, impl).ImplementedBy(impl);
             if (serviceName != null)
             {
