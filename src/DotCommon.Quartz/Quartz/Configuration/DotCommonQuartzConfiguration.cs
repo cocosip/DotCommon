@@ -13,5 +13,10 @@ namespace DotCommon.Quartz.Configuration
 
         public async void InitScheduler() => Scheduler = await StdSchedulerFactory.GetDefaultScheduler();
 
+        /// <summary>是否启用Job定时
+        /// </summary>
+        public bool IsJobExecutionEnabled { get; set; } = true;
+
+
     }
 }

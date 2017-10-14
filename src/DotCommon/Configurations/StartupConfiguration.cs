@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DotCommon.Configurations
+﻿namespace DotCommon.Configurations
 {
     public class StartupConfiguration : DictionaryBasedConfig
     {
+        public BackgroundWorkerConfiguration BackgroundWorker { get; set; } = new BackgroundWorkerConfiguration();
     }
 }

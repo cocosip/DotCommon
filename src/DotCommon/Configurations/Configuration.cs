@@ -70,17 +70,17 @@ namespace DotCommon.Configurations
                 {
                     container.Register(type, DependencyLifeStyle.Singleton);
                     //后台工作任务
-                    Startup.GetOrCreate<BackgroundWorkerConfiguration>(nameof(BackgroundWorkerConfiguration), () => new BackgroundWorkerConfiguration()).AddType(type);
+                    Startup.BackgroundWorker.AddWorkerType(type);
                 }
             }
             return this;
         }
 
-
+        /// <summary>将全部的BackgroundWorkers添加到管理选项中,并且开始运行
+        /// </summary>
         public Configuration BackgroundWorkersAttechAndRun()
         {
-            var backgroundWorkerConfiguration = Configurations.Configuration.Instance.Startup.Get<BackgroundWorkerConfiguration>(nameof(BackgroundWorkerConfiguration));
-            var backgroundWorkTypies = backgroundWorkerConfiguration.GetBackgroundWorkTypies();
+            var backgroundWorkTypies = Startup.BackgroundWorker.GetWorkerTypies();
             var container = IocManager.GetContainer();
 
             var manager = container.Resolve<IBackgroundWorkerManager>();

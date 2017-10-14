@@ -35,10 +35,10 @@ namespace DotCommon.Quartz
         {
             base.Start();
             _quartzConfiguration.Scheduler.Start();
-            //if (_backgroundJobConfiguration.IsJobExecutionEnabled)
-            //{
-            //    _quartzConfiguration.Scheduler.Start();
-            //}
+            if (_quartzConfiguration.IsJobExecutionEnabled)
+            {
+                _quartzConfiguration.Scheduler.Start();
+            }
             Logger.Info("Started QuartzScheduleJobManager");
         }
 

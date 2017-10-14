@@ -11,7 +11,7 @@ namespace DotCommon.Configurations
 
         /// <summary>添加类型
         /// </summary>
-        public void AddType(Type type)
+        public void AddWorkerType(Type type)
         {
             if (!BackgroundWorkTypies.Contains(type))
             {
@@ -21,7 +21,7 @@ namespace DotCommon.Configurations
 
         /// <summary>获取注册的全部类型
         /// </summary>
-        public List<Type> GetBackgroundWorkTypies()
+        public List<Type> GetWorkerTypies()
         {
             return BackgroundWorkTypies;
         }

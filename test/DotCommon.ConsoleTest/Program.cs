@@ -20,20 +20,20 @@ namespace DotCommon.ConsoleTest
             Configurations.Configuration.Create()
                 .UseAutofac(builder)
                 .RegisterCommonComponent()
-                .RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
+                //.RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
                 .UseLog4Net()
                 .UseJson4Net()
                 .UseMemoryCache()
                 .UseQuartz()
                 .RegisterQuartzJobs(new List<Assembly>() { typeof(TestQuartzJob).Assembly })
                 .AutofacBuild()
-                .BackgroundWorkersAttechAndRun()
-                .AddQuartzListener();
+                .AddQuartzListener()
+                .BackgroundWorkersAttechAndRun();
             Console.WriteLine("初始化完成");
             var container = IocManager.GetContainer();
 
             //var workManager = IocManager.GetContainer().Resolve<IBackgroundWorkerManager>();
-            //Schedule();
+            Schedule();
             //workManager.Start();
 
 
