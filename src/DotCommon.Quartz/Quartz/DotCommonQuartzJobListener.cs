@@ -13,7 +13,6 @@ namespace DotCommon.Quartz
 
         public DotCommonQuartzJobListener()
         {
-            Logger = IocManager.GetContainer().Resolve<ILoggerFactory>().Create(typeof(DotCommonQuartzJobListener));
         }
         public Task JobToBeExecuted(IJobExecutionContext context, CancellationToken cancellationToken = default(CancellationToken))
         {

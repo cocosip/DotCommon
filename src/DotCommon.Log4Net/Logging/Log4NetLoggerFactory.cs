@@ -37,7 +37,7 @@ namespace DotCommon.Logging
         }
         public ILogger Create(Type type)
         {
-            return new Log4NetLogger(LogManager.GetLogger(type));
+            return new Log4NetLogger(LogManager.GetLogger(_loggerRepository.Name, type));
         }
     }
 }

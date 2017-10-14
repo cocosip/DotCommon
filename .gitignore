@@ -289,7 +289,7 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
-
+/logs
 
 
 ###### -- Custom Ignore Section, Make sure all files you add to the git repo are below this line  --  ######

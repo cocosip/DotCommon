@@ -9,7 +9,6 @@ namespace DotCommon.Utility
     {
         static PinYinUtil()
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         #region 拼音相关数组

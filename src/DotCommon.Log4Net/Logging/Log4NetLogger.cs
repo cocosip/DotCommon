@@ -1,21 +1,23 @@
-﻿using log4net;
+﻿using DotCommon.Extensions;
+using log4net;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DotCommon.Logging
 {
     public class Log4NetLogger : ILogger
     {
-        private readonly ILog _log;
+        internal ILog _log;
 
-        /// <summary>Parameterized constructor.
-        /// </summary>
-        /// <param name="log"></param>
-        public Log4NetLogger(ILog log)
+        public Log4NetLogger(ILoggerFactory loggerFactory)
+        {
+            _log = loggerFactory.Create(typeof(log4net.Appender.RollingFileAppender)).As<Log4NetLogger>()._log;
+        }
+
+        internal Log4NetLogger(ILog log)
         {
             _log = log;
         }
+
 
         #region ILogger Members
 

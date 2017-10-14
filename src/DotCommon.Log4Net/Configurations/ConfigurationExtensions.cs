@@ -16,6 +16,7 @@ namespace DotCommon.Configurations
                 configFile = "log4net.config";
             }
             container.Register<ILoggerFactory, Log4NetLoggerFactory>(new Log4NetLoggerFactory(configFile));
+            container.Register<ILogger, Log4NetLogger>(DependencyLifeStyle.Transient);
             return configuration;
         }
     }

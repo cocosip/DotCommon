@@ -1,5 +1,4 @@
-﻿using DotCommon.Dependency;
-using DotCommon.Logging;
+﻿using DotCommon.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -8,13 +7,12 @@ namespace DotCommon.Scheduling
 {
     public class ScheduleService : IScheduleService
     {
+        public ILogger Logger { get; set; }
         private readonly object _lockObject = new object();
-        private readonly ILogger _logger;
         private readonly Dictionary<string, TimerBasedTask> _taskDict = new Dictionary<string, TimerBasedTask>();
 
         public ScheduleService()
         {
-            _logger = IocManager.GetContainer().Resolve<ILoggerFactory>().Create(typeof(ScheduleService));
         }
 
         public void StartTask(string name, Action action, int dueTime, int period)

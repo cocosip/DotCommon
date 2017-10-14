@@ -18,20 +18,20 @@ namespace DotCommon.Dependency
         void Register<T>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null)
             where T : class;
 
-        void Register(Type type, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = false);
+        void Register(Type type, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true);
 
-        void Register<T>(T impl, bool propertiesAutowired = false) where T : class;
+        void Register<T>(T impl, bool propertiesAutowired = true) where T : class;
 
-        void Register<TType, TImpl>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = false)
+        void Register<TType, TImpl>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true)
             where TType : class
             where TImpl : class, TType;
 
-        void Register<TType, TImpl>(TImpl impl, bool propertiesAutowired = false)
+        void Register<TType, TImpl>(TImpl impl, bool propertiesAutowired = true)
             where TType : class
             where TImpl : class, TType;
 
 
-        void Register(Type type, Type impl, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = false);
+        void Register(Type type, Type impl, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true);
 
     }
 }

@@ -1,14 +1,15 @@
 ﻿using DotCommon.Dependency;
 using DotCommon.Logging;
+using System.Reflection;
 
 namespace DotCommon.Threading.BackgroundWorkers
 {
     public abstract class BackgroundWorkerBase : RunnableBase, IBackgroundWorker
     {
-        public ILogger Logger { protected get; set; }
+        public ILogger Logger { get; set; }
         protected BackgroundWorkerBase()
         {
-            Logger = IocManager.GetContainer().Resolve<ILoggerFactory>().Create(typeof(BackgroundWorkerBase));
+            //Logger = IocManager.GetContainer().Resolve<ILoggerFactory>().Create(MethodBase.GetCurrentMethod().DeclaringType);
         }
 
         public override void Start()

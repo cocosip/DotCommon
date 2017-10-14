@@ -14,6 +14,7 @@ namespace DotCommon.ConsoleTest
 
         protected override void DoWork()
         {
+            Logger.Info("111");
             Console.WriteLine("Work");
         }
     }

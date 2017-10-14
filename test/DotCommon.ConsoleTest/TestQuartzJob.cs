@@ -9,6 +9,7 @@ namespace DotCommon.ConsoleTest
 {
     public class TestQuartzJob : JobBase
     {
+
         public override Task Execute(IJobExecutionContext context)
         {
             Console.WriteLine($"Quartz:{DateTime.Now.ToLongTimeString()}");
