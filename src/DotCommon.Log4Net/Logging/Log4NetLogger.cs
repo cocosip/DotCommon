@@ -10,7 +10,7 @@ namespace DotCommon.Logging
 
         public Log4NetLogger(ILoggerFactory loggerFactory)
         {
-            _log = loggerFactory.Create(typeof(log4net.Appender.RollingFileAppender)).As<Log4NetLogger>()._log;
+            _log = loggerFactory.As<Log4NetLoggerFactory>().CreateILog(typeof(log4net.Appender.RollingFileAppender));
         }
 
         internal Log4NetLogger(ILog log)

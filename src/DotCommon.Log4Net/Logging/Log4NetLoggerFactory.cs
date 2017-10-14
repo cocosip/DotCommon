@@ -39,5 +39,11 @@ namespace DotCommon.Logging
         {
             return new Log4NetLogger(LogManager.GetLogger(_loggerRepository.Name, type));
         }
+
+        public ILog CreateILog(Type type)
+        {
+            return LogManager.GetLogger(_loggerRepository.Name, type);
+        }
+
     }
 }
