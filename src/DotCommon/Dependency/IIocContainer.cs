@@ -11,6 +11,8 @@ namespace DotCommon.Dependency
         T Resolve<T>();
         T Resolve<T>(Type type);
         T Resolve<T>(object argumentsAsAnonymousType);
+        T ResolveNamed<T>(string serviceName);
+
         object Resolve(Type type);
         bool IsRegistered(Type type);
         bool IsRegistered<T>();

@@ -38,6 +38,11 @@ namespace DotCommon.AbpExtension
             return _container.Resolve<T>(argumentsAsAnonymousType);
         }
 
+        public T ResolveNamed<T>(string serviceName)
+        {
+            return _container.Resolve<T>(serviceName);
+        }
+
         public object Resolve(Type type)
         {
             return _container.Resolve(type);

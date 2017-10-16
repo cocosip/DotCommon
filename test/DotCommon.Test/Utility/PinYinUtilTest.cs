@@ -1,11 +1,15 @@
 ﻿using DotCommon.Utility;
+using System.Text;
 using Xunit;
 
 namespace DotCommon.Test.Utility
 {
     public class PinYinUtilTest
     {
-
+        static PinYinUtilTest()
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
         [Theory]
         [InlineData("中国", "ZhongGuo")]
         [InlineData("美国", "MeiGuo")]

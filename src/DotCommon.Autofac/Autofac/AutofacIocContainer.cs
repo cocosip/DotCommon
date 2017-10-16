@@ -52,6 +52,12 @@ namespace DotCommon.Autofac
             return _container.Resolve<T>(new ResolvedParameter((pi, ctx) => pi.ParameterType == argumentsAsAnonymousType.GetType(), (pi, ctx) => argumentsAsAnonymousType));
         }
 
+        public T ResolveNamed<T>(string serviceName)
+        {
+            return _container.ResolveNamed<T>(serviceName);
+        }
+
+
         public object Resolve(Type type)
         {
             return _container.Resolve(type);
