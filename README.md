@@ -135,6 +135,19 @@ Mapper.Initialize(cfg =>
 ```
 
 ```c#
+//定义Job
+public class TestQuartzJob : JobBase
+{
+    public override Task Execute(IJobExecutionContext context)
+    {
+        Console.WriteLine($"Quartz:{DateTime.Now.ToLongTimeString()}");
+        return Task.FromResult(0);
+    }
+}
+```
+
+```c#
+//Quartz Job运行规则
 async void Schedule()
 {
     var manager = IocManager.GetContainer().Resolve<IQuartzScheduleJobManager>();
