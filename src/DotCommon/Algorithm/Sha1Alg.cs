@@ -1,10 +1,9 @@
 ﻿using DotCommon.Utility;
 using System;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DotCommon.Alg
+namespace DotCommon.Algorithm
 {
     /// <summary>SHA1算法
     /// </summary>

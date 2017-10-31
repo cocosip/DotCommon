@@ -3,7 +3,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DotCommon.Alg
+namespace DotCommon.Algorithm
 {
     /// <summary>HMAC-SHA1加密
     /// </summary>
