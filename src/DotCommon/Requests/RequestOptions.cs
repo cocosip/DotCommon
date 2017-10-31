@@ -49,7 +49,7 @@ namespace DotCommon.Requests
 
         /// <summary>GET请求参数设置参数操作
         /// </summary>
-        public Func<KeyValuePair<string, string>, string> UrlHandler { get; set; } = null;
+        public Func<KeyValuePair<string, string>, string> UrlHandler { get; set; }
 
         /// <summary>Url编码格式
         /// </summary>
