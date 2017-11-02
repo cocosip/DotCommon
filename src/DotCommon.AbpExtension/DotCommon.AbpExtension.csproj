@@ -1,27 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DotCommon.AbpExtension</AssemblyName>
     <PackageId>DotCommon.AbpExtension</PackageId>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.7.8</Version>
+    <Version>2.7.9</Version>
     <Description>通用类库Abp扩展</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <PackageReference Include="Abp" Version="2.3.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="Abp" Version="3.0.0" />
-  </ItemGroup>
-
   <ItemGroup>
+    <PackageReference Include="Abp" Version="3.1.2" />
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
   </ItemGroup>
 
