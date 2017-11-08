@@ -136,7 +136,7 @@ namespace DotCommon.Utility
         public static string ByteArrayToString(byte[] inputBytes)
         {
             var output = new StringBuilder(inputBytes.Length);
-            for (var i = 0; i < inputBytes.Length - 1; i++)
+            for (var i = 0; i <= inputBytes.Length - 1; i++)
             {
                 output.Append(inputBytes[i].ToString("X2"));
             }

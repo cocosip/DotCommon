@@ -16,7 +16,8 @@ namespace DotCommon.Algorithm
         {
             var sourceBytes = Encoding.GetEncoding(encode).GetBytes(sourceString);
             var hashBytes = GetSha1Hash(sourceBytes);
-            return ByteBufferUtil.ByteArrayToString(hashBytes);
+            return BitConverter.ToString(hashBytes).Replace("-", "");
+            //return ByteBufferUtil.ByteArrayToString(hashBytes);
         }
 
         /// <summary> 获取字符的Hash值转为Base64
