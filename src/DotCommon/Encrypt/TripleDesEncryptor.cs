@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotCommon.Extensions;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,17 +9,27 @@ namespace DotCommon.Encrypt
     {
         private readonly byte[] _key = { 0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0x00 };
         private readonly byte[] _iv = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
-
+        public CipherMode Mode { get; set; } = CipherMode.CBC;
+        public PaddingMode Padding { get; set; } = PaddingMode.PKCS7;
         public TripleDesEncryptor(string key, string iv)
         {
             if (string.IsNullOrWhiteSpace(key))
             {
-                _key = Encoding.UTF8.GetBytes(key);
+                _key = Convert.FromBase64String(key);
             }
             if (!string.IsNullOrWhiteSpace(iv))
             {
-                _iv = Encoding.UTF8.GetBytes(iv);
+                _iv = Convert.FromBase64String(key);
             }
+        }
+
+        public TripleDesEncryptor(string key, byte[] iv)
+        {
+            if (!key.IsNullOrWhiteSpace())
+            {
+                _key = Convert.FromBase64String(key);
+            }
+            _iv = iv;
         }
 
         public TripleDesEncryptor(string key) : this(key, "")
@@ -62,10 +73,14 @@ namespace DotCommon.Encrypt
         /// </summary>
         private byte[] EncryptBytes(byte[] dataBytes)
         {
-            var aes = TripleDES.Create();
-            var transform = aes.CreateEncryptor(_key, _iv);
+            var des = TripleDES.Create();
+            //Mode
+            des.Mode = Mode;
+            //Padding
+            des.Padding = Padding;
+            var transform = des.CreateEncryptor(_key, _iv);
             var bytes = transform.TransformFinalBlock(dataBytes, 0, dataBytes.Length);
-            aes.Dispose();
+            des.Dispose();
             return bytes;
         }
 
@@ -73,10 +88,14 @@ namespace DotCommon.Encrypt
         /// </summary>
         private byte[] DecryptBytes(byte[] dataBytes)
         {
-            var aes = TripleDES.Create();
-            var transform = aes.CreateDecryptor(_key, _iv);
+            var des = TripleDES.Create();
+            //Mode
+            des.Mode = Mode;
+            //Padding
+            des.Padding = Padding;
+            var transform = des.CreateDecryptor(_key, _iv);
             var bytes = transform.TransformFinalBlock(dataBytes, 0, dataBytes.Length);
-            aes.Dispose();
+            des.Dispose();
             return bytes;
         }
     }
