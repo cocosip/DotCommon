@@ -8,7 +8,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.8.0</Version>
+    <Version>2.8.1</Version>
     <Description>通用.net类库Autofac注入</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>
