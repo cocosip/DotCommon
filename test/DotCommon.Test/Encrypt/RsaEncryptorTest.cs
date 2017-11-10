@@ -65,6 +65,10 @@ namespace DotCommon.Test.Encrypt
             var signed2 = rsa2Encrypter.SignData(str);
             Assert.True(rsa2Encrypter.VerifyData(str, signed2));
 
+            var sign = rsa2Encrypter.SignData("a=123");
+
+            var expected = @"Cm6L1nwSKn4h1V1CORIYFDo2lPT4gLQtSy9+ZDKQUlq/xyB4B23jmoMy8ecPwi7e8U9RC528T5aRL6ksBFommyGLaTGjrucABjF42wL+lG3Lks7xZ5mhiV4BbCzRfU7DGuI5c6f9xvdpFumT/mQdRZtIFOUCdQCx/oDTSJQ3vNZYoFY02lfnwhMQziQ50YWqodOy1E8JeWZ3R3dovDj1NyHF5OExpuWa0OyWIkuI279waHm92pyet7tb5jzS0lTpq5rSrhG0wb2qhFYedQO87+c6Yusrhghvql4XJ2zEcA9vQvw3nepiuBG9DBm0A2B8GPUlG2gsJHClflEIZQ806A==";
+            Assert.Equal(expected, sign);
         }
     }
 }
