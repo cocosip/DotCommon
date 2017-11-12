@@ -26,7 +26,7 @@ namespace DotCommon.Scheduling
             _actionName = actionName;
             _action = action;
             _status = Status.Initial;
-            _logger = IocManager.GetContainer().Resolve<ILoggerFactory>().Create(nameof(Worker));
+            _logger = IocManager.GetContainer().Resolve<ILoggerFactory>().Create(DotCommonConsts.LoggerName);
         }
 
         /// <summary>Start the worker if it is not running.

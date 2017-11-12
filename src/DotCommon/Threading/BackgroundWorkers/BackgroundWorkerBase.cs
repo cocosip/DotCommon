@@ -6,10 +6,10 @@ namespace DotCommon.Threading.BackgroundWorkers
 {
     public abstract class BackgroundWorkerBase : RunnableBase, IBackgroundWorker
     {
-        public ILogger Logger { get; set; }
+        protected ILogger Logger { get;  }
         protected BackgroundWorkerBase()
         {
-            //Logger = IocManager.GetContainer().Resolve<ILoggerFactory>().Create(MethodBase.GetCurrentMethod().DeclaringType);
+            Logger = IocManager.GetContainer().Resolve<ILoggerFactory>().Create(DotCommonConsts.LoggerName);
         }
 
         public override void Start()

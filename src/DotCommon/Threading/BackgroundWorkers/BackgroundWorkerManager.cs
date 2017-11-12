@@ -1,18 +1,14 @@
-﻿using DotCommon.Configurations;
-using DotCommon.Dependency;
-using DotCommon.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace DotCommon.Threading.BackgroundWorkers
 {
     public class BackgroundWorkerManager : RunnableBase, IBackgroundWorkerManager, IDisposable
     {
-        private readonly List<IBackgroundWorker> _backgroundJobs;
+        private readonly List<IBackgroundWorker> _backgroundJobs=new List<IBackgroundWorker>();
 
         public BackgroundWorkerManager()
         {
-            _backgroundJobs = new List<IBackgroundWorker>();
         }
 
         public override void Start()
@@ -30,7 +26,6 @@ namespace DotCommon.Threading.BackgroundWorkers
         public override void WaitToStop()
         {
             _backgroundJobs.ForEach(job => job.WaitToStop());
-
             base.WaitToStop();
         }
 
