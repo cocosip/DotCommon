@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace DotCommon.Http
@@ -11,16 +12,9 @@ namespace DotCommon.Http
         public bool Success { get; set; }
         public int StatusCode { get; set; }
         public string Encode { get; set; } = "utf-8";
-        public IEnumerable<string> Cookies { get; set; }
+        public CookieContainer Cookies { get; set; }
 
-        public string CookieString
-        {
-            get
-            {
-                if (Cookies == null) return "";
-                return Cookies.Any() ? string.Join(";", Cookies) : "";
-            }
-        }
+        public string CookieString { get; set; }
         public string ContentType { get; set; }
         public string Server { get; set; }
         public byte[] ResponseData { get; set; }

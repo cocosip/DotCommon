@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace DotCommon.Http
@@ -18,11 +17,12 @@ namespace DotCommon.Http
         {
             try
             {
-                //var options = builder.GetOptions();
-                //var message = RequestUtil.BuildRequestMessage(options);
-                //var response = await _client.SendAsync(message);
-                //return await RequestUtil.ParseResponse(response);
-                throw new Exception("");
+                var options = builder.GetOptions();
+                var request = RequestUtil.BuildWebRequest(options);
+                var httpResponse = (HttpWebResponse)(await request.GetResponseAsync());
+                var response = RequestUtil.ParseResponse(request, httpResponse);
+                httpResponse.Close();
+                return response;
             }
             catch (AggregateException ex)
             {
@@ -31,6 +31,9 @@ namespace DotCommon.Http
             catch (Exception ex)
             {
                 return RequestUtil.BuildErrorResponse(ex);
+            }
+            finally
+            {
             }
         }
 

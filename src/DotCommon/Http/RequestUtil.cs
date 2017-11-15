@@ -2,6 +2,7 @@
 using DotCommon.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -83,8 +84,7 @@ namespace DotCommon.Http
             {
                 request.Headers.Add(item.Key, item.Value);
             }
-
-
+            PrepareRequestData(request, options);
             return request;
         }
 
@@ -95,7 +95,12 @@ namespace DotCommon.Http
             var url = options.Url;
             if (options.HttpMethod.ToUpper() == RequestConsts.Methods.Get)
             {
-                BuildGetUrl(options.Url, options.RequestParameters, options.IsUrlEncode, options.UrlHandler);
+                //过滤与排序之后的集合
+                var sParam = FilterParams(options.RequestParameters);
+                //参数组合
+                var linkString = CreateLinkString(sParam, options.IsUrlEncode, options.UrlHandler);
+                var conbine = linkString.IsNullOrWhiteSpace() ? "" : "?";
+                url = $"{url}{conbine}{linkString}";
             }
             return url;
         }
@@ -138,10 +143,110 @@ namespace DotCommon.Http
                 {
                     case PostType.FormUrlEncoded:
                     default:
-
+                        {
+                            var data = BuildFormUrlEncodedData(options);
+                            request.ContentLength = data.Length;
+                            var requestStream = request.GetRequestStream();
+                            requestStream.Write(data, 0, data.Length);
+                            requestStream.Close();
+                        }
+                        break;
+                    case PostType.Json:
+                    case PostType.Xml:
+                        {
+                            var data = BuildStringPostData(options);
+                            request.ContentLength = data.Length;
+                            var requestStream = request.GetRequestStream();
+                            requestStream.Write(data, 0, data.Length);
+                            requestStream.Close();
+                        }
+                        break;
+                    case PostType.Multipart:
+                        {
+                            string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
+                            var headerData = BuildMultipartHeaderData(options, boundary);
+                            var footerData = BuildMultipartFooterData(options, boundary);
+                            //长度,三部分之和
+                            request.ContentLength = headerData.Length + footerData.Length + options.RequestFiles.Sum(s => s.Data.Length);
+                            var requestStream = request.GetRequestStream();
+                            //表单数据
+                            requestStream.Write(headerData, 0, headerData.Length);
+                            //文件内容 
+                            foreach (var item in options.RequestFiles)
+                            {
+                                byte[] buffer = new Byte[checked((uint)Math.Min(4096, (int)item.Data.Length))];
+                                int bytesRead;
+                                while ((bytesRead = item.Data.Read(buffer, 0, buffer.Length)) != 0)
+                                {
+                                    requestStream.Write(buffer, 0, bytesRead);
+                                }
+                            }
+                            //结尾 
+                            requestStream.Write(footerData, 0, footerData.Length);
+                            requestStream.Close();
+                        }
                         break;
                 }
             }
+        }
+
+        /// <summary>创建application/x-www-form-urlencoded请求的数据
+        /// </summary>
+        public static byte[] BuildFormUrlEncodedData(RequestOptions options)
+        {
+            //过滤与排序之后的集合
+            var sParam = FilterParams(options.RequestParameters);
+            //参数组合
+            var linkString = CreateLinkString(sParam, options.IsUrlEncode, options.UrlHandler);
+            var data = Encoding.GetEncoding(options.Encode).GetBytes(linkString);
+            return data;
+        }
+
+        /// <summary>创建application/json  application/xml 请求的数据
+        /// </summary>
+        public static byte[] BuildStringPostData(RequestOptions options)
+        {
+            return Encoding.GetEncoding(options.Encode).GetBytes(options.PostString);
+        }
+
+        /// <summary>创建 multipart/form-data Header部分数据
+        /// </summary>
+        public static byte[] BuildMultipartHeaderData(RequestOptions options, string boundary)
+        {
+            //表单数据
+            var head = "";
+            StringBuilder sb = new StringBuilder();
+            //上传的文件
+            foreach (var requestFile in options.RequestFiles)
+            {
+                sb.Append("--" + boundary);
+                sb.Append("\r\n");
+                sb.AppendFormat("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"", requestFile.ParamName, requestFile.FileName);
+                sb.Append("\r\n");
+                sb.AppendFormat("Content-Type: {0}", "");
+                sb.Append("\r\n\r\n");
+            }
+            foreach (KeyValuePair<string, string> temp in options.RequestParameters)
+            {
+                sb.Append("--" + boundary);
+                sb.Append("\r\n");
+                sb.AppendFormat("Content-Disposition: form-data;name=\"{0}\"", temp.Key);
+                sb.Append("\r\n\r\n");
+                sb.Append(temp.Value);
+                sb.Append("\r\n");
+            }
+
+            byte[] headerData = Encoding.GetEncoding(options.Encode).GetBytes(head);
+            return headerData;
+            //结尾
+            // byte[] footData = Encoding.GetEncoding(options.Encode).GetBytes("\r\n--" + boundary + "--\r\n");
+        }
+
+        /// <summary>创建 multipart/form-data Footer部分数据
+        /// </summary>
+        public static byte[] BuildMultipartFooterData(RequestOptions options, string boundary)
+        {
+            return Encoding.GetEncoding(options.Encode).GetBytes("\r\n--" + boundary + "--\r\n");
         }
 
 
@@ -149,18 +254,19 @@ namespace DotCommon.Http
 
         /// <summary>Response返回结果
         /// </summary>
-        public static async Task<Response> ParseResponse(HttpResponseMessage message)
+        public static Response ParseResponse(HttpWebRequest httpRequest, HttpWebResponse httpResponse)
         {
             try
             {
                 var response = new Response
                 {
-                    Success = message.IsSuccessStatusCode,
-                    ContentType = message.Content.Headers.ContentType.ToString(),
-                    StatusCode = (int)message.StatusCode,
-                    //Cookies = GetResponseCookie(message),
-                    Server = message.Headers.Server.ToString(),
-                    ResponseData = await message.Content.ReadAsByteArrayAsync()
+                    Success = true,
+                    ContentType = httpResponse.ContentType,
+                    StatusCode = (int)httpResponse.StatusCode,
+                    Cookies = httpRequest.CookieContainer,
+                    CookieString = httpRequest.CookieContainer.GetCookieHeader(httpRequest.RequestUri),
+                    Server = httpResponse.Headers.ToString(),
+                    ResponseData = ReadFromStream(httpResponse.GetResponseStream())
                 };
                 return response;
             }
@@ -185,19 +291,8 @@ namespace DotCommon.Http
             };
             return response;
         }
- 
-        /// <summary>获取Get请求的Url地址
-        /// </summary>
-        private static string BuildGetUrl(string url, Dictionary<string, string> paramTemp, bool isUrlEncode, Func<KeyValuePair<string, string>, string> urlHandler)
-        {
-            //过滤与排序之后的集合
-            var sParam = FilterParams(paramTemp);
-            //参数组合
-            var linkString = CreateLinkString(sParam, isUrlEncode, urlHandler);
-            var conbine = linkString.IsNullOrWhiteSpace() ? "" : "?";
-            return $"{url}{conbine}{linkString}";
-        }
 
+        #region Utilities
         /// <summary>过滤参数,去除无效的
         /// </summary>
         private static SortedDictionary<string, string> FilterParams(Dictionary<string, string> paramTemp)
@@ -239,6 +334,47 @@ namespace DotCommon.Http
             }
             return sb.ToString();
         }
+
+        /// <summary> 从流中读取byte[]
+        /// </summary>
+        private static byte[] ReadFromStream(Stream stream)
+        {
+            // 初始化一个缓存区
+            byte[] buffer = new byte[1024 * 4];
+            int read = 0;
+            int block;
+            // 每次从流中读取缓存大小的数据，直到读取完所有的流为止
+            while ((block = stream.Read(buffer, read, buffer.Length - read)) > 0)
+            {
+                // 重新设定读取位置
+                read += block;
+                // 检查是否到达了缓存的边界，检查是否还有可以读取的信息
+                if (read == buffer.Length)
+                {
+                    // 尝试读取一个字节
+                    int nextByte = stream.ReadByte();
+                    // 读取失败则说明读取完成可以返回结果
+                    if (nextByte == -1)
+                    {
+                        return buffer;
+                    }
+                    // 调整数组大小准备继续读取
+                    byte[] newBuf = new byte[buffer.Length * 2];
+                    Array.Copy(buffer, newBuf, buffer.Length);
+
+                    newBuf[read] = (byte)nextByte;
+                    // buffer是一个引用（指针），这里意在重新设定buffer指针指向一个更大的内存
+                    buffer = newBuf;
+                    read++;
+                }
+            }
+            // 如果缓存太大则使用ret来收缩前面while读取的buffer，然后直接返回
+            byte[] ret = new byte[read];
+            Array.Copy(buffer, ret, read);
+            return ret;
+        }
+
+        #endregion
 
     }
 }
