@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="logs\**" />
+    <EmbeddedResource Remove="logs\**" />
+    <None Remove="logs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\DotCommon.AbpExtension\DotCommon.AbpExtension.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.Autofac\DotCommon.Autofac.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj" />
@@ -21,10 +27,6 @@
     <None Update="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="logs\" />
   </ItemGroup>
 
 </Project>
