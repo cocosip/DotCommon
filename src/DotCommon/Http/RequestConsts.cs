@@ -21,6 +21,10 @@
         /// </summary>
         public const string Server = "Server";
 
+        /// <summary>认证的名称
+        /// </summary>
+        public const string Authorization = "Authorization";
+
         /// <summary>
         /// </summary>
         public class AuthenticationSchema

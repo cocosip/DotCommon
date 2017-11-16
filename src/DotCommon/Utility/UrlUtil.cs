@@ -24,6 +24,14 @@ namespace DotCommon.Utility
             return false;
         }
 
+        /// <summary>是否为Https
+        /// </summary>
+        public static bool IsHttps(string url)
+        {
+            return url.StartsWith("https");
+        }
+
+
         /// <summary>判断是否为主域名或者www开头的域名
         /// </summary>
         public static bool IsMainDomain(string strUrl)

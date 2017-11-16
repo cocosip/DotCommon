@@ -18,22 +18,19 @@ namespace DotCommon.Http
             try
             {
                 var options = builder.GetOptions();
-                var request = RequestUtil.BuildWebRequest(options);
+                var request = RequestCore.BuildWebRequest(options);
                 var httpResponse = (HttpWebResponse)(await request.GetResponseAsync());
-                var response = RequestUtil.ParseResponse(request, httpResponse);
+                var response = RequestCore.ParseResponse(request, httpResponse);
                 httpResponse.Close();
                 return response;
             }
             catch (AggregateException ex)
             {
-                return RequestUtil.BuildErrorResponse(ex);
+                return RequestCore.BuildErrorResponse(ex);
             }
             catch (Exception ex)
             {
-                return RequestUtil.BuildErrorResponse(ex);
-            }
-            finally
-            {
+                return RequestCore.BuildErrorResponse(ex);
             }
         }
 

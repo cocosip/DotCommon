@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
 namespace DotCommon.Http
@@ -191,16 +192,30 @@ namespace DotCommon.Http
             return this;
         }
 
-        /// <summary>设置证书,添加证书后会默认启用SSL
+        /// <summary>设置请求过期的时间
         /// </summary>
-        public RequestBuilder SetCer(X509Certificate cer)
+        public RequestBuilder SetTimeoutSecond(int second)
         {
-            _options.ClientCer = cer;
-            _options.IsSsl = true;
+            _options.TimeoutSecond = second;
             return this;
         }
 
+        /// <summary>设置证书,添加证书后会默认启用SSL
+        /// </summary>
+        public RequestBuilder SetCert(X509Certificate cert)
+        {
+            _options.ClientCert = cert;
+            _options.IsUseCert = true;
+            return this;
+        }
 
+        /// <summary>设置证书验证
+        /// </summary>
+        public RequestBuilder SetSslValidationCallback(RemoteCertificateValidationCallback validationCallback)
+        {
+            _options.SslValidationCallback = validationCallback;
+            return this;
+        }
 
         /// <summary>设置认证参数
         /// </summary>
@@ -216,6 +231,14 @@ namespace DotCommon.Http
         public RequestBuilder SetAuthorization(string parameter)
         {
             return SetAuthorization(RequestConsts.AuthenticationSchema.Basic, parameter);
+        }
+
+        /// <summary>设置代理
+        /// </summary>
+        public RequestBuilder SetProxy(IWebProxy webProxy)
+        {
+            _options.Proxy = webProxy;
+            return this;
         }
 
     }

@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
 namespace DotCommon.Http
 {
     public class RequestOptions
     {
+        public RequestOptions()
+        {
+            Boundary = $"---------------------------{DateTime.Now.Ticks.ToString("x")}";
+        }
         /// <summary>请求地址
         /// </summary>
         public string Url { get; set; }
@@ -89,13 +94,21 @@ namespace DotCommon.Http
         /// </summary>
         public string PostString { get; set; }
 
-        /// <summary>是否SSL
+        /// <summary>边界
         /// </summary>
-        public bool IsSsl { get; set; } = false;
+        public string Boundary { get; set; }
 
         /// <summary>x.509证书
         /// </summary>
-        public X509Certificate ClientCer { get; set; }
+        public X509Certificate ClientCert { get; set; }
+
+        /// <summary>是否使用证书
+        /// </summary>
+        public bool IsUseCert { get; set; } = false;
+
+        /// <summary>Ssl验证
+        /// </summary>
+        public RemoteCertificateValidationCallback SslValidationCallback { get; set; }
 
         /// <summary>认证架构
         /// </summary>
@@ -104,6 +117,14 @@ namespace DotCommon.Http
         /// <summary>认证参数
         /// </summary>
         public string AuthorizationParameter { get; set; }
+
+        /// <summary>超时时间
+        /// </summary>
+        public int TimeoutSecond { get; set; } = 5;
+
+        /// <summary>代理
+        /// </summary>
+        public IWebProxy Proxy { get; set; }
 
         public override string ToString()
         {
