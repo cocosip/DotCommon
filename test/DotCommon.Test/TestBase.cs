@@ -8,27 +8,17 @@ namespace DotCommon.Test
 {
     public class TestBase
     {
-        public static bool IsInit = false;
-        private static object syncObject = new object();
         static TestBase()
         {
-            if (!IsInit)
-            {
-                lock (syncObject)
-                {
-                    var builder = new ContainerBuilder();
-                    Configurations.Configuration.Create()
-                        .UseAutofac(builder)
-                        .RegisterCommonComponent()
-                        .UseLog4Net()
-                        .UseJson4Net()
-                        .UseMemoryCache()
-                        .AutofacBuild();
-                    IsInit = true;
-                }
-            }
 
-          
+            var builder = new ContainerBuilder();
+            Configurations.Configuration.Create()
+                .UseAutofac(builder)
+                .RegisterCommonComponent()
+                .UseLog4Net()
+                .UseJson4Net()
+                .UseMemoryCache()
+                .AutofacBuild();
         }
 
     }
