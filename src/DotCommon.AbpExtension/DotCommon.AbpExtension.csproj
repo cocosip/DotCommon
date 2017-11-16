@@ -8,13 +8,13 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.8.1</Version>
+    <Version>2.8.2</Version>
     <Description>通用类库Abp扩展</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Abp" Version="3.1.2" />
+    <PackageReference Include="Abp" Version="3.2.1" />
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
   </ItemGroup>
 
