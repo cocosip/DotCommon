@@ -8,13 +8,13 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.8.2</Version>
+    <Version>2.8.3</Version>
     <Description>通用.net类库AutoMapper扩展</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="6.2.0" />
+    <PackageReference Include="AutoMapper" Version="6.2.1" />
   </ItemGroup>
 
   <ItemGroup>
