@@ -8,7 +8,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.8.3</Version>
+    <Version>2.8.4</Version>
     <Description>通用的.net类库,缓存操作</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>
