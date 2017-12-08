@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace DotCommon.Http
 {
-    public interface ISharpClient
+    public interface IHttpClient
     {
-
         /// <summary>执行请求
         /// </summary>
         Task<Response> ExecuteAsync(RequestBuilder builder);

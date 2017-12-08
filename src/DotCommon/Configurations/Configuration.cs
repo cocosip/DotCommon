@@ -31,8 +31,8 @@ namespace DotCommon.Configurations
         public Configuration RegisterCommonComponent()
         {
             var container = IocManager.GetContainer();
-            //模拟请求
-            container.Register<ISharpClient, DefaultSharpClient>(DependencyLifeStyle.Transient);
+            //Http请求
+            container.Register<IHttpClient, DefaultHttpClient>(DependencyLifeStyle.Transient);
             //Json序列化(默认)
             container.Register<IJsonSerializer, DefaultJsonSerializer>(DependencyLifeStyle.Transient);
             //Xml序列化

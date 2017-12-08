@@ -4,13 +4,8 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Http
 {
-    public class DefaultSharpClient : ISharpClient
+    public class DefaultHttpClient : IHttpClient
     {
-        public DefaultSharpClient()
-        {
-        }
-
-
         /// <summary>执行请求
         /// </summary>
         public async Task<Response> ExecuteAsync(RequestBuilder builder)
@@ -33,6 +28,5 @@ namespace DotCommon.Http
                 return RequestCore.BuildErrorResponse(ex);
             }
         }
-
     }
 }

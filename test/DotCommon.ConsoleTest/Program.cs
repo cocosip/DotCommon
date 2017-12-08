@@ -67,7 +67,7 @@ namespace DotCommon.ConsoleTest
 
         static async void Run()
         {
-            ISharpClient client = new DefaultSharpClient();
+            IHttpClient client = new DefaultHttpClient();
             Stopwatch watch = new Stopwatch();
             //var builder = RequestBuilder.Instance("http://114.55.101.33:10101/Pda/TokenAuth/Authenticate", RequestConsts.Methods.Post)
             //    .SetPost(PostType.Json, "{\"userNameOrEmailOrPhone\": \"ningbopda00001\",\"password\": \"123456\"}");
