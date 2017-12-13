@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotCommon.Extensions;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace DotCommon.Utility
     /// </summary>
     public class PathUtil
     {
+
         /// <summary>If the path is absolute is return as is, otherwise is combined with AppDomain.CurrentDomain.SetupInformation.ApplicationBase
         /// The path are always server relative path.
         /// </summary>
@@ -46,26 +48,8 @@ namespace DotCommon.Utility
             return pathBuilder.ToString();
         }
 
-        /// <summary>合并绝对路径,如果是盘符,也会被合并
-        /// </summary>
-        public static string Combine(params string[] paths)
-        {
-            var usefulPaths = paths.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x =>
-            {
-                if (x.Contains(":"))
-                {
-                    if (!x.EndsWith("\\"))
-                    {
-                        return $"{x}\\";
-                    }
-                    return x;
-                }
-                return x.StartsWith("\\") ? x.Remove(0, 1) : x;
-            });
-            return Path.Combine(usefulPaths.ToArray());
-        }
 
-        /// <summary>绝对目录回退
+        /// <summary>绝对目录回退,兼容Linux
         /// </summary>
         public static string BackDirectory(string path, int layerCount = 1)
         {
@@ -73,18 +57,33 @@ namespace DotCommon.Utility
             {
                 return path;
             }
-            var pathSpilts = path.Split('\\').ToList();
-            var notEmptyPaths =
-                pathSpilts.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Contains(":") ? $"{x}\\" : x).ToList();
-            int endRange = 2;
-            if (notEmptyPaths.Count - layerCount > 2)
+            //默认为Linux合并符
+            var combineChar = '/';
+            //默认Linux盘符,为空
+            var rootPath = Path.GetPathRoot(path);
+            if (Environment.OSVersion.Platform != PlatformID.Unix)
             {
-                endRange = notEmptyPaths.Count - layerCount;
+                combineChar = '\\';
+                if (!rootPath.Contains("\\"))
+                {
+                    rootPath = rootPath + "\\";
+                }
             }
-            return Path.Combine(notEmptyPaths.GetRange(0, endRange).ToArray());
+            //不包含盘符的路径集
+            var pathSpilts = path.Split(combineChar).Where(x => !x.IsNullOrWhiteSpace() && !x.Contains(":")).ToList();
+            //如果路径集的个数小于回退目录的个数,那么就直接返回根目录
+            if (pathSpilts.Count <= layerCount)
+            {
+                return rootPath;
+            }
+            //移除不要的
+            pathSpilts.RemoveRange(pathSpilts.Count - layerCount, layerCount);
+            //路径集合中加入盘符
+            pathSpilts.Insert(0, rootPath);
+            return Path.Combine(pathSpilts.ToArray());
         }
 
-        /// <summary>将绝对路径转换成相对路径
+        /// <summary>将相对路径转换成绝对路径
         /// </summary>
         public static string MapPath(string relativePath)
         {
@@ -101,7 +100,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static string GetPathExtension(string path)
         {
-            if (!string.IsNullOrWhiteSpace(path) && path.IndexOf('.') > 0)
+            if (!path.IsNullOrWhiteSpace() && path.IndexOf('.') > 0)
             {
                 return path.Substring(path.LastIndexOf('.'));
             }

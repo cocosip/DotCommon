@@ -15,7 +15,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static bool IsUrl(string strUrl)
         {
-            if (!strUrl.IsNullOrEmpty())
+            if (!strUrl.IsNullOrWhiteSpace())
             {
                 strUrl = strUrl.ToLower();
                 return Regex.IsMatch(strUrl,

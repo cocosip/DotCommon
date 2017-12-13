@@ -25,14 +25,14 @@ namespace DotCommon.Test.Utility
             Assert.Equal(expected, actual);
         }
 
-        [Theory]
-        [InlineData(@"C:\A\B\C", "C:", "A", "B", "C")]
-        [InlineData(@"C:\A\Path1\Path2\x.txt", @"C:\A", "Path1", @"\Path2\", @"x.txt")]
-        [InlineData(@"C:\A\X\Y\x.txt", @"C:\A\", @"X\", @"\Y\", @"x.txt")]
-        public void CombineTest(string expected, params string[] paths)
-        {
-            var actual = PathUtil.Combine(paths);
-            Assert.Equal(expected, actual);
-        }
+        //[Theory]
+        //[InlineData(@"C:\A\B\C", "C:", "A", "B", "C")]
+        //[InlineData(@"C:\A\Path1\Path2\x.txt", @"C:\A", "Path1", @"\Path2\", @"x.txt")]
+        //[InlineData(@"C:\A\X\Y\x.txt", @"C:\A\", @"X\", @"\Y\", @"x.txt")]
+        //public void CombineTest(string expected, params string[] paths)
+        //{
+        //    var actual = PathUtil.Combine(paths);
+        //    Assert.Equal(expected, actual);
+        //}
     }
 }
