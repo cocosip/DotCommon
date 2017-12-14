@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Abp" Version="3.2.4" />
+    <PackageReference Include="Abp" Version="3.2.5" />
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
   </ItemGroup>
 

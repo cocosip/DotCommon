@@ -3,7 +3,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DotCommon.Algorithm
+namespace DotCommon.Alg
 {
     /// <summary>哈希值计算
     /// </summary>

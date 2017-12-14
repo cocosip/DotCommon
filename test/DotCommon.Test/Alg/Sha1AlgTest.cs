@@ -1,10 +1,10 @@
-﻿using DotCommon.Algorithm;
+﻿using DotCommon.Alg;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace DotCommon.Test.Algorithm
+namespace DotCommon.Test.Alg
 {
     public class Sha1AlgTest
     {
