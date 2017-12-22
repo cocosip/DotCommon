@@ -10,7 +10,7 @@ namespace DotCommon.Configurations
         public static Configuration UseJson4Net(this Configuration configuration)
         {
             var container = IocManager.GetContainer();
-            container.Register<IJsonSerializer, NewtonsoftJsonSerializer>(DependencyLifeStyle.Transient);
+            container.Register<IJsonSerializer, NewtonsoftJsonSerializer>(DependencyLifeStyle.Transient, isDefault: true);
             return configuration;
         }
     }

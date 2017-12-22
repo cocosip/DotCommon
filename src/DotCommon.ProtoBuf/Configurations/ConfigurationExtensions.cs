@@ -10,10 +10,10 @@ namespace DotCommon.Configurations
         public static Configuration UseProtoBuf(this Configuration configuration)
         {
             var container = IocManager.GetContainer();
-            container.Register<IBinarySerializer, ProtocolBufSerializer>(DependencyLifeStyle.Transient);
+            container.Register<IBinarySerializer, ProtocolBufSerializer>(DependencyLifeStyle.Transient, isDefault: true);
             return configuration;
         }
- 
- 
+
+
     }
 }

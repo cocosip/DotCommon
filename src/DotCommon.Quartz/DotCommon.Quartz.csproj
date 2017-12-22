@@ -7,7 +7,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.8.4-beta</Version>
+    <Version>2.8.5-beta</Version>
     <Description>通用.net类库Quartz定时任务</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>

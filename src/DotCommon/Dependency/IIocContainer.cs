@@ -17,23 +17,23 @@ namespace DotCommon.Dependency
         bool IsRegistered(Type type);
         bool IsRegistered<T>();
 
-        void Register<T>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null)
+        void Register<T>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool isDefault = false)
             where T : class;
 
-        void Register(Type type, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true);
+        void Register(Type type, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true, bool isDefault = false);
 
-        void Register<T>(T impl, bool propertiesAutowired = true) where T : class;
+        void Register<T>(T impl, bool propertiesAutowired = true, bool isDefault = false) where T : class;
 
-        void Register<TType, TImpl>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true)
+        void Register<TType, TImpl>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true, bool isDefault = false)
             where TType : class
             where TImpl : class, TType;
 
-        void Register<TType, TImpl>(TImpl impl, bool propertiesAutowired = true)
+        void Register<TType, TImpl>(TImpl impl, bool propertiesAutowired = true, bool isDefault = false)
             where TType : class
             where TImpl : class, TType;
 
 
-        void Register(Type type, Type impl, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true);
+        void Register(Type type, Type impl, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true, bool isDefault = false);
 
     }
 }

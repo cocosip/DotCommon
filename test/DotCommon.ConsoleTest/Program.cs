@@ -13,6 +13,7 @@ using DotCommon.Logging;
 using Castle.Windsor;
 using DotCommon.Http;
 using System.Diagnostics;
+using DotCommon.Serializing;
 
 namespace DotCommon.ConsoleTest
 {
@@ -21,8 +22,8 @@ namespace DotCommon.ConsoleTest
         static void Main(string[] args)
         {
             Console.WriteLine("Begin!");
-            Run();
-            Console.ReadLine();
+            // Run();
+            //Console.ReadLine();
 
             var builder = new ContainerBuilder();
 
@@ -33,13 +34,15 @@ namespace DotCommon.ConsoleTest
                 //.RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
                 .UseLog4Net()
                 .UseJson4Net()
-                .UseMemoryCache();
+                .UseMemoryCache()
             //.UseQuartz()
             //.RegisterQuartzJobs(new List<Assembly>() { typeof(TestQuartzJob).Assembly })
             //.AutofacBuild()
             //.AddQuartzListener()
-            //.BackgroundWorkersAttechAndRun();
-
+            //.BackgroundWorkersAttechAndRun()
+            ;
+            var a = IocManager.GetContainer().Resolve<IJsonSerializer>();
+            Console.WriteLine(a);
 
             Console.WriteLine("初始化完成");
             var container = IocManager.GetContainer();

@@ -15,15 +15,15 @@ namespace DotCommon.Configurations
         {
             var container = IocManager.GetContainer();
             //缓存
-            container.Register<ICachingConfiguration, CachingConfiguration>();
-            container.Register<ICacheManager, DotCommonMemoryCacheManager>();
-            container.Register<DotCommonMemoryCache>(DependencyLifeStyle.Transient);
+            container.Register<ICachingConfiguration, CachingConfiguration>(isDefault: true);
+            container.Register<ICacheManager, DotCommonMemoryCacheManager>(isDefault: true);
+            container.Register<DotCommonMemoryCache>(DependencyLifeStyle.Transient, isDefault: true);
             return configuration;
         }
 
         /// <summary>缓存配置
         /// </summary>
-        public static Configuration CacheConfigure(this Configuration configuration,string cacheName, Action<ICache> initAction)
+        public static Configuration CacheConfigure(this Configuration configuration, string cacheName, Action<ICache> initAction)
         {
             var container = IocManager.GetContainer();
             container.Resolve<ICachingConfiguration>().Configure(cacheName, initAction);

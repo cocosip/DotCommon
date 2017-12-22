@@ -73,13 +73,16 @@ namespace DotCommon.Autofac
             return _container.IsRegistered<T>();
         }
 
-        public void Register<T>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null) where T : class
+        public void Register<T>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool isDefault = false) where T : class
         {
             var registrationBuilder = _builder.RegisterType<T>();
-            //.PreserveExistingDefaults();
             if (serviceName != null)
             {
                 registrationBuilder.Named<T>(serviceName);
+            }
+            if (isDefault)
+            {
+                registrationBuilder.PreserveExistingDefaults();
             }
             if (lifeStyle != DependencyLifeStyle.Singleton)
             {
@@ -87,7 +90,7 @@ namespace DotCommon.Autofac
             }
         }
 
-        public void Register(Type type, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true)
+        public void Register(Type type, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true, bool isDefault = false)
         {
             var registrationBuilder = _builder.RegisterType(type);
             if (serviceName != null)
@@ -98,22 +101,30 @@ namespace DotCommon.Autofac
             {
                 registrationBuilder.PropertiesAutowired();
             }
+            if (isDefault)
+            {
+                registrationBuilder.PreserveExistingDefaults();
+            }
             if (lifeStyle != DependencyLifeStyle.Singleton)
             {
                 registrationBuilder.InstancePerDependency();
             }
         }
 
-        public void Register<T>(T impl, bool propertiesAutowired = true) where T : class
+        public void Register<T>(T impl, bool propertiesAutowired = true, bool isDefault = false) where T : class
         {
             var registrationBuilder = _builder.RegisterInstance(impl);
             if (propertiesAutowired)
             {
                 registrationBuilder.PropertiesAutowired();
             }
+            if (isDefault)
+            {
+                registrationBuilder.PreserveExistingDefaults();
+            }
         }
 
-        public void Register<TType, TImpl>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true)
+        public void Register<TType, TImpl>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true, bool isDefault = false)
             where TType : class
             where TImpl : class, TType
         {
@@ -127,17 +138,25 @@ namespace DotCommon.Autofac
             {
                 registrationBuilder.PropertiesAutowired();
             }
+            if (isDefault)
+            {
+                registrationBuilder.PreserveExistingDefaults();
+            }
             if (lifeStyle != DependencyLifeStyle.Singleton)
             {
                 registrationBuilder.InstancePerDependency();
             }
         }
 
-        public void Register<TType, TImpl>(TImpl impl, bool propertiesAutowired = true)
+        public void Register<TType, TImpl>(TImpl impl, bool propertiesAutowired = true, bool isDefault = false)
          where TType : class
          where TImpl : class, TType
         {
             var registrationBuilder = _builder.RegisterInstance(impl).As<TType>().SingleInstance();
+            if (isDefault)
+            {
+                registrationBuilder.PreserveExistingDefaults();
+            }
             if (propertiesAutowired)
             {
                 registrationBuilder.PropertiesAutowired();
@@ -145,7 +164,7 @@ namespace DotCommon.Autofac
         }
 
 
-        public void Register(Type type, Type impl, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = false)
+        public void Register(Type type, Type impl, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = false, bool isDefault = false)
         {
             if (type.GetTypeInfo().IsGenericTypeDefinition && type.GetTypeInfo().IsGenericTypeDefinition)
             {
@@ -169,6 +188,10 @@ namespace DotCommon.Autofac
             if (serviceName != null)
             {
                 registrationBuilder = _builder.RegisterType(impl).Named(serviceName, type);
+            }
+            if (!isDefault)
+            {
+                registrationBuilder.PreserveExistingDefaults();
             }
             if (lifeStyle != DependencyLifeStyle.Singleton)
             {
