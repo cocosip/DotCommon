@@ -13,6 +13,7 @@ using DotCommon.Logging;
 using DotCommon.Http;
 using System.Diagnostics;
 using DotCommon.Serializing;
+using DotCommon.CastleWindsor;
 using Castle.Windsor;
 
 namespace DotCommon.ConsoleTest
