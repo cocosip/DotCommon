@@ -10,10 +10,10 @@ using System.Reflection;
 using DotCommon.Extensions;
 using DotCommon.Quartz.Configuration;
 using DotCommon.Logging;
-using Castle.Windsor;
 using DotCommon.Http;
 using System.Diagnostics;
 using DotCommon.Serializing;
+using Castle.Windsor;
 
 namespace DotCommon.ConsoleTest
 {
@@ -29,7 +29,7 @@ namespace DotCommon.ConsoleTest
 
             Configurations.Configuration.Create()
                 //.UseAutofac(builder)
-                .UseAbpContainer(Abp.Dependency.IocManager.Instance.IocContainer)
+                .UseCastleWindsorContainer(new WindsorContainer())
                 .RegisterCommonComponent()
                 //.RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
                 .UseLog4Net()

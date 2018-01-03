@@ -131,9 +131,8 @@ namespace DotCommon.Autofac
             var registrationBuilder = _builder.RegisterType<TImpl>().As<TType>();
             if (serviceName != null)
             {
-                registrationBuilder = _builder.RegisterType<TImpl>().Named<TType>(serviceName);
+                registrationBuilder.Named<TType>(serviceName);
             }
-
             if (propertiesAutowired)
             {
                 registrationBuilder.PropertiesAutowired();
@@ -163,7 +162,6 @@ namespace DotCommon.Autofac
             }
         }
 
-
         public void Register(Type type, Type impl, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = false, bool isDefault = false)
         {
             if (type.GetTypeInfo().IsGenericTypeDefinition && type.GetTypeInfo().IsGenericTypeDefinition)
@@ -171,7 +169,7 @@ namespace DotCommon.Autofac
                 var genericBuilder = _builder.RegisterGeneric(impl).As(type);
                 if (serviceName != null)
                 {
-                    genericBuilder = _builder.RegisterGeneric(impl).Named(serviceName, type);
+                    genericBuilder.Named(serviceName, type);
                 }
                 //是否属性注入
                 if (propertiesAutowired)
@@ -184,18 +182,21 @@ namespace DotCommon.Autofac
                 }
                 return;
             }
-            var registrationBuilder = _builder.RegisterType(impl).As(type);
-            if (serviceName != null)
+            else
             {
-                registrationBuilder = _builder.RegisterType(impl).Named(serviceName, type);
-            }
-            if (!isDefault)
-            {
-                registrationBuilder.PreserveExistingDefaults();
-            }
-            if (lifeStyle != DependencyLifeStyle.Singleton)
-            {
-                registrationBuilder.InstancePerDependency();
+                var registrationBuilder = _builder.RegisterType(impl).As(type);
+                if (serviceName != null)
+                {
+                    registrationBuilder = _builder.RegisterType(impl).Named(serviceName, type);
+                }
+                if (!isDefault)
+                {
+                    registrationBuilder.PreserveExistingDefaults();
+                }
+                if (lifeStyle != DependencyLifeStyle.Singleton)
+                {
+                    registrationBuilder.InstancePerDependency();
+                }
             }
         }
 

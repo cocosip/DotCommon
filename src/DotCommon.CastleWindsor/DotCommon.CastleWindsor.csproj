@@ -2,19 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>DotCommon.AbpExtension</AssemblyName>
-    <PackageId>DotCommon.AbpExtension</PackageId>
+    <AssemblyName>DotCommon.CastleWindsor</AssemblyName>
+    <PackageId>DotCommon.CastleWindsor</PackageId>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.8.5</Version>
-    <Description>通用类库Abp扩展</Description>
+    <Version>2.8.6</Version>
+    <Description>通用.net类库CastleWindsor注入</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Abp" Version="3.2.4" />
+    <PackageReference Include="Castle.Windsor" Version="4.1.0" />
+  </ItemGroup>
+ 
+  <ItemGroup>
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
   </ItemGroup>
 

@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using DotCommon.AbpExtension;
+using DotCommon.CastleWindsor;
 using DotCommon.Autofac;
 using DotCommon.Configurations;
 using DotCommon.Dependency;
@@ -8,19 +8,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
+using Castle.Windsor;
 
 namespace DotCommon.Test
 {
     public class BootStrapper
     {
-        private  void Run()
+        private void Run()
         {
             //Autofac Builder
             var builder = new ContainerBuilder();
-
+            var windsorContainer = new WindsorContainer();
             Configuration.Create()
                 //.UseAutofac(builder)
-                .UseAbpContainer(Abp.Dependency.IocManager.Instance.IocContainer)
+                .UseCastleWindsorContainer(windsorContainer)
                 .RegisterCommonComponent()
                 .UseJson4Net()
                 .UseLog4Net()
@@ -57,7 +58,7 @@ namespace DotCommon.Test
         public void StartTest()
         {
             Configuration.Create()
-              .UseAbpContainer(Abp.Dependency.IocManager.Instance.IocContainer)
+              .UseCastleWindsorContainer(new WindsorContainer())
               .RegisterCommonComponent();
 
         }
