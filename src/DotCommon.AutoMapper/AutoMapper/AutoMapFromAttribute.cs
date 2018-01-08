@@ -29,7 +29,7 @@ namespace DotCommon.AutoMapper
 
             foreach (var targetType in TargetTypes)
             {
-                configuration.CreateMap(targetType, type, MemberList.Destination);
+                configuration.CreateMap(targetType, type, MemberList);
             }
         }
     }
