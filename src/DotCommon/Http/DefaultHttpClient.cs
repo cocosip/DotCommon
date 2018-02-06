@@ -19,9 +19,9 @@ namespace DotCommon.Http
                 httpResponse.Close();
                 return response;
             }
-            catch (AggregateException ex)
+            catch (WebException ex)
             {
-                return RequestCore.BuildErrorResponse(ex);
+                return RequestCore.BuildWebErrorResponse(ex);
             }
             catch (Exception ex)
             {

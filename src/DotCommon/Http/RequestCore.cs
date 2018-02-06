@@ -287,7 +287,22 @@ namespace DotCommon.Http
             var response = new Response
             {
                 Success = false,
-                ExceptionMessage = e.Message
+                ExceptionMessage = e.Message,
+            };
+            return response;
+        }
+
+
+        internal static Response BuildWebErrorResponse(WebException e)
+        {
+            var httpResponse = (HttpWebResponse)e.Response;
+            var response = new Response
+            {
+                Success = false,
+                ContentType = httpResponse.ContentType,
+                StatusCode = (int)httpResponse.StatusCode,
+                ExceptionMessage = e.Message,
+                ResponseData = RequestUtil.ReadFromStream(e.Response.GetResponseStream())
             };
             return response;
         }
