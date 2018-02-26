@@ -80,7 +80,7 @@ namespace DotCommon.Autofac
             {
                 registrationBuilder.Named<T>(serviceName);
             }
-            if (isDefault)
+            if (!isDefault)
             {
                 registrationBuilder.PreserveExistingDefaults();
             }
@@ -101,7 +101,7 @@ namespace DotCommon.Autofac
             {
                 registrationBuilder.PropertiesAutowired();
             }
-            if (isDefault)
+            if (!isDefault)
             {
                 registrationBuilder.PreserveExistingDefaults();
             }
@@ -118,7 +118,7 @@ namespace DotCommon.Autofac
             {
                 registrationBuilder.PropertiesAutowired();
             }
-            if (isDefault)
+            if (!isDefault)
             {
                 registrationBuilder.PreserveExistingDefaults();
             }
@@ -137,7 +137,7 @@ namespace DotCommon.Autofac
             {
                 registrationBuilder.PropertiesAutowired();
             }
-            if (isDefault)
+            if (!isDefault)
             {
                 registrationBuilder.PreserveExistingDefaults();
             }
@@ -152,7 +152,7 @@ namespace DotCommon.Autofac
          where TImpl : class, TType
         {
             var registrationBuilder = _builder.RegisterInstance(impl).As<TType>().SingleInstance();
-            if (isDefault)
+            if (!isDefault)
             {
                 registrationBuilder.PreserveExistingDefaults();
             }
