@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon", "src\DotCommon\DotCommon.csproj", "{5D5012F3-65B7-42FB-A2D8-6BEA1C45AC7F}"
 EndProject
@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{834211DA-7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ConsoleTest", "test\DotCommon.ConsoleTest\DotCommon.ConsoleTest.csproj", "{93189D8A-FE53-4333-B021-C7E349DE609B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.CastleWindsor", "src\DotCommon.CastleWindsor\DotCommon.CastleWindsor.csproj", "{CBB8DFBB-F557-43C1-9A09-FD0321DEFAAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.CastleWindsor", "src\DotCommon.CastleWindsor\DotCommon.CastleWindsor.csproj", "{CBB8DFBB-F557-43C1-9A09-FD0321DEFAAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
