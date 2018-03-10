@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -112,7 +111,7 @@ namespace DotCommon.Utility
         {
             if (!string.IsNullOrEmpty(source))
             {
-                source = Regex.Replace(source, "<img(.|\n)*?>", "", RegexOptions.IgnoreCase); 
+                source = Regex.Replace(source, "<img(.|\n)*?>", "", RegexOptions.IgnoreCase);
             }
             return source;
         }
@@ -221,7 +220,7 @@ namespace DotCommon.Utility
             if (!string.IsNullOrEmpty(source))
             {
                 Regex regex = new Regex("<([^<]|\n)+?>");
-                source=regex.Replace(source, "");
+                source = regex.Replace(source, "");
             }
             return source;
         }
@@ -323,136 +322,45 @@ namespace DotCommon.Utility
         }
         #endregion
 
-        #region 冒泡排序法
-        /// <summary>
-        /// 冒泡排序法
+        /// <summary>将字符串中的中文转换成unicode
         /// </summary>
-        /// <param name="r"></param>
-        /// <returns></returns>
-        public static string[] BubbleSort(string[] r)
+        public static string StringToUnicode(string source, bool onlyConvertChinese = true)
         {
-
-            for (var i = 0; i < r.Length; i++) //最多做R.Length-1趟排序 
+            if (!string.IsNullOrWhiteSpace(source))
             {
-                var exchange = false;
-
-                int j; //交换标志 
-                for (j = r.Length - 2; j >= i; j--)
-                {//交换条件
-                    if (string.CompareOrdinal(r[j + 1], r[j]) < 0)
+                char[] charbuffers = source.ToCharArray();
+                byte[] buffer;
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < charbuffers.Length; i++)
+                {
+                    if (onlyConvertChinese)
                     {
-                        var temp = r[j + 1];
-                        r[j + 1] = r[j];
-                        r[j] = temp;
-
-                        exchange = true; //发生了交换，故将交换标志置为真 
+                        //非中文
+                        if(!(charbuffers[i] >= 0x4e00 && charbuffers[i] <= 0x9fbb))
+                        {
+                            sb.Append(charbuffers[i].ToString());
+                            continue;
+                        }
                     }
+                    buffer = Encoding.Unicode.GetBytes(charbuffers[i].ToString());
+                    sb.AppendFormat("\\u{0:x2}{1:x2}", buffer[1], buffer[0]);
                 }
-
-                if (!exchange) //本趟排序未发生交换，提前终止算法 
-                {
-                    break;
-                }
+                return sb.ToString();
             }
-            return r;
-        } 
-        #endregion
+            return source;
+        }
 
-        #region 模拟虚拟数据的方法 可以到小时 返回一个模拟后的结果整数  By Taven
-
-        /// <summary>
-        /// 模拟虚拟数据的方法 可以到小时 返回一个模拟后的结果整数  By Taven
+        /// <summary>将Unicode字符串转换成String
         /// </summary>
-        /// <param name="realInt">原数值</param>
-        /// <param name="startTime">开始模拟的时间</param>
-        /// <param name="stopTime">截至日期  可以是当前时间</param>
-        /// <param name="k"></param>
-        /// <param name="seed">种子数  可以是一个对象的ID</param>
-        /// <returns></returns>
-        public static int MockInt(int realInt, DateTime startTime, DateTime stopTime, int k, int seed)
+        public static string UnicodeToString(string source)
         {
-            //固定随机数
-            // ReSharper disable once InconsistentNaming
-            var _seed = seed;
-            double randK = 0.314;
-            int rand = (int)Math.Floor(((_seed * randK) - Math.Floor(_seed * randK)) * 10);
-            rand = rand < 0 ? 3 : rand;
-
-
-            var tsDiffer = stopTime.Date - startTime.Date;
-            int days = tsDiffer.Days < 0 ? 0 : tsDiffer.Days;
-
-            //计算每天需要模拟的数
-            int mockInt = rand * k;
-
-            double seedK = 8.6;
-            //今天的附加K值
-            int todayK = (int)Math.Floor(stopTime.Day * seedK);
-
-            //计算总数的附加K值
-            int totalK = 0;
-            DateTime tDate = startTime.AddDays(-1);
-            while (tDate.AddDays(1) <= stopTime)
+            if (!string.IsNullOrWhiteSpace(source))
             {
-                totalK += (int)Math.Floor(tDate.Day * seedK);
-                tDate = tDate.AddDays(1);
+                return new Regex(@"\\u([0-9A-F]{4})", RegexOptions.IgnoreCase | RegexOptions.Compiled).Replace(
+                     source, x => string.Empty + Convert.ToChar(Convert.ToUInt16(x.Result("$1"), 16)));
             }
-
-            //计算当前阶段模拟展现的数
-            int currentTimeInt = (int)Math.Floor(((double)(mockInt + todayK) / 24) * DateTime.Now.Hour);
-            int tMockTodayInt = mockInt + todayK + realInt - currentTimeInt;
-
-            //计算总模拟数
-            int mockTotalInt = mockInt * days + realInt + totalK - tMockTodayInt;
-
-            return mockTotalInt;
-
-        } 
-        #endregion
-
-        #region 全局过滤方法，综合了上面的小方法
-        /// <summary> 一般的过滤，过滤SQL的危险，同时过滤xml,script等,适用于富文本文档
-        /// </summary>
-        public static string NormalFilter(string str)
-        {
-            string result = SqlFilter(SqlReplace(str));  //过滤SQL
-            result = XmlEncode(result);  //Xml过滤
-            result = FilterScript(FilterIFrame(FilterObject(result)));
-            return result;
-
+            return source;
         }
-        /// <summary>
-        /// 过滤所有的危险，如果带有富文本文档则不适用
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static string HeighFilter(string source)
-        {
-            var result = SqlFilter(SqlReplace(source));
-            result = XmlEncode(result);
-            result = FilterHtml(StripTags(result));
-            return result;
-        }
-        #endregion
 
-        /// <summary>过滤对象中的string类型的参数
-        /// </summary>
-        public static T Filter<T>(T t) where T : class, new()
-        {
-            var type = typeof (T);
-            if (t != null)
-            {
-                //获取类型为string的属性
-                var properties = type.GetTypeInfo().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(x => x.PropertyType == typeof (string));
-                foreach (var property in properties)
-                {
-                    string val = property.GetValue(t, null) == null ? "" : property.GetValue(t, null).ToString();
-                    val = FilterHtml(val);
-                    property.SetValue(t, val, null);
-                }
-            }
-            return t;
-        }
     }
 }
