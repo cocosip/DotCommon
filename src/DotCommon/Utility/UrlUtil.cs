@@ -28,7 +28,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static bool IsHttps(string url)
         {
-            return url.StartsWith("https");
+            return url.StartsWith("https", StringComparison.OrdinalIgnoreCase);
         }
 
 

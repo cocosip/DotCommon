@@ -72,7 +72,6 @@ namespace DotCommon.Http
             {
                 if (options.SslValidationCallback != null)
                 {
-
                     ServicePointManager.ServerCertificateValidationCallback = options.SslValidationCallback;
                 }
                 else
