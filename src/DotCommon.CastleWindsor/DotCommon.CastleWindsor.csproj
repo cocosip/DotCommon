@@ -8,7 +8,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.8.8</Version>
+    <Version>2.8.9</Version>
     <Description>通用.net类库CastleWindsor注入</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>

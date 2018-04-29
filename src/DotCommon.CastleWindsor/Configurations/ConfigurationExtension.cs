@@ -8,7 +8,7 @@ namespace DotCommon.Configurations
     {
         /// <summary>使用CastleWindsor
         /// </summary>
-        public static Configuration UseCastleWindsorContainer(this Configuration configuration, IWindsorContainer container)
+        public static Configuration UseCastleWindsor(this Configuration configuration, IWindsorContainer container)
         {
             var iocContainer = new CastleWindsorIocContainer(container);
             IocManager.SetContainer(iocContainer);

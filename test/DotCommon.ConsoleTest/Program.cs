@@ -30,7 +30,7 @@ namespace DotCommon.ConsoleTest
 
             Configurations.Configuration.Create()
                 //.UseAutofac(builder)
-                .UseCastleWindsorContainer(new WindsorContainer())
+                .UseCastleWindsor(new WindsorContainer())
                 .RegisterCommonComponent()
                 //.RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
                 .UseLog4Net()

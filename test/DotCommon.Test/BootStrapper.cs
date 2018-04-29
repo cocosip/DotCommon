@@ -21,7 +21,7 @@ namespace DotCommon.Test
             var windsorContainer = new WindsorContainer();
             Configuration.Create()
                 //.UseAutofac(builder)
-                .UseCastleWindsorContainer(windsorContainer)
+                .UseCastleWindsor(windsorContainer)
                 .RegisterCommonComponent()
                 .UseJson4Net()
                 .UseLog4Net()
@@ -58,7 +58,7 @@ namespace DotCommon.Test
         public void StartTest()
         {
             Configuration.Create()
-              .UseCastleWindsorContainer(new WindsorContainer())
+              .UseCastleWindsor(new WindsorContainer())
               .RegisterCommonComponent();
 
         }

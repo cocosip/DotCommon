@@ -38,11 +38,11 @@ namespace DotCommon.Serializing
             return JsonConvert.DeserializeObject<T>(JObject.Parse(value).ToString(), Settings);
         }
 
-        class CustomContractResolver : DefaultContractResolver
+        public class CustomContractResolver : DefaultContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
-                var jsonProperty = base.CreateProperty(member, memberSerialization);
+                var jsonProperty = CreateProperty(member, memberSerialization);
                 if (jsonProperty.Writable)
                 {
                     return jsonProperty;
