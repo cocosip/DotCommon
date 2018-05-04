@@ -15,9 +15,9 @@ namespace DotCommon.Configurations
         {
             var container = IocManager.GetContainer();
             //缓存
-            container.Register<ICachingConfiguration, CachingConfiguration>(isDefault: true);
-            container.Register<ICacheManager, DotCommonMemoryCacheManager>(isDefault: true);
-            container.Register<DotCommonMemoryCache>(DependencyLifeStyle.Transient, isDefault: true);
+            container.Register<ICachingConfiguration, CachingConfiguration>();
+            container.Register<ICacheManager, DotCommonMemoryCacheManager>();
+            container.Register<DotCommonMemoryCache>(DependencyLifeStyle.Transient);
             return configuration;
         }
 

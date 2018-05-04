@@ -5,7 +5,7 @@ using System;
 
 namespace DotCommon.CastleWindsor
 {
-    public class CastleWindsorIocContainer: IIocContainer
+    public class CastleWindsorIocContainer : IIocContainer
     {
         private IWindsorContainer _container { get; set; }
         public CastleWindsorIocContainer(IWindsorContainer container)
@@ -58,45 +58,33 @@ namespace DotCommon.CastleWindsor
             return _container.Kernel.HasComponent(typeof(T));
         }
 
-        public void Register<T>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool isDefault = false) where T : class
+        public void Register<T>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null) where T : class
         {
             var registration = Component.For<T>();
             if (serviceName != null)
             {
                 registration.Named(serviceName);
             }
-            if (isDefault)
-            {
-                registration.IsDefault();
-            }
             _container.Register(ApplyLifestyle(registration, lifeStyle));
         }
 
-        public void Register(Type type, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true, bool isDefault = false)
+        public void Register(Type type, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null)
         {
             var registration = Component.For(type);
             if (serviceName != null)
             {
                 registration.Named(serviceName);
             }
-            if (isDefault)
-            {
-                registration.IsDefault();
-            }
             _container.Register(ApplyLifestyle(registration, lifeStyle));
         }
 
-        public void Register<T>(T impl, bool propertiesAutowired = true, bool isDefault = false) where T : class
+        public void Register<T>(T impl) where T : class
         {
             var registration = Component.For<T>().Instance(impl);
-            if (isDefault)
-            {
-                registration = registration.IsDefault();
-            }
             _container.Register(ApplyLifestyle(registration, DependencyLifeStyle.Singleton));
         }
 
-        public void Register<TType, TImpl>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null, bool propertiesAutowired = true, bool isDefault = false)
+        public void Register<TType, TImpl>(DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton, string serviceName = null)
             where TType : class
             where TImpl : class, TType
         {
@@ -105,22 +93,14 @@ namespace DotCommon.CastleWindsor
             {
                 registration.Named(serviceName);
             }
-            if (isDefault)
-            {
-                registration = registration.IsDefault();
-            }
             _container.Register(ApplyLifestyle(registration, lifeStyle));
         }
 
-        public void Register<TType, TImpl>(TImpl impl, bool propertiesAutowired = true, bool isDefault = false)
+        public void Register<TType, TImpl>(TImpl impl)
          where TType : class
          where TImpl : class, TType
         {
             var registration = Component.For<TType>().Instance(impl);
-            if (isDefault)
-            {
-                registration = registration.IsDefault();
-            }
             _container.Register(ApplyLifestyle(registration, DependencyLifeStyle.Singleton));
         }
 
