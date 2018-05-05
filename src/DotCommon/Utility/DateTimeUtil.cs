@@ -61,7 +61,7 @@ namespace DotCommon.Utility
         public static DateTime ToDateTime(int seconds)
         {
 
-            var begtime = Convert.ToInt64(seconds)*10000000; //100毫微秒为单位
+            var begtime = Convert.ToInt64(seconds) * 10000000; //100毫微秒为单位
             var dt1970 = new DateTime(1970, 1, 1, 0, 0, 0);
             var tricks1970 = dt1970.Ticks; //1970年1月1日刻度
             var timeTricks = tricks1970 + begtime; //日志日期刻度
@@ -155,37 +155,29 @@ namespace DotCommon.Utility
             {
                 return "";
             }
-            var weekList = new List<int>()
-            {
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6
-            };
+            var weekArray = new[] { 1, 2, 3, 4, 5, 6 };
+
             if ((end.Date - begin.Date).TotalDays >= 7)
             {
-                return string.Join(",", weekList);
+                return string.Join(",", weekArray);
             }
-            var endWeek = (int) end.DayOfWeek;
-            var beginWeek = (int) begin.DayOfWeek;
+            var endWeek = (int)end.DayOfWeek;
+            var beginWeek = (int)begin.DayOfWeek;
             if (beginWeek <= endWeek)
             {
                 var containList = new List<int>();
                 for (var i = beginWeek; i <= endWeek; i++)
                 {
-                    containList.Add(weekList[i]);
+                    containList.Add(weekArray[i]);
                 }
                 return string.Join(",", containList);
             }
             var removeList = new List<int>();
             for (var i = endWeek + 1; i <= beginWeek - 1; i++)
             {
-                removeList.Add(weekList[i]);
+                removeList.Add(weekArray[i]);
             }
-            var target = weekList.Except(removeList).ToList();
+            var target = weekArray.Except(removeList);
             return string.Join(",", target);
         }
 
@@ -193,7 +185,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static string GetChineseWeekOfDay(DateTime time)
         {
-            var dayOfWeek = (int) time.DayOfWeek;
+            var dayOfWeek = (int)time.DayOfWeek;
             return GetWeekDays().FirstOrDefault(x => x.Key == dayOfWeek).Value;
         }
 
@@ -293,7 +285,7 @@ namespace DotCommon.Utility
 
         /// <summary>将日期转换成时间
         /// </summary>
-        public static DateTime TimeStrToTime(string time,DateTime formatDate = default(DateTime), DateTime defaultDate = default(DateTime))
+        public static DateTime TimeStrToTime(string time, DateTime formatDate = default(DateTime), DateTime defaultDate = default(DateTime))
         {
             var fullTime = $"{formatDate:yyyy-MM-dd} {time}";
             try
@@ -303,9 +295,9 @@ namespace DotCommon.Utility
             }
             catch (Exception)
             {
+                return defaultDate;
                 // ignored
             }
-            return defaultDate;
         }
 
     }
