@@ -2,6 +2,7 @@
 using Autofac.Core;
 using DotCommon.Dependency;
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace DotCommon.Autofac
@@ -50,6 +51,12 @@ namespace DotCommon.Autofac
         public T Resolve<T>(object argumentsAsAnonymousType)
         {
             return _container.Resolve<T>(new ResolvedParameter((pi, ctx) => pi.ParameterType == argumentsAsAnonymousType.GetType(), (pi, ctx) => argumentsAsAnonymousType));
+        }
+
+        public object Resolve(Type type, params object[] args)
+        {
+            var parameters = args.Select(x => new ResolvedParameter((pi, ctx) => pi.ParameterType == x.GetType(), (pi, ctx) => x));
+            return _container.Resolve(type, parameters);
         }
 
         public T ResolveNamed<T>(string serviceName)

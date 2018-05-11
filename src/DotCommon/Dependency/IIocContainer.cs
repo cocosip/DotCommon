@@ -11,6 +11,7 @@ namespace DotCommon.Dependency
         T Resolve<T>();
         T Resolve<T>(Type type);
         T Resolve<T>(object argumentsAsAnonymousType);
+        object Resolve(Type type, params object[] args);
         T ResolveNamed<T>(string serviceName);
 
         object Resolve(Type type);

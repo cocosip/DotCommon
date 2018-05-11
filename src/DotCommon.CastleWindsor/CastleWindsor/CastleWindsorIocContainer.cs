@@ -1,7 +1,11 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using Castle.Core;
+using Castle.MicroKernel;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using DotCommon.Dependency;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace DotCommon.CastleWindsor
 {
@@ -36,6 +40,11 @@ namespace DotCommon.CastleWindsor
         public T Resolve<T>(object argumentsAsAnonymousType)
         {
             return _container.Resolve<T>(argumentsAsAnonymousType);
+        }
+
+        public object Resolve(Type type, params object[] args)
+        {
+            return _container.Resolve(type, new Arguments(args));
         }
 
         public T ResolveNamed<T>(string serviceName)
