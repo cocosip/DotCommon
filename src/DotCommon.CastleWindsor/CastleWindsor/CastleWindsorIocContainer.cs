@@ -1,11 +1,8 @@
-﻿using Castle.Core;
-using Castle.MicroKernel;
+﻿using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using DotCommon.Dependency;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace DotCommon.CastleWindsor
 {
@@ -74,6 +71,7 @@ namespace DotCommon.CastleWindsor
             {
                 registration.Named(serviceName);
             }
+            registration.IsDefault();
             _container.Register(ApplyLifestyle(registration, lifeStyle));
         }
 
@@ -84,12 +82,14 @@ namespace DotCommon.CastleWindsor
             {
                 registration.Named(serviceName);
             }
+            registration.IsDefault();
             _container.Register(ApplyLifestyle(registration, lifeStyle));
         }
 
         public void Register<T>(T impl) where T : class
         {
             var registration = Component.For<T>().Instance(impl);
+            registration.IsDefault();
             _container.Register(ApplyLifestyle(registration, DependencyLifeStyle.Singleton));
         }
 
@@ -102,6 +102,7 @@ namespace DotCommon.CastleWindsor
             {
                 registration.Named(serviceName);
             }
+            registration.IsDefault();
             _container.Register(ApplyLifestyle(registration, lifeStyle));
         }
 
@@ -110,6 +111,7 @@ namespace DotCommon.CastleWindsor
          where TImpl : class, TType
         {
             var registration = Component.For<TType>().Instance(impl);
+            registration.IsDefault();
             _container.Register(ApplyLifestyle(registration, DependencyLifeStyle.Singleton));
         }
 
@@ -123,7 +125,7 @@ namespace DotCommon.CastleWindsor
             }
             if (isDefault)
             {
-                registration = registration.IsDefault();
+                registration.IsDefault();
             }
             _container.Register(ApplyLifestyle(registration, lifeStyle));
         }
