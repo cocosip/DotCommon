@@ -122,7 +122,7 @@ namespace DotCommon.Autofac
             }
             if (lifeStyle == DependencyLifeStyle.Singleton)
             {
-                registrationBuilder.InstancePerDependency();
+                registrationBuilder.SingleInstance();
             }
         }
 
@@ -147,9 +147,9 @@ namespace DotCommon.Autofac
                 {
                     genericBuilder.PropertiesAutowired();
                 }
-                if (lifeStyle != DependencyLifeStyle.Singleton)
+                if (lifeStyle == DependencyLifeStyle.Singleton)
                 {
-                    genericBuilder.InstancePerDependency();
+                    genericBuilder.SingleInstance();
                 }
                 return;
             }
@@ -164,9 +164,9 @@ namespace DotCommon.Autofac
                 {
                     registrationBuilder.PreserveExistingDefaults();
                 }
-                if (lifeStyle != DependencyLifeStyle.Singleton)
+                if (lifeStyle == DependencyLifeStyle.Singleton)
                 {
-                    registrationBuilder.InstancePerDependency();
+                    registrationBuilder.SingleInstance();
                 }
             }
         }
