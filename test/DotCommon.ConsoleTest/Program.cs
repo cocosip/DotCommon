@@ -15,6 +15,7 @@ using System.Diagnostics;
 using DotCommon.Serializing;
 using DotCommon.CastleWindsor;
 using Castle.Windsor;
+using DotCommon.Utility;
 
 namespace DotCommon.ConsoleTest
 {
@@ -26,16 +27,16 @@ namespace DotCommon.ConsoleTest
             // Run();
             //Console.ReadLine();
 
-            var builder = new ContainerBuilder();
+            //var builder = new ContainerBuilder();
 
-            Configurations.Configuration.Create()
-                //.UseAutofac(builder)
-                .UseCastleWindsor(new WindsorContainer())
-                .RegisterCommonComponent()
-                //.RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
-                .UseLog4Net()
-                .UseJson4Net()
-                .UseMemoryCache()
+            //Configurations.Configuration.Create()
+            //    //.UseAutofac(builder)
+            //    .UseCastleWindsor(new WindsorContainer())
+            //    .RegisterCommonComponent()
+            //    //.RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
+            //    .UseLog4Net()
+            //    .UseJson4Net()
+            //    .UseMemoryCache()
             //.UseQuartz()
             //.RegisterQuartzJobs(new List<Assembly>() { typeof(TestQuartzJob).Assembly })
             //.AutofacBuild()
@@ -61,10 +62,30 @@ namespace DotCommon.ConsoleTest
             //var workManager = IocManager.GetContainer().Resolve<IBackgroundWorkerManager>();
             //Schedule();
             //workManager.Start();
-            Run();
+            //Run();
 
             //var backgroundWorks = IocManager.GetContainer().Resolve(typeof(TestBackgroundWorker)).As<IBackgroundWorker>();
+ 
+            var l1 = new List<string>()
+            {
+                "A","B","C"
+            };
+            var l2 = new List<string>()
+            {
+                "1","2","3"
+            };
+            var l3 = new List<string>()
+            {
+                "X","Y"
+            };
 
+            var r = MathUtil.Descartes<string>(l1,l2,l3);
+            foreach (var item in r)
+            {
+                Console.WriteLine(string.Join(",", item));
+            }
+
+           
 
             Console.ReadLine();
         }

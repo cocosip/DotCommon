@@ -175,5 +175,53 @@ namespace DotCommon.Utility
 
         #endregion
 
+        /// <summary>笛卡尔积算法
+        /// </summary>
+        public static List<List<T>> Descartes<T>(params List<T>[] array)
+        {
+            int total = 1;
+            foreach (var item in array)
+            {
+                total *= item.Count;
+            }
+            var result = new List<T>[total];
+            int itemLoopNum = 1;
+            int loopPerItem = 1;
+            int now = 1;
+            foreach (var arrayItem in array)
+            {
+                now *= arrayItem.Count;
+
+                int index = 0;
+                int currentSize = arrayItem.Count;
+                itemLoopNum = total / now;
+                loopPerItem = total / (itemLoopNum * currentSize);
+                int myIndex = 0;
+
+                foreach (var item in arrayItem)
+                {
+                    for (int i = 0; i < loopPerItem; i++)
+                    {
+                        if (myIndex == arrayItem.Count)
+                        {
+                            myIndex = 0;
+                        }
+                        for (int j = 0; j < itemLoopNum; j++)
+                        {
+                            if (result[index] == null)
+                            {
+                                result[index] = new List<T>();
+                            }
+                            result[index].Add(arrayItem[myIndex]);
+                            index++;
+                        }
+                        myIndex++;
+                    }
+
+                }
+            }
+
+            return result.ToList();
+        }
     }
 }
