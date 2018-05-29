@@ -58,7 +58,17 @@ namespace DotCommon.Http
             {
                 request.ClientCertificates.Add(options.ClientCert);
             }
-
+            //HttpVersion
+            if (options.HttpVersion != null)
+            {
+                request.ProtocolVersion = options.HttpVersion;
+            }
+            //SecurityProtocolType
+            if (options.IsSecurityProtocolTypeSetted)
+            {
+                ServicePointManager.SecurityProtocol = options.SecurityProtocolType;
+            }
+            
             //Header
             foreach (var item in options.RequestHeaders)
             {

@@ -110,6 +110,18 @@ namespace DotCommon.Http
         /// </summary>
         public RemoteCertificateValidationCallback SslValidationCallback { get; set; }
 
+        /// <summary>HttpVersion
+        /// </summary>
+        public Version HttpVersion { get; set; }
+
+        /// <summary>SecurityProtocolType, Tsl version
+        /// </summary>
+        public SecurityProtocolType SecurityProtocolType { get; set; }
+
+        /// <summary>是否设置SecurityProtocolType
+        /// </summary>
+        public bool IsSecurityProtocolTypeSetted { get; set; } = false;
+
         /// <summary>认证架构
         /// </summary>
         public string AuthorizationSchema { get; set; }

@@ -200,6 +200,22 @@ namespace DotCommon.Http
             return this;
         }
 
+        /// <summary>设置HttpVersion,HttpVersion.Version11
+        /// </summary>
+        public RequestBuilder SetProtocolVersion(Version httpVersion)
+        {
+            _options.HttpVersion = httpVersion;
+            return this;
+        }
+
+        /// <summary>设置SecurityProtocolType
+        /// </summary>
+        public RequestBuilder SetSecurityProtocolType(SecurityProtocolType securityProtocolType)
+        {
+            _options.SecurityProtocolType = securityProtocolType;
+            return this;
+        }
+
         /// <summary>设置证书,添加证书后会默认启用SSL
         /// </summary>
         public RequestBuilder SetCert(X509Certificate cert)
