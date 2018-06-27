@@ -7,13 +7,13 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.9.3</Version>
+    <Version>2.9.4</Version>
     <Description>通用.net类库Quartz定时任务</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Quartz" Version="3.0.4" />
+    <PackageReference Include="Quartz" Version="3.0.5" />
   </ItemGroup>
 
   <ItemGroup>

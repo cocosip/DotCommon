@@ -8,7 +8,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.9.3</Version>
+    <Version>2.9.4</Version>
     <Description>通用的.net类库,缓存操作</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>
@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Nito.AsyncEx.Context" Version="1.1.0" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="1.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.1" />
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
   </ItemGroup>
 </Project>
