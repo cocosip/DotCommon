@@ -42,7 +42,7 @@ namespace DotCommon.Serializing
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
-                var jsonProperty = CreateProperty(member, memberSerialization);
+                var jsonProperty = base.CreateProperty(member, memberSerialization);
                 if (jsonProperty.Writable)
                 {
                     return jsonProperty;

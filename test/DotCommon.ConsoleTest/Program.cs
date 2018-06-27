@@ -27,16 +27,16 @@ namespace DotCommon.ConsoleTest
             // Run();
             //Console.ReadLine();
 
-            //var builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
 
-            //Configurations.Configuration.Create()
-            //    //.UseAutofac(builder)
-            //    .UseCastleWindsor(new WindsorContainer())
-            //    .RegisterCommonComponent()
-            //    //.RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
-            //    .UseLog4Net()
-            //    .UseJson4Net()
-            //    .UseMemoryCache()
+            Configurations.Configuration.Create()
+                //.UseAutofac(builder)
+                .UseCastleWindsor(new WindsorContainer())
+                .RegisterCommonComponent()
+                //.RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
+                .UseLog4Net()
+                .UseJson4Net()
+                .UseMemoryCache()
             //.UseQuartz()
             //.RegisterQuartzJobs(new List<Assembly>() { typeof(TestQuartzJob).Assembly })
             //.AutofacBuild()
@@ -65,27 +65,9 @@ namespace DotCommon.ConsoleTest
             //Run();
 
             //var backgroundWorks = IocManager.GetContainer().Resolve(typeof(TestBackgroundWorker)).As<IBackgroundWorker>();
- 
-            var l1 = new List<string>()
-            {
-                "A","B","C"
-            };
-            var l2 = new List<string>()
-            {
-                "1","2","3"
-            };
-            var l3 = new List<string>()
-            {
-                "X","Y"
-            };
-
-            var r = MathUtil.Descartes<string>(l1,l2,l3);
-            foreach (var item in r)
-            {
-                Console.WriteLine(string.Join(",", item));
-            }
-
-           
+            var json = "{\"Message\":\"OK\",\"RequestId\":\"311034B5-FD7F-433A-840F-D33E5E49481C\",\"BizId\":\"211411904525885125\",\"Code\":\"OK\"}";
+            var jsonSerializer = IocManager.GetContainer().Resolve<IJsonSerializer>();
+            var r = jsonSerializer.Deserialize<AlidayuSendResponse>(json);
 
             Console.ReadLine();
         }
@@ -134,5 +116,12 @@ namespace DotCommon.ConsoleTest
              });
         }
 
+    }
+    public class AlidayuSendResponse
+    {
+        public string Message { get; set; }
+        public string RequestId { get; set; }
+        public string BizId { get; set; }
+        public string Code { get; set; }
     }
 }
