@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace DotCommon.Http
 {
     public interface IHttpClient
     {
-        /// <summary>执行请求
-        /// </summary>
-        Task<Response> ExecuteAsync(RequestBuilder builder);
     }
 }

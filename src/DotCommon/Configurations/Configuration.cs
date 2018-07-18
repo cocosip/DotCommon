@@ -32,7 +32,7 @@ namespace DotCommon.Configurations
         {
             var container = IocManager.GetContainer();
             //Http请求
-            container.Register<IHttpClient, DefaultHttpClient>(DependencyLifeStyle.Transient);
+           // container.Register<IHttpClient, DefaultHttpClient>(DependencyLifeStyle.Transient);
             //Json序列化(默认)
             container.Register<IJsonSerializer, DefaultJsonSerializer>(DependencyLifeStyle.Transient);
             //Xml序列化
