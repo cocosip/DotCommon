@@ -1,6 +1,6 @@
 ﻿using DotCommon.Dependency;
 using DotCommon.Extensions;
-using DotCommon.Http;
+//using DotCommon.Http;
 using DotCommon.Logging;
 using DotCommon.Runtime;
 using DotCommon.Runtime.Remoting;

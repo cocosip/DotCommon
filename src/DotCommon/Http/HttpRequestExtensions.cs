@@ -1,63 +1,87 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Cache;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace DotCommon.Http
 {
     public static class HttpRequestExtensions
     {
-        /// <summary>添加UserAgent
+        /// <summary>添加AddReferer
         /// </summary>
-        public static IHttpRequest AddUserAgent(this IHttpRequest request, string userAgent)
+        public static IHttpRequest AddReferer(this IHttpRequest request, string value)
         {
-            return request.AddParameter("User-Agent", userAgent, ParameterType.HttpHeader);
+            return request.AddParameter("Referer", value, ParameterType.HttpHeader);
         }
 
-        /// <summary>添加Referer
+        /// <summary>添加User-Agent
         /// </summary>
-        public static IHttpRequest AddReferer(this IHttpRequest request, string referer)
+        public static IHttpRequest AddUserAgent(this IHttpRequest request, string value)
         {
-            return request.AddParameter("Referer", referer, ParameterType.HttpHeader);
+            return request.AddParameter("User-Agent", value, ParameterType.HttpHeader);
         }
 
         /// <summary>添加Accept
         /// </summary>
-        public static IHttpRequest AddAccept(this IHttpRequest request, string accept)
+        public static IHttpRequest AddAccept(this IHttpRequest request, string value)
         {
-            if (request.Parameters.Any(p => p.Name.ToLowerInvariant() == "accept"))
-            {
-                request.RemoveParameter("Accept");
-            }
-            return request.AddParameter("Accept", accept, ParameterType.HttpHeader);
-        }
-
-        /// <summary>添加AcceptType
-        /// </summary>
-        public static IHttpRequest AddAcceptType(this IHttpRequest request, string acceptType)
-        {
-            if (!request.AcceptTypes.Any(x => x.Equals(acceptType)))
-            {
-                request.AcceptTypes.Add(acceptType);
-            }
+            //如果添加了Accepts
+            request.AcceptTypes.Add(value);
             var accepts = string.Join(", ", request.AcceptTypes.ToArray());
-            return AddAccept(request, accepts);
+            return request.AddOrUpdateParameter("Accept", accepts, ParameterType.HttpHeader);
         }
 
+        /// <summary>直接使用固定完成的Accepts
+        /// </summary>
+        public static IHttpRequest UseAccept(this IHttpRequest request, string value)
+        {
+            request.AcceptTypes.Clear();
+            var accepts = value.Split(',');
+            foreach (var accept in accepts)
+                request.AcceptTypes.Add(accept.TrimEnd());
+            var newAccepts = string.Join(", ", request.AcceptTypes.ToArray());
+            return request.AddOrUpdateParameter("Accept", accepts, ParameterType.HttpHeader);
+        }
 
         /// <summary>设置KeepAlive
         /// </summary>
-        public static IHttpRequest AddKeepAlive(this IHttpRequest request, bool keepAlive)
+        public static IHttpRequest SetKeepAlive(this IHttpRequest request, bool keepAlive)
         {
-            return request.AddParameter("Keep-Alive", keepAlive, ParameterType.HttpHeader);
+            request.KeepAlive = keepAlive;
+            return request;
         }
 
-        /// <summary>设置是否自动压缩
+        /// <summary>使用证书
         /// </summary>
-        public static IHttpRequest SetAutomaticDecompression(this IHttpRequest request, bool automaticDecompression)
+        public static IHttpRequest SetClientCertificates(this IHttpRequest request, X509CertificateCollection certificates)
         {
-            request.AutomaticDecompression = automaticDecompression;
+            request.ClientCertificates = certificates;
+            return request;
+        }
+
+        /// <summary>使用缓存
+        /// </summary>
+        public static IHttpRequest SetCachePolicy(this IHttpRequest request, RequestCachePolicy cachePolicy)
+        {
+            request.CachePolicy = cachePolicy;
+            return request;
+        }
+
+        /// <summary>使用是否重定向与最大重定向数量
+        /// </summary>
+        public static IHttpRequest SetRedirects(this IHttpRequest request, bool followRedirects, int? maxRedirects)
+        {
+            request.FollowRedirects = followRedirects;
+            request.MaxRedirects = maxRedirects;
+            return request;
+        }
+
+        /// <summary>设置Pipelined
+        /// </summary>
+        public static IHttpRequest SetPipelined(this IHttpRequest request, bool pipelined)
+        {
+            request.Pipelined = pipelined;
             return request;
         }
 
@@ -69,38 +93,6 @@ namespace DotCommon.Http
             return request;
         }
 
-        /// <summary>设置是否允许重定向
-        /// </summary>
-        public static IHttpRequest SetFollowRedirects(this IHttpRequest request, bool followRedirects)
-        {
-            request.FollowRedirects = followRedirects;
-            return request;
-        }
-
-        /// <summary>设置最大重定向数量
-        /// </summary>
-        public static IHttpRequest SetMaxRedirects(this IHttpRequest request, int maxRedirects)
-        {
-            request.MaxRedirects = maxRedirects;
-            return request;
-        }
-
-        /// <summary>设置最大重定向数量
-        /// </summary>
-        public static IHttpRequest SetPipelined(this IHttpRequest request, bool pipelined)
-        {
-            request.Pipelined = pipelined;
-            return request;
-        }
-
-        /// <summary>设置缓存策略
-        /// </summary>
-        public static IHttpRequest SetCachePolicy(this IHttpRequest request, RequestCachePolicy cachePolicy)
-        {
-            request.CachePolicy = cachePolicy;
-            return request;
-        }
-
         /// <summary>设置CookieContainer
         /// </summary>
         public static IHttpRequest SetCookieContainer(this IHttpRequest request, CookieContainer cookieContainer)
@@ -109,45 +101,30 @@ namespace DotCommon.Http
             return request;
         }
 
-        /// <summary>设置编码
+        /// <summary>设置自动压缩
         /// </summary>
-        public static IHttpRequest SetEncoding(this IHttpRequest request, Encoding encoding)
+        public static IHttpRequest SetAutomaticDecompression(this IHttpRequest request, bool automaticDecompression)
         {
-            request.Encoding = encoding;
+            request.AutomaticDecompression = automaticDecompression;
             return request;
         }
 
-        /// <summary>添加凭证
+        /// <summary>设置请求配置
         /// </summary>
-        public static IHttpRequest AddCredentials(this IHttpRequest request, ICredentials credentials)
+        public static IHttpRequest SetWebRequestConfigurator(this IHttpRequest request, Action<HttpWebRequest> webRequestConfigurator)
         {
-            request.Credentials = credentials;
+            request.WebRequestConfigurator = webRequestConfigurator;
             return request;
         }
 
-        /// <summary>添加x.509证书
+        /// <summary>设置是否发送头部认证
         /// </summary>
-        public static IHttpRequest AddClientCredentials(this IHttpRequest request, X509Certificate x509Certificate)
+        public static IHttpRequest SetPreAuthenticate(this IHttpRequest request, bool preAuthenticate)
         {
-            request.ClientCertificates.Add(x509Certificate);
+            request.PreAuthenticate = preAuthenticate;
             return request;
         }
 
-        /// <summary>清除证书
-        /// </summary>
-        public static IHttpRequest ClearClientCredentials(this IHttpRequest request)
-        {
-            request.ClientCertificates.Clear();
-            return request;
-        }
 
-        /// <summary>缓存策略
-        /// </summary>
-        public static IHttpRequest AddCachePolicy(this IHttpRequest request, RequestCachePolicy cachePolicy)
-        {
-            request.CachePolicy = cachePolicy;
-            return request;
-        }
     }
-
 }

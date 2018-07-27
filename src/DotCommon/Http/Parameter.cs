@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DotCommon.Http
+﻿namespace DotCommon.Http
 {
-    /// <summary>Request请求数据
+    /// <summary>HttpRequest中使用的参数
     /// </summary>
     public class Parameter
     {
@@ -14,11 +10,15 @@ namespace DotCommon.Http
 
         public ParameterType Type { get; set; }
 
+        /// <summary>MIME
+        /// </summary>
         public string ContentType { get; set; }
 
+        /// <summary>
+        /// </summary>
         public override string ToString()
         {
-            return $"{Name}={Value}";
+            return string.Format("{0}={1}", Name, Value);
         }
     }
 }

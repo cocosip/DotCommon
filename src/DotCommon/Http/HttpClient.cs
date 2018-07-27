@@ -1,95 +1,383 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
 using System.Linq;
+using System.Net;
+using System.Net.Cache;
+using System.Net.Security;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DotCommon.Http
 {
     public class HttpClient : IHttpClient
     {
-        private const string DefaultUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.339";
-        private IList<string> AcceptTypes { get; }
+        private static readonly Version version = new AssemblyName(Assembly.GetExecutingAssembly().FullName).Version;
+
+        private static readonly Regex StructuredSyntaxSuffixRegex = new Regex(@"\+\w+$");
+
+        private static readonly Regex StructuredSyntaxSuffixWildcardRegex = new Regex(@"^\*\+\w+$");
+
+        /// <summary>
+        /// </summary>
         public HttpClient()
         {
-            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-            AcceptTypes = new List<string>
-            {
-                "application/json",
-                "application/xml",
-                "text/json",
-                "text/x-json",
-                "text/javascript",
-                "text/xml",
-                "*+json",
-                "*+xml",
-                "*"
-            };
-        }
+            Encoding = Encoding.UTF8;
+            AcceptTypes = new List<string>();
+            DefaultParameters = new List<Parameter>();
+            AutomaticDecompression = true;
 
-        public async Task ExecuteAsync(HttpRequest request)
+            AcceptTypes.Add("application/json");
+            AcceptTypes.Add("application/xml");
+            AcceptTypes.Add("text/json");
+            AcceptTypes.Add("text/x-json");
+            AcceptTypes.Add("text/javascript");
+            AcceptTypes.Add("text/xml");
+            AcceptTypes.Add("*+json");
+            AcceptTypes.Add("*+xml");
+            AcceptTypes.Add("*");
+            FollowRedirects = true;
+        }
+        private IList<string> AcceptTypes { get; }
+        private Action<HttpWebRequest> WebRequestConfigurator { get; set; }
+
+        /// <summary>启用或者禁用自动压缩
+        /// </summary>
+        public bool AutomaticDecompression { get; set; }
+
+        /// <summary>最大允许跳转数量
+        /// </summary>
+        public int? MaxRedirects { get; set; }
+
+        /// <summary>X509CertificateCollection 客户端证书
+        /// </summary>
+        public X509CertificateCollection ClientCertificates { get; set; }
+
+        /// <summary>代理
+        /// </summary>
+        public IWebProxy Proxy { get; set; }
+
+        /// <summary>客户端请求缓存
+        /// </summary>
+        public RequestCachePolicy CachePolicy { get; set; }
+
+        /// <summary>
+        /// </summary>
+        public bool Pipelined { get; set; }
+
+        /// <summary>是否自动重定向
+        /// </summary>
+        public bool FollowRedirects { get; set; }
+
+        /// <summary>CookieContainer
+        /// </summary>
+        public CookieContainer CookieContainer { get; set; }
+
+        /// <summary>UserAgent
+        /// </summary>
+        public string UserAgent { get; set; }
+
+        /// <summary>客户端请求超时时间,以毫秒为单位
+        /// </summary>
+        public int Timeout { get; set; }
+
+        /// <summary>读写的超时时间,以毫秒为单位
+        /// </summary>
+        public int ReadWriteTimeout { get; set; }
+
+        /// <summary>认证
+        /// </summary>
+        //public IAuthenticator Authenticator { get; set; }
+
+        /// <summary>编码
+        /// </summary>
+        public Encoding Encoding { get; set; }
+
+        public bool PreAuthenticate { get; set; }
+
+        /// <summary>允许高速NTLM身份验证的连接共享
+        /// </summary>
+        public bool UnsafeAuthenticatedConnectionSharing { get; set; }
+
+        /// <summary>RemoteCertificateValidationCallback
+        /// </summary>
+        public RemoteCertificateValidationCallback RemoteCertificateValidationCallback { get; set; }
+
+        /// <summary>默认参数
+        /// </summary>
+        public IList<Parameter> DefaultParameters { get; }
+
+        /// <summary>BaseHost
+        /// </summary>
+        public string BaseHost { get; set; }
+
+        /// <summary>如果您需要添加具有相同名称的多个默认参数，设置为true。只支持 query 和 form parameters
+        /// </summary>
+        public bool AllowMultipleDefaultParametersWithSameName { get; set; } = false;
+
+        /// <summary>HttpWebRequest操作
+        /// </summary>
+        public void ConfigureWebRequest(Action<HttpWebRequest> configurator) =>
+            WebRequestConfigurator = configurator;
+
+        /// <summary>
+        ///     Assembles URL to call based on parameters, method and resource
+        /// </summary>
+        /// <param name="request">RestRequest to execute</param>
+        /// <returns>Assembled System.Uri</returns>
+        public Uri BuildUri(IHttpRequest request)
         {
+            DoBuildUriValidations(request);
 
-            //request1.KeepAlive;
-            await Task.CompletedTask;
+            var applied = GetUrlSegmentParamsValues(request);
+            //
+            request.BaseUrl = applied.Uri;
+            string resource = applied.Resource;
+
+            string mergedUri = MergeBaseUrlAndResource(request, resource);
+
+            string finalUri = ApplyQueryStringParamsValuesToUri(mergedUri, request);
+
+            return new Uri(finalUri);
         }
 
-        IHttp ConfigureHttp(IHttpRequest request)
+        private void DoBuildUriValidations(IHttpRequest request)
+        {
+            if (request.BaseUrl == null)
+            {
+                throw new NullReferenceException("RestClient must contain a value for BaseUrl");
+            }
+
+            var nullValuedParams = request.Parameters
+                .Where(p => p.Type == ParameterType.UrlSegment && p.Value == null)
+                .Select(p => p.Name);
+
+            if (nullValuedParams.Any())
+            {
+                var names = string.Join(", ", nullValuedParams.Select(name => $"'{name}'").ToArray());
+                throw new ArgumentException($"Url 片段参数中 {names} 的值为null",
+                    nameof(request));
+            }
+        }
+
+        /// <summary>获取Url中Segment片段值
+        /// </summary>
+        private UrlSegmentParamsValues GetUrlSegmentParamsValues(IHttpRequest request)
+        {
+            var assembled = request.Resource;
+            var hasResource = !string.IsNullOrEmpty(assembled);
+            var urlParms = request.Parameters.Where(p => p.Type == ParameterType.UrlSegment);
+            var builder = new UriBuilder(request.BaseUrl);
+
+            foreach (var parameter in urlParms)
+            {
+                var paramPlaceHolder = $"{{{parameter.Name}}}";
+                var paramValue = parameter.Value.ToString().UrlEncode();
+
+                if (hasResource)
+                {
+                    assembled = assembled.Replace(paramPlaceHolder, paramValue);
+                }
+
+                builder.Path = builder.Path.UrlDecode().Replace(paramPlaceHolder, paramValue);
+            }
+
+            return new UrlSegmentParamsValues(builder.Uri, assembled);
+        }
+
+        private string MergeBaseUrlAndResource(IHttpRequest request, string resource)
+        {
+            var assembled = resource;
+
+            if (!string.IsNullOrEmpty(assembled) && assembled.StartsWith("/"))
+            {
+                assembled = assembled.Substring(1);
+            }
+
+            if (request.BaseUrl == null || string.IsNullOrEmpty(request.BaseUrl.AbsoluteUri))
+            {
+                return assembled;
+            }
+
+            Uri usingBaseUri = request.BaseUrl;
+            if (!request.BaseUrl.AbsoluteUri.EndsWith("/") && !string.IsNullOrEmpty(assembled))
+            {
+                usingBaseUri = new Uri(request.BaseUrl.AbsoluteUri + "/");
+            }
+            assembled = new Uri(usingBaseUri, assembled).AbsoluteUri;
+            return assembled;
+        }
+
+        /// <summary>添加QueryString参数到请求
+        /// </summary>
+        private string ApplyQueryStringParamsValuesToUri(string mergedUri, IHttpRequest request)
+        {
+            var parameters = GetQueryStringParameters(request);
+
+            if (!parameters.Any())
+            {
+                return mergedUri;
+            }
+
+            var separator = mergedUri != null && mergedUri.Contains("?") ? "&" : "?";
+            //Url上的参数,是需要进行编码转换的
+            return string.Concat(mergedUri, separator, EncodeParameters(parameters, Encoding));
+        }
+
+        /// <summary>获取QueryString参数
+        /// </summary>
+        private static IEnumerable<Parameter> GetQueryStringParameters(IHttpRequest request)
+        {
+            //如果是GET请求,那么就是GetOrPost参数与QueryString参数,这两个类型的参数是一样的,都是添加到请求Url上,
+            //如果是其他请求,那么都是在QueryString参数上
+            return request.Method != Method.POST && request.Method != Method.PUT && request.Method != Method.PATCH
+                ? request.Parameters
+                    .Where(p => p.Type == ParameterType.GetOrPost ||
+                                p.Type == ParameterType.QueryString)
+                : request.Parameters
+                    .Where(p => p.Type == ParameterType.QueryString);
+        }
+
+        /// <summary>
+        ///     Retrieve the handler for the specified MIME content type
+        /// </summary>
+        /// <param name="contentType">MIME content type to retrieve</param>
+        /// <returns>IDeserializer instance</returns>
+        //private IDeserializer GetHandler(string contentType)
+        //{
+        //    if (contentType == null)
+        //        throw new ArgumentNullException("contentType");
+
+        //    if (string.IsNullOrEmpty(contentType) && ContentHandlers.ContainsKey("*"))
+        //        return ContentHandlers["*"];
+
+        //    int semicolonIndex = contentType.IndexOf(';');
+
+        //    if (semicolonIndex > -1)
+        //        contentType = contentType.Substring(0, semicolonIndex);
+
+        //    if (ContentHandlers.ContainsKey(contentType))
+        //        return ContentHandlers[contentType];
+
+        //    // Avoid unnecessary use of regular expressions in checking for structured syntax suffix by looking for a '+' first
+        //    if (contentType.IndexOf('+') >= 0)
+        //    {
+        //        // https://tools.ietf.org/html/rfc6839#page-4
+        //        Match structuredSyntaxSuffixMatch = StructuredSyntaxSuffixRegex.Match(contentType);
+
+        //        if (structuredSyntaxSuffixMatch.Success)
+        //        {
+        //            var structuredSyntaxSuffixWildcard = "*" + structuredSyntaxSuffixMatch.Value;
+        //            if (ContentHandlers.ContainsKey(structuredSyntaxSuffixWildcard))
+        //            {
+        //                return ContentHandlers[structuredSyntaxSuffixWildcard];
+        //            }
+        //        }
+        //    }
+
+        //    return ContentHandlers.ContainsKey("*") ? ContentHandlers["*"] : null;
+        //}
+
+        //private void AuthenticateIfNeeded(RestClient client, IRestRequest request) =>
+        //    Authenticator?.Authenticate(client, request);
+
+        private static string EncodeParameters(IEnumerable<Parameter> parameters, Encoding encoding) =>
+            string.Join("&", parameters.Select(parameter => EncodeParameter(parameter, encoding)).ToArray());
+
+        private static string EncodeParameter(Parameter parameter, Encoding encoding) =>
+            parameter.Value == null
+                ? string.Concat(parameter.Name.UrlEncode(encoding), "=")
+                : string.Concat(parameter.Name.UrlEncode(encoding), "=",
+                    parameter.Value.ToString().UrlEncode(encoding));
+
+        private static readonly ParameterType[] MultiParameterTypes =
+            {ParameterType.QueryString, ParameterType.GetOrPost};
+
+        internal IHttp ConfigureHttp(IHttpRequest request)
         {
             var http = Http.Create();
-            //编码
-            http.Encoding = request.Encoding;
-            //请求是否都使用MultipartFormData
+            //设置编码
+            http.Encoding = request.Encoding ?? Encoding;
+            //KeepAlive
+            http.KeepAlive = request.KeepAlive;
+
+            //是否总是使用Mulit FormData
             http.AlwaysMultipartFormData = request.AlwaysMultipartFormData;
-            //是否使用默认的身份认证
+            //是否使用默认凭据
             http.UseDefaultCredentials = request.UseDefaultCredentials;
-            //http.ResponseWriter = request.ResponseWriter;
-            http.CookieContainer = request.CookieContainer;
-            http.AutomaticDecompression = request.AutomaticDecompression;
-            //http.WebRequestConfigurator = WebRequestConfigurator;
+            http.ResponseWriter = request.ResponseWriter;
+            //CookieContainer
+            http.CookieContainer = request.CookieContainer ?? CookieContainer;
+            //自动压缩
+            http.AutomaticDecompression = request.AutomaticDecompression ?? AutomaticDecompression;
+            //WebRequest操作
+            http.WebRequestConfigurator = request.WebRequestConfigurator ?? WebRequestConfigurator;
 
-            //添加Accept
+            // 将Client的默认参数添加到Request中
+            foreach (var p in DefaultParameters)
+            {
+                var parameterExists = request.Parameters.Any(p2 => p2.Name == p.Name && p2.Type == p.Type);
 
-            //如果请求中没有Accept
+                if (AllowMultipleDefaultParametersWithSameName)
+                {
+                    var isMultiParameter = MultiParameterTypes.Any(pt => pt == p.Type);
+                    parameterExists = !isMultiParameter && parameterExists;
+                }
+
+                if (parameterExists)
+                    continue;
+
+                request.AddParameter(p);
+            }
+
+            //如果请求头部中没有添加Accept,那么就使用Client中的默认的
             if (request.Parameters.All(p2 => p2.Name.ToLowerInvariant() != "accept"))
             {
                 var accepts = string.Join(", ", AcceptTypes.ToArray());
+
                 request.AddParameter("Accept", accepts, ParameterType.HttpHeader);
             }
 
             http.Url = BuildUri(request);
-            //Host
-            http.Host = http.Url.Host;
-            http.PreAuthenticate = request.PreAuthenticate;
-            http.UnsafeAuthenticatedConnectionSharing = request.UnsafeAuthenticatedConnectionSharing;
+            http.Host = BaseHost;
+            http.PreAuthenticate = request.PreAuthenticate ?? PreAuthenticate;
+            http.UnsafeAuthenticatedConnectionSharing = UnsafeAuthenticatedConnectionSharing;
 
-            //var userAgent = request.Parameters.FirstOrDefault(p => p.Name == "User-Agent" && p.Type == ParameterType.HttpHeader);
-            //if (userAgent != null && userAgent.Value != null)
-            var timeout = request.Timeout != 0 ? request.Timeout : 5000;
+            var userAgent = UserAgent ?? http.UserAgent;
+
+            http.UserAgent = userAgent.HasValue()
+                ? userAgent
+                : "CSharp/" + version;
+
+            var timeout = request.Timeout != 0
+                ? request.Timeout
+                : Timeout;
+
             if (timeout != 0)
                 http.Timeout = timeout;
 
-            var readWriteTimeout = request.ReadWriteTimeout != 0 ? request.ReadWriteTimeout : 5000;
+            var readWriteTimeout = request.ReadWriteTimeout != 0
+                ? request.ReadWriteTimeout
+                : ReadWriteTimeout;
+
             if (readWriteTimeout != 0)
                 http.ReadWriteTimeout = readWriteTimeout;
 
+            //x509证书
+            http.ClientCertificates = request.ClientCertificates ?? ClientCertificates ?? null;
             //是否允许重定向
-            http.FollowRedirects = request.FollowRedirects;
+            http.FollowRedirects = FollowRedirects;
             //最大重定向数量
-            http.MaxRedirects = request.MaxRedirects;
-            //客户端凭据
-            if (request.ClientCertificates != null)
-                http.ClientCertificates = request.ClientCertificates;
-            //缓存策略
-            http.CachePolicy = request.CachePolicy;
-
-            http.Pipelined = request.Pipelined;
+            http.MaxRedirects = request.MaxRedirects ?? MaxRedirects;
+            //缓存
+            http.CachePolicy = request.CachePolicy ?? CachePolicy;
+            //Pipelined
+            http.Pipelined = request.Pipelined ?? Pipelined;
 
             if (request.Credentials != null)
                 http.Credentials = request.Credentials;
-
+            //连接分组
             if (!string.IsNullOrEmpty(request.ConnectionGroupName))
                 http.ConnectionGroupName = request.ConnectionGroupName;
 
@@ -138,6 +426,8 @@ namespace DotCommon.Http
 
             var body = request.Parameters.FirstOrDefault(p => p.Type == ParameterType.RequestBody);
 
+            //如果没有任何文件，使它成为一个multi-formdata单请求，只会增加Body
+            // 如果有文件或AlwaysMultipartFormData=true，然后将body运到HTTP添加参数
             if (body != null)
             {
                 http.RequestContentType = body.Name;
@@ -163,27 +453,74 @@ namespace DotCommon.Http
             }
 
             http.AllowedDecompressionMethods = request.AllowedDecompressionMethods;
-            http.Proxy = request.Proxy ?? (WebRequest.DefaultWebProxy ?? HttpWebRequest.GetSystemWebProxy());
-            http.RemoteCertificateValidationCallback = request.RemoteCertificateValidationCallback;
+            http.Proxy = Proxy ?? (WebRequest.DefaultWebProxy ?? HttpWebRequest.GetSystemWebProxy());
+            http.RemoteCertificateValidationCallback = RemoteCertificateValidationCallback;
 
             return http;
         }
 
-        public Uri BuildUri(IHttpRequest request)
+        /// <summary>将Response转换成HttpResponse
+        /// </summary>
+        private static HttpResponse ConvertToHttpResponse(IHttpRequest request, Response response)
         {
-            //DoBuildUriValidations(request);
+            var httpResponse = new HttpResponse
+            {
+                Content = response.Content,
+                ContentEncoding = response.ContentEncoding,
+                ContentLength = response.ContentLength,
+                ContentType = response.ContentType,
+                ErrorException = response.ErrorException,
+                ErrorMessage = response.ErrorMessage,
+                RawBytes = response.RawBytes,
+                ResponseStatus = response.ResponseStatus,
+                ResponseUri = response.ResponseUri,
+                ProtocolVersion = response.ProtocolVersion,
+                Server = response.Server,
+                StatusCode = response.StatusCode,
+                StatusDescription = response.StatusDescription,
+                Request = request
+            };
 
-            //var applied = GetUrlSegmentParamsValues(request);
+            foreach (var header in response.Headers)
+                httpResponse.Headers.Add(new Parameter
+                {
+                    Name = header.Name,
+                    Value = header.Value,
+                    Type = ParameterType.HttpHeader
+                });
 
-            //BaseUrl = applied.Uri;
-            //string resource = applied.Resource;
+            foreach (var cookie in response.Cookies)
+                httpResponse.Cookies.Add(new HttpResponseCookie
+                {
+                    Comment = cookie.Comment,
+                    CommentUri = cookie.CommentUri,
+                    Discard = cookie.Discard,
+                    Domain = cookie.Domain,
+                    Expired = cookie.Expired,
+                    Expires = cookie.Expires,
+                    HttpOnly = cookie.HttpOnly,
+                    Name = cookie.Name,
+                    Path = cookie.Path,
+                    Port = cookie.Port,
+                    Secure = cookie.Secure,
+                    TimeStamp = cookie.TimeStamp,
+                    Value = cookie.Value,
+                    Version = cookie.Version
+                });
 
-            //string mergedUri = MergeBaseUrlAndResource(resource);
-
-            //string finalUri = ApplyQueryStringParamsValuesToUri(mergedUri, request);
-
-            return new Uri(request.Url);
+            return httpResponse;
         }
 
+        private class UrlSegmentParamsValues
+        {
+            public UrlSegmentParamsValues(Uri builderUri, string assembled)
+            {
+                Uri = builderUri;
+                Resource = assembled;
+            }
+
+            public Uri Uri { get; }
+            public string Resource { get; }
+        }
     }
 }

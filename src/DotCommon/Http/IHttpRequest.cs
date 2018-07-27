@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Cache;
-using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -9,49 +10,83 @@ namespace DotCommon.Http
 {
     public interface IHttpRequest
     {
-        /// <summary>请求的URL
+        /// <summary>请求参数
         /// </summary>
-        string Url { get; set; }
+        List<Parameter> Parameters { get; }
 
-        /// <summary>请求方法,GET或者POST或者其他
+        /// <summary>请求文件
+        /// </summary>
+        List<FileParameter> Files { get; }
+
+        /// <summary>压缩方法列表
+        /// </summary>
+        IList<DecompressionMethods> AllowedDecompressionMethods { get; }
+
+        /// <summary>Accepts
+        /// </summary>
+        IList<string> AcceptTypes { get; set; }
+
+        /// <summary>BaseUrl
+        /// </summary>
+        Uri BaseUrl { get; set; }
+
+        /// <summary>Http请求的方法
         /// </summary>
         Method Method { get; set; }
+
+        /// <summary>Resource
+        /// </summary>
+        string Resource { get; set; }
+
+        /// <summary>格式
+        /// </summary>
+        DataFormat RequestFormat { get; set; }
+
+        /// <summary>时间格式化
+        /// </summary>
+        string DateFormat { get; set; }
+
+        /// <summary>凭据
+        /// </summary>
+        ICredentials Credentials { get; set; }
+
+        /// <summary> 超时时间,以毫秒为单位
+        /// </summary>
+        int Timeout { get; set; }
+
+        /// <summary>读写超时时间,以毫秒为单位
+        /// </summary>
+        int ReadWriteTimeout { get; set; }
+
+        /// <summary>用户状态
+        /// </summary>
+        object UserState { get; set; }
+
+        /// <summary>总是使用MultipartFormData发送请求
+        /// </summary>
+        bool AlwaysMultipartFormData { get; set; }
+
+        Action<Stream> ResponseWriter { get; set; }
 
         /// <summary>编码
         /// </summary>
         Encoding Encoding { get; set; }
 
-        /// <summary>超时时间
-        /// </summary>
-        int Timeout { get; set; }
-
-        /// <summary>读取或者写入超时时间
-        /// </summary>
-        int ReadWriteTimeout { get; set; }
-
-        /// <summary> 总是发送 multipart/form-data 请求,即使没有文件的时候
-        /// </summary>
-        bool AlwaysMultipartFormData { get; set; }
-
-        /// <summary>使用默认凭证
+        /// <summary>使用默认的凭据
         /// </summary>
         bool UseDefaultCredentials { get; set; }
 
-        /// <summary>PreAuthenticate
+        /// <summary>Keep-Alive
         /// </summary>
-        bool PreAuthenticate { get; set; }
+        bool KeepAlive { get; set; }
 
-        /// <summary> Allow high-speed NTLM-authenticated connection sharing
+        /// <summary>客户端证书
         /// </summary>
-        bool UnsafeAuthenticatedConnectionSharing { get; set; }
+        X509CertificateCollection ClientCertificates { get; set; }
 
-        /// <summary>是否自动压缩
+        /// <summary>缓存
         /// </summary>
-        bool AutomaticDecompression { get; set; }
-
-        /// <summary>是否允许管道进行重定向
-        /// </summary>
-        bool Pipelined { get; set; }
+        RequestCachePolicy CachePolicy { get; set; }
 
         /// <summary>是否允许重定向
         /// </summary>
@@ -59,72 +94,75 @@ namespace DotCommon.Http
 
         /// <summary>最大的重定向数量
         /// </summary>
-        int MaxRedirects { get; set; }
+        int? MaxRedirects { get; set; }
+
+        /// <summary>Pipelined
+        /// </summary>
+        bool? Pipelined { get; set; }
 
         /// <summary>连接分组
         /// </summary>
         string ConnectionGroupName { get; set; }
 
-        /// <summary>缓存策略
-        /// </summary>
-        RequestCachePolicy CachePolicy { get; set; }
-
-        /// <summary>设置CookieContainer
+        /// <summary>CookieContainer
         /// </summary>
         CookieContainer CookieContainer { get; set; }
 
-        /// <summary>凭据
+        /// <summary>自动压缩
         /// </summary>
-        ICredentials Credentials { get; set; }
+        bool? AutomaticDecompression { get; set; }
 
-        /// <summary>代理
+        /// <summary>是否发送认证头部
         /// </summary>
-        IWebProxy Proxy { get; set; }
+        bool? PreAuthenticate { get; set; }
 
-        /// <summary>客户端x.509证书
+        /// <summary>HttpWebRequest操作
         /// </summary>
-        X509CertificateCollection ClientCertificates { get; set; }
+        Action<HttpWebRequest> WebRequestConfigurator { get; set; }
 
-        /// <summary>验证方法
+        /// <summary>添加文件
         /// </summary>
-        RemoteCertificateValidationCallback RemoteCertificateValidationCallback { get; set; }
+        IHttpRequest AddFile(string name, string path, string contentType = null);
 
-        /// <summary>Accept类型
+        /// <summary>添加文件
         /// </summary>
-        IList<string> AcceptTypes { get; set; }
+        IHttpRequest AddFile(string name, byte[] bytes, string fileName, string contentType = null);
 
-        /// <summary>请求参数
+        /// <summary>添加文件
         /// </summary>
-        List<Parameter> Parameters { get; }
+        IHttpRequest AddFile(string name, Action<Stream> writer, string fileName, long contentLength, string contentType = null);
 
-        /// <summary>上传文件
+        /// <summary>添加byte[]文件
+        /// </summary>>
+        IHttpRequest AddFileBytes(string name, byte[] bytes, string filename, string contentType = "application/x-gzip");
+
+        /// <summary>添加Body
         /// </summary>
-        List<FileParameter> Files { get; }
+        IHttpRequest AddBody(string contentType, string body);
 
-        /// <summary>允许的压缩方式
+        /// <summary>添加JSON数据
         /// </summary>
-        IList<DecompressionMethods> AllowedDecompressionMethods { get; }
+        IHttpRequest AddJsonBody(string json);
 
+        /// <summary>添加XML数据
+        /// </summary>
+        IHttpRequest AddXmlBody(string xml);
 
         /// <summary>添加参数
         /// </summary>
         IHttpRequest AddParameter(Parameter p);
 
-        /// <summary>添加Http请求参数 (QueryString for GET, DELETE, OPTIONS and HEAD; Encoded form for POST and PUT)
+        /// <summary>添加参数
         /// </summary>
         IHttpRequest AddParameter(string name, object value);
 
-        /// <summary>添加Http请求参数 (QueryString for GET, DELETE, OPTIONS and HEAD; Encoded form for POST and PUT)
+        /// <summary>添加参数
         /// </summary>
         IHttpRequest AddParameter(string name, object value, ParameterType type);
 
-        /// <summary>添加Http请求参数 (QueryString for GET, DELETE, OPTIONS and HEAD; Encoded form for POST and PUT)
+        /// <summary>添加参数
         /// </summary>
         IHttpRequest AddParameter(string name, object value, string contentType, ParameterType type);
-
-        /// <summary>移除参数
-        /// </summary>
-        IHttpRequest RemoveParameter(string name);
 
         /// <summary>添加或者修改参数
         /// </summary>
@@ -142,7 +180,7 @@ namespace DotCommon.Http
         /// </summary>
         IHttpRequest AddOrUpdateParameter(string name, object value, string contentType, ParameterType type);
 
-        /// <summary>添加请求头部
+        /// <summary>添加头部
         /// </summary>
         IHttpRequest AddHeader(string name, string value);
 
@@ -150,45 +188,18 @@ namespace DotCommon.Http
         /// </summary>
         IHttpRequest AddCookie(string name, string value);
 
-        /// <summary>添加Url链接片段
+        /// <summary>添加URL片段
         /// </summary>
         IHttpRequest AddUrlSegment(string name, string value);
 
-        /// <summary>添加查询参数
+        /// <summary>添加QueryString
         /// </summary>
         IHttpRequest AddQueryParameter(string name, string value);
 
-        /// <summary>添加压缩方法
+        /// <summary>添加Decompression
         /// </summary>
         IHttpRequest AddDecompressionMethod(DecompressionMethods decompressionMethod);
 
-        /// <summary>添加文件
-        /// </summary>
-        IHttpRequest AddFile(FileParameter file);
-
-        /// <summary>添加文件
-        /// </summary>
-        IHttpRequest AddFile(string name, string path, string contentType = null);
-
-        /// <summary>添加文件
-        /// </summary>
-        IHttpRequest AddFile(string name, byte[] bytes, string fileName, string contentType = null);
-
-        /// <summary>添加二进制文件
-        /// </summary>
-        IHttpRequest AddFileBytes(string name, byte[] bytes, string filename, string contentType = "application/x-gzip");
-
-        /// <summary>添加Body请求数据
-        /// </summary>
-        IHttpRequest AddBody(string body, DataFormat format);
-
-        /// <summary>添加Json请求数据
-        /// </summary>
-        IHttpRequest AddJsonBody(string body);
-
-        /// <summary>添加XML请求数据
-        /// </summary>
-        IHttpRequest AddXmlBody(string body);
 
     }
 }

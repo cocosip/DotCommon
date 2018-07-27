@@ -1,6 +1,6 @@
 ﻿namespace DotCommon.Http
 {
-    /// <summary>参数类型
+    /// <summary>请求参数类型
     /// </summary>
     public enum ParameterType
     {
@@ -12,7 +12,7 @@
         QueryString
     }
 
-    /// <summary>数据格式
+    /// <summary>格式类型
     /// </summary>
     public enum DataFormat
     {
@@ -20,7 +20,7 @@
         Xml
     }
 
-    /// <summary>HTTP请求谓词
+    /// <summary>请求Http方法
     /// </summary>
     public enum Method
     {
@@ -34,6 +34,7 @@
         MERGE,
         COPY
     }
+
 
     /// <summary>响应状态
     /// </summary>

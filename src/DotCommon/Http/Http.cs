@@ -12,145 +12,16 @@ using System.Text.RegularExpressions;
 
 namespace DotCommon.Http
 {
-    /// <summary>请求的Http对象,用来构建HttpWebRequest
+    /// <summary>
+    ///     HttpWebRequest wrapper
     /// </summary>
     public partial class Http : IHttp
     {
         private const string LINE_BREAK = "\r\n";
-        private string FormBoundary = $"-----------------------------{DateTime.Now.Ticks}";
 
-        /// <summary>自动压缩
-        /// </summary>
-        public bool AutomaticDecompression { get; set; }
-
-        /// <summary>总使用
-        /// </summary>
-        public bool AlwaysMultipartFormData { get; set; }
-
-        /// <summary>超时时间
-        /// </summary>
-        public int Timeout { get; set; }
-
-        /// <summary>读写超时时间
-        /// </summary>
-        public int ReadWriteTimeout { get; set; }
-
-        /// <summary>指示管道连接的首选项, 当 Pipelined 是true应用程序将通过管道传递的连接到支持它们的服务器
-        /// </summary>
-        public bool Pipelined { get; set; }
-
-        /// <summary>是否允许重定向
-        /// </summary>
-        public bool FollowRedirects { get; set; }
-
-        /// <summary>允许的最大的重定向的数量
-        /// </summary>
-        public int? MaxRedirects { get; set; }
-
-        /// <summary>是否使用默认的身份认证
-        /// </summary>
-        public bool UseDefaultCredentials { get; set; }
-
-        /// <summary>PreAuthenticate
-        /// </summary>
-        public bool PreAuthenticate { get; set; }
-
-        /// <summary>UnsafeAuthenticatedConnectionSharing
-        /// </summary>
-        public bool UnsafeAuthenticatedConnectionSharing { get; set; }
-
-        /// <summary>连接分组
-        /// </summary>
-        public string ConnectionGroupName { get; set; }
-
-        /// <summary>编码
-        /// </summary>
-        public Encoding Encoding { get; set; } = Encoding.UTF8;
-
-        /// <summary>RequestBody
-        /// </summary>
-        public string RequestBody { get; set; }
-
-        /// <summary>请求的ContentType
-        /// </summary>
-        public string RequestContentType { get; set; }
-
-        /// <summary>请求Body的二进制数据
-        /// </summary>
-        public byte[] RequestBodyBytes { get; set; }
-
-        /// <summary>Cookie
-        /// </summary>
-        public CookieContainer CookieContainer { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public Action<Stream> ResponseWriter { get; set; }
-
-        /// <summary>请求URL
-        /// </summary>
-        public Uri Url { get; set; }
-
-        /// <summary>HOST
-        /// </summary>
-        public string Host { get; set; }
-
-        /// <summary>凭证
-        /// </summary>
-        public ICredentials Credentials { get; set; }
-
-        /// <summary>代理
-        /// </summary>
-        public IWebProxy Proxy { get; set; }
-
-        /// <summary>请求的x.509证书
-        /// </summary>
-        public X509CertificateCollection ClientCertificates { get; set; }
-
-        /// <summary>验证方法
-        /// </summary>
-        public RemoteCertificateValidationCallback RemoteCertificateValidationCallback { get; set; }
-
-        /// <summary>请求缓存
-        /// </summary>
-        public RequestCachePolicy CachePolicy { get; set; }
-
-        /// <summary>协议版本
-        /// </summary>
-        public Version ProtocolVersion { get; set; }
-
-        /// <summary>允许的压缩
-        /// </summary>
-        public IList<DecompressionMethods> AllowedDecompressionMethods { get; set; }
-
-        /// <summary>上传的文件
-        /// </summary>
-        public IList<HttpFile> Files { get; }
-
-        /// <summary>请求Header
-        /// </summary>
-        public IList<HttpHeader> Headers { get; }
-
-        /// <summary>请求参数
-        /// </summary>
-        public IList<HttpParameter> Parameters { get; }
-
-        /// <summary>Cookie
-        /// </summary>
-        public IList<HttpCookie> Cookies { get; }
-
-        /// <summary>请求配置
-        /// </summary>
-        public Action<HttpWebRequest> WebRequestConfigurator { get; set; }
-
-        /// <summary>是否有上传文件
-        /// </summary>
-        protected bool HasFiles => Files.Any();
+        private const string FORM_BOUNDARY = "-----------------------------28947758029299";
 
         private readonly IDictionary<string, Action<HttpWebRequest, string>> restrictedHeaderActions;
-
-
-        protected virtual HttpWebRequest CreateWebRequest(Uri url) => (HttpWebRequest)WebRequest.Create(url);
 
         public Http()
         {
@@ -165,7 +36,153 @@ namespace DotCommon.Http
             AddSyncHeaderActions();
         }
 
+        /// <summary>请求是否拥有参数
+        /// </summary>
+        protected bool HasParameters => Parameters.Any();
+
+        /// <summary>请求是否拥有Cookie
+        /// </summary>
+        protected bool HasCookies => Cookies.Any();
+
+        /// <summary>请求是否拥有Body
+        /// </summary>
+        protected bool HasBody => RequestBodyBytes != null || !string.IsNullOrEmpty(RequestBody);
+
+        /// <summary>请求是否上传文件
+        /// </summary>
+        protected bool HasFiles => Files.Any();
+
+        /// <summary>是否启用自动gzip/deflate  压缩
+        /// </summary>
+        public bool AutomaticDecompression { get; set; }
+
+        /// <summary>总是用 multipart/form-data发送请求
+        /// </summary>
+        public bool AlwaysMultipartFormData { get; set; }
+
+        /// <summary>UserAgent
+        /// </summary>
+        public string UserAgent { get; set; }
+
+        /// <summary>超时时间
+        /// </summary>
+        public int Timeout { get; set; }
+
+        /// <summary>读写超时时间
+        /// </summary>
+        public int ReadWriteTimeout { get; set; }
+
+        /// <summary>默认凭据
+        /// </summary>
+        public ICredentials Credentials { get; set; }
+
+        /// <summary>CookieContainer
+        /// </summary>
+        public CookieContainer CookieContainer { get; set; }
+
+        /// <summary>写响应的方法
+        /// </summary>
+        public Action<Stream> ResponseWriter { get; set; }
+
+        /// <summary>是否自动重定向
+        /// </summary>
+        public bool FollowRedirects { get; set; }
+
+        /// <summary>管道
+        /// </summary>
+        public bool Pipelined { get; set; }
+
+        /// <summary>X509证书
+        /// </summary>
+        public X509CertificateCollection ClientCertificates { get; set; }
+
+        /// <summary>最大的重定向数量
+        /// </summary>
+        public int? MaxRedirects { get; set; }
+
+        /// <summary>是否使用默认凭证
+        /// </summary>
+        public bool UseDefaultCredentials { get; set; }
+
+        /// <summary>连接分组
+        /// </summary>
+        public string ConnectionGroupName { get; set; }
+
+        /// <summary>编码
+        /// </summary>
+        public Encoding Encoding { get; set; } = Encoding.UTF8;
+
+        /// <summary>KeepAlive
+        /// </summary>
+        public bool KeepAlive { get; set; }
+
+        /// <summary>POST请求Body
+        /// </summary>
+        public string RequestBody { get; set; }
+
+        /// <summary>ContentType
+        /// </summary>
+        public string RequestContentType { get; set; }
+
+        /// <summary>请求Body数据
+        /// </summary>
+        public byte[] RequestBodyBytes { get; set; }
+
+        /// <summary>请求Url
+        /// </summary>
+        public Uri Url { get; set; }
+
+        /// <summary>请求Host
+        /// </summary>
+        public string Host { get; set; }
+
+        /// <summary>是否发送认证头部
+        /// </summary>
+        public bool PreAuthenticate { get; set; }
+
+        /// <summary>是否使用安全连接
+        /// </summary>
+        public bool UnsafeAuthenticatedConnectionSharing { get; set; }
+
+        /// <summary>代理
+        /// </summary>
+        public IWebProxy Proxy { get; set; }
+
+        /// <summary>缓存
+        /// </summary>
+        public RequestCachePolicy CachePolicy { get; set; }
+
+        /// <summary>Https验证
+        /// </summary>
+        public RemoteCertificateValidationCallback RemoteCertificateValidationCallback { get; set; }
+
+        /// <summary>孕育压缩方法
+        /// </summary>
+        public IList<DecompressionMethods> AllowedDecompressionMethods { get; set; }
+
+        /// <summary>上传文件
+        /// </summary>
+        public IList<HttpFile> Files { get; }
+
+        /// <summary>请求头部
+        /// </summary>
+        public IList<HttpHeader> Headers { get; }
+
+        /// <summary>请求参数
+        /// </summary>
+        public IList<HttpParameter> Parameters { get; }
+
+        /// <summary>Cookie
+        /// </summary>
+        public IList<HttpCookie> Cookies { get; }
+
+        /// <summary>
+        /// </summary>
         public static IHttp Create() => new Http();
+
+        protected virtual HttpWebRequest CreateWebRequest(Uri url) => (HttpWebRequest)WebRequest.Create(url);
+
+        public Action<HttpWebRequest> WebRequestConfigurator { get; set; }
 
         private void AddSharedHeaderActions()
         {
@@ -176,7 +193,9 @@ namespace DotCommon.Http
                 if (DateTime.TryParse(v, out var parsed))
                     r.Date = parsed;
             });
+
             restrictedHeaderActions.Add("Host", (r, v) => r.Host = v);
+
             restrictedHeaderActions.Add("Range", AddRange);
         }
 
@@ -195,25 +214,43 @@ namespace DotCommon.Http
             restrictedHeaderActions.Add("User-Agent", (r, v) => r.UserAgent = v);
         }
 
-        /// <summary>添加头部
-        /// </summary>
+        private static string GetMultipartFormContentType()
+        {
+            return string.Format("multipart/form-data; boundary={0}", FORM_BOUNDARY);
+        }
+
+        private static string GetMultipartFileHeader(HttpFile file)
+        {
+            return string.Format(
+                "--{0}{4}Content-Disposition: form-data; name=\"{1}\"; filename=\"{2}\"{4}Content-Type: {3}{4}{4}",
+                FORM_BOUNDARY, file.Name, file.FileName, file.ContentType ?? "application/octet-stream", LINE_BREAK);
+        }
+
+        private string GetMultipartFormData(HttpParameter param)
+        {
+            var format = param.Name == RequestContentType
+                ? "--{0}{3}Content-Type: {4}{3}Content-Disposition: form-data; name=\"{1}\"{3}{3}{2}{3}"
+                : "--{0}{3}Content-Disposition: form-data; name=\"{1}\"{3}{3}{2}{3}";
+
+            return string.Format(format, FORM_BOUNDARY, param.Name, param.Value, LINE_BREAK, param.ContentType);
+        }
+
+        private static string GetMultipartFooter()
+        {
+            return string.Format("--{0}--{1}", FORM_BOUNDARY, LINE_BREAK);
+        }
+
+        // handle restricted headers the .NET way - thanks @dimebrain!
+        // http://msdn.microsoft.com/en-us/library/system.net.httpwebrequest.headers.aspx
         private void AppendHeaders(HttpWebRequest webRequest)
         {
             foreach (var header in Headers)
-            {
                 if (restrictedHeaderActions.ContainsKey(header.Name))
-                {
                     restrictedHeaderActions[header.Name].Invoke(webRequest, header.Value);
-                }
                 else
-                {
                     webRequest.Headers.Add(header.Name, header.Value);
-                }
-            }
         }
 
-        /// <summary>添加Cookies
-        /// </summary>
         private void AppendCookies(HttpWebRequest webRequest)
         {
             webRequest.CookieContainer = CookieContainer ?? new CookieContainer();
@@ -226,13 +263,137 @@ namespace DotCommon.Http
                     Value = httpCookie.Value,
                     Domain = webRequest.RequestUri.Host
                 };
-
                 webRequest.CookieContainer.Add(cookie);
             }
         }
 
+        private string EncodeParameters()
+        {
+            var querystring = new StringBuilder();
+
+            foreach (var p in Parameters)
+            {
+                if (querystring.Length > 1)
+                    querystring.Append("&");
+
+                querystring.AppendFormat("{0}={1}", p.Name.UrlEncode(), p.Value.UrlEncode());
+            }
+
+            return querystring.ToString();
+        }
+
+        private void PreparePostBody(HttpWebRequest webRequest)
+        {
+
+            bool needsContentType = String.IsNullOrEmpty(webRequest.ContentType);
+
+            if (HasFiles || AlwaysMultipartFormData)
+            {
+                if (needsContentType)
+                    webRequest.ContentType = GetMultipartFormContentType();
+            }
+            else if (HasParameters)
+            {
+                if (needsContentType)
+                    webRequest.ContentType = "application/x-www-form-urlencoded";
+                RequestBody = EncodeParameters();
+            }
+            else if (HasBody)
+            {
+                if (needsContentType)
+                    webRequest.ContentType = RequestContentType;
+            }
+        }
+
+        private void WriteStringTo(Stream stream, string toWrite)
+        {
+            var bytes = Encoding.GetBytes(toWrite);
+
+            stream.Write(bytes, 0, bytes.Length);
+        }
+
+        private void WriteMultipartFormData(Stream requestStream)
+        {
+            foreach (var param in Parameters)
+                WriteStringTo(requestStream, GetMultipartFormData(param));
+
+            foreach (var file in Files)
+            {
+                // Add just the first part of this param, since we will write the file data directly to the Stream
+                WriteStringTo(requestStream, GetMultipartFileHeader(file));
+
+                // Write the file data directly to the Stream, rather than serializing it to a string.
+                file.Writer(requestStream);
+                WriteStringTo(requestStream, LINE_BREAK);
+            }
+
+            WriteStringTo(requestStream, GetMultipartFooter());
+        }
+
+        private void ExtractResponseData(Response response, HttpWebResponse webResponse)
+        {
+            using (webResponse)
+            {
+                response.ContentEncoding = webResponse.ContentEncoding;
+                response.Server = webResponse.Server;
+                response.ProtocolVersion = webResponse.ProtocolVersion;
+                response.ContentType = webResponse.ContentType;
+                response.ContentLength = webResponse.ContentLength;
+
+                var webResponseStream = webResponse.GetResponseStream();
+
+                ProcessResponseStream(webResponseStream, response);
+
+                response.StatusCode = webResponse.StatusCode;
+                response.StatusDescription = webResponse.StatusDescription;
+                response.ResponseUri = webResponse.ResponseUri;
+                response.ResponseStatus = ResponseStatus.Completed;
+
+                if (webResponse.Cookies != null)
+                    foreach (Cookie cookie in webResponse.Cookies)
+                        response.Cookies.Add(new HttpCookie
+                        {
+                            Comment = cookie.Comment,
+                            CommentUri = cookie.CommentUri,
+                            Discard = cookie.Discard,
+                            Domain = cookie.Domain,
+                            Expired = cookie.Expired,
+                            Expires = cookie.Expires,
+                            HttpOnly = cookie.HttpOnly,
+                            Name = cookie.Name,
+                            Path = cookie.Path,
+                            Port = cookie.Port,
+                            Secure = cookie.Secure,
+                            TimeStamp = cookie.TimeStamp,
+                            Value = cookie.Value,
+                            Version = cookie.Version
+                        });
+
+                foreach (var headerName in webResponse.Headers.AllKeys)
+                {
+                    var headerValue = webResponse.Headers[headerName];
+
+                    response.Headers.Add(new HttpHeader
+                    {
+                        Name = headerName,
+                        Value = headerValue
+                    });
+                }
+
+                webResponse.Close();
+            }
+        }
+
+        private void ProcessResponseStream(Stream webResponseStream, Response response)
+        {
+            if (ResponseWriter == null)
+                response.RawBytes = webResponseStream.ReadAsBytes();
+            else
+                ResponseWriter(webResponseStream);
+        }
 
         private static readonly Regex AddRangeRegex = new Regex("(\\w+)=(\\d+)-(\\d+)$");
+
         private static void AddRange(HttpWebRequest r, string range)
         {
             var m = AddRangeRegex.Match(range);
@@ -246,78 +407,5 @@ namespace DotCommon.Http
 
             r.AddRange(rangeSpecifier, from, to);
         }
-
-
-        protected virtual HttpWebRequest ConfigureWebRequest(string method, Uri url)
-        {
-            var webRequest = CreateWebRequest(url);
-            //使用默认的凭据
-            webRequest.UseDefaultCredentials = UseDefaultCredentials;
-            //使用预认证
-            webRequest.PreAuthenticate = PreAuthenticate;
-            //指示管道连接的首选项,当Pipelined 是true应用程序将通过管道传递的连接到支持它们的服务器
-            webRequest.Pipelined = Pipelined;
-            //经过身份验证的连接是否保持打开状态,true表示打开
-            webRequest.UnsafeAuthenticatedConnectionSharing = UnsafeAuthenticatedConnectionSharing;
-#if NETSTANDARD2_0
-            webRequest.Proxy = null;
-#endif
-            webRequest.ServicePoint.Expect100Continue = false;
-            //添加头部
-            AppendHeaders(webRequest);
-            //添加Cookie
-            AppendCookies(webRequest);
-            //设置Host
-            if (Host != null)
-            {
-                webRequest.Host = Host;
-            }
-
-            //请求方法
-            webRequest.Method = method;
-            if (!HasFiles && !AlwaysMultipartFormData)
-                webRequest.ContentLength = 0;
-
-            if (Credentials != null)
-                webRequest.Credentials = Credentials;
-
-            if (ClientCertificates != null)
-                webRequest.ClientCertificates.AddRange(ClientCertificates);
-
-            foreach (var allowedDecompressionMethod in AllowedDecompressionMethods)
-            {
-                webRequest.AutomaticDecompression |= allowedDecompressionMethod;
-            }
-
-            if (AutomaticDecompression)
-            {
-                webRequest.AutomaticDecompression =
-                    DecompressionMethods.Deflate | DecompressionMethods.GZip | DecompressionMethods.None;
-            }
-
-            if (Timeout != 0)
-                webRequest.Timeout = Timeout;
-
-            if (ReadWriteTimeout != 0)
-                webRequest.ReadWriteTimeout = ReadWriteTimeout;
-
-            webRequest.Proxy = Proxy;
-
-            if (CachePolicy != null)
-                webRequest.CachePolicy = CachePolicy;
-
-            webRequest.AllowAutoRedirect = FollowRedirects;
-            if (FollowRedirects && MaxRedirects.HasValue)
-                webRequest.MaximumAutomaticRedirections = MaxRedirects.Value;
-
-            webRequest.ServerCertificateValidationCallback = RemoteCertificateValidationCallback;
-
-            webRequest.ConnectionGroupName = ConnectionGroupName;
-
-            WebRequestConfigurator?.Invoke(webRequest);
-
-            return webRequest;
-        }
-
     }
 }

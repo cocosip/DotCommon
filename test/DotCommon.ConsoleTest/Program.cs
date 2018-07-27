@@ -10,7 +10,7 @@ using System.Reflection;
 using DotCommon.Extensions;
 using DotCommon.Quartz.Configuration;
 using DotCommon.Logging;
-using DotCommon.Http;
+//using DotCommon.Http;
 using System.Diagnostics;
 using DotCommon.Serializing;
 using DotCommon.CastleWindsor;
