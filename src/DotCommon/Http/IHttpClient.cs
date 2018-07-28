@@ -5,6 +5,7 @@ using System.Net.Cache;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DotCommon.Http
 {
@@ -91,5 +92,16 @@ namespace DotCommon.Http
         /// </summary>
         void ConfigureWebRequest(Action<HttpWebRequest> configurator);
 
+        /// <summary>执行请求
+        /// </summary>
+        Task<IHttpResponse> ExecuteAsync(IHttpRequest request);
+
+        /// <summary>下载数据
+        /// </summary>
+        Task<byte[]> DownloadData(IHttpRequest request);
+
+        /// <summary>下载数据
+        /// </summary>
+        Task<byte[]> DownloadData(IHttpRequest request, bool throwOnError);
     }
 }

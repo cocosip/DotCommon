@@ -104,7 +104,7 @@ namespace DotCommon.Http
         }
     }
 
-    public class HttpResponse : HttpResponseBase
+    public class HttpResponse : HttpResponseBase, IHttpResponse
     {
     }
 }

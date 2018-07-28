@@ -6,6 +6,7 @@ using System.Net.Cache;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DotCommon.Http
 {
@@ -85,5 +86,13 @@ namespace DotCommon.Http
         IList<HttpFile> Files { get; }
 
         IList<HttpCookie> Cookies { get; }
+
+        /// <summary>GET请求
+        /// </summary>
+        Task<Response> AsGet(string httpMethod);
+
+        /// <summary>POST请求
+        /// </summary>
+        Task<Response> AsPost(string httpMethod);
     }
 }

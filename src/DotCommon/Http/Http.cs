@@ -9,12 +9,11 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace DotCommon.Http
 {
-    /// <summary>
-    ///     HttpWebRequest wrapper
-    /// </summary>
+
     public partial class Http : IHttp
     {
         private const string LINE_BREAK = "\r\n";
@@ -183,7 +182,6 @@ namespace DotCommon.Http
         protected virtual HttpWebRequest CreateWebRequest(Uri url) => (HttpWebRequest)WebRequest.Create(url);
 
         public Action<HttpWebRequest> WebRequestConfigurator { get; set; }
-
         private void AddSharedHeaderActions()
         {
             restrictedHeaderActions.Add("Accept", (r, v) => r.Accept = v);

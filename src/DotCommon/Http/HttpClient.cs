@@ -8,10 +8,11 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace DotCommon.Http
 {
-    public class HttpClient : IHttpClient
+    public partial class HttpClient : IHttpClient
     {
         private static readonly Version version = new AssemblyName(Assembly.GetExecutingAssembly().FullName).Version;
 
@@ -121,11 +122,35 @@ namespace DotCommon.Http
         public void ConfigureWebRequest(Action<HttpWebRequest> configurator) =>
             WebRequestConfigurator = configurator;
 
-        /// <summary>
-        ///     Assembles URL to call based on parameters, method and resource
+
+        /// <summary>执行的方法
         /// </summary>
-        /// <param name="request">RestRequest to execute</param>
-        /// <returns>Assembled System.Uri</returns>
+        private async Task<IHttpResponse> ExecuteAsync(IHttpRequest request, string httpMethod,
+        Func<IHttp, string, Task<Response>> getResponse)
+        {
+            //AuthenticateIfNeeded(this, request);
+
+            IHttpResponse response = new HttpResponse();
+
+            try
+            {
+                var http = ConfigureHttp(request);
+                var resp = await getResponse(http, httpMethod);
+                response = ConvertToHttpResponse(request, resp);
+                response.Request = request;
+            }
+            catch (Exception ex)
+            {
+                response.ResponseStatus = ResponseStatus.Error;
+                response.ErrorMessage = ex.Message;
+                response.ErrorException = ex;
+            }
+
+            return response;
+        }
+
+        /// <summary>组装URL参数
+        /// </summary>
         public Uri BuildUri(IHttpRequest request)
         {
             DoBuildUriValidations(request);
