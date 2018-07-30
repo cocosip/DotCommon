@@ -8,7 +8,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.9.5</Version>
+    <Version>2.9.5.1</Version>
     <Description>通用.net类库CastleWindsor注入</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>
@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Castle.Windsor" Version="4.1.0" />
   </ItemGroup>
- 
+
   <ItemGroup>
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
   </ItemGroup>

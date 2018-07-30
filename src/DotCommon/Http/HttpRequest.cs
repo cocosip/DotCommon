@@ -151,7 +151,7 @@ namespace DotCommon.Http
         }
 
 
-        public HttpRequest(string baseUrl, Method method) : this(baseUrl, "", Method.GET)
+        public HttpRequest(string baseUrl, Method method) : this(baseUrl, "", method)
         {
 
         }
