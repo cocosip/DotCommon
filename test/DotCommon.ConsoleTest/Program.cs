@@ -17,6 +17,7 @@ using DotCommon.CastleWindsor;
 using Castle.Windsor;
 using DotCommon.Utility;
 using System.Threading.Tasks;
+using DotCommon.Http;
 
 namespace DotCommon.ConsoleTest
 {
@@ -66,9 +67,16 @@ namespace DotCommon.ConsoleTest
             //Run();
 
             //var backgroundWorks = IocManager.GetContainer().Resolve(typeof(TestBackgroundWorker)).As<IBackgroundWorker>();
-            var json = "{\"Message\":\"OK\",\"RequestId\":\"311034B5-FD7F-433A-840F-D33E5E49481C\",\"BizId\":\"211411904525885125\",\"Code\":\"OK\"}";
-            var jsonSerializer = IocManager.GetContainer().Resolve<IJsonSerializer>();
-            var r = jsonSerializer.Deserialize<AlidayuSendResponse>(json);
+            //var json = "{\"Message\":\"OK\",\"RequestId\":\"311034B5-FD7F-433A-840F-D33E5E49481C\",\"BizId\":\"211411904525885125\",\"Code\":\"OK\"}";
+            //var jsonSerializer = IocManager.GetContainer().Resolve<IJsonSerializer>();
+            //var r = jsonSerializer.Deserialize<AlidayuSendResponse>(json);
+
+            IHttpClient client = new HttpClient();
+            IHttpRequest request = new HttpRequest("http://www.baidu.com", Method.GET);
+
+            var httpResponse = client.ExecuteAsync(request).Result;
+
+            Console.Write(httpResponse.Content);
 
             Console.ReadLine();
         }

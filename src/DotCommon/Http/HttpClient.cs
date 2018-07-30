@@ -20,26 +20,6 @@ namespace DotCommon.Http
 
         private static readonly Regex StructuredSyntaxSuffixWildcardRegex = new Regex(@"^\*\+\w+$");
 
-        /// <summary>
-        /// </summary>
-        public HttpClient()
-        {
-            Encoding = Encoding.UTF8;
-            AcceptTypes = new List<string>();
-            DefaultParameters = new List<Parameter>();
-            AutomaticDecompression = true;
-
-            AcceptTypes.Add("application/json");
-            AcceptTypes.Add("application/xml");
-            AcceptTypes.Add("text/json");
-            AcceptTypes.Add("text/x-json");
-            AcceptTypes.Add("text/javascript");
-            AcceptTypes.Add("text/xml");
-            AcceptTypes.Add("*+json");
-            AcceptTypes.Add("*+xml");
-            AcceptTypes.Add("*");
-            FollowRedirects = true;
-        }
         private IList<string> AcceptTypes { get; }
         private Action<HttpWebRequest> WebRequestConfigurator { get; set; }
 
@@ -122,6 +102,27 @@ namespace DotCommon.Http
         public void ConfigureWebRequest(Action<HttpWebRequest> configurator) =>
             WebRequestConfigurator = configurator;
 
+        /// <summary>初始化
+        /// </summary>
+        public HttpClient()
+        {
+            Encoding = Encoding.UTF8;
+            AcceptTypes = new List<string>();
+            DefaultParameters = new List<Parameter>();
+            AutomaticDecompression = true;
+
+            AcceptTypes.Add("application/json");
+            AcceptTypes.Add("application/xml");
+            AcceptTypes.Add("text/json");
+            AcceptTypes.Add("text/x-json");
+            AcceptTypes.Add("text/javascript");
+            AcceptTypes.Add("text/xml");
+            AcceptTypes.Add("*+json");
+            AcceptTypes.Add("*+xml");
+            AcceptTypes.Add("*");
+            FollowRedirects = true;
+            MaxRedirects = 1;
+        }
 
         /// <summary>执行的方法
         /// </summary>
@@ -263,49 +264,6 @@ namespace DotCommon.Http
                 : request.Parameters
                     .Where(p => p.Type == ParameterType.QueryString);
         }
-
-        /// <summary>
-        ///     Retrieve the handler for the specified MIME content type
-        /// </summary>
-        /// <param name="contentType">MIME content type to retrieve</param>
-        /// <returns>IDeserializer instance</returns>
-        //private IDeserializer GetHandler(string contentType)
-        //{
-        //    if (contentType == null)
-        //        throw new ArgumentNullException("contentType");
-
-        //    if (string.IsNullOrEmpty(contentType) && ContentHandlers.ContainsKey("*"))
-        //        return ContentHandlers["*"];
-
-        //    int semicolonIndex = contentType.IndexOf(';');
-
-        //    if (semicolonIndex > -1)
-        //        contentType = contentType.Substring(0, semicolonIndex);
-
-        //    if (ContentHandlers.ContainsKey(contentType))
-        //        return ContentHandlers[contentType];
-
-        //    // Avoid unnecessary use of regular expressions in checking for structured syntax suffix by looking for a '+' first
-        //    if (contentType.IndexOf('+') >= 0)
-        //    {
-        //        // https://tools.ietf.org/html/rfc6839#page-4
-        //        Match structuredSyntaxSuffixMatch = StructuredSyntaxSuffixRegex.Match(contentType);
-
-        //        if (structuredSyntaxSuffixMatch.Success)
-        //        {
-        //            var structuredSyntaxSuffixWildcard = "*" + structuredSyntaxSuffixMatch.Value;
-        //            if (ContentHandlers.ContainsKey(structuredSyntaxSuffixWildcard))
-        //            {
-        //                return ContentHandlers[structuredSyntaxSuffixWildcard];
-        //            }
-        //        }
-        //    }
-
-        //    return ContentHandlers.ContainsKey("*") ? ContentHandlers["*"] : null;
-        //}
-
-        //private void AuthenticateIfNeeded(RestClient client, IRestRequest request) =>
-        //    Authenticator?.Authenticate(client, request);
 
         private static string EncodeParameters(IEnumerable<Parameter> parameters, Encoding encoding) =>
             string.Join("&", parameters.Select(parameter => EncodeParameter(parameter, encoding)).ToArray());

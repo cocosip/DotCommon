@@ -138,53 +138,23 @@ namespace DotCommon.Http
         public HttpRequest()
         {
             RequestFormat = DataFormat.Xml;
-            Method = Method.GET;
             Parameters = new List<Parameter>();
             Files = new List<FileParameter>();
             alloweDecompressionMethods = new List<DecompressionMethods>();
         }
 
-        /// <summary>Sets Method property to value of method
-        /// </summary>
-        public HttpRequest(Method method) : this()
+        public HttpRequest(string baseUrl, string resource, Method method) : this()
         {
-            Method = method;
-        }
-
-        /// <summary>
-        /// </summary>
-        public HttpRequest(string resource) : this(resource, Method.GET)
-        {
-        }
-
-        /// <summary> Sets Resource and Method properties
-        /// </summary>
-        public HttpRequest(string resource, Method method) : this()
-        {
+            BaseUrl = new Uri(baseUrl);
             Resource = resource;
             Method = method;
         }
 
-        /// <summary>
-        /// <param name="resource">Resource to use for this request</param>
-        public HttpRequest(Uri resource) : this(resource, Method.GET)
+
+        public HttpRequest(string baseUrl, Method method) : this(baseUrl, "", Method.GET)
         {
+
         }
-
-        /// <summary>
-        ///     Sets Resource and Method properties
-        /// </summary>
-        /// <param name="resource">Resource to use for this request</param>
-        /// <param name="method">Method to use for this request</param>
-        public HttpRequest(Uri resource, Method method)
-            : this(resource.IsAbsoluteUri
-                ? resource.AbsolutePath + resource.Query
-                : resource.OriginalString, method)
-        {
-            //resource.PathAndQuery not supported by Silverlight :(
-        }
-
-
 
         /// <summary>添加文件
         /// </summary>
