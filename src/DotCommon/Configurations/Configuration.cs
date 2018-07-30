@@ -1,6 +1,6 @@
 ﻿using DotCommon.Dependency;
 using DotCommon.Extensions;
-//using DotCommon.Http;
+using DotCommon.Http;
 using DotCommon.Logging;
 using DotCommon.Runtime;
 using DotCommon.Runtime.Remoting;
@@ -32,7 +32,7 @@ namespace DotCommon.Configurations
         {
             var container = IocManager.GetContainer();
             //Http请求
-           // container.Register<IHttpClient, DefaultHttpClient>(DependencyLifeStyle.Transient);
+            container.Register<IHttpClient, HttpClient>(DependencyLifeStyle.Transient);
             //Json序列化(默认)
             container.Register<IJsonSerializer, DefaultJsonSerializer>(DependencyLifeStyle.Transient);
             //Xml序列化

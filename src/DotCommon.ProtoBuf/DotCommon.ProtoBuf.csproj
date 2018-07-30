@@ -8,13 +8,13 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Authors>virtual</Authors>
-    <Version>2.9.4</Version>
+    <Version>2.9.5</Version>
     <Description>通用.net类库ProtoBuf扩展</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="protobuf-net" Version="2.3.13" />
+    <PackageReference Include="protobuf-net" Version="2.3.14" />
   </ItemGroup>
 
   <ItemGroup>
