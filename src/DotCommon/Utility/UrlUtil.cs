@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -28,39 +29,40 @@ namespace DotCommon.Utility
         /// </summary>
         public static bool IsHttps(string url)
         {
-            return url.StartsWith("https", StringComparison.OrdinalIgnoreCase);
+            var uri = new Uri(url);
+            return uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase);
         }
 
 
         /// <summary>判断是否为主域名或者www开头的域名
         /// </summary>
-        public static bool IsMainDomain(string strUrl)
+        public static bool IsMainDomain(string url)
         {
-            if (!strUrl.IsNullOrEmpty())
+            if (!url.IsNullOrEmpty())
             {
-                strUrl = strUrl.ToLower();
+                url = url.ToLower();
                 var reg = new Regex(
                     @"^http(s)?\://((www.)?[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{1,10}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&%\$#\=~_\-]+))*$");
-                return reg.IsMatch(strUrl);
+                return reg.IsMatch(url);
             }
             return false;
         }
 
         /// <summary>将url转换成对应的协议模式下的url
         /// </summary>
-        public static string PadLeftUrl(string strUrl, string http = @"http://")
+        public static string PadLeftUrl(string url, string schema = "http://")
         {
-            strUrl = strUrl.ToLower();
-            if (!strUrl.StartsWith("http://") && !strUrl.StartsWith("https://"))
+            url = url.ToLower();
+            if (!url.StartsWith("http://") && !url.StartsWith("https://"))
             {
-                strUrl = $"{http}{strUrl}";
+                return string.Concat(schema, url);
             }
-            return strUrl;
+            return url;
         }
 
-        /// <summary>获取参数之前的Url地址
+        /// <summary>获取服务器的域名系统 (DNS) 主机名或 IP 地址和端口号
         /// </summary>
-        public static string GetBaseUrl(string url)
+        public static string GetAuthority(string url)
         {
             //baseUrl，?问号之前的url地址
             return new Uri(url).Authority;
@@ -110,8 +112,8 @@ namespace DotCommon.Utility
         /// </summary>
         public static Dictionary<string, string> GetUrlParameters(string url)
         {
-            var paramUrl = Regex.Match(url, @"\?(\w*=?\w*&?)*").Value.Replace("?", "");
-            var paramArray = paramUrl.Split('&');
+            var uri = new Uri(url);
+            var paramArray = uri.Query.Replace("?", "").Split('&');
             return paramArray.Select(param => param.Split('='))
                 .Where(itemArray =>
                     itemArray.Length == 2 && !string.IsNullOrWhiteSpace(itemArray[0]) &&
@@ -144,7 +146,7 @@ namespace DotCommon.Utility
             var sortParameters = new SortedDictionary<string, string>(parameters);
             foreach (var kv in paramDict)
             {
-                if (!string.IsNullOrWhiteSpace(kv.Key) & !string.IsNullOrWhiteSpace(kv.Value))
+                if (!string.IsNullOrWhiteSpace(kv.Key) && !string.IsNullOrWhiteSpace(kv.Value))
                 {
                     if (sortParameters.ContainsKey(kv.Key.ToLower()))
                     {
@@ -159,10 +161,19 @@ namespace DotCommon.Utility
                     }
                 }
             }
-            var part1 = Regex.Match(url, @"[\w/:\.]*(\?|\#)?").Value.Replace("?", "").Replace("#", "");
-            var part2 = $"?{string.Join("&", sortParameters.Select(x => $"{x.Key}={x.Value}"))}";
-            var part3 = Regex.Match(url, @"#[\w\=]*");
-            return $"{part1}{part2}{part3}";
+            var uri = new Uri(url);
+            var separator = sortParameters.Any() ? "?" : "";
+            var parameterUri = string.Join("&", sortParameters.Select(x => string.Concat(x.Key, "=", x.Value)));
+            UriBuilder uriBuilder = new UriBuilder()
+            {
+                Host = uri.Host,
+                Scheme = uri.Scheme,
+                Fragment = uri.Fragment,
+                Path = uri.LocalPath,
+                Query = string.Concat(separator, parameterUri),
+            };
+
+            return uriBuilder.Uri.ToString();
         }
     }
 }
