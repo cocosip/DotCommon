@@ -11,10 +11,14 @@ namespace DotCommon.Utility
     /// </summary>
     public class RequestUtil
     {
-        private static readonly Lazy<Dictionary<string, string>> UserAgentsLazy =
-            new Lazy<Dictionary<string, string>>(GetUserAgentDictionary);
 
-        public static Dictionary<string, string> UserAgents => UserAgentsLazy.Value;
+        public static Dictionary<string, string> UserAgents
+        {
+            get
+            {
+                return GetUserAgentDictionary();
+            }
+        }
 
 
         #region 与HttpContext请求相关的其他数据
