@@ -1,5 +1,4 @@
-﻿using DotCommon.Dependency;
-using DotCommon.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 
@@ -11,8 +10,8 @@ namespace DotCommon.Scheduling
     {
         private readonly object _lockObject = new object();
         private readonly ILogger _logger;
-        private readonly string _actionName;
-        private readonly Action _action;
+        private string _actionName;
+        private Action _action;
         private Status _status;
 
         /// <summary>Returns the action name of the current worker.
@@ -21,12 +20,17 @@ namespace DotCommon.Scheduling
 
         /// <summary>Initialize a new worker with the specified action.
         /// </summary>
-        public Worker(string actionName, Action action)
+        public Worker(ILogger<Worker> logger)
+        {
+            _logger = logger;
+        }
+
+        public Worker Init(string actionName, Action action)
         {
             _actionName = actionName;
             _action = action;
             _status = Status.Initial;
-            _logger = IocManager.GetContainer().Resolve<ILoggerFactory>().Create(DotCommonConsts.LoggerName);
+            return this;
         }
 
         /// <summary>Start the worker if it is not running.
@@ -73,9 +77,9 @@ namespace DotCommon.Scheduling
                 }
                 catch (ThreadAbortException)
                 {
-                    _logger.InfoFormat("Worker thread caught ThreadAbortException, try to resetting, actionName:{0}", _actionName);
+                    _logger.LogInformation("Worker thread caught ThreadAbortException, try to resetting, actionName:{0}", _actionName);
                     Thread.ResetAbort();
-                    _logger.InfoFormat("Worker thread ThreadAbortException resetted, actionName:{0}", _actionName);
+                    _logger.LogInformation("Worker thread ThreadAbortException resetted, actionName:{0}", _actionName);
                 }
                 catch (Exception ex)
                 {

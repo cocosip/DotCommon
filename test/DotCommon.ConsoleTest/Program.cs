@@ -1,20 +1,13 @@
 ﻿using Autofac;
-using DotCommon.Configurations;
-using DotCommon.Dependency;
-using DotCommon.Quartz;
-using DotCommon.Threading.BackgroundWorkers;
-using Quartz;
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DotCommon.Extensions;
-using DotCommon.Quartz.Configuration;
-using DotCommon.Logging;
 //using DotCommon.Http;
 using System.Diagnostics;
 using DotCommon.Serializing;
-using DotCommon.CastleWindsor;
-using Castle.Windsor;
+
 using DotCommon.Utility;
 using System.Threading.Tasks;
 using DotCommon.Http;
@@ -31,14 +24,14 @@ namespace DotCommon.ConsoleTest
 
             var builder = new ContainerBuilder();
 
-            Configurations.Configuration.Create()
-                //.UseAutofac(builder)
-                .UseCastleWindsor(new WindsorContainer())
-                .RegisterCommonComponent()
-                //.RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
-                .UseLog4Net()
-                .UseJson4Net()
-                .UseMemoryCache()
+            //Configurations.Configuration.Create()
+            //    //.UseAutofac(builder)
+            //    .UseCastleWindsor(new WindsorContainer())
+            //    .RegisterCommonComponent()
+            //    //.RegisterPeriodicBackgroundWorkers(new List<Assembly>() { typeof(TestBackgroundWorker).Assembly })
+            //    .UseLog4Net()
+            //    .UseJson4Net()
+            //    .UseMemoryCache()
             //.UseQuartz()
             //.RegisterQuartzJobs(new List<Assembly>() { typeof(TestQuartzJob).Assembly })
             //.AutofacBuild()
@@ -109,21 +102,21 @@ namespace DotCommon.ConsoleTest
 
         static async void Schedule()
         {
-            var manager = IocManager.GetContainer().Resolve<IQuartzScheduleJobManager>();
-            await manager.ScheduleAsync<TestQuartzJob>(job =>
-             {
-                 job.WithIdentity("MyLogJobIdentity", "MyGroup")
-                    .WithDescription("A job to simply write logs.");
-             }, trigger =>
-             {
-                 trigger.StartNow()
-                    .WithSimpleSchedule(schedule =>
-                    {
-                        schedule.RepeatForever()
-                            .WithIntervalInSeconds(1)
-                            .Build();
-                    });
-             });
+            //var manager = IocManager.GetContainer().Resolve<IQuartzScheduleJobManager>();
+            //await manager.ScheduleAsync<TestQuartzJob>(job =>
+            // {
+            //     job.WithIdentity("MyLogJobIdentity", "MyGroup")
+            //        .WithDescription("A job to simply write logs.");
+            // }, trigger =>
+            // {
+            //     trigger.StartNow()
+            //        .WithSimpleSchedule(schedule =>
+            //        {
+            //            schedule.RepeatForever()
+            //                .WithIntervalInSeconds(1)
+            //                .Build();
+            //        });
+            // });
         }
 
     }

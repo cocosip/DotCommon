@@ -1,6 +1,5 @@
 ﻿using Autofac;
-using DotCommon.Configurations;
-using DotCommon.Dependency;
+
 using DotCommon.Test.Dependency.Dto;
 using System;
 using System.Collections.Generic;

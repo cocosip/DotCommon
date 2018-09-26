@@ -1,11 +1,4 @@
-﻿using DotCommon.Configurations;
-using DotCommon.Test.Dependency.Dto;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
-
-namespace DotCommon.Test.Dependency
+﻿namespace DotCommon.Test.Dependency
 {
     public class AbpContainerTest
     {
