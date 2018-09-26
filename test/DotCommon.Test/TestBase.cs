@@ -1,6 +1,4 @@
-﻿using Autofac;
-
-namespace DotCommon.Test
+﻿namespace DotCommon.Test
 {
     public class TestBase
     {

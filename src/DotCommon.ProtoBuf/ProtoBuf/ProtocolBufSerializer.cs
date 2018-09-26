@@ -16,7 +16,7 @@ namespace DotCommon.ProtoBuf
             }
         }
 
-        public T Deserialize<T>(byte[] data) where T : class
+        public T Deserialize<T>(byte[] data)
         {
             using (var stream = new MemoryStream(data))
             {

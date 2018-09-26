@@ -61,7 +61,7 @@ namespace DotCommon.Test.Utility
         [Fact]
         public void GetExpectUrlParametersTest()
         {
-            var url1 = "http://127.0.0.1#2?id=3&name=n1&age=20";
+            var url1 = "http://127.0.0.1?id=3&name=n1&age=20";
             var dict1 = UrlUtil.GetExpectUrlParameters(url1, new[] { "age" });
             Assert.Equal("3", dict1["id"]);
             Assert.Equal("n1", dict1["name"]);

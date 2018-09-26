@@ -10,7 +10,7 @@ namespace DotCommon.DependencyInjection
     {
         /// <summary>注册通用组件
         /// </summary>
-        public static IServiceCollection AddCommonComponents(IServiceCollection services)
+        public static IServiceCollection AddCommonComponents(this IServiceCollection services)
         {
             //http请求
             services.AddTransient<IHttpClient, HttpClient>();
@@ -20,6 +20,8 @@ namespace DotCommon.DependencyInjection
             services.AddTransient<IXmlSerializer, DefaultXmlSerializer>();
             //二进制序列化
             services.AddTransient<IBinarySerializer, DefaultBinarySerializer>();
+            //对象序列化
+            services.AddTransient<IObjectSerializer, DefaultObjectSerializer>();
             //定时器
             services.AddSingleton<IScheduleService, ScheduleService>();
 

@@ -11,6 +11,7 @@
     <Version>2.9.5.1</Version>
     <Description>通用的.net类库,缓存操作</Description>
     <RootNamespace>DotCommon</RootNamespace>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

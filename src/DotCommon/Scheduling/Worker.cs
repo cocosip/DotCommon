@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DotCommon.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 
@@ -20,7 +21,7 @@ namespace DotCommon.Scheduling
 
         /// <summary>Initialize a new worker with the specified action.
         /// </summary>
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<DefaultLoggerName> logger)
         {
             _logger = logger;
         }

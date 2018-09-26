@@ -8,6 +8,6 @@ namespace DotCommon.Serializing
     {
         byte[] Serialize(object obj);
         object Deserialize(byte[] data, Type type);
-        T Deserialize<T>(byte[] data) where T : class;
+        T Deserialize<T>(byte[] data);
     }
 }

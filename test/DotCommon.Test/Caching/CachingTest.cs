@@ -1,6 +1,4 @@
-﻿using Autofac;
-using System.Threading;
-using Xunit;
+﻿using Xunit;
 
 namespace DotCommon.Test.Caching
 {
