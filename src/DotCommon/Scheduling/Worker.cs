@@ -21,17 +21,12 @@ namespace DotCommon.Scheduling
 
         /// <summary>Initialize a new worker with the specified action.
         /// </summary>
-        public Worker(ILogger<DefaultLoggerName> logger)
+        public Worker(ILogger<DefaultLoggerName> logger, string actionName, Action action)
         {
             _logger = logger;
-        }
-
-        public Worker Init(string actionName, Action action)
-        {
             _actionName = actionName;
             _action = action;
             _status = Status.Initial;
-            return this;
         }
 
         /// <summary>Start the worker if it is not running.
