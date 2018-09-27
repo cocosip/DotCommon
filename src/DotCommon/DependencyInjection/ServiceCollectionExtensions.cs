@@ -29,8 +29,6 @@ namespace DotCommon.DependencyInjection
             services.AddSingleton<ICancellationTokenProvider>(NullCancellationTokenProvider.Instance);
             services.AddSingleton<IAmbientDataContext, AsyncLocalAmbientDataContext>();
             services.AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientDataContextAmbientScopeProvider<>));
-
-            var pr = services.BuildServiceProvider();
             return services;
         }
 

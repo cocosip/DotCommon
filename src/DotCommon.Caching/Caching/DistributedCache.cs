@@ -158,8 +158,6 @@ namespace DotCommon.Caching
 
             CacheName = cacheNameAttribute != null ? cacheNameAttribute.Name : typeof(TCacheItem).Name;
 
-            //IgnoreMultiTenancy
-            //IgnoreMultiTenancy = typeof(TCacheItem).IsDefined(typeof(IgnoreMultiTenancyAttribute), true);
         }
     }
 }
