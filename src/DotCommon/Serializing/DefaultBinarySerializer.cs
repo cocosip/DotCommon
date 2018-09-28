@@ -37,12 +37,12 @@ namespace DotCommon.Serializing
         }
         /// <summary> 将二进制反序列化成对象
         /// </summary>
-        public T Deserialize<T>(byte[] data) where T : class
+        public T Deserialize<T>(byte[] data)
         {
             using (var stream = new MemoryStream(data))
             {
                 stream.Position = 0;
-                return _binaryFormatter.Deserialize(stream) as T;
+                return (T)_binaryFormatter.Deserialize(stream);
             }
         }
     }

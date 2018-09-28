@@ -39,7 +39,7 @@ namespace DotCommon.Test.Utility
 
         [Theory]
         [InlineData("www.baidu.com", "http://www.baidu.com", true)]
-        [InlineData("http://127.0.0.1", "127.0.0.1", true)]
+        [InlineData("http://127.0.0.1", "hTTP://127.0.0.1/2233", true)]
         [InlineData("http://baidu.com", "https://baidu.com", true)]
         public void SameDomainTest(string url, string url2, bool expected)
         {
@@ -61,7 +61,7 @@ namespace DotCommon.Test.Utility
         [Fact]
         public void GetExpectUrlParametersTest()
         {
-            var url1 = "http://127.0.0.1#2?id=3&name=n1&age=20";
+            var url1 = "http://127.0.0.1?id=3&name=n1&age=20";
             var dict1 = UrlUtil.GetExpectUrlParameters(url1, new[] { "age" });
             Assert.Equal("3", dict1["id"]);
             Assert.Equal("n1", dict1["name"]);
@@ -69,11 +69,22 @@ namespace DotCommon.Test.Utility
         }
 
         [Theory]
-        [InlineData("http://www.baidu.com", "id", "10", true, "http://www.baidu.com?id=10")]
-        [InlineData("http://www.baidu.com?id=20", "id", "10", false, "http://www.baidu.com?id=20")]
+        [InlineData("http://www.baidu.com#aaa", "id", "10", true, "http://www.baidu.com/?id=10#aaa")]
+        [InlineData("http://www.baidu.com?id=20", "id", "10", false, "http://www.baidu.com/?id=20")]
+        [InlineData("http://test.yjyj.com/Web/Product/Search?Key=沙发", "page", "2", false, "http://test.yjyj.com/Web/Product/Search?Key=沙发&page=2")]
         public void UrlAttachParameterTest(string url, string key, string value, bool replaceSame, string expected)
         {
             var actual = UrlUtil.UrlAttachParameter(url, key, value, replaceSame);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("http://www.baidu.com#aaa", false)]
+        [InlineData("https://www.baidu.com?id=20", true)]
+        [InlineData("HTTPs://www.taobao.com", true)]
+        public void IsHttpsTest(string url, bool expected)
+        {
+            var actual = UrlUtil.IsHttps(url);
             Assert.Equal(expected, actual);
         }
 

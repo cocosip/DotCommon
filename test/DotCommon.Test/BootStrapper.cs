@@ -1,14 +1,4 @@
-﻿using Autofac;
-using DotCommon.CastleWindsor;
-using DotCommon.Autofac;
-using DotCommon.Configurations;
-using DotCommon.Dependency;
-using DotCommon.Runtime.Caching;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
-using Castle.Windsor;
+﻿
 
 namespace DotCommon.Test
 {
@@ -17,16 +7,7 @@ namespace DotCommon.Test
         private void Run()
         {
             //Autofac Builder
-            var builder = new ContainerBuilder();
-            var windsorContainer = new WindsorContainer();
-            Configuration.Create()
-                //.UseAutofac(builder)
-                .UseCastleWindsor(windsorContainer)
-                .RegisterCommonComponent()
-                .UseJson4Net()
-                .UseLog4Net()
-                .UseProtoBuf()
-                .AutofacBuild();
+            
             //var container = builder.Build();
             //Configuration.Instance.AutofacBuild(container);
 
@@ -44,24 +25,10 @@ namespace DotCommon.Test
             //    cache.DefaultAbsoluteExpireTime = TimeSpan.FromMinutes(5);
             //});
 
-            var cacheManager = IocManager.GetContainer().Resolve<ICacheManager>();
-            var cache1 = cacheManager.GetCache("cache1");
-            ITypedCache<int, string> cache2 = cacheManager.GetCache<int, string>("cache2");
-
-            //获取具体某个cache值
-            var user = cacheManager.GetCache("user").Get<long, AutoMapper.TestUser>(1, x => null);
-            var order = cacheManager.GetCache("order").Get("100", x => null);
+           
         }
 
 
-        [Fact]
-        public void StartTest()
-        {
-            Configuration.Create()
-              .UseCastleWindsor(new WindsorContainer())
-              .RegisterCommonComponent();
-
-        }
-
+ 
     }
 }
