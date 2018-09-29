@@ -56,7 +56,7 @@ namespace DotCommon.Test.Caching
                 async () =>
                 {
                     factoryExecuted = true;
-                    return new PersonCacheItem(personName);
+                    return await Task.FromResult(new PersonCacheItem(personName));
                 });
             Assert.True(factoryExecuted);
             Assert.Equal(personName, cacheItem.Name);
@@ -69,7 +69,7 @@ namespace DotCommon.Test.Caching
                 async () =>
                 {
                     factoryExecuted = true;
-                    return new PersonCacheItem(personName);
+                    return await Task.FromResult(new PersonCacheItem(personName));
                 });
             Assert.False(factoryExecuted);
             Assert.Equal(personName, cacheItem.Name);
