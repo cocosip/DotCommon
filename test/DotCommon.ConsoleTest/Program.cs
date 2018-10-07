@@ -6,7 +6,7 @@ using DotCommon.Serializing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-
+using DotCommon.Logging;
 
 namespace DotCommon.ConsoleTest
 {
@@ -53,6 +53,7 @@ namespace DotCommon.ConsoleTest
 
         public void Write()
         {
+            _logger.LogWithLevel(LogLevel.Information, "LogWithLevel");
             _logger.LogInformation("生成随机Guid:{0}", Guid.NewGuid().ToString());
         }
     }

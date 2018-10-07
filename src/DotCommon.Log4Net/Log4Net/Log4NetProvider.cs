@@ -10,7 +10,7 @@ using System.IO;
 
 namespace DotCommon.Log4Net
 {
-    public class Log4NetProvider : ILoggerProvider
+    public class Log4NetProvider : ILoggerProvider, IDisposable
     {
         private readonly ILoggerRepository _loggerRepository;
         private readonly ConcurrentDictionary<string, Log4NetLogger> _loggers = new ConcurrentDictionary<string, Log4NetLogger>();
