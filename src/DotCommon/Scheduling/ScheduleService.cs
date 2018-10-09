@@ -21,7 +21,10 @@ namespace DotCommon.Scheduling
         {
             lock (_lockObject)
             {
-                if (_taskDict.ContainsKey(name)) return;
+                if (_taskDict.ContainsKey(name))
+                {
+                    return;
+                }
                 var timer = new Timer(TaskCallback, name, Timeout.Infinite, Timeout.Infinite);
                 var task = new TimerBasedTask
                 {

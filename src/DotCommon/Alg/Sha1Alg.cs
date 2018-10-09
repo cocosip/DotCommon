@@ -28,8 +28,6 @@ namespace DotCommon.Alg
             return Convert.ToBase64String(hashBytes);
         }
 
-
-
         /// <summary>获取SHA1-哈希
         /// </summary>
         public static byte[] GetSha1Hash(byte[] sourceBytes)

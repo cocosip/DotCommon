@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace DotCommon.DependencyInjection
 {
@@ -16,32 +14,6 @@ namespace DotCommon.DependencyInjection
         {
             return (T)GetServiceByArgs(provider, typeof(T), ctorArgs);
         }
-
-        public static object GetServiceByInjectAndArgs(this IServiceProvider provider, Type type, params object[] args)
-        {
-            ////如何判断哪些是注入的,哪些是传参的?
-            ////构造函数有哪些参数
-            //var types = GetMatchCtorArgTypes(type, args);
-            //var ctorArgs = new object[types.Count];
-            ////前几个注入的参数的类型
-            //for (int i = 0; i < types.Count - args.Length; i++)
-            //{
-            //    //设置第i个对象的值为xxx
-            //    newArgs[i] = provider.GetService(types[i]);
-            //}
-
-            //把传入的参数再添加进去
-            // Array.Copy(args, 0, ctorArgs, ctorArgs.Length - args.Length, args.Length);
-            //Array.Copy(args, 0, ctorArgs, 0, args.Length);
-
-            return ActivatorUtilities.CreateInstance(provider, type, args);
-        }
-
-        public static T GetServiceByInjectAndArgs<T>(this IServiceProvider provider, params object[] args)
-        {
-            return (T)GetServiceByInjectAndArgs(provider, typeof(T), args);
-        }
-
 
         //private static List<Type> GetMatchCtorArgTypes(Type type, params object[] args)
         //{

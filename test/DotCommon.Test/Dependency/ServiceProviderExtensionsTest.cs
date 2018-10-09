@@ -24,7 +24,7 @@ namespace DotCommon.Test.Dependency
             services.AddTransient<GetServiceByInjectAndArgsTestInjectClass>();
             services.AddTransient<GetServiceByInjectAndArgsTestClass>();
             var provider = services.BuildServiceProvider();
-            var getServiceByInjectAndArgsTestClass = provider.GetServiceByInjectAndArgs<GetServiceByInjectAndArgsTestClass>(1, "张三");
+            var getServiceByInjectAndArgsTestClass = provider.GetServiceByArgs<GetServiceByInjectAndArgsTestClass>(1, "张三");
             Assert.Equal("Hello,Id:1,Name:张三", getServiceByInjectAndArgsTestClass.GetInfo());
         }
 
