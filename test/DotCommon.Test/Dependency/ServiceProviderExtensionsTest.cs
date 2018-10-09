@@ -22,7 +22,7 @@ namespace DotCommon.Test.Dependency
         {
             IServiceCollection services = new ServiceCollection();
             services.AddTransient<GetServiceByInjectAndArgsTestInjectClass>();
-            //services.AddTransient<GetServiceByInjectAndArgsTestClass>();
+            services.AddTransient<GetServiceByInjectAndArgsTestClass>();
             var provider = services.BuildServiceProvider();
             var getServiceByInjectAndArgsTestClass = provider.GetServiceByInjectAndArgs<GetServiceByInjectAndArgsTestClass>(1, "张三");
             Assert.Equal("Hello,Id:1,Name:张三", getServiceByInjectAndArgsTestClass.GetInfo());
