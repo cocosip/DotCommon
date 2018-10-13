@@ -53,7 +53,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static int GetRandomInt(int minNum, int maxNum)
         {
-            var rd = new Random();
+            var rd = new Random(GetRandomSeed());
             return rd.Next(minNum, maxNum);
         }
 
