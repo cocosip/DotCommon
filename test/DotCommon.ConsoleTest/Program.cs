@@ -1,12 +1,14 @@
 ﻿
+using DotCommon.Caching;
 using DotCommon.DependencyInjection;
 using DotCommon.Json4Net;
 using DotCommon.Log4Net;
+using DotCommon.Logging;
+using DotCommon.ProtoBuf;
 using DotCommon.Serializing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-using DotCommon.Logging;
 
 namespace DotCommon.ConsoleTest
 {
@@ -16,14 +18,15 @@ namespace DotCommon.ConsoleTest
         {
             Console.WriteLine("Begin!");
             IServiceCollection services = new ServiceCollection();
-            services
-                .AddLogging(c =>
-                {
-                    c.AddLog4Net(new Log4NetProviderOptions());
-                })
-                .AddCommonComponents()
-                .AddJson4Net()
-                .AddTransient<LoggerService>();
+            services.AddLogging(c =>
+            {
+                c.AddLog4Net(new Log4NetProviderOptions());
+            })
+            .AddCommonComponents()
+            .AddGenericsMemoryCache()
+            .AddProtoBuf()
+            .AddJson4Net();
+
 
             var provider = services.BuildServiceProvider();
             var loggerService = provider.GetService<LoggerService>();
