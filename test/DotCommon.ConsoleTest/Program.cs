@@ -26,7 +26,7 @@ namespace DotCommon.ConsoleTest
             .AddGenericsMemoryCache()
             .AddProtoBuf()
             .AddJson4Net();
-
+            services.AddTransient<LoggerService>();
 
             var provider = services.BuildServiceProvider();
             var loggerService = provider.GetService<LoggerService>();
@@ -57,7 +57,7 @@ namespace DotCommon.ConsoleTest
         public void Write()
         {
             _logger.LogWithLevel(LogLevel.Information, "LogWithLevel");
-            _logger.LogInformation("生成随机Guid:{0}", Guid.NewGuid().ToString());
+            _logger.LogInformation("生成随机Guid:{0}", DotCommon.Alg.GuidUtil.NewSequentialString("N"));
         }
     }
 
