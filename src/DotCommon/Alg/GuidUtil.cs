@@ -42,18 +42,11 @@ namespace DotCommon.Alg
 
         #region 获取新的Guid
 
-        /// <summary>获取新的Guid
+        /// <summary>获取新的Guid,Format example: D , N
         /// </summary>
-        public static string NewSequentialStringD()
+        public static string NewSequentialString(string format="D")
         {
-            return NewSequentialGuid().ToString("D");
-        }
-
-        /// <summary> 获取新的分割的Guid
-        /// </summary>
-        public static string NewSequentialStringN()
-        {
-            return NewSequentialGuid().ToString("N");
+            return NewSequentialGuid().ToString(format);
         }
 
         #endregion
