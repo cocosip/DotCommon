@@ -1,15 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="..\..\build\common.props" />
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DotCommon.Log4Net</AssemblyName>
     <PackageId>DotCommon.Log4Net</PackageId>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Authors>virtual</Authors>
-    <Version>2.9.7</Version>
-    <Description>通用.net类库Log4Net日志</Description>
     <RootNamespace>DotCommon</RootNamespace>
   </PropertyGroup>
 

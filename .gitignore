@@ -35,6 +35,12 @@ bld/
 # vscode
 .vscode/
 
+# cake tools
+tools/
+
+#nuget pack
+nupkgs/
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*

@@ -1,15 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="..\..\build\common.props" />
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DotCommon.Caching</AssemblyName>
     <PackageId>DotCommon.Caching</PackageId>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Authors>virtual</Authors>
-    <Version>2.9.7</Version>
-    <Description>通用的.net类库,缓存操作</Description>
     <RootNamespace>DotCommon</RootNamespace>
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
