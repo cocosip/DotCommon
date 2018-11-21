@@ -37,7 +37,7 @@ public class BuildParameters
 
 	private void InitializeCore()
 	{
-		Projects = Context.GetDirectories("./src/DotCommon.Test");
+		Projects = Context.GetDirectories("./src/*");
 		TestProjects = Context.GetDirectories("./test/*");
 		ProjectFiles = Context.GetFiles("./src/*/*.csproj");
 		TestProjectFiles = Context.GetFiles("./test/DotCommon.Test/*.csproj");
