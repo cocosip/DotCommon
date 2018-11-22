@@ -1,4 +1,5 @@
 # DotCommon使用说明
+ [![Build Status](https://travis-ci.com/cocosip/DotCommon.svg?branch=master)](https://travis-ci.com/cocosip/DotCommon)
 
 ## DotCommon简介
 
