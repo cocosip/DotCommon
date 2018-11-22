@@ -111,13 +111,27 @@ Task("Pack")
    });
 
 
+
 Task("Default")
+   .IsDependentOn("Version")
+   //.IsDependentOn("Print")
    .IsDependentOn("Build")
    .IsDependentOn("Test")
    .IsDependentOn("Pack")
    .Does(() =>
    {
       Information("DotCommon build complete!");
+   });
+Task("Version")
+   .Does(() =>
+   {
+      Information($"{build.FullVersion()}");
+   });
+
+Task("Print")
+   .Does(() =>
+   {
+      util.PrintInfo();
    });
 
 RunTarget(target);

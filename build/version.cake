@@ -52,6 +52,14 @@ public class BuildParameters
 				IsTagged = true;
 			}
 		}
+		else
+		{
+			var pack = Context.Argument("pack", "publish");
+			if (pack == "publish")
+			{
+				IsTagged = true;
+			}
+		}
 
 		Configuration = Context.Argument("Configuration", "Debug");
 		if (IsCI)
@@ -84,7 +92,7 @@ public class BuildParameters
 		Version =
 			new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), versionQuality);
 		Version.Suffix = suffix;
-		
+
 
 	}
 }

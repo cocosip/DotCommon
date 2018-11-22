@@ -6,7 +6,7 @@
     <Product>DotCommon</Product>
     <PackageIconUrl>https://github.com/cocosip/DotCommon</PackageIconUrl>
     <PackageProjectUrl>https://github.com/cocosip/DotCommon</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/cocosip/DotCommon/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicense>https://github.com/cocosip/DotCommon/blob/master/LICENSE</PackageLicense>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/cocosip/DotCommon</RepositoryUrl>
   </PropertyGroup>
