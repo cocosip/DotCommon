@@ -1,4 +1,5 @@
 using System.Xml;
+using System;
 
 public class BuildParameters
 {
@@ -54,8 +55,9 @@ public class BuildParameters
 		}
 		else
 		{
-			var pack = Context.Argument("pack", "publish");
-			if (pack == "publish")
+			//-ScriptArgs '-pack="publish"'
+			var pack = Context.Argument("pack", "default");
+			if (pack.ToLower() == "publish")
 			{
 				IsTagged = true;
 			}

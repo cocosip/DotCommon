@@ -36,7 +36,7 @@ namespace DotCommon.DependencyInjection
 
         /// <summary>如果没有注册就进行注册
         /// </summary>
-        public static IServiceCollection AddServiceIfNotRegistered<T>(this IServiceCollection services, Action<IServiceCollection> action, ServiceLifetime lifetime = ServiceLifetime.Transient)
+        public static IServiceCollection AddServiceIfNotRegistered<T>(this IServiceCollection services, ServiceLifetime lifetime, Action<IServiceCollection> action)
         {
             var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(T) && d.Lifetime == lifetime);
             if (serviceDescriptor == null)
@@ -46,6 +46,17 @@ namespace DotCommon.DependencyInjection
             return services;
         }
 
+        /// <summary>如果没有注册就进行注册
+        /// </summary>
+        public static IServiceCollection AddServiceIfNotRegistered<T>(this IServiceCollection services, Func<ServiceDescriptor, bool> predicate, Action<IServiceCollection> action)
+        {
+            var serviceDescriptor = services.FirstOrDefault(predicate);
+            if (serviceDescriptor == null)
+            {
+                action(services);
+            }
+            return services;
+        }
         /// <summary>获取注册的Singleton对象的实例
         /// </summary>
         public static T GetSingletonInstanceOrNull<T>(this IServiceCollection services)
