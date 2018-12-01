@@ -3,6 +3,8 @@ using DotCommon.Scheduling;
 using DotCommon.Serializing;
 using DotCommon.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
 
 namespace DotCommon.DependencyInjection
 {
@@ -30,6 +32,39 @@ namespace DotCommon.DependencyInjection
             services.AddSingleton<IAmbientDataContext, AsyncLocalAmbientDataContext>();
             services.AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientDataContextAmbientScopeProvider<>));
             return services;
+        }
+
+        /// <summary>如果没有注册就进行注册
+        /// </summary>
+        public static IServiceCollection AddServiceIfNotRegistered<T>(this IServiceCollection services, Action<IServiceCollection> action, ServiceLifetime lifetime = ServiceLifetime.Transient)
+        {
+            var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(T) && d.Lifetime == lifetime);
+            if (serviceDescriptor == null)
+            {
+                action(services);
+            }
+            return services;
+        }
+
+        /// <summary>获取注册的Singleton对象的实例
+        /// </summary>
+        public static T GetSingletonInstanceOrNull<T>(this IServiceCollection services)
+        {
+            return (T)services
+                .FirstOrDefault(d => d.ServiceType == typeof(T)) ?
+                .ImplementationInstance;
+        }
+
+        /// <summary>获取注册的Singleton对象的实例
+        /// </summary>
+        public static T GetSingletonInstance<T>(this IServiceCollection services)
+        {
+            var service = services.GetSingletonInstanceOrNull<T>();
+            if (service == null)
+            {
+                throw new InvalidOperationException("Could not find singleton service: " + typeof(T).AssemblyQualifiedName);
+            }
+            return service;
         }
 
 
