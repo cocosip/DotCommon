@@ -6,14 +6,15 @@ namespace DotCommon.DependencyInjection
 {
     public static class ServiceProviderExtensions
     {
-        public static object GetServiceByArgs(this IServiceProvider provider, Type type, params object[] args)
+
+        public static object CreateInstance(this IServiceProvider provider, Type type, params object[] args)
         {
             return ActivatorUtilities.CreateInstance(provider, type, args);
         }
 
-        public static T GetServiceByArgs<T>(this IServiceProvider provider, params object[] ctorArgs)
+        public static T CreateInstance<T>(this IServiceProvider provider, params object[] args)
         {
-            return (T)GetServiceByArgs(provider, typeof(T), ctorArgs);
+            return (T)ActivatorUtilities.CreateInstance(provider, typeof(T), args);
         }
 
         public static object GetServiceByPredicate(this IServiceProvider provider, Type type, Func<object, bool> predicate)
@@ -21,7 +22,7 @@ namespace DotCommon.DependencyInjection
             return provider.GetServices(type).FirstOrDefault(predicate);
         }
 
-        public static T GetServiceByPredicate<T>(this IServiceProvider provider, Type type, Func<T, bool> predicate)
+        public static T GetServiceByPredicate<T>(this IServiceProvider provider, Func<T, bool> predicate)
         {
             return provider.GetServices<T>().FirstOrDefault(predicate);
         }

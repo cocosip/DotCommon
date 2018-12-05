@@ -12,7 +12,7 @@ namespace DotCommon.Test.Dependency
             IServiceCollection services = new ServiceCollection();
 
             var provider = services.BuildServiceProvider();
-            var getServiceByArgsTestClass = provider.GetServiceByArgs<GetServiceByArgsTestClass>(1, "张三");
+            var getServiceByArgsTestClass = provider.CreateInstance<GetServiceByArgsTestClass>(1, "张三");
             Assert.Equal(1, getServiceByArgsTestClass.Id);
             Assert.Equal("张三", getServiceByArgsTestClass.Name);
         }
@@ -24,7 +24,7 @@ namespace DotCommon.Test.Dependency
             services.AddTransient<GetServiceByInjectAndArgsTestInjectClass>();
             services.AddTransient<GetServiceByInjectAndArgsTestClass>();
             var provider = services.BuildServiceProvider();
-            var getServiceByInjectAndArgsTestClass = provider.GetServiceByArgs<GetServiceByInjectAndArgsTestClass>(1, "张三");
+            var getServiceByInjectAndArgsTestClass = provider.CreateInstance<GetServiceByInjectAndArgsTestClass>(1, "张三");
             Assert.Equal("Hello,Id:1,Name:张三", getServiceByInjectAndArgsTestClass.GetInfo());
         }
 
