@@ -48,7 +48,7 @@ namespace DotCommon.DependencyInjection
 
         /// <summary>如果没有注册就进行注册
         /// </summary>
-        public static IServiceCollection AddServiceIfNotRegistered<T>(this IServiceCollection services, Func<ServiceDescriptor, bool> predicate, Action<IServiceCollection> action)
+        public static IServiceCollection AddServiceIfNotRegistered(this IServiceCollection services, Func<ServiceDescriptor, bool> predicate, Action<IServiceCollection> action)
         {
             var serviceDescriptor = services.FirstOrDefault(predicate);
             if (serviceDescriptor == null)
