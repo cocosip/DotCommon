@@ -1,3 +1,4 @@
+#load "./util.cake"
 #load "./paths.cake"
 #load "./packages.cake"
 #load "./version.cake"
@@ -31,6 +32,7 @@ public class BuildParameters
     public DirectoryPathCollection TestProjects { get; set; }
     public FilePathCollection ProjectFiles { get; set; }
     public FilePathCollection TestProjectFiles { get; set; }
+    public string[] PackageIds { get; private set; }
 
     public bool ShouldPublish
     {
@@ -47,8 +49,6 @@ public class BuildParameters
             return !IsLocalBuild && !IsPullRequest && IsMasterBranch && IsTagged;
         }
     }
-
-
 
     public void Initialize(ICakeContext context)
     {
@@ -67,7 +67,7 @@ public class BuildParameters
         var suffix = versionQuality;
         if (!IsTagged)
         {
-            suffix += (IsRunningOnTravisCI ? "preview-" : "dev-") + CreateStamp();
+            suffix += (IsRunningOnTravisCI ? "preview-" : "dev-") + Util.CreateStamp();
         }
         suffix = string.IsNullOrWhiteSpace(suffix) ? null : suffix;
 
@@ -75,13 +75,13 @@ public class BuildParameters
             new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), versionQuality);
         Version.Suffix = suffix;
 
-        Paths = BuildPaths.GetPaths(context, Configuration, Version.Suffix);
+        Paths = BuildPaths.GetPaths(context, Configuration, Version.VersionWithSuffix());
 
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,
-            Version.Suffix,
-            new [] { "Cake", "Cake.Core", "Cake.Common", "Cake.Testing", "Cake.CoreCLR", "Cake.NuGet", "Cake.Tool" },
-            new [] { "cake.portable" });
+            Version.VersionWithSuffix(),
+            PackageIds,
+            new [] { "" });
     }
 
     public static BuildParameters GetParameters(ICakeContext context)
@@ -108,7 +108,7 @@ public class BuildParameters
             IsTagged = IsBuildTagged(buildSystem),
             GitHub = BuildCredentials.GetGitHubCredentials(context),
             Coveralls = CoverallsCredentials.GetCoverallsCredentials(context),
-            ReleaseNotes = null,//context.ParseReleaseNotes("./README.md"),
+            ReleaseNotes = null, //context.ParseReleaseNotes("./README.md"),
             IsPublishBuild = IsPublishing(target),
             IsReleaseBuild = IsReleasing(target),
             SkipSigning = StringComparer.OrdinalIgnoreCase.Equals("True", context.Argument("skipsigning", "True")),
@@ -117,11 +117,11 @@ public class BuildParameters
             Projects = context.GetDirectories("./src/*"),
             TestProjects = context.GetDirectories("./test/*"),
             ProjectFiles = context.GetFiles("./src/*/*.csproj"),
-            TestProjectFiles = context.GetFiles("./test/DotCommon.Test/*.csproj")
+            TestProjectFiles = context.GetFiles("./test/DotCommon.Test/*.csproj"),
+            PackageIds=Util.GetPackageIds(context,context.GetFiles("./src/*/*.csproj"))
         };
         return parameters;
     }
-
 
     private static bool IsBuildTagged(BuildSystem buildSystem)
     {
@@ -138,11 +138,5 @@ public class BuildParameters
     {
         var targets = new [] { "ReleaseNotes", "Create-Release-Notes" };
         return targets.Any(t => StringComparer.OrdinalIgnoreCase.Equals(t, target));
-    }
-
-    private static string CreateStamp()
-    {
-        var seconds = (long)(DateTime.UtcNow - new DateTime(2017, 1, 1)).TotalSeconds;
-        return seconds.ToString();
     }
 }

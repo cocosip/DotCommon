@@ -42,7 +42,6 @@ Teardown(ctx =>
 Task("Clean")
    .Does(() =>
    {
-       Information(parameters.Paths.Directories.ToClean);
       CleanDirectories( parameters.Paths.Directories.ToClean);
    });
 
@@ -61,7 +60,7 @@ Task("Restore-NuGet-Packages")
       };
       foreach (var project in parameters.ProjectFiles)
       {
-         Information(project.FullPath);
+         //Information(project.FullPath);
          DotNetCoreRestore(project.FullPath, settings);
       }
    });
@@ -74,12 +73,12 @@ Task("Build")
       var settings = new DotNetCoreBuildSettings
       {
          Configuration = parameters.Configuration,
-            VersionSuffix = parameters.Version.Suffix,
-            ArgumentCustomization = args =>
-            {
-               args.Append($"/p:InformationalVersion={parameters.Version.VersionWithSuffix()}");
-               return args;
-            }
+         VersionSuffix = parameters.Version.Suffix,
+         ArgumentCustomization = args =>
+         {
+            args.Append($"/p:InformationalVersion={parameters.Version.VersionWithSuffix()}");
+            return args;
+         }
       };
       foreach (var project in parameters.ProjectFiles)
       {
@@ -95,12 +94,12 @@ Task("Test")
       foreach (var testProject in parameters.TestProjectFiles)
       {
          Information($"Test:{testProject.FullPath}");
-         DotNetCoreTest(testProject.FullPath);
       }
    });
 
 //打包
 Task("Pack")
+   .IsDependentOn("Test")
    .Does(() =>
    {
       var settings = new DotNetCorePackSettings
@@ -115,11 +114,11 @@ Task("Pack")
          DotNetCorePack(project.FullPath, settings);
          Information($"pack:{project.FullPath}");
       }
-      foreach (var package in parameters.Packages.Nuget)
-      {
-         //DotNetCorePack(project.PackagePath, settings);
-         Information($"publishpath:{package.PackagePath}");
-      }
+      // foreach (var package in parameters.Packages.Nuget)
+      // {
+      //    //DotNetCorePack(project.PackagePath, settings);
+      //    Information($"publishpath:{package.PackagePath}");
+      // }
    });
 
 //发布Nuget
@@ -145,15 +144,15 @@ Task("Publish")
             throw new InvalidOperationException("Could not resolve NuGet API url.");
          }
 
-         foreach (var project in parameters.Projects)
+         foreach (var package in parameters.Packages.Nuget)
          {
-            // // Push the package.
-            // NuGetPush(project.FullPath, new NuGetPushSettings
-            // {
-            //    ApiKey = apiKey,
-            //    Source = apiUrl
-            // });
-            Information($"publish nuget:{project.FullPath}");
+            // Push the package.
+            NuGetPush(package.PackagePath, new NuGetPushSettings
+            {
+               ApiKey = apiKey,
+               Source = apiUrl
+            });
+            Information($"publish nuget:{package.PackagePath}");
          }
 
       }
@@ -162,10 +161,10 @@ Task("Publish")
 
 
 Task("Default")
-   //.IsDependentOn("Print")
    .IsDependentOn("Build")
    .IsDependentOn("Test")
    .IsDependentOn("Pack")
+   .IsDependentOn("Publish")
    .Does(() =>
    {
       Information("DotCommon build complete!");
