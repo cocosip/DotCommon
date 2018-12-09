@@ -39,7 +39,7 @@ bld/
 tools/
 
 #nuget pack
-nupkgs/
+artifacts/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
