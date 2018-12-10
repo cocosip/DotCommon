@@ -1,3 +1,20 @@
 theme: jekyll-theme-cayman
 language: csharp
-script: chmod +x ./build.sh -target Publish
+sudo: required
+dist: trusty
+dotnet: 2.1.500
+before_install:
+  - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
+  - git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+  - git fetch origin
+  - chmod +x ./build.sh
+
+script:
+  - ./build.sh --target Travis --configuration Release
+
+cache:
+  directories:
+    - .packages
+    - tools/Addins
+    - tools/gitreleasemanager
+    - tools/GitVersion.CommandLine
