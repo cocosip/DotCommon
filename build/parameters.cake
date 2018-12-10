@@ -106,8 +106,8 @@ public class BuildParameters
             IsMasterBranch = StringComparer.OrdinalIgnoreCase.Equals("master", buildSystem.TravisCI.Environment.Build.Branch),
             IsDevelopBranch = (StringComparer.OrdinalIgnoreCase.Equals("develop", buildSystem.TravisCI.Environment.Build.Branch) || StringComparer.OrdinalIgnoreCase.Equals("dev", buildSystem.TravisCI.Environment.Build.Branch)),
             IsTagged = IsBuildTagged(buildSystem),
-            GitHub = BuildCredentials.GetGitHubCredentials(context),
-            Coveralls = CoverallsCredentials.GetCoverallsCredentials(context),
+            GitHub = null,//BuildCredentials.GetGitHubCredentials(context),
+            Coveralls = null,//CoverallsCredentials.GetCoverallsCredentials(context),
             ReleaseNotes = null, //context.ParseReleaseNotes("./README.md"),
             IsPublishBuild = IsPublishing(target),
             IsReleaseBuild = IsReleasing(target),
@@ -130,7 +130,7 @@ public class BuildParameters
 
     private static bool IsReleasing(string target)
     {
-        var targets = new [] { "Publish", "Publish-NuGet", "Publish-Chocolatey", "Publish-HomeBrew", "Publish-GitHub-Release" };
+        var targets = new [] { "Publish", "Publish-NuGet", "Publish-Chocolatey", "Publish-HomeBrew", "Publish-GitHub-Release","Release" };
         return targets.Any(t => StringComparer.OrdinalIgnoreCase.Equals(t, target));
     }
 
