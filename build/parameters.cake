@@ -94,13 +94,14 @@ public class BuildParameters
         var target = context.Argument("target", "Default");
         var buildSystem = context.BuildSystem();
 
+        context.Information($"Cake BuildParameters:-------------begin--------------");
         context.Information($"IsLocalBuild:{buildSystem.IsLocalBuild}");
         context.Information($"IsRunningOnUnix:{context.IsRunningOnUnix()}");
         context.Information($"IsRunningOnTravisCI:{buildSystem.TravisCI.IsRunningOnTravisCI}");
         context.Information($"PullRequest:{buildSystem.TravisCI.Environment.Repository.PullRequest}");
         context.Information($"Branch:{buildSystem.TravisCI.Environment.Build.Branch}");
         context.Information($"Tag:{buildSystem.TravisCI.Environment.Build.Tag}");
-
+        context.Information($"Cake BuildParameters:---------------end---------------");
         var parameters = new BuildParameters
         {
             Target = target,
@@ -109,7 +110,7 @@ public class BuildParameters
             IsRunningOnUnix = context.IsRunningOnUnix(),
             IsRunningOnWindows = context.IsRunningOnWindows(),
             IsRunningOnTravisCI = buildSystem.TravisCI.IsRunningOnTravisCI,
-            IsPullRequest = buildSystem.TravisCI.Environment.Repository.PullRequest != "",
+            IsPullRequest = buildSystem.TravisCI.Environment.Repository.PullRequest,
             IsMasterBranch = StringComparer.OrdinalIgnoreCase.Equals("master", buildSystem.TravisCI.Environment.Build.Branch),
             IsDevelopBranch = (StringComparer.OrdinalIgnoreCase.Equals("develop", buildSystem.TravisCI.Environment.Build.Branch) || StringComparer.OrdinalIgnoreCase.Equals("dev", buildSystem.TravisCI.Environment.Build.Branch)),
             IsTagged = IsBuildTagged(buildSystem),
