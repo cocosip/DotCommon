@@ -12,6 +12,7 @@ public class BuildParameters
     public bool IsRunningOnUnix { get; private set; }
     public bool IsRunningOnWindows { get; private set; }
     public bool IsRunningOnTravisCI { get; private set; }
+    public bool IsRunningOnAppVeyor { get; private set; }
     public bool IsPullRequest { get; private set; }
     public bool IsMasterBranch { get; private set; }
     public bool IsDevelopBranch { get; private set; }
@@ -38,7 +39,7 @@ public class BuildParameters
     {
         get
         {
-            return !IsLocalBuild && !IsPullRequest && IsMasterBranch && IsTagged;
+            return !IsLocalBuild && !IsPullRequest && IsTagged && (IsRunningOnTravisCI || (IsRunningOnAppVeyor && IsMasterBranch));
         }
     }
 
@@ -46,7 +47,7 @@ public class BuildParameters
     {
         get
         {
-            return !IsLocalBuild && !IsPullRequest && IsMasterBranch && IsTagged;
+            return !IsLocalBuild && !IsPullRequest && IsTagged && (IsRunningOnTravisCI || (IsRunningOnAppVeyor && IsMasterBranch));
         }
     }
 
@@ -81,7 +82,7 @@ public class BuildParameters
             Paths.Directories.NugetRoot,
             Version.VersionWithSuffix(),
             PackageIds,
-            new string[] {  });
+            new string[] { });
     }
 
     public static BuildParameters GetParameters(ICakeContext context)
@@ -94,14 +95,6 @@ public class BuildParameters
         var target = context.Argument("target", "Default");
         var buildSystem = context.BuildSystem();
 
-        context.Information($"Cake BuildParameters:-------------begin--------------");
-        context.Information($"IsLocalBuild:{buildSystem.IsLocalBuild}");
-        context.Information($"IsRunningOnUnix:{context.IsRunningOnUnix()}");
-        context.Information($"IsRunningOnTravisCI:{buildSystem.TravisCI.IsRunningOnTravisCI}");
-        context.Information($"PullRequest:{buildSystem.TravisCI.Environment.Repository.PullRequest}");
-        context.Information($"Branch:{buildSystem.TravisCI.Environment.Build.Branch}");
-        context.Information($"Tag:{buildSystem.TravisCI.Environment.Build.Tag}");
-        context.Information($"Cake BuildParameters:---------------end---------------");
         var parameters = new BuildParameters
         {
             Target = target,
@@ -110,12 +103,13 @@ public class BuildParameters
             IsRunningOnUnix = context.IsRunningOnUnix(),
             IsRunningOnWindows = context.IsRunningOnWindows(),
             IsRunningOnTravisCI = buildSystem.TravisCI.IsRunningOnTravisCI,
-            IsPullRequest = StringComparer.OrdinalIgnoreCase.Equals("true", buildSystem.TravisCI.Environment.Repository.PullRequest),
-            IsMasterBranch = StringComparer.OrdinalIgnoreCase.Equals("master", buildSystem.TravisCI.Environment.Build.Branch),
-            IsDevelopBranch = (StringComparer.OrdinalIgnoreCase.Equals("develop", buildSystem.TravisCI.Environment.Build.Branch) || StringComparer.OrdinalIgnoreCase.Equals("dev", buildSystem.TravisCI.Environment.Build.Branch)),
+            IsRunningOnAppVeyor = buildSystem.AppVeyor.IsRunningOnAppVeyor,
+            IsPullRequest = IsThePullRequest(buildSystem),
+            IsMasterBranch = IsTheMasterBranch(buildSystem),
+            IsDevelopBranch = IsTheDevelopBranch(buildSystem),
             IsTagged = IsBuildTagged(buildSystem),
-            GitHub = null,//BuildCredentials.GetGitHubCredentials(context),
-            Coveralls = null,//CoverallsCredentials.GetCoverallsCredentials(context),
+            GitHub = null, //BuildCredentials.GetGitHubCredentials(context),
+            Coveralls = null, //CoverallsCredentials.GetCoverallsCredentials(context),
             ReleaseNotes = null, //context.ParseReleaseNotes("./README.md"),
             IsPublishBuild = IsPublishing(target),
             IsReleaseBuild = IsReleasing(target),
@@ -126,9 +120,35 @@ public class BuildParameters
             TestProjects = context.GetDirectories("./test/*"),
             ProjectFiles = context.GetFiles("./src/*/*.csproj"),
             TestProjectFiles = context.GetFiles("./test/DotCommon.Test/*.csproj"),
-            PackageIds=Util.GetPackageIds(context,context.GetFiles("./src/*/*.csproj"))
+            PackageIds = Util.GetPackageIds(context, context.GetFiles("./src/*/*.csproj"))
         };
+        context.Information($"Cake BuildParameters:-------------begin--------------");
+        context.Information($"IsLocalBuild:{parameters.IsLocalBuild}");
+        context.Information($"IsRunningOnUnix:{parameters.IsRunningOnUnix}");
+        context.Information($"IsRunningOnTravisCI:{parameters.IsRunningOnTravisCI}");
+        context.Information($"IsRunningOnAppVeyor:{parameters.IsRunningOnAppVeyor}");
+        context.Information($"IsPullRequest:{parameters.IsPullRequest}");
+        context.Information($"IsMasterBranch:{parameters.IsMasterBranch}");
+        context.Information($"IsTagged:{parameters.IsTagged}");
+        context.Information($"ShouldPublish:{parameters.ShouldPublish}");
+        context.Information($"ShouldPublishToNuGet:{parameters.ShouldPublishToNuGet}");
+        context.Information($"Cake BuildParameters:---------------end---------------");
         return parameters;
+    }
+
+    private static bool IsThePullRequest(BuildSystem buildSystem)
+    {
+        return (buildSystem.TravisCI.IsRunningOnTravisCI && StringComparer.OrdinalIgnoreCase.Equals("true", buildSystem.TravisCI.Environment.Repository.PullRequest)) || (buildSystem.AppVeyor.IsRunningOnAppVeyor && buildSystem.AppVeyor.Environment.PullRequest.IsPullRequest);
+    }
+
+    private static bool IsTheMasterBranch(BuildSystem buildSystem)
+    {
+        return (buildSystem.TravisCI.IsRunningOnTravisCI && StringComparer.OrdinalIgnoreCase.Equals("master", buildSystem.TravisCI.Environment.Build.Branch)) || (buildSystem.AppVeyor.IsRunningOnAppVeyor && StringComparer.OrdinalIgnoreCase.Equals("master", buildSystem.AppVeyor.Environment.Repository.Branch));
+    }
+
+    private static bool IsTheDevelopBranch(BuildSystem buildSystem)
+    {
+        return (buildSystem.TravisCI.IsRunningOnTravisCI && (StringComparer.OrdinalIgnoreCase.Equals("develop", buildSystem.TravisCI.Environment.Build.Branch) || StringComparer.OrdinalIgnoreCase.Equals("dev", buildSystem.TravisCI.Environment.Build.Branch))) || (buildSystem.AppVeyor.IsRunningOnAppVeyor && (StringComparer.OrdinalIgnoreCase.Equals("develop", buildSystem.AppVeyor.Environment.Repository.Branch) || StringComparer.OrdinalIgnoreCase.Equals("dev", buildSystem.AppVeyor.Environment.Repository.Branch)));
     }
 
     private static bool IsBuildTagged(BuildSystem buildSystem)
