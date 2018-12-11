@@ -95,7 +95,7 @@ public class BuildParameters
         var buildSystem = context.BuildSystem();
 
         context.Information($"IsLocalBuild:{buildSystem.IsLocalBuild}");
-        context.Information($"IsRunningOnUnix:{buildSystem.IsRunningOnUnix()}");
+        context.Information($"IsRunningOnUnix:{context.IsRunningOnUnix()}");
         context.Information($"IsRunningOnTravisCI:{buildSystem.TravisCI.IsRunningOnTravisCI}");
         context.Information($"PullRequest:{buildSystem.TravisCI.Environment.Repository.PullRequest}");
         context.Information($"Branch:{buildSystem.TravisCI.Environment.Build.Branch}");
