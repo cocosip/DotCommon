@@ -127,10 +127,11 @@ Task("Publish")
    .IsDependentOn("Pack")
    .Does(() =>
    {
-
+       Information($"publish,ShouldPublish:{parameters.ShouldPublish}");
       //有标签,并且是Release才会发布
       if (parameters.ShouldPublish)
       {
+           Information($"publish,");
          // Resolve the API key.
          var apiKey = EnvironmentVariable("NUGET_API_KEY");
          if (string.IsNullOrEmpty(apiKey))

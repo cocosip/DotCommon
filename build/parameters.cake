@@ -81,7 +81,7 @@ public class BuildParameters
             Paths.Directories.NugetRoot,
             Version.VersionWithSuffix(),
             PackageIds,
-            new [] { "" });
+            new string[] {  });
     }
 
     public static BuildParameters GetParameters(ICakeContext context)
@@ -93,6 +93,13 @@ public class BuildParameters
 
         var target = context.Argument("target", "Default");
         var buildSystem = context.BuildSystem();
+
+        context.Information($"IsLocalBuild:{buildSystem.IsLocalBuild}");
+        context.Information($"IsRunningOnUnix:{buildSystem.IsRunningOnUnix()}");
+        context.Information($"IsRunningOnTravisCI:{buildSystem.TravisCI.IsRunningOnTravisCI}");
+        context.Information($"PullRequest:{buildSystem.TravisCI.Environment.Repository.PullRequest}");
+        context.Information($"Branch:{buildSystem.TravisCI.Environment.Build.Branch}");
+        context.Information($"Tag:{buildSystem.TravisCI.Environment.Build.Tag}");
 
         var parameters = new BuildParameters
         {
