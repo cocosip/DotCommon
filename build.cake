@@ -103,12 +103,16 @@ Task("Pack")
    .IsDependentOn("Test")
    .Does(() =>
    {
+       msBuildSettings = new DotNetCoreMSBuildSettings()
+                            .WithProperty("Version", parameters.Version.VersionWithSuffix())
+                            .WithProperty("AssemblyVersion", parameters.Version.VersionWithoutQuality());
       var settings = new DotNetCorePackSettings
       {
-      Configuration = parameters.Configuration,
-      VersionSuffix = parameters.Version.Suffix,
-      IncludeSymbols = false,
-      OutputDirectory = parameters.Paths.Directories.NugetRoot
+         Configuration = parameters.Configuration,
+         VersionSuffix = parameters.Version.Suffix,
+         IncludeSymbols = false,
+         OutputDirectory = parameters.Paths.Directories.NugetRoot,
+         MSBuildSettings = msBuildSettings
       };
       foreach (var project in parameters.ProjectFiles)
       {

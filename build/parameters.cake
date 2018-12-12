@@ -77,14 +77,13 @@ public class BuildParameters
             //需要发布到Nuget
             if (ShouldPublishToNuGet && !string.IsNullOrWhiteSpace(versionQuality))
             {
-                suffix += "preview-" + Util.CreateStamp();
+                suffix += "preview";
             }
         }
-
+       
         suffix = string.IsNullOrWhiteSpace(suffix) ? null : suffix;
 
-        Version =
-            new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), versionQuality);
+        Version = new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), versionQuality);
         Version.Suffix = suffix;
 
         context.Information($"Suffix:{Version.Suffix},VersionWithSuffix:{Version.VersionWithSuffix()},Version:{Version.Version()}");
