@@ -24,7 +24,7 @@ public class BuildVersion
 
 	public string Version()
 	{
-		return VersionWithoutQuality() + (Quality == null ? string.Empty : $"-{Quality}");
+		return VersionWithoutQuality() + (Quality == null ? string.Empty : $".{Quality}");
 	}
 
 	public string VersionWithSuffix()

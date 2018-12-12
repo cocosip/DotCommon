@@ -105,7 +105,7 @@ Task("Pack")
    {
        msBuildSettings = new DotNetCoreMSBuildSettings()
                             .WithProperty("Version", parameters.Version.VersionWithSuffix())
-                            .WithProperty("AssemblyVersion", parameters.Version.VersionWithoutQuality());
+                            .WithProperty("AssemblyVersion", parameters.Version.Version());
       var settings = new DotNetCorePackSettings
       {
          Configuration = parameters.Configuration,

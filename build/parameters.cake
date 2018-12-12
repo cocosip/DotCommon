@@ -80,9 +80,7 @@ public class BuildParameters
                 suffix += "preview";
             }
         }
-       
         suffix = string.IsNullOrWhiteSpace(suffix) ? null : suffix;
-
         Version = new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), versionQuality);
         Version.Suffix = suffix;
 
