@@ -42,7 +42,7 @@ Teardown(ctx =>
 Task("Clean")
    .Does(() =>
    {
-      CleanDirectories( parameters.Paths.Directories.ToClean);
+      CleanDirectories(parameters.Paths.Directories.ToClean);
    });
 
 //还原项目
@@ -53,11 +53,11 @@ Task("Restore-NuGet-Packages")
       var settings = new DotNetCoreRestoreSettings
       {
          ArgumentCustomization = args =>
-         {
-            args.Append($"/p:VersionSuffix={parameters.Version.Suffix}");
-            return args;
-         },
-         Sources = new [] { "https://api.nuget.org/v3/index.json" }
+            {
+               args.Append($"/p:VersionSuffix={parameters.Version.Suffix}");
+               return args;
+            },
+            Sources = new [] { "https://api.nuget.org/v3/index.json" }
       };
       foreach (var project in parameters.ProjectFiles)
       {
@@ -74,12 +74,12 @@ Task("Build")
       var settings = new DotNetCoreBuildSettings
       {
          Configuration = parameters.Configuration,
-         VersionSuffix = parameters.Version.Suffix,
-         ArgumentCustomization = args =>
-         {
-            args.Append($"/p:InformationalVersion={parameters.Version.VersionWithSuffix()}");
-            return args;
-         }
+            VersionSuffix = parameters.Version.Suffix,
+            ArgumentCustomization = args =>
+            {
+               args.Append($"/p:InformationalVersion={parameters.Version.VersionWithSuffix()}");
+               return args;
+            }
       };
       foreach (var project in parameters.ProjectFiles)
       {
@@ -105,10 +105,10 @@ Task("Pack")
    {
       var settings = new DotNetCorePackSettings
       {
-          Configuration = parameters.Configuration,
-          VersionSuffix = parameters.Version.Suffix,
-          IncludeSymbols = false,
-          OutputDirectory = parameters.Paths.Directories.NugetRoot
+      Configuration = parameters.Configuration,
+      VersionSuffix = parameters.Version.Suffix,
+      IncludeSymbols = false,
+      OutputDirectory = parameters.Paths.Directories.NugetRoot
       };
       foreach (var project in parameters.ProjectFiles)
       {
@@ -127,11 +127,15 @@ Task("Publish")
    .IsDependentOn("Pack")
    .Does(() =>
    {
-       Information($"publish,ShouldPublish:{parameters.ShouldPublish}");
+      Information($"publish,ShouldPublish:{parameters.ShouldPublish}");
+      foreach (var package in parameters.Packages.Nuget)
+      {
+         Information($"Package:{package.PackagePath}");
+      }
       //有标签,并且是Release才会发布
       if (parameters.ShouldPublish)
       {
-           Information($"publish,");
+         Information($"publish,");
          // Resolve the API key.
          var apiKey = EnvironmentVariable("NUGET_API_KEY");
          if (string.IsNullOrEmpty(apiKey))
@@ -152,7 +156,7 @@ Task("Publish")
             NuGetPush(package.PackagePath, new NuGetPushSettings
             {
                ApiKey = apiKey,
-               Source = apiUrl
+                  Source = apiUrl
             });
             Information($"publish nuget:{package.PackagePath}");
          }

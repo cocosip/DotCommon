@@ -65,17 +65,29 @@ public class BuildParameters
         var versionQuality = doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionQuality").InnerText;
         versionQuality = string.IsNullOrWhiteSpace(versionQuality) ? null : versionQuality;
 
-        var suffix = versionQuality;
-        if (!IsTagged)
+        var suffix = "";
+
+        //如果本地发布,就加dev,如果是nuget发布,就加preview
+        if (IsLocalBuild)
         {
-            suffix += ((IsRunningOnTravisCI || IsRunningOnAppVeyor) ? "preview-" : "dev-") + Util.CreateStamp();
+            suffix += "dev-" + Util.CreateStamp();
         }
+        else
+        {
+            //需要发布到Nuget
+            if (ShouldPublishToNuGet && !string.IsNullOrWhiteSpace(versionQuality))
+            {
+                suffix += "preview-" + Util.CreateStamp();
+            }
+        }
+
         suffix = string.IsNullOrWhiteSpace(suffix) ? null : suffix;
 
         Version =
             new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), versionQuality);
         Version.Suffix = suffix;
 
+        context.Information($"Suffix:{Version.Suffix},VersionWithSuffix:{Version.VersionWithSuffix()},Version:{Version.Version()}");
         Paths = BuildPaths.GetPaths(context, Configuration, Version.VersionWithSuffix());
 
         Packages = BuildPackages.GetPackages(
