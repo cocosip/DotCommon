@@ -68,7 +68,7 @@ public class BuildParameters
         var suffix = versionQuality;
         if (!IsTagged)
         {
-            suffix += (IsRunningOnTravisCI ? "preview-" : "dev-") + Util.CreateStamp();
+            suffix += ((IsRunningOnTravisCI || IsRunningOnAppVeyor) ? "preview-" : "dev-") + Util.CreateStamp();
         }
         suffix = string.IsNullOrWhiteSpace(suffix) ? null : suffix;
 
@@ -82,7 +82,7 @@ public class BuildParameters
             Paths.Directories.NugetRoot,
             Version.VersionWithSuffix(),
             PackageIds,
-            new string[] { });
+            new string[] {});
     }
 
     public static BuildParameters GetParameters(ICakeContext context)
