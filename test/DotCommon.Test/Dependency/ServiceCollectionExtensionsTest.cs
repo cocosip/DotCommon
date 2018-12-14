@@ -13,7 +13,7 @@ namespace DotCommon.Test.Dependency
         public void AddServiceIfNotRegister_Test()
         {
             IServiceCollection services1 = new ServiceCollection();
-            services1.AddServiceIfNotRegistered<IDependencyTestService>(ServiceLifetime.Transient, s =>
+            services1.AddServiceWhenNull<IDependencyTestService>(ServiceLifetime.Transient, s =>
             {
                 s.AddTransient<IDependencyTest2Service, DependencyTest2Service>();
             });
@@ -23,7 +23,7 @@ namespace DotCommon.Test.Dependency
 
             IServiceCollection services2 = new ServiceCollection();
             services2.AddTransient<IDependencyTestService, DependencyTestService>();
-            services2.AddServiceIfNotRegistered<IDependencyTestService>(ServiceLifetime.Singleton, s =>
+            services2.AddServiceWhenNull<IDependencyTestService>(ServiceLifetime.Singleton, s =>
             {
                 s.AddTransient<IDependencyTestService, DependencyTestService>();
             });
@@ -33,7 +33,7 @@ namespace DotCommon.Test.Dependency
 
             IServiceCollection services3 = new ServiceCollection();
             services3.AddTransient<IDependencyTestService, DependencyTestService>();
-            services3.AddServiceIfNotRegistered<IDependencyTestService>(ServiceLifetime.Transient, s =>
+            services3.AddServiceWhenNull<IDependencyTestService>(ServiceLifetime.Transient, s =>
             {
                 s.AddTransient<IDependencyTest2Service, DependencyTest2Service>();
             });

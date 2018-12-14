@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\build\common.props" />
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>DotCommon.AspNetCore.Mvc</AssemblyName>
+    <PackageId>DotCommon.AspNetCore.Mvc</PackageId>
+    <Description>AspNetCore Mvc相关扩展</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
+  </ItemGroup>
+  
+</Project>

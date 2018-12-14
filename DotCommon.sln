@@ -36,6 +36,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{83219023
 		build\version.props = build\version.props
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{69609346-810B-4288-8C54-637DE4E09E12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.AspNetCore.Mvc", "src\DotCommon.AspNetCore.Mvc\DotCommon.AspNetCore.Mvc.csproj", "{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +78,10 @@ Global
 		{F75F6BAF-346E-4721-A193-C96BAC949EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F75F6BAF-346E-4721-A193-C96BAC949EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F75F6BAF-346E-4721-A193-C96BAC949EA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

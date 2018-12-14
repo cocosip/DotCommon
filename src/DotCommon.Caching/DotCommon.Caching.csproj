@@ -5,7 +5,6 @@
     <AssemblyName>DotCommon.Caching</AssemblyName>
     <PackageId>DotCommon.Caching</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
-    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
