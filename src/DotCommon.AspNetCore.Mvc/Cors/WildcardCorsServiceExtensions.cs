@@ -16,16 +16,13 @@ namespace DotCommon.AspNetCore.Mvc.Cors
             services.Configure<CorsOptions>(options => options.AddPolicy(WildcardCorsService.WildcardCorsPolicyName, builder =>
             {
                 var originArray = origins.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(o => o.RemovePostFix("/")).ToArray();
+                configure?.Invoke(builder);
                 if (configure == null)
                 {
                     builder.WithOrigins(originArray)
-                    .AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-                }
-                else
-                {
-                    configure(builder);
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 }
             }));
 

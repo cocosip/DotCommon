@@ -38,7 +38,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{83219023
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{69609346-810B-4288-8C54-637DE4E09E12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.AspNetCore.Mvc", "src\DotCommon.AspNetCore.Mvc\DotCommon.AspNetCore.Mvc.csproj", "{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AspNetCore.Mvc", "src\DotCommon.AspNetCore.Mvc\DotCommon.AspNetCore.Mvc.csproj", "{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.AspNetCore.Mvc.Demo", "samples\DotCommon.AspNetCore.Mvc.Demo\DotCommon.AspNetCore.Mvc.Demo.csproj", "{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +84,10 @@ Global
 		{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0F36994D-849F-436E-97A6-530A05A02EFC} = {834211DA-7385-4208-81A9-A807405FCCFA}
 		{F75F6BAF-346E-4721-A193-C96BAC949EA6} = {9B36842E-C0C0-4613-BC3B-774A40DA6B4D}
+		{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9} = {9B36842E-C0C0-4613-BC3B-774A40DA6B4D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17831D3C-78C0-4535-AC9A-7CA19B13DA03}

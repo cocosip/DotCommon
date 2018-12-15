@@ -22,13 +22,14 @@ namespace DotCommon.ConsoleTest
             {
                 c.AddLog4Net(new Log4NetProviderOptions());
             })
-            .AddCommonComponents()
+            .AddDotCommon()
             .AddGenericsMemoryCache()
             .AddProtoBuf()
             .AddJson4Net();
             services.AddTransient<LoggerService>();
 
-            var provider = services.BuildServiceProvider();
+            var provider = services.BuildServiceProvider()
+                .InitializeDotCommon();
             var loggerService = provider.GetService<LoggerService>();
             loggerService.Write();
 

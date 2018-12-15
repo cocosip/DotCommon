@@ -12,7 +12,7 @@ namespace DotCommon.Test.Caching
         {
             IServiceCollection services = new ServiceCollection();
             services
-                .AddCommonComponents()
+                .AddDotCommon()
                 .AddGenericsMemoryCache();
             Provider = services.BuildServiceProvider();
         }
