@@ -29,7 +29,7 @@ namespace DotCommon.DependencyInjection
 
         /// <summary>初始化DotCommon
         /// </summary>
-        public static IServiceProvider InitializeDotCommon(this IServiceProvider provider)
+        public static IServiceProvider ConfigureDotCommon(this IServiceProvider provider)
         {
             var application = provider.GetRequiredService<IDotCommonApplication>();
             application.Initialize(provider);

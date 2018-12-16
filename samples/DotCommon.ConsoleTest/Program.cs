@@ -29,7 +29,7 @@ namespace DotCommon.ConsoleTest
             services.AddTransient<LoggerService>();
 
             var provider = services.BuildServiceProvider()
-                .InitializeDotCommon();
+                .ConfigureDotCommon();
             var loggerService = provider.GetService<LoggerService>();
             loggerService.Write();
 

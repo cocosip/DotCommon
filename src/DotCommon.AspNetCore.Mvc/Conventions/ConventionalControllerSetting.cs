@@ -44,9 +44,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
 
             Assembly = assembly;
             RootPath = rootPath;
-
             ControllerTypes = new HashSet<Type>();
-
             ApiVersions = new List<ApiVersion>();
         }
 

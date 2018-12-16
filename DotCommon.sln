@@ -36,11 +36,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{83219023
 		build\version.props = build\version.props
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{69609346-810B-4288-8C54-637DE4E09E12}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AspNetCore.Mvc", "src\DotCommon.AspNetCore.Mvc\DotCommon.AspNetCore.Mvc.csproj", "{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.AspNetCore.Mvc.Demo", "samples\DotCommon.AspNetCore.Mvc.Demo\DotCommon.AspNetCore.Mvc.Demo.csproj", "{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AspNetCore.Mvc.Demo", "samples\DotCommon.AspNetCore.Mvc.Demo\DotCommon.AspNetCore.Mvc.Demo.csproj", "{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

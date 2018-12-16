@@ -1,3 +1,4 @@
+using DotCommon.AspNetCore.Mvc.Formatters;
 using DotCommon.Extensions;
 using DotCommon.Reflecting;
 using DotCommon.Utility;
@@ -20,8 +21,10 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
         private string[] CommonPostfixes = { "AppService", "ApplicationService", "Service" };
 
         private readonly DotCommonAspNetCoreMvcOptions _options;
-        public ServiceConvention(IOptions<DotCommonAspNetCoreMvcOptions> options)
+        private readonly MvcOptions _mvcOptions;
+        public ServiceConvention(IOptions<MvcOptions> mvcOptions, IOptions<DotCommonAspNetCoreMvcOptions> options)
         {
+            _mvcOptions = mvcOptions.Value;
             _options = options.Value;
         }
 
@@ -60,7 +63,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
         protected virtual void ConfigureRemoteService(ControllerModel controller, ConventionalControllerSetting configuration)
         {
             ConfigureApiExplorer(controller);
-            ConfigureSelector(controller, configuration);
+            ConfigureControllerSelector(controller, configuration);
             ConfigureParameters(controller);
         }
 
@@ -81,15 +84,22 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
                         continue;
                     }
 
+                    //如果是基础类型,不能用Frombody,如果是string类型的,并且添加了RawRequestBodyFormatter可以用Frombody
                     if (!TypeHelper.IsPrimitiveExtended(prm.ParameterInfo.ParameterType))
+                    //if (!TypeHelper.IsPrimitiveExtended(prm.ParameterInfo.ParameterType) || CanUseRawRequestBodyFormatter(prm.ParameterInfo.ParameterType))
                     {
                         if (CanUseFormBodyBinding(action, prm))
                         {
-                            prm.BindingInfo = BindingInfo.GetBindingInfo(new [] { new FromBodyAttribute() });
+                            prm.BindingInfo = BindingInfo.GetBindingInfo(new[] { new FromBodyAttribute() });
                         }
                     }
                 }
             }
+        }
+
+        protected virtual bool CanUseRawRequestBodyFormatter(Type type)
+        {
+            return type == typeof(string) && _mvcOptions.InputFormatters.Any(x => x.GetType() == typeof(RawRequestBodyFormatter));
         }
 
         protected virtual bool CanUseFormBodyBinding(ActionModel action, ParameterModel parameter)
@@ -167,7 +177,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
             }
         }
 
-        protected virtual void ConfigureSelector(ControllerModel controller, ConventionalControllerSetting configuration)
+        protected virtual void ConfigureControllerSelector(ControllerModel controller, ConventionalControllerSetting configuration)
         {
             RemoveEmptySelectors(controller.Selectors);
 
@@ -175,22 +185,23 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
             {
                 return;
             }
+           
 
             var rootPath = GetRootPathOrDefault(controller.ControllerType.AsType());
 
             foreach (var action in controller.Actions)
             {
-                ConfigureSelector(rootPath, controller.ControllerName, action, configuration);
+                ConfigureActionSelector(rootPath, controller.ControllerName, action, configuration);
             }
         }
 
-        protected virtual void ConfigureSelector(string rootPath, string controllerName, ActionModel action, ConventionalControllerSetting configuration)
+        protected virtual void ConfigureActionSelector(string rootPath, string controllerName, ActionModel action, ConventionalControllerSetting configuration)
         {
             RemoveEmptySelectors(action.Selectors);
 
             if (!action.Selectors.Any())
             {
-                AddAbpServiceSelector(rootPath, controllerName, action, configuration);
+                AddServiceSelector(rootPath, controllerName, action, configuration);
             }
             else
             {
@@ -198,17 +209,19 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
             }
         }
 
-        protected virtual void AddAbpServiceSelector(string rootPath, string controllerName, ActionModel action, ConventionalControllerSetting configuration)
+        protected virtual void AddServiceSelector(string rootPath, string controllerName, ActionModel action, ConventionalControllerSetting configuration)
         {
+            //根据方法名称生成Http请求的路径
             var httpMethod = SelectHttpMethod(action, configuration);
-
-            var abpServiceSelectorModel = new SelectorModel
+            var routeModel = CreateServiceAttributeRouteModel(rootPath, controllerName, action, httpMethod, configuration);
+            var serviceSelectorModel = new SelectorModel
             {
-                AttributeRouteModel = CreateAbpServiceAttributeRouteModel(rootPath, controllerName, action, httpMethod, configuration),
-                ActionConstraints = { new HttpMethodActionConstraint(new [] { httpMethod }) }
+                AttributeRouteModel = routeModel,
+                ActionConstraints = { new HttpMethodActionConstraint(new[] { httpMethod }) },
+                //  EndpointMetadata = { new RouteAttribute(routeModel.Template) }
             };
 
-            action.Selectors.Add(abpServiceSelectorModel);
+            action.Selectors.Add(serviceSelectorModel);
         }
 
         protected virtual string SelectHttpMethod(ActionModel action, ConventionalControllerSetting configuration)
@@ -223,7 +236,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
                 var httpMethod = selector.ActionConstraints.OfType<HttpMethodActionConstraint>().FirstOrDefault()?.HttpMethods?.FirstOrDefault();
                 if (selector.AttributeRouteModel == null)
                 {
-                    selector.AttributeRouteModel = CreateAbpServiceAttributeRouteModel(rootPath, controllerName, action, httpMethod, configuration);
+                    selector.AttributeRouteModel = CreateServiceAttributeRouteModel(rootPath, controllerName, action, httpMethod, configuration);
                 }
             }
         }
@@ -250,7 +263,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
             return _options.ConventionalControllers.ConventionalControllerSettings.GetSettingOrNull(controllerType);
         }
 
-        protected virtual AttributeRouteModel CreateAbpServiceAttributeRouteModel(string rootPath, string controllerName, ActionModel action, string httpMethod, ConventionalControllerSetting configuration)
+        protected virtual AttributeRouteModel CreateServiceAttributeRouteModel(string rootPath, string controllerName, ActionModel action, string httpMethod, ConventionalControllerSetting configuration)
         {
             return new AttributeRouteModel(
                 new RouteAttribute(

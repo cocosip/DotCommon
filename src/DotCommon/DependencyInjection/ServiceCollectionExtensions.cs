@@ -11,21 +11,12 @@ namespace DotCommon.DependencyInjection
     public static class ServiceCollectionExtensions
     {
 
-        /// <summary>
-        /// </summary>
-        /// <param name="services" cef="/IDotCommonApplication"></param>
-        /// <returns></returns>
-        public static IDotCommonApplication CreateApplication(this IServiceCollection services)
-        {
-            return new DotCommonApplication(services);
-        }
-
-        /// <summary>注册通用组件
+        /// <summary>注册DotCommon
         /// </summary>
         public static IServiceCollection AddDotCommon(this IServiceCollection services)
         {
             //添加DotCommonApplication
-            services.CreateApplication();
+            var application = new DotCommonApplication(services);
 
             //http请求
             services.AddTransient<IHttpClient, HttpClient>();

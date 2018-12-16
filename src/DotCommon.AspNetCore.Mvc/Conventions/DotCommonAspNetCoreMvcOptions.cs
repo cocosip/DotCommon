@@ -1,7 +1,6 @@
-using DotCommon.AspNetCore.Mvc.Conventions;
 using Microsoft.Extensions.Options;
 
-namespace DotCommon.AspNetCore.Mvc
+namespace DotCommon.AspNetCore.Mvc.Conventions
 {
     public class DotCommonAspNetCoreMvcOptions
     {

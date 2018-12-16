@@ -14,6 +14,8 @@ namespace DotCommon
 
         public DotCommonApplication(IServiceCollection services)
         {
+            Services = services;
+
             services.TryAddObjectAccessor<IServiceProvider>();
             services.AddSingleton<IDotCommonApplication>(this);
         }

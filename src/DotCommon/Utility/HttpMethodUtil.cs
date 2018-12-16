@@ -11,7 +11,8 @@ namespace DotCommon.Utility
         public const string DefaultHttpVerb = "POST";
 
         public static Dictionary<string, string[]> ConventionalPrefixes { get; set; } = new Dictionary<string, string[]>
-        { { "GET", new [] { "GetList", "GetAll", "Get" } },
+        {
+            { "GET", new [] { "GetList", "GetAll", "Get" } },
             { "PUT", new [] { "Put", "Update" } },
             { "DELETE", new [] { "Delete", "Remove" } },
             { "POST", new [] { "Create", "Add", "Insert", "Post" } },

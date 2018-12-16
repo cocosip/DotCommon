@@ -18,6 +18,7 @@ namespace DotCommon
         /// </summary>
         public bool IsMetadataEnabled { get; set; }
 
+
         public RemoteServiceAttribute(bool isEnabled = true)
         {
             IsEnabled = isEnabled;
