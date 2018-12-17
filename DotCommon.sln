@@ -31,6 +31,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{83219023-621D-4A58-8D91-17B1C8DE1C8B}"
 	ProjectSection(SolutionItems) = preProject
 		build\common.props = build\common.props
+		build\credentials.cake = build\credentials.cake
+		build\packages.cake = build\packages.cake
+		build\parameters.cake = build\parameters.cake
+		build\paths.cake = build\paths.cake
 		build\util.cake = build\util.cake
 		build\version.cake = build\version.cake
 		build\version.props = build\version.props
