@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DotCommon</AssemblyName>
     <PackageId>DotCommon</PackageId>
+    <RootNamespace>DotCommon</RootNamespace>
     <Description>通用的.net类库</Description>
   </PropertyGroup>
   <ItemGroup>

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\build\common.props" />
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>DotCommon.ImageSharp</AssemblyName>
+    <PackageId>DotCommon.ImageSharp</PackageId>
+    <RootNamespace>DotCommon</RootNamespace>
+    <Description>DotCommon图片相关操作类</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
+  </ItemGroup>
+
+</Project>
