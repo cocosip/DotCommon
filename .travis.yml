@@ -2,7 +2,7 @@ theme: jekyll-theme-cayman
 language: csharp
 sudo: required
 dist: xenial
-mono: none
+mono: latest
 dotnet: 2.2
 before_install:
   - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
