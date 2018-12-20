@@ -2,7 +2,8 @@ theme: jekyll-theme-cayman
 language: csharp
 sudo: required
 dist: trusty
-dotnet: 2.2
+mono: none
+dotnet: 2.2.101
 before_install:
   - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
   - git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
