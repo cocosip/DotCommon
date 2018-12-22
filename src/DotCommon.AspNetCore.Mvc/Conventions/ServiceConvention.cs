@@ -51,7 +51,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
                 }
                 else
                 {
-                    var remoteServiceAttr = ReflectionHelper.GetSingleAttributeOrDefault<RemoteServiceAttribute>(controllerType.GetTypeInfo());
+                    var remoteServiceAttr = ReflectionUtil.GetSingleAttributeOrDefault<RemoteServiceAttribute>(controllerType.GetTypeInfo());
                     if (remoteServiceAttr != null && remoteServiceAttr.IsEnabledFor(controllerType))
                     {
                         ConfigureRemoteService(controller, configuration);
@@ -85,7 +85,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
                     }
 
                     //如果是基础类型,不能用Frombody,如果是string类型的,并且添加了RawRequestBodyFormatter可以用Frombody
-                    if (!TypeHelper.IsPrimitiveExtended(prm.ParameterInfo.ParameterType))
+                    if (!TypeUtil.IsPrimitiveExtended(prm.ParameterInfo.ParameterType))
                     //if (!TypeHelper.IsPrimitiveExtended(prm.ParameterInfo.ParameterType) || CanUseRawRequestBodyFormatter(prm.ParameterInfo.ParameterType))
                     {
                         if (CanUseFormBodyBinding(action, prm))
@@ -144,7 +144,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
             if (controller.ApiExplorer.IsVisible == null)
             {
                 var controllerType = controller.ControllerType.AsType();
-                var remoteServiceAtt = ReflectionHelper.GetSingleAttributeOrDefault<RemoteServiceAttribute>(controllerType.GetTypeInfo());
+                var remoteServiceAtt = ReflectionUtil.GetSingleAttributeOrDefault<RemoteServiceAttribute>(controllerType.GetTypeInfo());
                 if (remoteServiceAtt != null)
                 {
                     controller.ApiExplorer.IsVisible =
@@ -167,7 +167,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
         {
             if (action.ApiExplorer.IsVisible == null)
             {
-                var remoteServiceAtt = ReflectionHelper.GetSingleAttributeOrDefault<RemoteServiceAttribute>(action.ActionMethod);
+                var remoteServiceAtt = ReflectionUtil.GetSingleAttributeOrDefault<RemoteServiceAttribute>(action.ActionMethod);
                 if (remoteServiceAtt != null)
                 {
                     action.ApiExplorer.IsVisible =

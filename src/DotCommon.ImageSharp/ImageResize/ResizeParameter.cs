@@ -30,15 +30,17 @@ namespace DotCommon.ImageResize
         /// </summary>
         public string Mode { get; set; }
 
-        //public bool hasParams;
-        //public int w;
-        //public int h;
-        //public bool autorotate;
-        //public int quality; // 0 - 100
-        //public string format; // png, jpg, jpeg
-        //public string mode; // pad, max, crop, stretch
+        /// <summary>填充颜色
+        /// </summary>
+        public string BackColor { get; set; }
 
-        //public static string[] modes = new string[] { "pad", "max", "crop", "stretch" };
+        /// <summary>裁剪开始位置
+        /// </summary>
+        public int CropX { get; set; }
+
+        /// <summary>裁剪位置Y
+        /// </summary>
+        public int CropY { get; set; }
 
         public ResizeParameter()
         {
@@ -55,6 +57,7 @@ namespace DotCommon.ImageResize
             sb.Append($"Quality: {Quality}, ");
             sb.Append($"Format: {Format}, ");
             sb.Append($"Mode: {Mode}");
+            sb.Append($"BackColor: {BackColor}");
             return sb.ToString();
         }
     }

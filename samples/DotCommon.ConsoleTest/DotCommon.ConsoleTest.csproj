@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.Caching\DotCommon.Caching.csproj" />
+    <ProjectReference Include="..\..\src\DotCommon.ImageSharp\DotCommon.ImageSharp.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.Json4Net\DotCommon.Json4Net.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.Log4Net\DotCommon.Log4Net.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj" />

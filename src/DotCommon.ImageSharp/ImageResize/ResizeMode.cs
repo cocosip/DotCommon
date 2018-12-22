@@ -12,8 +12,8 @@
         /// </summary>
         public const string Carvel = "Carvel";
 
-        /// <summary>旋转
+        /// <summary>裁剪
         /// </summary>
-        public const string AutoRotate = "AutoRotate ";
+        public const string Crop = "Crop";
     }
 }

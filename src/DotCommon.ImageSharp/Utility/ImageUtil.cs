@@ -12,7 +12,7 @@ namespace DotCommon.Utility
         /// </summary>
         /// <param name="format">图片格式</param>
         /// <returns></returns>
-        public static ImageCodecInfo GetEncoder(ImageFormat format)
+        public static ImageCodecInfo GetImageCodecInfo(ImageFormat format)
         {
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
             foreach (ImageCodecInfo codec in codecs)
@@ -27,9 +27,9 @@ namespace DotCommon.Utility
 
         /// <summary>获取当前图片的编码
         /// </summary>
-        public static ImageCodecInfo GetEncoder(Image image)
+        public static ImageCodecInfo GetImageCodecInfo(Image image)
         {
-            return GetEncoder(image.RawFormat);
+            return GetImageCodecInfo(image.RawFormat);
         }
 
         /// <summary>根据扩展名获取图片的格式
@@ -88,7 +88,54 @@ namespace DotCommon.Utility
             return "";
         }
 
+        /// <summary>根据质量获取EncoderParameters参数
+        /// </summary>
+        public static EncoderParameters GetEncoderParametersByQuality(int quality)
+        {
+            Encoder qualityEncoder = Encoder.Quality;
+            EncoderParameters encoderParameters = new EncoderParameters(1);
+            EncoderParameter qualityEncoderParameter = new EncoderParameter(qualityEncoder, quality);
+            encoderParameters.Param[0] = qualityEncoderParameter;
+            return encoderParameters;
+        }
 
+        /// <summary>以指定的质量将图片保存到指定位置
+        /// </summary>
+        /// <param name="image">图片</param>
+        /// <param name="quality">图片质量</param>
+        /// <param name="savePath">保存路径</param>
+        public static void SaveByQuality(Image image, int quality, string savePath)
+        {
+            var encoderParameters = GetEncoderParametersByQuality(quality);
+            var extension = PathUtil.GetPathExtension(savePath);
+            //图片格式
+            var imageFormat = GetImageFormatByExtension(extension);
+            //图片编码信息
+            var imageCodecInfo = GetImageCodecInfo(imageFormat);
+            image.Save(savePath, imageCodecInfo, encoderParameters);
+        }
+
+        /// <summary>根据颜色字符串获取颜色
+        /// </summary>
+        public static Color GetColor(string color)
+        {
+            switch (color.ToLower())
+            {
+                case "white":
+                    return Color.White;
+                case "black":
+                    return Color.Black;
+                case "red":
+                    return Color.Red;
+                case "blue":
+                    return Color.Blue;
+                case "yellow":
+                    return Color.Yellow;
+                default:
+                    //透明
+                    return Color.Transparent;
+            }
+        }
 
     }
 }

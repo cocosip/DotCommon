@@ -5,10 +5,9 @@ using System.Reflection;
 
 namespace DotCommon.Reflecting
 {
-    /// <summary>
-    /// Defines helper methods for reflection.
+    /// <summary>ReflectionUtilπ§æﬂ¿‡
     /// </summary>
-    public static class ReflectionHelper
+    public static class ReflectionUtil
     {
         /// <summary>
         /// Checks whether <paramref name="givenType"/> implements/inherits <paramref name="genericType"/>.

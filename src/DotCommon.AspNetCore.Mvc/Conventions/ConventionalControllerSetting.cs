@@ -67,7 +67,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
                 return false;
             }
 
-            var remoteServiceAttr = ReflectionHelper.GetSingleAttributeOrDefault<RemoteServiceAttribute>(type);
+            var remoteServiceAttr = ReflectionUtil.GetSingleAttributeOrDefault<RemoteServiceAttribute>(type);
             if (remoteServiceAttr != null && !remoteServiceAttr.IsEnabledFor(type))
             {
                 return false;

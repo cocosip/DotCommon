@@ -1,11 +1,16 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace DotCommon.Reflecting
 {
-    public static class TypeHelper
+    /// <summary>类型工具类
+    /// </summary>
+    public static class TypeUtil
     {
+        /// <summary>是否为Func类型委托
+        /// </summary>
         public static bool IsFunc(object obj)
         {
             if (obj == null)
@@ -22,6 +27,8 @@ namespace DotCommon.Reflecting
             return type.GetGenericTypeDefinition() == typeof(Func<>);
         }
 
+        /// <summary>是否为Func类型委托
+        /// </summary>
         public static bool IsFunc<TReturn>(object obj)
         {
             return obj != null && obj.GetType() == typeof(Func<TReturn>);
@@ -52,6 +59,20 @@ namespace DotCommon.Reflecting
             }
 
             return t;
+        }
+
+        /// <summary>检测是否为异步方法
+        /// </summary>
+        public static bool IsAsync(this MethodInfo method)
+        {
+            return method.ReturnType.IsTaskOrTaskOfT();
+        }
+
+        /// <summary>是否为Task或者泛型Task
+        /// </summary>
+        public static bool IsTaskOrTaskOfT(this Type type)
+        {
+            return type == typeof(Task) || type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>);
         }
 
         private static bool IsPrimitiveExtendedInternal(Type type, bool includeEnums)

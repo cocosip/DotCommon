@@ -31,9 +31,7 @@ namespace DotCommon.AspNetCore.Mvc.Demo
             services.AddTransient<UserService>();
 
 
-            services.Configure<MvcOptions>(o =>
-            {
-            });
+            services.Configure<MvcOptions>(o => { });
             services
                 .AddLogging(l =>
                 {
@@ -43,7 +41,7 @@ namespace DotCommon.AspNetCore.Mvc.Demo
                 .AddJson4Net()
                 .AddGenericsMemoryCache() //自定义缓存
                 .AddWildcardCors("http://*.cnblog.com,http://www.baidu.com") //通配符跨域
-                .AddRawRequestBodyFormatter()  //Get([Frombody]string name)
+                .AddRawRequestBodyFormatter() //Get([Frombody]string name)
                 .AddServiceControllers(o =>
                 {
                     o.ConventionalControllers.Create(this.GetType().Assembly, c =>
@@ -60,8 +58,6 @@ namespace DotCommon.AspNetCore.Mvc.Demo
                     });
                 });
 
-
-
             return services.BuildServiceProvider();
         }
 
@@ -70,7 +66,7 @@ namespace DotCommon.AspNetCore.Mvc.Demo
             //Cors
 
             app.UseMvc();
-            app.ConfigureDotCommon();
+            app.UseDotCommon();
         }
 
     }
