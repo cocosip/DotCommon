@@ -63,7 +63,7 @@ namespace DotCommon.ImageResize
             {
                 //新建一个bmp图片
                 var bitmap = new Bitmap(width, height);
-                using (var g = Graphics.FromImage(bitmap))
+                using(var g = Graphics.FromImage(bitmap))
                 {
                     //设置高质量插值法
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -113,7 +113,7 @@ namespace DotCommon.ImageResize
             try
             {
                 var bitmap = new Bitmap(parameter.Width, parameter.Height);
-                using (var g = Graphics.FromImage(bitmap))
+                using(var g = Graphics.FromImage(bitmap))
                 {
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     //设置高质量,低速度呈现平滑程度
@@ -130,16 +130,9 @@ namespace DotCommon.ImageResize
             {
                 original.Dispose();
             }
-
         }
 
+        
 
-        /// <summary>旋转90
-        /// </summary>
-        public static Image Rotate90(Image original)
-        {
-            original.RotateFlip(RotateFlipType.Rotate90FlipNone);
-            return original;
-        }
     }
 }

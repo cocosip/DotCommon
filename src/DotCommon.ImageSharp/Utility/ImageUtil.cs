@@ -1,6 +1,9 @@
-﻿using System;
+﻿using DotCommon.Extensions;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
 
 namespace DotCommon.Utility
 {
@@ -8,6 +11,19 @@ namespace DotCommon.Utility
     /// </summary>
     public class ImageUtil
     {
+        private static string[] ImageExtensions = new string[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".icon", ".ico" };
+
+        /// <summary>判断扩展名是否为图片
+        /// </summary>
+        public bool IsImageExtension(string extension)
+        {
+            if (extension.IsNullOrWhiteSpace())
+            {
+                return false;
+            }
+            return ImageExtensions.Contains(extension.ToLower());
+        }
+
         /// <summary>获取图片格式的编码
         /// </summary>
         /// <param name="format">图片格式</param>
@@ -88,6 +104,35 @@ namespace DotCommon.Utility
             return "";
         }
 
+        /// <summary>根据图片格式,获取格式名
+        /// </summary>
+        public static string GetImageFormatName(ImageFormat format)
+        {
+            if (format.Equals(ImageFormat.Jpeg))
+            {
+                return "Jpeg";
+            }
+            if (format.Equals(ImageFormat.Png))
+            {
+                return "Png";
+            }
+            if (format.Equals(ImageFormat.Gif))
+            {
+                return "Gif";
+            }
+            if (format.Equals(ImageFormat.Icon))
+            {
+                return "Icon";
+            }
+
+            if (format.Equals(ImageFormat.Bmp))
+            {
+                return "Bmp";
+            }
+            return "";
+        }
+
+
         /// <summary>根据质量获取EncoderParameters参数
         /// </summary>
         public static EncoderParameters GetEncoderParametersByQuality(int quality)
@@ -99,21 +144,6 @@ namespace DotCommon.Utility
             return encoderParameters;
         }
 
-        /// <summary>以指定的质量将图片保存到指定位置
-        /// </summary>
-        /// <param name="image">图片</param>
-        /// <param name="quality">图片质量</param>
-        /// <param name="savePath">保存路径</param>
-        public static void SaveByQuality(Image image, int quality, string savePath)
-        {
-            var encoderParameters = GetEncoderParametersByQuality(quality);
-            var extension = PathUtil.GetPathExtension(savePath);
-            //图片格式
-            var imageFormat = GetImageFormatByExtension(extension);
-            //图片编码信息
-            var imageCodecInfo = GetImageCodecInfo(imageFormat);
-            image.Save(savePath, imageCodecInfo, encoderParameters);
-        }
 
         /// <summary>根据颜色字符串获取颜色
         /// </summary>
@@ -134,6 +164,65 @@ namespace DotCommon.Utility
                 default:
                     //透明
                     return Color.Transparent;
+            }
+        }
+
+
+        /// <summary>将图片转换成流文件
+        /// </summary>
+        public static Stream ImageToStream(Image image)
+        {
+            MemoryStream ms = new MemoryStream();
+            image.Save(ms, image.RawFormat);
+            ms.Seek(0, SeekOrigin.Begin);
+            return ms;
+        }
+
+
+        /// <summary>将图片转换成byte[]
+        /// </summary>
+        public static byte[] ImageToBytes(Image image)
+        {
+            using(MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, image.RawFormat);
+                ms.Seek(0, SeekOrigin.Begin);
+                return StreamUtil.StreamToBytes(ms);
+            }
+        }
+
+        /// <summary>将图片转换成Base64编码
+        /// </summary>
+        public static string ImageToBase64(Image image, bool includeHeader = false)
+        {
+            var imageBytes = ImageToBytes(image);
+            var base64 = Convert.ToBase64String(imageBytes);
+            if (includeHeader)
+            {
+                base64 = $"data:image/{GetImageFormatName(image.RawFormat)};base64,{base64}";
+            }
+            return base64;
+        }
+
+        /// <summary>将Base64转换成图片
+        /// </summary>
+        public static Image Base64ToImage(string base64, bool hasHeader = false)
+        {
+            try
+            {
+                //base64中是否包含了头部
+                if (hasHeader)
+                {
+                    base64 = base64.Substring(base64.IndexOf(',') + 1);
+                }
+                byte[] bytes = Convert.FromBase64String(base64);
+                MemoryStream memStream = new MemoryStream(bytes);
+                Image img = Image.FromStream(memStream);
+                return img;
+            }
+            catch
+            {
+                return null;
             }
         }
 
