@@ -52,7 +52,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build.sh = build.sh
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.ImageSharp", "src\DotCommon.ImageSharp\DotCommon.ImageSharp.csproj", "{EBEB1FE0-ED56-4955-A225-F0EF1134FA67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageSharp", "src\DotCommon.ImageSharp\DotCommon.ImageSharp.csproj", "{EBEB1FE0-ED56-4955-A225-F0EF1134FA67}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageResizer.AspNetCore", "src\DotCommon.ImageResizer.AspNetCore\DotCommon.ImageResizer.AspNetCore.csproj", "{864BEB85-D957-44C5-91FE-06A4D57AD889}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +106,10 @@ Global
 		{EBEB1FE0-ED56-4955-A225-F0EF1134FA67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBEB1FE0-ED56-4955-A225-F0EF1134FA67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBEB1FE0-ED56-4955-A225-F0EF1134FA67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{864BEB85-D957-44C5-91FE-06A4D57AD889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{864BEB85-D957-44C5-91FE-06A4D57AD889}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{864BEB85-D957-44C5-91FE-06A4D57AD889}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{864BEB85-D957-44C5-91FE-06A4D57AD889}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
