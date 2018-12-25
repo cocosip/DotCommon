@@ -15,5 +15,9 @@
         /// <summary>裁剪
         /// </summary>
         public const string Crop = "Crop";
+
+        /// <summary>模式
+        /// </summary>
+        public static string[] Modes = new string[] { Zoom, Carvel, Crop };
     }
 }

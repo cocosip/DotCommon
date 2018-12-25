@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 
 namespace DotCommon.Utility
@@ -31,6 +32,7 @@ namespace DotCommon.Utility
         /// <param name="sourcePath">源图片地址</param>
         /// <param name="targetPath">目标图片保存地址</param>
         /// <param name="quality">图片质量(1-100)</param>
+        /// <param name="extension">图片扩展名</param>
         public static void ImageCompress(string sourcePath, string targetPath, int quality)
         {
             var sourceImage = Image.FromFile(sourcePath);
@@ -41,14 +43,19 @@ namespace DotCommon.Utility
         /// </summary>
         /// <param name="image"></param>
         /// <param name="quality"></param>
+        /// <param name="extension">图片扩展名</param>
         /// <returns></returns>
-        public static Image ImageCompress(Image image, int quality)
+        public static Image ImageCompress(Image image, int quality, ImageFormat imageFormat = null)
         {
+            if (imageFormat == null)
+            {
+                imageFormat = ImageUtil.DefaultImageFormat();
+            }
             //获取保存的质量参数
             var encoderParameters = ImageUtil.GetEncoderParametersByQuality(quality);
             //图片编码信息
-            var imageCodecInfo = ImageUtil.GetImageCodecInfo(image);
-            using(MemoryStream ms = new MemoryStream())
+            var imageCodecInfo = ImageUtil.GetImageCodecInfo(imageFormat);
+            using (MemoryStream ms = new MemoryStream())
             {
                 image.Save(ms, imageCodecInfo, encoderParameters);
                 return Image.FromStream(ms);
@@ -57,17 +64,22 @@ namespace DotCommon.Utility
 
         /// <summary>图片压缩
         /// </summary>
-        /// <param name="sourcePath">源图片地址</param>
-        /// <param name="targetPath">目标图片保存地址</param>
-        /// /// <param name="quality">图片质量(1-100)</param>
-        public static byte[] ImageCompressToByte(Image image, int quality)
+        /// <param name="image">源图片</param>
+        /// <param name="quality">图片质量(1-100)</param>
+        /// <param name="extension">图片扩展名</param>
+        public static byte[] ImageCompressToBytes(Image image, int quality, ImageFormat imageFormat = null)
         {
+            if (imageFormat == null)
+            {
+                imageFormat = ImageUtil.DefaultImageFormat();
+            }
+
             //获取保存的质量参数
             var encoderParameters = ImageUtil.GetEncoderParametersByQuality(quality);
             //图片编码信息
-            var imageCodecInfo = ImageUtil.GetImageCodecInfo(image);
+            var imageCodecInfo = ImageUtil.GetImageCodecInfo(imageFormat);
 
-            using(MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 image.Save(ms, imageCodecInfo, encoderParameters);
                 return StreamUtil.StreamToBytes(ms);
@@ -133,12 +145,12 @@ namespace DotCommon.Utility
                     var r = Math.Abs(color1.R - color2.R + 128);
                     var g = Math.Abs(color1.G - color2.G + 128);
                     var b = Math.Abs(color1.B - color2.B + 128);
-                    if (r > 255)r = 255;
-                    if (r < 0)r = 0;
-                    if (g > 255)g = 255;
-                    if (g < 0)g = 0;
-                    if (b > 255)b = 255;
-                    if (b < 0)b = 0;
+                    if (r > 255) r = 255;
+                    if (r < 0) r = 0;
+                    if (g > 255) g = 255;
+                    if (g < 0) g = 0;
+                    if (b > 255) b = 255;
+                    if (b < 0) b = 0;
                     newBitmap.SetPixel(x, y, Color.FromArgb(r, g, b));
                 }
             }

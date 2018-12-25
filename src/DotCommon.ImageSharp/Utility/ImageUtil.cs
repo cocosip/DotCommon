@@ -1,5 +1,6 @@
 ﻿using DotCommon.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -11,23 +12,66 @@ namespace DotCommon.Utility
     /// </summary>
     public class ImageUtil
     {
-        private static string[] ImageExtensions = new string[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".icon", ".ico" };
+
+        private static List<ImageInfo> Infos = new List<ImageInfo>();
+        static ImageUtil()
+        {
+            Infos.Add(new ImageInfo(ImageFormat.Jpeg, "Jpeg", ".jpeg", ".jpg"));
+            Infos.Add(new ImageInfo(ImageFormat.Png, "Png", ".png"));
+            Infos.Add(new ImageInfo(ImageFormat.Gif, "Gif", ".Gif"));
+            Infos.Add(new ImageInfo(ImageFormat.Bmp, "Bmp", ".bmp"));
+            Infos.Add(new ImageInfo(ImageFormat.Icon, "Icon", ".icon", ".ico"));
+            Infos.Add(new ImageInfo(ImageFormat.Exif, "Exif", ".exif"));
+        }
+
+        /// <summary>默认扩展名
+        /// </summary>
+        public static string DefaultExtension()
+        {
+            return ".jpeg";
+        }
+
+        /// <summary>默认FormatName
+        /// </summary>
+        public static string DefaultFormatName()
+        {
+            return "Jpeg";
+        }
+
+        /// <summary>默认格式
+        /// </summary>
+        public static ImageFormat DefaultImageFormat()
+        {
+            return ImageFormat.Jpeg;
+        }
+
+
 
         /// <summary>判断扩展名是否为图片
         /// </summary>
-        public bool IsImageExtension(string extension)
+        public static bool IsImageExtension(string extension)
         {
             if (extension.IsNullOrWhiteSpace())
             {
                 return false;
             }
-            return ImageExtensions.Contains(extension.ToLower());
+            var extensions = Infos.SelectMany(x => x.Extensions);
+            return extensions.Any(x => string.Equals(x, extension, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>判断FormatName是否为图片
+        /// </summary>
+        public static bool IsImageFormatName(string formatName)
+        {
+            if (formatName.IsNullOrWhiteSpace())
+            {
+                return false;
+            }
+            return Infos.Any(x => string.Equals(x.FormatName, formatName, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>获取图片格式的编码
         /// </summary>
-        /// <param name="format">图片格式</param>
-        /// <returns></returns>
         public static ImageCodecInfo GetImageCodecInfo(ImageFormat format)
         {
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
@@ -41,95 +85,51 @@ namespace DotCommon.Utility
             return null;
         }
 
-        /// <summary>获取当前图片的编码
-        /// </summary>
-        public static ImageCodecInfo GetImageCodecInfo(Image image)
-        {
-            return GetImageCodecInfo(image.RawFormat);
-        }
 
         /// <summary>根据扩展名获取图片的格式
         /// </summary>
         public static ImageFormat GetImageFormatByExtension(string extension)
         {
-            if (string.Equals(extension, ".jpg", StringComparison.OrdinalIgnoreCase) || string.Equals(extension, ".jpeg", StringComparison.OrdinalIgnoreCase))
-            {
-                return ImageFormat.Jpeg;
-            }
-            if (string.Equals(extension, ".png", StringComparison.OrdinalIgnoreCase))
-            {
-                return ImageFormat.Png;
-            }
-            if (string.Equals(extension, ".gif", StringComparison.OrdinalIgnoreCase))
-            {
-                return ImageFormat.Gif;
-            }
-            if (string.Equals(extension, ".ico", StringComparison.OrdinalIgnoreCase) || string.Equals(extension, ".icon", StringComparison.OrdinalIgnoreCase))
-            {
-                return ImageFormat.Icon;
-            }
-            if (string.Equals(extension, ".bmp", StringComparison.OrdinalIgnoreCase))
-            {
-                return ImageFormat.Bmp;
-            }
-            return ImageFormat.Jpeg;
+            var imageInfo = Infos.FirstOrDefault(x => x.Extensions.Any(c => string.Equals(c, extension, StringComparison.OrdinalIgnoreCase)));
+            return imageInfo?.ImageFormat ?? DefaultImageFormat();
         }
+
+        /// <summary>根据Format名称获取Format
+        /// </summary>
+        public static ImageFormat GetImageFormatByFormatName(string formatName)
+        {
+            var imageInfo = Infos.FirstOrDefault(x => string.Equals(x.FormatName, formatName, StringComparison.OrdinalIgnoreCase));
+            return imageInfo?.ImageFormat ?? DefaultImageFormat();
+        }
+
 
         /// <summary>根据图片格式获取扩展名
         /// </summary>
         public static string GetExtensionByImageFormat(ImageFormat format)
         {
-            if (format.Equals(ImageFormat.Jpeg))
-            {
-                return ".jpeg";
-            }
-            if (format.Equals(ImageFormat.Png))
-            {
-                return ".png";
-            }
-            if (format.Equals(ImageFormat.Gif))
-            {
-                return ".gif";
-            }
-            if (format.Equals(ImageFormat.Icon))
-            {
-                return ".icon";
-            }
-
-            if (format.Equals(ImageFormat.Bmp))
-            {
-                return ".bmp";
-            }
-
-            return "";
+            return Infos.FirstOrDefault(x => x.ImageFormat.Guid == format.Guid)?.FirstExtension() ?? DefaultExtension();
         }
 
-        /// <summary>根据图片格式,获取格式名
+        /// <summary>根据Format名称获取扩展名
         /// </summary>
-        public static string GetImageFormatName(ImageFormat format)
+        public static string GetExtensionByFormatName(string formatName)
         {
-            if (format.Equals(ImageFormat.Jpeg))
-            {
-                return "Jpeg";
-            }
-            if (format.Equals(ImageFormat.Png))
-            {
-                return "Png";
-            }
-            if (format.Equals(ImageFormat.Gif))
-            {
-                return "Gif";
-            }
-            if (format.Equals(ImageFormat.Icon))
-            {
-                return "Icon";
-            }
+            return Infos.FirstOrDefault(x => string.Equals(x.FormatName, formatName, StringComparison.OrdinalIgnoreCase))?.FirstExtension() ?? DefaultExtension();
+        }
 
-            if (format.Equals(ImageFormat.Bmp))
-            {
-                return "Bmp";
-            }
-            return "";
+        /// <summary>根据Format获取Format名称
+        /// </summary>
+        public static string GetFormatNameByImageFormat(ImageFormat format)
+        {
+            return Infos.FirstOrDefault(x => x.ImageFormat.Guid == format.Guid)?.FormatName ?? DefaultFormatName();
+        }
+
+        /// <summary>根据扩展名获取Format名称
+        /// </summary>
+        public static string GetFormatNameByExtension(string extension)
+        {
+            var imageInfo = Infos.FirstOrDefault(x => x.Extensions.Any(c => string.Equals(c, extension, StringComparison.OrdinalIgnoreCase)));
+            return imageInfo?.FormatName ?? DefaultFormatName();
         }
 
 
@@ -149,6 +149,11 @@ namespace DotCommon.Utility
         /// </summary>
         public static Color GetColor(string color)
         {
+            if (color.IsNullOrWhiteSpace())
+            {
+                //透明
+                return Color.Transparent;
+            }
             switch (color.ToLower())
             {
                 case "white":
@@ -183,7 +188,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static byte[] ImageToBytes(Image image)
         {
-            using(MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 image.Save(ms, image.RawFormat);
                 ms.Seek(0, SeekOrigin.Begin);
@@ -199,7 +204,7 @@ namespace DotCommon.Utility
             var base64 = Convert.ToBase64String(imageBytes);
             if (includeHeader)
             {
-                base64 = $"data:image/{GetImageFormatName(image.RawFormat)};base64,{base64}";
+                base64 = $"data:image/{GetFormatNameByImageFormat(image.RawFormat)};base64,{base64}";
             }
             return base64;
         }

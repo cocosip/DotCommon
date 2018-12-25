@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using DotCommon.Extensions;
+using System.Text;
 
 namespace DotCommon.ImageResize
 {
@@ -42,6 +43,11 @@ namespace DotCommon.ImageResize
         /// </summary>
         public int CropY { get; set; }
 
+        public bool HasParams()
+        {
+            return (Width > 0 || Height > 0) && !Format.IsNullOrWhiteSpace() && !Mode.IsNullOrWhiteSpace();
+        }
+
         public ResizeParameter()
         {
 
@@ -51,11 +57,11 @@ namespace DotCommon.ImageResize
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append($"Width: {Width}, ");
-            sb.Append($"Height: {Height}, ");
-            sb.Append($"AutoRotate: {AutoRotate}, ");
-            sb.Append($"Quality: {Quality}, ");
-            sb.Append($"Format: {Format}, ");
+            sb.Append($"Width: {Width},");
+            sb.Append($"Height: {Height},");
+            sb.Append($"AutoRotate: {AutoRotate},");
+            sb.Append($"Quality: {Quality},");
+            sb.Append($"Format: {Format},");
             sb.Append($"Mode: {Mode}");
             sb.Append($"BackColor: {BackColor}");
             return sb.ToString();

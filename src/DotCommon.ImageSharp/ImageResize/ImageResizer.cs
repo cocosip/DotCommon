@@ -73,6 +73,7 @@ namespace DotCommon.ImageResize
                     g.Clear(ImageUtil.GetColor(parameter.BackColor));
                     //在指定位置并且按指定大小绘制原图片的指定部分
                     g.DrawImage(original, new Rectangle(x, y, width, height), new Rectangle(0, 0, original.Width, original.Height), GraphicsUnit.Pixel);
+
                     return bitmap;
                 }
             }
