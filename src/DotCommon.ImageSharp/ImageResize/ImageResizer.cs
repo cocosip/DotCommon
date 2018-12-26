@@ -62,7 +62,7 @@ namespace DotCommon.ImageResize
             try
             {
                 //新建一个bmp图片
-                var bitmap = new Bitmap(width, height);
+                var bitmap = new Bitmap(parameter.Width, parameter.Height);
                 using(var g = Graphics.FromImage(bitmap))
                 {
                     //设置高质量插值法
