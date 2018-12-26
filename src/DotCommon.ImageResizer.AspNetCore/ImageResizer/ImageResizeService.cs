@@ -29,33 +29,49 @@ namespace DotCommon.ImageResizer
         /// <returns></returns>
         public byte[] GetImageData(string imagePath, ResizeParameter resizeParameter, DateTime lastWriteTimeUtc)
         {
-            var key = $"{imagePath}{resizeParameter.ToString()}{lastWriteTimeUtc.ToString("yyyy-MM-dd HH:mm:ss")}";
-            var cacheKey = $"Image:{HashAlg.GetStringSha1Hash(key)}";
-
-            byte[] imageBytes;
-            if (_option.EnableImageCache)
+            try
             {
-                bool isCached = _memoryCache.TryGetValue<byte[]>(cacheKey, out imageBytes);
-                //从缓存中读取
-                if (isCached)
+                var key = $"{imagePath}{resizeParameter.ToString()}{lastWriteTimeUtc.ToString("yyyy-MM-dd HH:mm:ss")}";
+                var cacheKey = $"Image:{HashAlg.GetStringSha1Hash(key)}";
+
+                byte[] imageBytes;
+                if (_option.EnableImageCache)
                 {
-                    _logger.LogInformation("ImageResizer from cache,key:{0}", cacheKey);
+                    bool isCached = _memoryCache.TryGetValue<byte[]>(cacheKey, out imageBytes);
+                    //从缓存中读取
+                    if (isCached)
+                    {
+                        _logger.LogInformation("ImageResizer from cache,key:{0}", cacheKey);
+                        return imageBytes;
+                    }
+                }
+                //图片操作
+                //读取图片
+                var image = Image.FromFile(imagePath);
+                //对图片进行相应的操作,放大等
+                Image resizeImage = null;
+                if (resizeParameter.Mode == ResizeMode.Zoom)
+                {
+                    resizeImage = ImageResize.ImageResizer.Zoom(image, resizeParameter);
+                }
+                else if (resizeParameter.Mode == ResizeMode.Crop)
+                {
+                    //图片裁剪
+                    resizeImage = ImageResize.ImageResizer.Crop(image, resizeParameter);
+                }
+                if (resizeImage != null)
+                {
+                    var imageFormat = ImageUtil.GetImageFormatByFormatName(resizeParameter.Format);
+                    imageBytes = ImageHelper.ImageCompressToBytes(resizeImage, resizeParameter.Quality, imageFormat);
+                    image.Dispose();
+                    //设置缓存
+                    _memoryCache.Set<byte[]>(cacheKey, imageBytes);
                     return imageBytes;
                 }
             }
-            //图片操作
-            //读取图片
-            var image = Image.FromFile(imagePath);
-            //对图片进行相应的操作,放大等
-            if (resizeParameter.Mode == ResizeMode.Zoom)
+            catch (Exception ex)
             {
-                var resizeImage = ImageResize.ImageResizer.Zoom(image, resizeParameter);
-                var imageFormat = ImageUtil.GetImageFormatByFormatName(resizeParameter.Format);
-                imageBytes = ImageHelper.ImageCompressToBytes(resizeImage, resizeParameter.Quality, imageFormat);
-                image.Dispose();
-                //设置缓存
-                _memoryCache.Set<byte[]>(cacheKey, imageBytes);
-                return imageBytes;
+                _logger.LogError("Resize图片出现错误,{0}", ex.Message);
             }
             return default(byte[]);
         }

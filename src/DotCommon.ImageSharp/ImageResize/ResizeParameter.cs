@@ -48,6 +48,7 @@ namespace DotCommon.ImageResize
             return (Width > 0 || Height > 0) && !Format.IsNullOrWhiteSpace() && !Mode.IsNullOrWhiteSpace();
         }
 
+
         public ResizeParameter()
         {
 
@@ -63,6 +64,8 @@ namespace DotCommon.ImageResize
             sb.Append($"Quality: {Quality},");
             sb.Append($"Format: {Format},");
             sb.Append($"Mode: {Mode}");
+            sb.Append($"CropX: {CropX}");
+            sb.Append($"CropY: {CropY}");
             sb.Append($"BackColor: {BackColor}");
             return sb.ToString();
         }

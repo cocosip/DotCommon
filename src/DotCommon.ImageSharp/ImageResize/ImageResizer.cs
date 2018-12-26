@@ -96,7 +96,9 @@ namespace DotCommon.ImageResize
             }
             if (parameter.Width >= original.Width || parameter.Height >= original.Height)
             {
-                throw new ArgumentException("裁剪图片的宽高不能超过原图");
+                //长宽超过了,重置为原图的长与宽
+                parameter.Width = original.Width;
+                parameter.Height = original.Height;
             }
             if (parameter.Mode != ResizeMode.Crop)
             {
@@ -133,7 +135,7 @@ namespace DotCommon.ImageResize
             }
         }
 
-        
+
 
     }
 }

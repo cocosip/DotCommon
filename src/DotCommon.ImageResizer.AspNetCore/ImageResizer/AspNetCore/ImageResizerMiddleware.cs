@@ -4,6 +4,7 @@ using DotCommon.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,8 +49,8 @@ namespace DotCommon.ImageResizer.AspNetCore
 
             //图片路径
             var imagePath = Path.Combine(
-              _env.WebRootPath,
-              path.Value.Replace('/', Path.DirectorySeparatorChar).TrimStart(Path.DirectorySeparatorChar));
+                _env.WebRootPath,
+                path.Value.Replace('/', Path.DirectorySeparatorChar).TrimStart(Path.DirectorySeparatorChar));
             //图片不存在
             if (!File.Exists(imagePath))
             {
@@ -60,6 +61,13 @@ namespace DotCommon.ImageResizer.AspNetCore
             var lastWriteTimeUtc = File.GetLastWriteTimeUtc(imagePath);
             //图片二进制
             byte[] imageBytes = _imageResizeService.GetImageData(imagePath, resizeParameter, lastWriteTimeUtc);
+            //无法调整图片,那么就直接返回下一个
+            if (imageBytes == null || imageBytes.Length <= 0)
+            {
+                await _next.Invoke(context);
+                return;
+            }
+
             //contentType
             context.Response.ContentType = MimeTypeNameUtil.GetMimeName(resizeParameter.Format);
             context.Response.ContentLength = imageBytes.Length;
@@ -104,11 +112,36 @@ namespace DotCommon.ImageResizer.AspNetCore
             resizeParameter.Height = h;
             resizeParameter.Mode = ResizeMode.Zoom;
 
-            //mode
-            if ((h != 0 || w != 0) && query.ContainsKey("mode") && ResizeMode.Modes.Any(m => query["mode"] == m))
+            int x = 0;
+            int y = 0;
+            //CropX
+            if (query.ContainsKey("x"))
             {
+                int.TryParse(query["x"], out x);
+            }
+            resizeParameter.CropX = x;
+            //CropY
+            if (query.ContainsKey("y"))
+            {
+                int.TryParse(query["y"], out y);
+            }
+            resizeParameter.CropY = y;
+
+            //Mode
+            if ((h != 0 || w != 0) && query.ContainsKey("mode") && ResizeMode.Modes.Any(m => string.Equals(m, query["mode"], StringComparison.OrdinalIgnoreCase)))
+            {
+                if (string.Equals(query["mode"], ResizeMode.Crop))
+                {
+                    if (resizeParameter.CropX > 0 && resizeParameter.CropY > 0)
+                    {
+                        resizeParameter.Mode = ResizeMode.Crop;
+                    }
+                }
+
                 resizeParameter.Mode = query["mode"];
             }
+
+
 
             return resizeParameter;
         }

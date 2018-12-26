@@ -13,15 +13,37 @@ namespace DotCommon.Utility
     public class ImageUtil
     {
 
-        private static List<ImageInfo> Infos = new List<ImageInfo>();
+        /// <summary>图片信息集合
+        /// </summary>
+        private static List<ImageInfo> Infos { get; set; }
+
+        /// <summary>颜色字典
+        /// </summary>
+        private static Dictionary<string, Color> ColorDict { get; set; }
+
         static ImageUtil()
         {
+            Infos = new List<ImageInfo>();
             Infos.Add(new ImageInfo(ImageFormat.Jpeg, "Jpeg", ".jpeg", ".jpg"));
             Infos.Add(new ImageInfo(ImageFormat.Png, "Png", ".png"));
             Infos.Add(new ImageInfo(ImageFormat.Gif, "Gif", ".Gif"));
             Infos.Add(new ImageInfo(ImageFormat.Bmp, "Bmp", ".bmp"));
             Infos.Add(new ImageInfo(ImageFormat.Icon, "Icon", ".icon", ".ico"));
             Infos.Add(new ImageInfo(ImageFormat.Exif, "Exif", ".exif"));
+
+            //颜色字典
+
+            ColorDict = new Dictionary<string, Color>();
+            ColorDict.Add("Red", Color.Red);
+            ColorDict.Add("Blue", Color.Blue);
+            ColorDict.Add("Yellow", Color.Yellow);
+            ColorDict.Add("White", Color.White);
+            ColorDict.Add("Black", Color.Black);
+            ColorDict.Add("Pink", Color.Pink);
+            ColorDict.Add("Green", Color.Green);
+            ColorDict.Add("Gray", Color.Gray);
+            ColorDict.Add("Orange", Color.Orange);
+            ColorDict.Add("Transparent", Color.Transparent);
         }
 
         /// <summary>默认扩展名
@@ -44,8 +66,6 @@ namespace DotCommon.Utility
         {
             return ImageFormat.Jpeg;
         }
-
-
 
         /// <summary>判断扩展名是否为图片
         /// </summary>
@@ -75,16 +95,22 @@ namespace DotCommon.Utility
         public static ImageCodecInfo GetImageCodecInfo(ImageFormat format)
         {
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+            ImageCodecInfo codecInfo = null;
             foreach (ImageCodecInfo codec in codecs)
             {
                 if (codec.FormatID == format.Guid)
                 {
-                    return codec;
+                    codecInfo = codec;
+                    break;
                 }
             }
-            return null;
+            // 取默认的ImageFormat
+            if (codecInfo == null)
+            {
+                return codecs.FirstOrDefault(x => x.FormatID == DefaultImageFormat().Guid);
+            }
+            return codecInfo;
         }
-
 
         /// <summary>根据扩展名获取图片的格式
         /// </summary>
@@ -101,7 +127,6 @@ namespace DotCommon.Utility
             var imageInfo = Infos.FirstOrDefault(x => string.Equals(x.FormatName, formatName, StringComparison.OrdinalIgnoreCase));
             return imageInfo?.ImageFormat ?? DefaultImageFormat();
         }
-
 
         /// <summary>根据图片格式获取扩展名
         /// </summary>
@@ -132,7 +157,6 @@ namespace DotCommon.Utility
             return imageInfo?.FormatName ?? DefaultFormatName();
         }
 
-
         /// <summary>根据质量获取EncoderParameters参数
         /// </summary>
         public static EncoderParameters GetEncoderParametersByQuality(int quality)
@@ -144,7 +168,6 @@ namespace DotCommon.Utility
             return encoderParameters;
         }
 
-
         /// <summary>根据颜色字符串获取颜色
         /// </summary>
         public static Color GetColor(string color)
@@ -154,24 +177,13 @@ namespace DotCommon.Utility
                 //透明
                 return Color.Transparent;
             }
-            switch (color.ToLower())
+            var kv = ColorDict.FirstOrDefault(x => string.Equals(x.Key, color, StringComparison.OrdinalIgnoreCase));
+            if (kv.Key != null)
             {
-                case "white":
-                    return Color.White;
-                case "black":
-                    return Color.Black;
-                case "red":
-                    return Color.Red;
-                case "blue":
-                    return Color.Blue;
-                case "yellow":
-                    return Color.Yellow;
-                default:
-                    //透明
-                    return Color.Transparent;
+                return kv.Value;
             }
+            return Color.Transparent;
         }
-
 
         /// <summary>将图片转换成流文件
         /// </summary>
@@ -183,12 +195,11 @@ namespace DotCommon.Utility
             return ms;
         }
 
-
         /// <summary>将图片转换成byte[]
         /// </summary>
         public static byte[] ImageToBytes(Image image)
         {
-            using (MemoryStream ms = new MemoryStream())
+            using(MemoryStream ms = new MemoryStream())
             {
                 image.Save(ms, image.RawFormat);
                 ms.Seek(0, SeekOrigin.Begin);
