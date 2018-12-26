@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Reflecting
 {
-    /// <summary>ÀàĞÍ¹¤¾ßÀà
+    /// <summary>ç±»å‹Util
     /// </summary>
     public static class TypeUtil
     {
-        /// <summary>ÊÇ·ñÎªFuncÀàĞÍÎ¯ÍĞ
+        /// <summary>æ˜¯å¦ä¸ºFuncç±»å‹
         /// </summary>
         public static bool IsFunc(object obj)
         {
@@ -27,7 +27,7 @@ namespace DotCommon.Reflecting
             return type.GetGenericTypeDefinition() == typeof(Func<>);
         }
 
-        /// <summary>ÊÇ·ñÎªFuncÀàĞÍÎ¯ÍĞ
+        /// <summary>æ˜¯å¦ä¸ºæ³›å‹Funcç±»å‹
         /// </summary>
         public static bool IsFunc<TReturn>(object obj)
         {
@@ -61,14 +61,14 @@ namespace DotCommon.Reflecting
             return t;
         }
 
-        /// <summary>¼ì²âÊÇ·ñÎªÒì²½·½·¨
+        /// <summary>æ˜¯å¦ä¸ºAsyncæ–¹æ³•
         /// </summary>
         public static bool IsAsync(this MethodInfo method)
         {
             return method.ReturnType.IsTaskOrTaskOfT();
         }
 
-        /// <summary>ÊÇ·ñÎªTask»òÕß·ºĞÍTask
+        /// <summary>æ˜¯å¦ä¸ºTaskæˆ–è€…Task<T>ç±»å‹çš„æ–¹æ³•
         /// </summary>
         public static bool IsTaskOrTaskOfT(this Type type)
         {

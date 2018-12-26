@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace DotCommon.Reflecting
 {
-    /// <summary>ReflectionUtilπ§æﬂ¿‡
+    /// <summary>ReflectionUtil
     /// </summary>
     public static class ReflectionUtil
     {

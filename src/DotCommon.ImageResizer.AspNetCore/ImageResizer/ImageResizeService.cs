@@ -32,7 +32,7 @@ namespace DotCommon.ImageResizer
             try
             {
                 var key = $"{imagePath}{resizeParameter.ToString()}{lastWriteTimeUtc.ToString("yyyy-MM-dd HH:mm:ss")}";
-                var cacheKey = $"Image:{HashAlg.GetStringSha1Hash(key)}";
+                var cacheKey = $"Image:{Sha1Alg.GetStringSha1Hash(key)}";
 
                 byte[] imageBytes;
                 if (_option.EnableImageCache)
