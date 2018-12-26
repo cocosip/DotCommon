@@ -73,7 +73,6 @@ namespace DotCommon.Utility
             {
                 imageFormat = ImageUtil.DefaultImageFormat();
             }
-
             //获取保存的质量参数
             var encoderParameters = ImageUtil.GetEncoderParametersByQuality(quality);
             //图片编码信息
@@ -159,7 +158,7 @@ namespace DotCommon.Utility
 
         /// <summary>图片滤色处理
         /// </summary>
-        public static Bitmap ColourFilter(Bitmap bitmap)
+        public static Bitmap ColorFilter(Bitmap bitmap)
         {
             var bmp = new Bitmap(bitmap.Width, bitmap.Height); //初始化一个记录滤色效果的图片对象
             int x;

@@ -91,9 +91,9 @@ namespace DotCommon.ImageResizer.AspNetCore
             resizeParameter.AutoRotate = autoRotate;
 
             int quality = 100;
-            if (query.ContainsKey("quality"))
+            if (query.ContainsKey("q"))
             {
-                int.TryParse(query["quality"], out quality);
+                int.TryParse(query["q"], out quality);
             }
             resizeParameter.Quality = quality;
 
