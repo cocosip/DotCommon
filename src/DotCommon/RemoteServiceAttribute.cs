@@ -6,7 +6,7 @@ namespace DotCommon
 {
     [Serializable]
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Method)]
-    public class RemoteServiceAttribute : Attribute //TODO: Can we move this to another package (with IRemoteService)?
+    public class RemoteServiceAttribute : Attribute
     {
         /// <summary>
         /// Default: true.

@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.Caching\DotCommon.Caching.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.ImageSharp\DotCommon.ImageSharp.csproj" />
