@@ -5,10 +5,13 @@
 | -------- | ------- | -------- |
 | `DotCommon` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.svg)](https://www.nuget.org/packages/DotCommon) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.svg)|
 | `DotCommon.AutoMapper` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AutoMapper.svg)](https://www.nuget.org/packages/DotCommon.AutoMapper) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AutoMapper.svg)|
-| `DotCommon.Caching ` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Caching.svg)](https://www.nuget.org/packages/DotCommon.Caching) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Caching.svg)|
-| `DotCommon.Json4Net ` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Json4Net.svg)](https://www.nuget.org/packages/DotCommon.Json4Net) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Json4Net.svg)|
-| `DotCommon.Log4Net ` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Log4Net.svg)](https://www.nuget.org/packages/DotCommon.Log4Net) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Log4Net.svg)|
-| `DotCommon.ProtoBuf ` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ProtoBuf.svg)](https://www.nuget.org/packages/DotCommon.ProtoBuf) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ProtoBuf.svg)|
+| `DotCommon.Caching` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Caching.svg)](https://www.nuget.org/packages/DotCommon.Caching) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Caching.svg)|
+| `DotCommon.Json4Net` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Json4Net.svg)](https://www.nuget.org/packages/DotCommon.Json4Net) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Json4Net.svg)|
+| `DotCommon.Log4Net` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Log4Net.svg)](https://www.nuget.org/packages/DotCommon.Log4Net) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Log4Net.svg)|
+| `DotCommon.ProtoBuf` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ProtoBuf.svg)](https://www.nuget.org/packages/DotCommon.ProtoBuf) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ProtoBuf.svg)|
+| `DotCommon.AspNetCore.Mvc` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AspNetCore.Mvc.svg)](https://www.nuget.org/packages/DotCommon.AspNetCore.Mvc) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AspNetCore.Mvc.svg)|
+| `DotCommon.ImageSharp` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ImageSharp.svg)](https://www.nuget.org/packages/DotCommon.ImageSharp) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ImageSharp.svg)|
+| `DotCommon.ImageResizer.AspNetCore` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ImageResizer.AspNetCore.svg)](https://www.nuget.org/packages/DotCommon.ImageResizer.AspNetCore) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ImageResizer.AspNetCore.svg)|
 
 ## DotCommon简介
 
@@ -31,7 +34,6 @@ services.AddLogging(c =>
 .AddJson4Net();
 ```
 
-
 ## 扩展包
 
 - **Autofac依赖注入扩展包:** PM> `Install-Package DotCommon.Autofac`
@@ -40,6 +42,9 @@ services.AddLogging(c =>
 - **Json4Net序列化扩展包** PM> `Install-Package DotCommon.Json4Net`
 - **Log4Net日志扩展包** PM> `Install-Package DotCommon.Log4Net`
 - **ProtoBuf二进制序列化扩展包** PM> `Install-Package DotCommon.ProtoBuf`
+- **AspNetCore扩展** PM> `Install-Package DotCommon.AspNetCore.Mvc`
+- **ImageSharp图片扩展** PM> `Install-Package DotCommon.ImageSharp`
+- **ImageResizer图片缩放** PM> `Install-Package DotCommon.ImageResizer.AspNetCore`
 
 ### 扩展包使用说明
 
