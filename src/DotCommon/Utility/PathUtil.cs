@@ -100,7 +100,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static string GetPathExtension(string path)
         {
-            if (!path.IsNullOrWhiteSpace() && path.LastIndexOf('.') > 0)
+            if (!path.IsNullOrWhiteSpace() && path.IndexOf('.') >= 0)
             {
                 return path.Substring(path.LastIndexOf('.'));
             }

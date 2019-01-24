@@ -8,6 +8,7 @@ namespace DotCommon.Test.Utility
         [Theory]
         [InlineData(@"C:\A\B.txt", ".txt")]
         [InlineData(@"\BB.jpg", ".jpg")]
+        [InlineData(@"..jpg", ".jpg")]
         public void GetPathExtensionTest(string path, string expected)
         {
             var actual = PathUtil.GetPathExtension(path);
