@@ -6,6 +6,7 @@ using DotCommon.Log4Net;
 using DotCommon.Logging;
 using DotCommon.ProtoBuf;
 using DotCommon.Serializing;
+using DotCommon.Utility;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -83,6 +84,9 @@ namespace DotCommon.ConsoleTest
 
             //var sign = Alg.Sha1Alg.GetStringSha1Hash(signData);
             //Console.WriteLine("sign:" + sign);
+            var path = PathUtil.GetPathExtension("..jpg");
+            Console.WriteLine(path);
+
             Console.WriteLine("完成");
             Console.ReadLine();
         }
