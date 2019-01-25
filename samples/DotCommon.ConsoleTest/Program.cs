@@ -1,16 +1,8 @@
-﻿using DotCommon.Caching;
-using DotCommon.DependencyInjection;
-using DotCommon.Encrypt;
-using DotCommon.Json4Net;
-using DotCommon.Log4Net;
-using DotCommon.Logging;
-using DotCommon.ProtoBuf;
-using DotCommon.Serializing;
+﻿using DotCommon.Logging;
 using DotCommon.Utility;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Text;
+using System.Globalization;
 
 namespace DotCommon.ConsoleTest
 {
@@ -19,24 +11,24 @@ namespace DotCommon.ConsoleTest
         static void Main(string[] args)
         {
             Console.WriteLine("Begin!");
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            IServiceCollection services = new ServiceCollection();
-            services.AddLogging(c =>
-                {
-                    c.AddLog4Net(new Log4NetProviderOptions());
-                })
-                .AddDotCommon()
-                .AddGenericsMemoryCache()
-                .AddProtoBuf()
-                .AddJson4Net();
-            services.AddTransient<LoggerService>();
+            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            //IServiceCollection services = new ServiceCollection();
+            //services.AddLogging(c =>
+            //    {
+            //        c.AddLog4Net(new Log4NetProviderOptions());
+            //    })
+            //    .AddDotCommon()
+            //    .AddGenericsMemoryCache()
+            //    .AddProtoBuf()
+            //    .AddJson4Net();
+            //services.AddTransient<LoggerService>();
 
-            var provider = services.BuildServiceProvider()
-                .UseDotCommon();
-            var loggerService = provider.GetService<LoggerService>();
-            loggerService.Write();
+            //var provider = services.BuildServiceProvider()
+            //    .UseDotCommon();
+            //var loggerService = provider.GetService<LoggerService>();
+            //loggerService.Write();
 
-            var jsonSerializer = provider.GetService<IJsonSerializer>();
+            //var jsonSerializer = provider.GetService<IJsonSerializer>();
 
 
             // var img1 = (Bitmap)Bitmap.FromFile(@"F:\img\1.jpg"); //640x410
@@ -84,8 +76,12 @@ namespace DotCommon.ConsoleTest
 
             //var sign = Alg.Sha1Alg.GetStringSha1Hash(signData);
             //Console.WriteLine("sign:" + sign);
-            var path = PathUtil.GetPathExtension("..jpg");
-            Console.WriteLine(path);
+            //var path = PathUtil.GetPathExtension("..jpg");
+            //Console.WriteLine(path);
+
+            var cc = new ChineseCalendar(DateTime.Now);
+
+            Console.WriteLine($"农历:{cc.ChineseMonthString}{cc.ChineseDayString},{cc.WeekDayStr},{cc.WeekDay.ToString()},{DateTime.Now.ToString("MMMM", CultureInfo.CreateSpecificCulture("en-GB"))}");
 
             Console.WriteLine("完成");
             Console.ReadLine();
