@@ -128,6 +128,21 @@ namespace DotCommon.Utility
             return imageInfo?.ImageFormat ?? DefaultImageFormat();
         }
 
+        /// <summary>获取图片ImageFormat
+        /// </summary>
+        public static ImageFormat GetImageFormatByImage(Image image)
+        {
+            var imageFormats = Infos.Select(x => x.ImageFormat).ToList();
+            foreach (var imageFormat in imageFormats)
+            {
+                if (imageFormat.Guid == image.RawFormat.Guid)
+                {
+                    return imageFormat;
+                }
+            }
+            return DefaultImageFormat();
+        }
+
         /// <summary>根据图片格式获取扩展名
         /// </summary>
         public static string GetExtensionByImageFormat(ImageFormat format)
@@ -190,7 +205,8 @@ namespace DotCommon.Utility
         public static Stream ImageToStream(Image image)
         {
             MemoryStream ms = new MemoryStream();
-            image.Save(ms, image.RawFormat);
+            var imageFormat = GetImageFormatByImage(image);
+            image.Save(ms, imageFormat);
             ms.Seek(0, SeekOrigin.Begin);
             return ms;
         }
@@ -199,11 +215,9 @@ namespace DotCommon.Utility
         /// </summary>
         public static byte[] ImageToBytes(Image image)
         {
-            using(MemoryStream ms = new MemoryStream())
+            using (var stream = ImageUtil.ImageToStream(image))
             {
-                image.Save(ms, image.RawFormat);
-                ms.Seek(0, SeekOrigin.Begin);
-                return StreamUtil.StreamToBytes(ms);
+                return StreamUtil.StreamToBytes(stream);
             }
         }
 

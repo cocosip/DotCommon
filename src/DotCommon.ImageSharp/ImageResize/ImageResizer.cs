@@ -63,7 +63,7 @@ namespace DotCommon.ImageResize
             {
                 //新建一个bmp图片
                 var bitmap = new Bitmap(parameter.Width, parameter.Height);
-                using(var g = Graphics.FromImage(bitmap))
+                using (var g = Graphics.FromImage(bitmap))
                 {
                     //设置高质量插值法
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -73,7 +73,6 @@ namespace DotCommon.ImageResize
                     g.Clear(ImageUtil.GetColor(parameter.BackColor));
                     //在指定位置并且按指定大小绘制原图片的指定部分
                     g.DrawImage(original, new Rectangle(x, y, width, height), new Rectangle(0, 0, original.Width, original.Height), GraphicsUnit.Pixel);
-
                     return bitmap;
                 }
             }

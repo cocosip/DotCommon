@@ -56,7 +56,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageSharp", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageResizer.AspNetCore", "src\DotCommon.ImageResizer.AspNetCore\DotCommon.ImageResizer.AspNetCore.csproj", "{864BEB85-D957-44C5-91FE-06A4D57AD889}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.ImageResizer.Demo", "samples\DotCommon.ImageResizer.Demo\DotCommon.ImageResizer.Demo.csproj", "{CE305FA3-A5F3-4D5D-8753-E12D1DA327F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageResizer.Demo", "samples\DotCommon.ImageResizer.Demo\DotCommon.ImageResizer.Demo.csproj", "{CE305FA3-A5F3-4D5D-8753-E12D1DA327F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.ImageSharp.Test", "test\DotCommon.ImageSharp.Test\DotCommon.ImageSharp.Test.csproj", "{F88A9E5A-04F1-4509-97AA-6F87175B97C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -116,6 +118,10 @@ Global
 		{CE305FA3-A5F3-4D5D-8753-E12D1DA327F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE305FA3-A5F3-4D5D-8753-E12D1DA327F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE305FA3-A5F3-4D5D-8753-E12D1DA327F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F88A9E5A-04F1-4509-97AA-6F87175B97C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F88A9E5A-04F1-4509-97AA-6F87175B97C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F88A9E5A-04F1-4509-97AA-6F87175B97C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F88A9E5A-04F1-4509-97AA-6F87175B97C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,6 +131,7 @@ Global
 		{F75F6BAF-346E-4721-A193-C96BAC949EA6} = {9B36842E-C0C0-4613-BC3B-774A40DA6B4D}
 		{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9} = {9B36842E-C0C0-4613-BC3B-774A40DA6B4D}
 		{CE305FA3-A5F3-4D5D-8753-E12D1DA327F8} = {9B36842E-C0C0-4613-BC3B-774A40DA6B4D}
+		{F88A9E5A-04F1-4509-97AA-6F87175B97C4} = {834211DA-7385-4208-81A9-A807405FCCFA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17831D3C-78C0-4535-AC9A-7CA19B13DA03}
