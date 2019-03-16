@@ -65,7 +65,10 @@ namespace DotCommon.ImageResizer
                     imageBytes = ImageHelper.ImageCompressToBytes(resizeImage, resizeParameter.Quality, imageFormat);
                     image.Dispose();
                     //设置缓存
-                    _memoryCache.Set<byte[]>(cacheKey, imageBytes);
+                    _memoryCache.Set<byte[]>(cacheKey, imageBytes, new MemoryCacheEntryOptions()
+                    {
+                        SlidingExpiration = TimeSpan.FromSeconds(_option.ImageCacheSlidingExpirationSeconds)
+                    });
                     return imageBytes;
                 }
             }

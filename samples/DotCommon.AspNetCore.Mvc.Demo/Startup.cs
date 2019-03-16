@@ -46,14 +46,10 @@ namespace DotCommon.AspNetCore.Mvc.Demo
                 {
                     o.ConventionalControllers.Create(this.GetType().Assembly, c =>
                     {
-                        c.RootPath = "qq";
-                        c.UrlActionNameNormalizer = f =>
-                        {
-                            return "";
-                        };
-                        //c.ControllerModelConfigurer = m =>
+                        //c.RootPath = "api";
+                        //c.UrlActionNameNormalizer = f =>
                         //{
-
+                        //    return "";
                         //};
                     });
                 });

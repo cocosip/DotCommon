@@ -8,5 +8,9 @@
         /// </summary>
         public bool EnableImageCache { get; set; }
 
+        /// <summary>图片默认过期时间为 300(s)
+        /// </summary>
+        public int ImageCacheSlidingExpirationSeconds { get; set; } = 300;
+
     }
 }
