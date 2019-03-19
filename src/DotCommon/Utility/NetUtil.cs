@@ -46,17 +46,6 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 判断是否为ip
-
-        /// <summary> 判断是否为ip
-        /// </summary>
-        public static bool IsIp(string ip)
-        {
-            return Regex.IsMatch(ip, @"^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$");
-        }
-
-        #endregion
-
         /****************转换**************/
 
         #region 将字符串形式的IP地址转换成IPAddress对象
@@ -177,7 +166,7 @@ namespace DotCommon.Utility
         /// </summary>   
         public static string GetClientIp(Socket clientSocket)
         {
-            var client = (IPEndPoint) clientSocket.RemoteEndPoint;
+            var client = (IPEndPoint)clientSocket.RemoteEndPoint;
             return client.Address.ToString();
         }
 

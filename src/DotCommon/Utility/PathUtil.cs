@@ -58,18 +58,10 @@ namespace DotCommon.Utility
                 return path;
             }
             //默认为Linux合并符
-            var combineChar = '/';
+            var combineChar = Path.DirectorySeparatorChar;
             //默认Linux盘符,为空
             var rootPath = Path.GetPathRoot(path);
-            if (Environment.OSVersion.Platform != PlatformID.Unix)
-            {
-                combineChar = '\\';
-                if (!rootPath.Contains("\\"))
-                {
-                    rootPath = rootPath + "\\";
-                }
-            }
-            //不包含盘符的路径集
+            //windows不包含盘符
             var pathSpilts = path.Split(combineChar).Where(x => !x.IsNullOrWhiteSpace() && !x.Contains(":")).ToList();
             //如果路径集的个数小于回退目录的个数,那么就直接返回根目录
             if (pathSpilts.Count <= layerCount)

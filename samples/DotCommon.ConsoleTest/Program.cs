@@ -64,7 +64,7 @@ namespace DotCommon.ConsoleTest
         public void Write()
         {
             _logger.LogWithLevel(LogLevel.Information, "LogWithLevel");
-            _logger.LogInformation("生成随机Guid:{0}", DotCommon.Alg.GuidUtil.NewSequentialString("N"));
+            _logger.LogInformation("生成随机Guid:{0}", DotCommon.Alg.GuidUtil.NewGuidString("N"));
         }
     }
 

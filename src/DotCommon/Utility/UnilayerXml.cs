@@ -23,8 +23,8 @@ namespace DotCommon.Utility
             {
                 foreach (XmlNode node in root.ChildNodes)
                 {
-                    var xe = (XmlElement) node;
-                    _values[xe.Name] = xe.InnerText; //获取xml的键值对到WxPayData内部的数据中
+                    var xe = (XmlElement)node;
+                    _values[xe.Name] = xe.InnerText;
                 }
             }
         }

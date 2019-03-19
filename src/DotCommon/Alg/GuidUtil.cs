@@ -44,9 +44,9 @@ namespace DotCommon.Alg
 
         /// <summary>获取新的Guid,Format example: D , N
         /// </summary>
-        public static string NewSequentialString(string format="D")
+        public static string NewGuidString(string format = "D")
         {
-            return NewSequentialGuid().ToString(format);
+            return Guid.NewGuid().ToString(format);
         }
 
         #endregion

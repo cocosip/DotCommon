@@ -9,7 +9,7 @@ namespace DotCommon.Scheduling
     public class ScheduleService : IScheduleService
     {
         private readonly ILogger _logger;
-        private readonly object _lockObject = new object();
+        private readonly object SyncObject = new object();
         private readonly Dictionary<string, TimerBasedTask> _taskDict = new Dictionary<string, TimerBasedTask>();
 
         public ScheduleService(ILogger<DefaultLoggerName> logger)
@@ -19,7 +19,7 @@ namespace DotCommon.Scheduling
 
         public void StartTask(string name, Action action, int dueTime, int period)
         {
-            lock (_lockObject)
+            lock (SyncObject)
             {
                 if (_taskDict.ContainsKey(name))
                 {
@@ -41,7 +41,7 @@ namespace DotCommon.Scheduling
         }
         public void StopTask(string name)
         {
-            lock (_lockObject)
+            lock (SyncObject)
             {
                 TimerBasedTask task;
                 if (_taskDict.TryGetValue(name, out task))

@@ -16,7 +16,7 @@ namespace DotCommon.IO
 
         /// <summary>拷贝文件夹和文件夹下的文件
         /// </summary>
-        public static void FullCopy(string sourceDir, string targetDir)
+        public static void DirectoryCopy(string sourceDir, string targetDir)
         {
 
             CreateIfNotExists(targetDir);
@@ -28,7 +28,7 @@ namespace DotCommon.IO
                 if (i is DirectoryInfo)
                 {
                     //递归调用复制子文件夹
-                    FullCopy(i.FullName, Path.Combine(targetDir, i.Name));
+                    DirectoryCopy(i.FullName, Path.Combine(targetDir, i.Name));
                 }
                 else
                 {
