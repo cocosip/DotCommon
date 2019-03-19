@@ -60,7 +60,7 @@ namespace DotCommon.ImageResizer.AspNetCore
             //图片最后修改时间
             var lastWriteTimeUtc = File.GetLastWriteTimeUtc(imagePath);
             //图片二进制
-            byte[] imageBytes = _imageResizeService.GetImageData(imagePath, resizeParameter, lastWriteTimeUtc);
+            byte[] imageBytes = await _imageResizeService.GetImageData(imagePath, resizeParameter, lastWriteTimeUtc);
             //无法调整图片,那么就直接返回下一个
             if (imageBytes == null || imageBytes.Length <= 0)
             {

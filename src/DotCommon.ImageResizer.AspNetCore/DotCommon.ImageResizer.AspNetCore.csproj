@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DotCommon.Caching\DotCommon.Caching.csproj" />
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
     <ProjectReference Include="..\DotCommon.ImageSharp\DotCommon.ImageSharp.csproj" />
   </ItemGroup>

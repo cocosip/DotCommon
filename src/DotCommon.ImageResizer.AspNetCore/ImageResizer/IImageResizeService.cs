@@ -1,5 +1,6 @@
 ﻿using DotCommon.ImageResize;
 using System;
+using System.Threading.Tasks;
 
 namespace DotCommon.ImageResizer
 {
@@ -11,6 +12,6 @@ namespace DotCommon.ImageResizer
         /// <param name="resizeParameter">图片尺寸调整参数</param>
         /// <param name="lastWriteTimeUtc">最后修改时间</param>
         /// <returns></returns>
-        byte[] GetImageData(string imagePath, ResizeParameter resizeParameter, DateTime lastWriteTimeUtc);
+        Task<byte[]> GetImageData(string imagePath, ResizeParameter resizeParameter, DateTime lastWriteTimeUtc);
     }
 }

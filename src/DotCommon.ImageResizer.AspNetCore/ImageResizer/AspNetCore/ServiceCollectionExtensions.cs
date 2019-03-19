@@ -1,3 +1,4 @@
+using DotCommon.Caching;
 using DotCommon.DependencyInjection;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,10 +19,9 @@ namespace DotCommon.ImageResizer.AspNetCore
             var option = new ImageResizerOption();
             configure?.Invoke(option);
 
-            //添加缓存
-            services.AddServiceWhenNull(s => s.ServiceType == typeof(IMemoryCache), s =>
+            services.AddServiceWhenNull(s => s.ServiceType == typeof(IDistributedCache<>), s =>
             {
-                s.AddMemoryCache();
+                throw new Exception("使用图片时,必须先添加缓存");
             });
 
             services
