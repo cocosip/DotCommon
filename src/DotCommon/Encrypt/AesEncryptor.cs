@@ -9,36 +9,34 @@ namespace DotCommon.Encrypt
     public class AesEncryptor
     {
 
-        private readonly byte[] _key = { 0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0x00 };
-        private readonly byte[] _iv = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+        private byte[] _key = { 0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0x00 };
+        private byte[] _iv = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
         public CipherMode Mode { get; set; } = CipherMode.CBC;
         public PaddingMode Padding { get; set; } = PaddingMode.PKCS7;
 
         /// <summary>密钥长度默认128
         /// </summary>
         public int KeySize { get; set; } = 128;
-        public AesEncryptor() : this("")
-        {
-
-        }
-        public AesEncryptor(string key, string iv) : this(key, Convert.FromBase64String(iv))
+        public AesEncryptor()
         {
 
         }
 
-        public AesEncryptor(string key) : this(key, "")
+
+        public AesEncryptor(string key)
+        {
+            _key = Convert.FromBase64String(key);
+        }
+
+        public AesEncryptor(string key, string iv) : this(Convert.FromBase64String(key), Convert.FromBase64String(iv))
         {
 
         }
 
-        public AesEncryptor(string key, byte[] iv)
+        public AesEncryptor(byte[] key, byte[] iv)
         {
-            if (!key.IsNullOrWhiteSpace())
-            {
-                _key = Convert.FromBase64String(key);
-            }
+            _key = key;
             _iv = iv;
-
             if (_iv.Length != 16)
             {
                 throw new ArgumentException("iv向量长度不正确");
