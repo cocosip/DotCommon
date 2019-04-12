@@ -14,10 +14,10 @@ namespace DotCommon.Reflecting
 
         private static readonly IDictionary<Type, Delegate> DictionaryToObjectDict =
             new ConcurrentDictionary<Type, Delegate>();
-        private static readonly IDictionary<Type,string> ConvertMethodNames=new ConcurrentDictionary<Type, string>()
+        private static readonly IDictionary<Type, string> ConvertMethodNames = new ConcurrentDictionary<Type, string>()
         {
-            [typeof(short)]="ToInt16",
-            [typeof(int)]="ToInt32",
+            [typeof(short)] = "ToInt16",
+            [typeof(int)] = "ToInt32",
             [typeof(long)] = "ToInt64",
             [typeof(double)] = "ToDouble",
             [typeof(decimal)] = "ToDecimal",
@@ -26,6 +26,16 @@ namespace DotCommon.Reflecting
             [typeof(byte)] = "ToByte",
             [typeof(char)] = "ToChar",
             [typeof(bool)] = "ToBoolean",
+
+            [typeof(short?)] = "ToInt16",
+            [typeof(int?)] = "ToInt32",
+            [typeof(long?)] = "ToInt64",
+            [typeof(double?)] = "ToDouble",
+            [typeof(decimal?)] = "ToDecimal",
+            [typeof(DateTime?)] = "ToDateTime",
+            [typeof(byte?)] = "ToByte",
+            [typeof(char?)] = "ToChar",
+            [typeof(bool?)] = "ToBoolean"
         };
 
         private static string GetConvertName(Type type)
@@ -37,6 +47,7 @@ namespace DotCommon.Reflecting
         /// </summary>
         public static Func<Dictionary<string, object>, T> GetObjectFunc<T>() where T : class, new()
         {
+            //x=>{ x.Id=}
             var sourceType = typeof(Dictionary<string, object>);
             var targetType = typeof(T);
             // define the parameter
@@ -54,43 +65,46 @@ namespace DotCommon.Reflecting
             {
                 var nameExpr = Expression.Constant(property.Name);
                 //code:obj.Id=(int)dict["xx"];
-                var fieldExpr = Expression.Property(objectExpr, property.Name);
+                var fieldExpr = Expression.PropertyOrField(objectExpr, property.Name);
                 //将object转换为对应的属性类型,int,double...
                 // 要调用索引必须先获取PropertyType类型
                 PropertyInfo indexer =
                 (from p in parameterExpr.Type.GetTypeInfo().GetDefaultMembers().OfType<PropertyInfo>()
-                    // This check is probably useless. You can't overload on return value in C#.
-                    where p.PropertyType == typeof(object)
-                    let q = p.GetIndexParameters()  
-                    // Here we can search for the exact overload. Length is the number of "parameters" of the indexer, and then we can check for their type.
-                    where q.Length == 1 && q[0].ParameterType == typeof(string)
-                    select p).Single();
+                     // This check is probably useless. You can't overload on return value in C#.
+                 where p.PropertyType == typeof(object)
+                 let q = p.GetIndexParameters()
+                 // Here we can search for the exact overload. Length is the number of "parameters" of the indexer, and then we can check for their type.
+                 where q.Length == 1 && q[0].ParameterType == typeof(string)
+                 select p).Single();
+
                 var indexValueExpr = Expression.Property(parameterExpr, indexer, nameExpr);
+              
 
                 //属性值
-                 //var castIndexValueExpr = Expression.Convert(Expression.Property(parameterExpr, indexer, nameExpr),
-                 // property.PropertyType);
-                //调用Convert.ChangeType(object,xxx);
-                var convertMethodExpr = Expression.Call(null,
-                    typeof(Convert).GetTypeInfo()
-                        .GetMethod(GetConvertName(property.PropertyType), new Type[] {typeof(object)}), indexValueExpr);
+                var castIndexValueExpr = Expression.Convert(indexValueExpr, property.PropertyType);
 
-                var assignFieldExpr = Expression.Assign(fieldExpr, convertMethodExpr);
+
+                //调用Convert.ChangeType(object,xxx);
+                //var convertMethodExpr = Expression.Call(null,
+                //    typeof(Convert).GetTypeInfo()
+                //        .GetMethod(GetConvertName(property.PropertyType), new Type[] { typeof(object) }), indexValueExpr);
+
+                var assignFieldExpr = Expression.Assign(fieldExpr, castIndexValueExpr);
                 //code: if(obj.Id!=null){ ... }
                 var notNullExpr = Expression.IfThen(Expression.NotEqual(indexValueExpr, Expression.Constant(null)),
                     assignFieldExpr);
 
                 //contains方法
                 var containMethodExpr = Expression.Call(parameterExpr,
-                    sourceType.GetTypeInfo().GetMethod("ContainsKey", new[] {typeof(string)}), nameExpr);
+                    sourceType.GetTypeInfo().GetMethod("ContainsKey", new[] { typeof(string) }), nameExpr);
                 //code: if(x.contains("xxx")){ if(x["id"]!=null){ x["id"]=obj.Id; } }
                 var ifContainExpr = Expression.IfThen(containMethodExpr, notNullExpr);
                 bodyExprs.Add(ifContainExpr);
- 
+
             }
             //返回
             bodyExprs.Add(objectExpr);
-            var methodBodyExpr = Expression.Block(targetType, new[] {objectExpr}, bodyExprs);
+            var methodBodyExpr = Expression.Block(targetType, new[] { objectExpr }, bodyExprs);
             // code: entity => { ... }
             var lambdaExpr = Expression.Lambda<Func<Dictionary<string, object>, T>>(methodBodyExpr, parameterExpr);
             var func = lambdaExpr.Compile();
@@ -134,16 +148,19 @@ namespace DotCommon.Reflecting
                 var castValueExpr = Expression.Convert(Expression.Property(parameterExpr, property), typeof(object));
                 // code: dict.Add("UserId",xxx);
                 var addMethodExpr = Expression.Call(dictExpr,
-                    targetType.GetTypeInfo().GetMethod("Add", new[] {typeof(string), typeof(object)}), nameExpr,
+                    targetType.GetTypeInfo().GetMethod("Add", new[] { typeof(string), typeof(object) }), nameExpr,
                     castValueExpr);
-                //code: if(x.UserId!=null){ ... }
-                var ifNotNullExpr = Expression.IfThen(Expression.NotEqual(castValueExpr, Expression.Constant(null)),
-                    addMethodExpr);
-                bodyExprs.Add(ifNotNullExpr);
+                //添加Null
+                var addNullMethodExpr = Expression.Call(dictExpr, targetType.GetTypeInfo().GetMethod("Add", new[] { typeof(string), typeof(object) }), nameExpr, Expression.Constant(null));
+
+                //code: if(x.UserId!=null){ ... }else{ //直接添加null};
+                var ifNotNullElseExpr = Expression.IfThenElse(Expression.NotEqual(castValueExpr, Expression.Constant(null)),
+                    addMethodExpr, addNullMethodExpr);
+                bodyExprs.Add(ifNotNullElseExpr);
             }
             //返回
             bodyExprs.Add(dictExpr);
-            var methodBodyExpr = Expression.Block(targetType, new[] {dictExpr}, bodyExprs);
+            var methodBodyExpr = Expression.Block(targetType, new[] { dictExpr }, bodyExprs);
             // code: entity => { ... }
             var lambdaExpr = Expression.Lambda<Func<T, Dictionary<string, object>>>(methodBodyExpr, parameterExpr);
             var func = lambdaExpr.Compile();
