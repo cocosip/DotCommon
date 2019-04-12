@@ -9,6 +9,10 @@ namespace DotCommon.ImageResize
     /// </summary>
     public class ImageResizer
     {
+        protected ImageResizer()
+        {
+
+        }
 
         /// <summary>图片缩放
         /// </summary>
@@ -18,7 +22,7 @@ namespace DotCommon.ImageResize
         public static Image Zoom(Image original, ResizeParameter parameter)
         {
             //如果长与宽都小于0
-            if (parameter.Width <= 0 & parameter.Height <= 0)
+            if (parameter.Width <= 0 && parameter.Height <= 0)
             {
                 throw new ArgumentException("缩略图宽度和高度至少有有一项需要大于0");
             }
@@ -115,7 +119,7 @@ namespace DotCommon.ImageResize
             try
             {
                 var bitmap = new Bitmap(parameter.Width, parameter.Height);
-                using(var g = Graphics.FromImage(bitmap))
+                using (var g = Graphics.FromImage(bitmap))
                 {
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     //设置高质量,低速度呈现平滑程度

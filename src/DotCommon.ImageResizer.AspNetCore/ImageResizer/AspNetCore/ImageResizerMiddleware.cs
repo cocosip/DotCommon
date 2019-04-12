@@ -80,7 +80,7 @@ namespace DotCommon.ImageResizer.AspNetCore
         {
             ResizeParameter resizeParameter = new ResizeParameter();
             //Format
-            resizeParameter.Format = query.ContainsKey("format") ? query["format"].ToString() : ImageUtil.DefaultFormatName();
+            resizeParameter.Format = query.ContainsKey("format") ? query["format"].ToString() : ImageUtil.DefaultFormatName;
 
             //自动旋转
             bool autoRotate = false;
@@ -151,7 +151,7 @@ namespace DotCommon.ImageResizer.AspNetCore
         /// </summary>
         private bool IsImagePath(PathString path)
         {
-            if (path == null || !path.HasValue)
+            if (!path.HasValue)
             {
                 return false;
             }

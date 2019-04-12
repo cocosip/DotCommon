@@ -7,11 +7,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace DotCommon.AspNetCore.Mvc
 {
@@ -23,13 +19,12 @@ namespace DotCommon.AspNetCore.Mvc
         {
             services.AddTransient<IServiceConvention, ServiceConvention>();
 
-            //TODO: AddViewLocalization by default..?
+            // AddViewLocalization by default..?
             services.AddServiceWhenNull(x => x.ServiceType == typeof(IActionContextAccessor) && x.ImplementationType == typeof(ActionContextAccessor) && x.Lifetime == ServiceLifetime.Singleton, s =>
             {
                 s.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             });
 
-            //services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             //Use DI to create controllers
             services.Replace(ServiceDescriptor.Transient<IControllerActivator, ServiceBasedControllerActivator>());
             //Use DI to create view components
@@ -60,6 +55,6 @@ namespace DotCommon.AspNetCore.Mvc
             options.Conventions.Add(new ServiceConventionWrapper(services));
         }
 
-    
+
     }
 }

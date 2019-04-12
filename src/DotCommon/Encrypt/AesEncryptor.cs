@@ -1,5 +1,4 @@
-﻿using DotCommon.Extensions;
-using System;
+﻿using System;
 using System.Security.Cryptography;
 using System.Text;
 namespace DotCommon.Encrypt
@@ -79,32 +78,34 @@ namespace DotCommon.Encrypt
         /// </summary>
         private byte[] EncryptBytes(byte[] dataBytes)
         {
-            var aes = Aes.Create();
-            //Mode
-            aes.Mode = Mode;
-            aes.KeySize = KeySize;
-            //Padding
-            aes.Padding = Padding;
-            var transform = aes.CreateEncryptor(_key, _iv);
-            var bytes = transform.TransformFinalBlock(dataBytes, 0, dataBytes.Length);
-            aes.Dispose();
-            return bytes;
+            using (var aes = new AesCryptoServiceProvider())
+            {
+                //Mode
+                aes.Mode = Mode;
+                aes.KeySize = KeySize;
+                //Padding
+                aes.Padding = Padding;
+                var transform = aes.CreateEncryptor(_key, _iv);
+                var bytes = transform.TransformFinalBlock(dataBytes, 0, dataBytes.Length);
+                return bytes;
+            }
         }
 
         /// <summary>解密核心
         /// </summary>
         private byte[] DecryptBytes(byte[] dataBytes)
         {
-            var aes = Aes.Create();
-            //Mode
-            aes.Mode = Mode;
-            aes.KeySize = KeySize;
-            //Padding
-            aes.Padding = Padding;
-            var transform = aes.CreateDecryptor(_key, _iv);
-            var bytes = transform.TransformFinalBlock(dataBytes, 0, dataBytes.Length);
-            aes.Dispose();
-            return bytes;
+            using (var aes = new AesCryptoServiceProvider())
+            {
+                //Mode
+                aes.Mode = Mode;
+                aes.KeySize = KeySize;
+                //Padding
+                aes.Padding = Padding;
+                var transform = aes.CreateDecryptor(_key, _iv);
+                var bytes = transform.TransformFinalBlock(dataBytes, 0, dataBytes.Length);
+                return bytes;
+            }
         }
 
     }

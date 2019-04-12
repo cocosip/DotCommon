@@ -9,7 +9,6 @@ namespace DotCommon.Log4Net
     public class Log4NetLogger : Microsoft.Extensions.Logging.ILogger
     {
         private readonly log4net.ILog _log;
-        private readonly Log4NetProviderOptions _options;
         public string Name => _log.Logger.Name;
         public Log4NetLogger() : this(new Log4NetProviderOptions())
         {
@@ -17,7 +16,6 @@ namespace DotCommon.Log4Net
         }
         public Log4NetLogger(Log4NetProviderOptions options)
         {
-            _options = options;
             _log = LogManager.GetLogger(options.LoggerRepositoryName, options.Name);
         }
 

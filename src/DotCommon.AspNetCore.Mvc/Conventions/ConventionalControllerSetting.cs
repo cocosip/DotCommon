@@ -16,15 +16,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
 
         public HashSet<Type> ControllerTypes { get; }
 
-        public string RootPath
-        {
-            get => _rootPath;
-            set
-            {
-                _rootPath = value;
-            }
-        }
-        private string _rootPath;
+        public string RootPath { get; set; }
 
         public Func<Type, bool> TypePredicate { get; set; }
 
@@ -40,8 +32,6 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
 
         public ConventionalControllerSetting(Assembly assembly, string rootPath)
         {
-            //Check.NotNull(assembly, rootPath);
-
             Assembly = assembly;
             RootPath = rootPath;
             ControllerTypes = new HashSet<Type>();

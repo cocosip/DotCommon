@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace DotCommon.AspNetCore.Mvc.Demo
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {

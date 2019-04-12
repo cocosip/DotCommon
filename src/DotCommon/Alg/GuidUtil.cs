@@ -6,6 +6,11 @@ namespace DotCommon.Alg
     /// </summary>
     public class GuidUtil
     {
+        protected GuidUtil()
+        {
+
+        }
+
         private static readonly long EpochMilliseconds = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks / 10000L;
 
         #region 获取Guid

@@ -30,7 +30,7 @@ namespace DotCommon.DependencyInjection
         {
             if (services.Any(s => s.ServiceType == typeof(ObjectAccessor<T>)))
             {
-                throw new Exception("An object accessor is registered before for type: " + typeof(T).AssemblyQualifiedName);
+                throw new ArgumentException("An object accessor is registered before for type: " + typeof(T).AssemblyQualifiedName);
             }
 
             //Add to the beginning for fast retrieve

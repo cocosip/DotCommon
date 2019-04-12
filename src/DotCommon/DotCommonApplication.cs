@@ -15,9 +15,9 @@ namespace DotCommon
         public DotCommonApplication(IServiceCollection services)
         {
             Services = services;
-
-            services.TryAddObjectAccessor<IServiceProvider>();
-            services.AddSingleton<IDotCommonApplication>(this);
+            //在沟槽函数中初始化
+            //services.TryAddObjectAccessor<IServiceProvider>();
+            //services.AddSingleton<IDotCommonApplication>(this);
         }
 
         public virtual void Dispose()

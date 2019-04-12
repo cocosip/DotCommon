@@ -9,6 +9,12 @@ namespace DotCommon.Utility
     /// </summary>
     public class ImageHelper
     {
+        protected ImageHelper()
+        {
+
+        }
+
+
         /// <summary>图片压缩
         /// </summary>
         /// <param name="image">图片</param>

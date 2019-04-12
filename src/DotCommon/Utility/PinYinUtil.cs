@@ -5,7 +5,7 @@ namespace DotCommon.Utility
 {
     /// <summary>拼音相关帮助类
     /// </summary>
-    public class PinYinUtil
+    public static class PinYinUtil
     {
         static PinYinUtil()
         {
@@ -104,7 +104,7 @@ namespace DotCommon.Utility
         /// </summary>
         public static string ConvertToPinYin(string chStr)
         {
-            string pystr = "";
+            var pysb = new StringBuilder();
             char[] mChar = chStr.ToCharArray(); //获取汉字对应的字符数组
             foreach (char t in mChar)
             {
@@ -117,51 +117,52 @@ namespace DotCommon.Utility
                     var asc = m1 * 256 + m2 - 65536;
                     if (asc > 0 && asc < 160)
                     {
-                        pystr += t;
+                        pysb.Append(t);
                     }
                     else
                     {
                         switch (asc)
                         {
                             case -9254:
-                                pystr += "Zhen";
+                                pysb.Append("Zhen");
                                 break;
                             case -8985:
-                                pystr += "Qian";
+                                pysb.Append("Qian");
                                 break;
                             case -5463:
-                                pystr += "Jia";
+                                pysb.Append("Jia");
                                 break;
                             case -8274:
-                                pystr += "Ge";
+                                pysb.Append("Ge");
                                 break;
                             case -5448:
-                                pystr += "Ga";
+                                pysb.Append("Ga");
                                 break;
                             case -5447:
-                                pystr += "La";
+                                pysb.Append("La");
                                 break;
                             case -4649:
-                                pystr += "Chen";
+                                pysb.Append("Chen");
                                 break;
                             case -5436:
-                                pystr += "Mao";
+                                pysb.Append("Mao");
                                 break;
                             case -5213:
-                                pystr += "Mao";
+                                pysb.Append("Mao");
                                 break;
                             case -3597:
-                                pystr += "Die";
+                                pysb.Append("Die");
                                 break;
                             case -5659:
-                                pystr += "Tian";
+                                pysb.Append("Tian");
                                 break;
                             default:
                                 for (int i = (GetValue.Length - 1); i >= 0; i--)
                                 {
                                     if (GetValue[i] <= asc) //判断汉字的拼音区编码是否在指定范围内
                                     {
-                                        pystr += GetName[i]; //如果不超出范围则获取对应的拼音
+                                        //如果不超出范围则获取对应的拼音
+                                        pysb.Append(GetName[i]);
                                         break;
                                     }
                                 }
@@ -169,12 +170,14 @@ namespace DotCommon.Utility
                         }
                     }
                 }
-                else //如果不是汉字
+                else
                 {
-                    pystr += t.ToString(); //如果不是汉字则返回
+                    //如果不是汉字则返回
+                    pysb.Append(t.ToString());
+
                 }
             }
-            return pystr; //返回获取到的汉字拼音
+            return pysb.ToString(); //返回获取到的汉字拼音
         }
 
         #endregion
@@ -187,18 +190,18 @@ namespace DotCommon.Utility
         public static string GetCodstring(string chStr)
         {
             var charArray = chStr.ToCharArray();
-            var result = string.Empty;
+            var result = new StringBuilder();
             foreach (var chChar in charArray)
             {
                 int i = 0;
-                string strResult = string.Empty;
+                var resultSb = new StringBuilder();
                 var unicodeBytes = Encoding.Unicode.GetBytes(chChar.ToString());
                 var gbkBytes = Encoding.Convert(Encoding.Unicode, Encoding.GetEncoding(936), unicodeBytes);
                 while (i < gbkBytes.Length)
                 {
                     if (gbkBytes[i] <= 127)
                     {
-                        strResult = strResult + (char)gbkBytes[i];
+                        resultSb.Append((char)gbkBytes[i]);
                         i++;
                     }
                     #region 生成汉字拼音简码,取拼音首字母
@@ -207,107 +210,107 @@ namespace DotCommon.Utility
                         var key = (ushort)(gbkBytes[i] * 256 + gbkBytes[i + 1]);
                         if (key >= '\uB0A1' && key <= '\uB0C4')
                         {
-                            strResult = strResult + "A";
+                            resultSb.Append("A");
                         }
                         else if (key >= '\uB0C5' && key <= '\uB2C0')
                         {
-                            strResult = strResult + "B";
+                            resultSb.Append("B");
                         }
                         else if (key >= '\uB2C1' && key <= '\uB4ED')
                         {
-                            strResult = strResult + "C";
+                            resultSb.Append("C");
                         }
                         else if (key >= '\uB4EE' && key <= '\uB6E9')
                         {
-                            strResult = strResult + "D";
+                            resultSb.Append("D");
                         }
                         else if (key >= '\uB6EA' && key <= '\uB7A1')
                         {
-                            strResult = strResult + "E";
+                            resultSb.Append("E");
                         }
                         else if (key >= '\uB7A2' && key <= '\uB8C0')
                         {
-                            strResult = strResult + "F";
+                            resultSb.Append("F");
                         }
                         else if (key >= '\uB8C1' && key <= '\uB9FD')
                         {
-                            strResult = strResult + "G";
+                            resultSb.Append("G");
                         }
                         else if (key >= '\uB9FE' && key <= '\uBBF6')
                         {
-                            strResult = strResult + "H";
+                            resultSb.Append("H");
                         }
                         else if (key >= '\uBBF7' && key <= '\uBFA5')
                         {
-                            strResult = strResult + "J";
+                            resultSb.Append("J");
                         }
                         else if (key >= '\uBFA6' && key <= '\uC0AB')
                         {
-                            strResult = strResult + "K";
+                            resultSb.Append("K");
                         }
                         else if (key >= '\uC0AC' && key <= '\uC2E7')
                         {
-                            strResult = strResult + "L";
+                            resultSb.Append("L");
                         }
                         else if (key >= '\uC2E8' && key <= '\uC4C2')
                         {
-                            strResult = strResult + "M";
+                            resultSb.Append("M");
                         }
                         else if (key >= '\uC4C3' && key <= '\uC5B5')
                         {
-                            strResult = strResult + "N";
+                            resultSb.Append("N");
                         }
                         else if (key >= '\uC5B6' && key <= '\uC5BD')
                         {
-                            strResult = strResult + "O";
+                            resultSb.Append("O");
                         }
                         else if (key >= '\uC5BE' && key <= '\uC6D9')
                         {
-                            strResult = strResult + "P";
+                            resultSb.Append("P");
                         }
                         else if (key >= '\uC6DA' && key <= '\uC8BA')
                         {
-                            strResult = strResult + "Q";
+                            resultSb.Append("Q");
                         }
                         else if (key >= '\uC8BB' && key <= '\uC8F5')
                         {
-                            strResult = strResult + "R";
+                            resultSb.Append("R");
                         }
                         else if (key >= '\uC8F6' && key <= '\uCBF9')
                         {
-                            strResult = strResult + "S";
+                            resultSb.Append("S");
                         }
                         else if (key >= '\uCBFA' && key <= '\uCDD9')
                         {
-                            strResult = strResult + "T";
+                            resultSb.Append("T");
                         }
                         else if (key >= '\uCDDA' && key <= '\uCEF3')
                         {
-                            strResult = strResult + "W";
+                            resultSb.Append("W");
                         }
                         else if (key >= '\uCEF4' && key <= '\uD188')
                         {
-                            strResult = strResult + "X";
+                            resultSb.Append("X");
                         }
                         else if (key >= '\uD1B9' && key <= '\uD4D0')
                         {
-                            strResult = strResult + "Y";
+                            resultSb.Append("Y");
                         }
                         else if (key >= '\uD4D1' && key <= '\uD7F9')
                         {
-                            strResult = strResult + "Z";
+                            resultSb.Append("Z");
                         }
                         else
                         {
-                            strResult = strResult + "?";
+                            resultSb.Append("?");
                         }
                         i = i + 2;
                     }
                     #endregion
                 }
-                result += strResult;
+                result.Append(resultSb);
             }
-            return result;
+            return result.ToString();
         }
         #endregion
     }

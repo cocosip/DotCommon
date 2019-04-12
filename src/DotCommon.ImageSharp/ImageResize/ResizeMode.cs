@@ -4,6 +4,11 @@
     /// </summary>
     public class ResizeMode
     {
+        protected ResizeMode()
+        {
+
+        }
+
         /// <summary>等比例缩放
         /// </summary>
         public const string Zoom = "Zoom";
@@ -18,6 +23,6 @@
 
         /// <summary>模式
         /// </summary>
-        public static string[] Modes = new string[] { Zoom, Carvel, Crop };
+        public static readonly string[] Modes = new string[] { Zoom, Carvel, Crop };
     }
 }

@@ -9,6 +9,7 @@ using DotCommon.Log4Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -16,11 +17,11 @@ namespace DotCommon.AspNetCore.Mvc.Demo
 {
     public class Startup
     {
-        //public IConfiguration Configuration { get; }
-        //public Startup(IConfiguration configuration)
-        //{
-        //    Configuration = configuration;
-        //}
+        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
@@ -46,11 +47,11 @@ namespace DotCommon.AspNetCore.Mvc.Demo
                 {
                     o.ConventionalControllers.Create(this.GetType().Assembly, c =>
                     {
-                        //c.RootPath = "api";
-                        //c.UrlActionNameNormalizer = f =>
-                        //{
-                        //    return "";
-                        //};
+                        c.RootPath = "api";
+                        c.UrlActionNameNormalizer = f =>
+                        {
+                            return "";
+                        };
                     });
                 });
 

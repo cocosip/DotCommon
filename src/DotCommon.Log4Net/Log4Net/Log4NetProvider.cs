@@ -92,7 +92,7 @@ namespace DotCommon.Log4Net
             // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
             Dispose(true);
             // TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
-            // GC.SuppressFinalize(this);
+            //GC.SuppressFinalize(this);
         }
         #endregion
 

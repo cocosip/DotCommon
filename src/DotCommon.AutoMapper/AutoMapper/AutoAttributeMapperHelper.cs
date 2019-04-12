@@ -8,22 +8,13 @@ namespace DotCommon.AutoMapper
 {
     public class AutoAttributeMapperHelper
     {
+        protected AutoAttributeMapperHelper()
+        {
+
+        }
         private static readonly object SyncObj = new object();
         //已经被映射过的程序集
         private static List<Assembly> MappedAssemblies = new List<Assembly>();
-
-
-        //private void Demo()
-        //{
-        //    Mapper.Initialize(cfg =>
-        //    {
-        //        //自动映射
-        //        AutoAttributeAutoMapperHelper.CreateAutoAttributeMappings(new List<Assembly>(), cfg);
-        //        AutoAttributeAutoMapperHelper.CreateMappings(cfg, x =>
-        //        {
-        //        });
-        //    });
-        //}
 
         /// <summary>创建映射
         /// </summary>

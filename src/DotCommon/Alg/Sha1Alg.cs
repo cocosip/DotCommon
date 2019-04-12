@@ -9,6 +9,10 @@ namespace DotCommon.Alg
     /// </summary>
     public class Sha1Alg
     {
+        protected Sha1Alg()
+        {
+
+        }
 
         /// <summary>获取字符串的Sha1 Hash
         /// </summary>

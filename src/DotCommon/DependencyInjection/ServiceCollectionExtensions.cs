@@ -4,7 +4,6 @@ using DotCommon.Serializing;
 using DotCommon.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
 
 namespace DotCommon.DependencyInjection
 {
@@ -17,6 +16,8 @@ namespace DotCommon.DependencyInjection
         {
             //添加DotCommonApplication
             var application = new DotCommonApplication(services);
+            services.TryAddObjectAccessor<IServiceProvider>();
+            services.AddSingleton<IDotCommonApplication>(application);
 
             //http请求
             services.AddTransient<IHttpClient, HttpClient>();

@@ -12,6 +12,10 @@ namespace DotCommon.Utility
     /// </summary>
     public class ImageUtil
     {
+        protected ImageUtil()
+        {
+
+        }
 
         /// <summary>图片信息集合
         /// </summary>
@@ -20,6 +24,14 @@ namespace DotCommon.Utility
         /// <summary>颜色字典
         /// </summary>
         private static Dictionary<string, Color> ColorDict { get; set; }
+
+        /// <summary>默认扩展名
+        /// </summary>
+        public const string DefaultExtension = ".jpeg";
+
+        /// <summary>默认FormatName
+        /// </summary>
+        public const string DefaultFormatName = "Jpeg";
 
         static ImageUtil()
         {
@@ -46,19 +58,6 @@ namespace DotCommon.Utility
             ColorDict.Add("Transparent", Color.Transparent);
         }
 
-        /// <summary>默认扩展名
-        /// </summary>
-        public static string DefaultExtension()
-        {
-            return ".jpeg";
-        }
-
-        /// <summary>默认FormatName
-        /// </summary>
-        public static string DefaultFormatName()
-        {
-            return "Jpeg";
-        }
 
         /// <summary>默认格式
         /// </summary>
@@ -147,21 +146,21 @@ namespace DotCommon.Utility
         /// </summary>
         public static string GetExtensionByImageFormat(ImageFormat format)
         {
-            return Infos.FirstOrDefault(x => x.ImageFormat.Guid == format.Guid)?.FirstExtension() ?? DefaultExtension();
+            return Infos.FirstOrDefault(x => x.ImageFormat.Guid == format.Guid)?.FirstExtension() ?? DefaultExtension;
         }
 
         /// <summary>根据Format名称获取扩展名
         /// </summary>
         public static string GetExtensionByFormatName(string formatName)
         {
-            return Infos.FirstOrDefault(x => string.Equals(x.FormatName, formatName, StringComparison.OrdinalIgnoreCase))?.FirstExtension() ?? DefaultExtension();
+            return Infos.FirstOrDefault(x => string.Equals(x.FormatName, formatName, StringComparison.OrdinalIgnoreCase))?.FirstExtension() ?? DefaultExtension;
         }
 
         /// <summary>根据Format获取Format名称
         /// </summary>
         public static string GetFormatNameByImageFormat(ImageFormat format)
         {
-            return Infos.FirstOrDefault(x => x.ImageFormat.Guid == format.Guid)?.FormatName ?? DefaultFormatName();
+            return Infos.FirstOrDefault(x => x.ImageFormat.Guid == format.Guid)?.FormatName ?? DefaultFormatName;
         }
 
         /// <summary>根据扩展名获取Format名称
@@ -169,7 +168,7 @@ namespace DotCommon.Utility
         public static string GetFormatNameByExtension(string extension)
         {
             var imageInfo = Infos.FirstOrDefault(x => x.Extensions.Any(c => string.Equals(c, extension, StringComparison.OrdinalIgnoreCase)));
-            return imageInfo?.FormatName ?? DefaultFormatName();
+            return imageInfo?.FormatName ?? DefaultFormatName;
         }
 
         /// <summary>根据质量获取EncoderParameters参数

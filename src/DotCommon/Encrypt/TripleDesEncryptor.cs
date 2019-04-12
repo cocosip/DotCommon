@@ -73,30 +73,30 @@ namespace DotCommon.Encrypt
         /// </summary>
         private byte[] EncryptBytes(byte[] dataBytes)
         {
-            var des = TripleDES.Create();
-            //Mode
-            des.Mode = Mode;
-            //Padding
-            des.Padding = Padding;
-            var transform = des.CreateEncryptor(_key, _iv);
-            var bytes = transform.TransformFinalBlock(dataBytes, 0, dataBytes.Length);
-            des.Dispose();
-            return bytes;
+            using (var tripleDES = new TripleDESCryptoServiceProvider())
+            {
+                tripleDES.Mode = Mode;
+                //Padding
+                tripleDES.Padding = Padding;
+                var transform = tripleDES.CreateEncryptor(_key, _iv);
+                var bytes = transform.TransformFinalBlock(dataBytes, 0, dataBytes.Length);
+                return bytes;
+            }
         }
 
         /// <summary>解密核心
         /// </summary>
         private byte[] DecryptBytes(byte[] dataBytes)
         {
-            var des = TripleDES.Create();
-            //Mode
-            des.Mode = Mode;
-            //Padding
-            des.Padding = Padding;
-            var transform = des.CreateDecryptor(_key, _iv);
-            var bytes = transform.TransformFinalBlock(dataBytes, 0, dataBytes.Length);
-            des.Dispose();
-            return bytes;
+            using (var tripleDES = new TripleDESCryptoServiceProvider())
+            {
+                tripleDES.Mode = Mode;
+                //Padding
+                tripleDES.Padding = Padding;
+                var transform = tripleDES.CreateDecryptor(_key, _iv);
+                var bytes = transform.TransformFinalBlock(dataBytes, 0, dataBytes.Length);
+                return bytes;
+            }
         }
     }
 }
