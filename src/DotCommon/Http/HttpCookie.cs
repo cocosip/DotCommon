@@ -8,7 +8,7 @@ namespace DotCommon.Http
         /// </summary>
         public string Comment { get; set; }
 
-        /// <summary>Comment
+        /// <summary>CommentUri
         /// </summary>
         public Uri CommentUri { get; set; }
 

@@ -7,7 +7,7 @@ namespace DotCommon.Utility
 {
     /// <summary>随机数相关操作
     /// </summary>
-    public class RandomUtil
+    public static class RandomUtil
     {
 
         private static readonly char[] RandomArray =
@@ -67,7 +67,7 @@ namespace DotCommon.Utility
         {
             //对数组进行随机排序的算法:随机选择两个位置，将两个位置上的值交换
             //交换的次数,这里使用数组的长度作为交换次数
-            var changeCount = arr.Length/2;
+            var changeCount = arr.Length / 2;
             var rd = new Random(GetRandomSeed());
             //开始交换
             for (int i = 0; i < changeCount; i++)
@@ -89,7 +89,7 @@ namespace DotCommon.Utility
         public static string GetRandomStr(int length, RandomStringType randomStringType = RandomStringType.Number)
         {
             var rd = new Random(GetRandomSeed());
-            var sb=new StringBuilder();
+            var sb = new StringBuilder();
             var range = RandomRanges[randomStringType];
             for (var i = 0; i < length; i++)
             {

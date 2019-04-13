@@ -8,7 +8,7 @@ namespace DotCommon.Utility
 {
     /// <summary>路径工具类
     /// </summary>
-    public class PathUtil
+    public static class PathUtil
     {
 
         /// <summary>If the path is absolute is return as is, otherwise is combined with AppDomain.CurrentDomain.SetupInformation.ApplicationBase

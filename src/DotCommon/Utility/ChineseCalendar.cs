@@ -31,7 +31,7 @@ namespace DotCommon.Utility
         {
             public readonly int Month;
             public readonly int Day;
-	        private int _recess; //假期长度
+            private int _recess; //假期长度
             public readonly string HolidayName;
 
             public SolarHolidayStruct(int month, int day, int recess, string holidayName)
@@ -47,7 +47,7 @@ namespace DotCommon.Utility
         {
             public readonly int Month;
             public readonly int Day;
-	        private int _recess;
+            private int _recess;
             public readonly string HolidayName;
 
             public LunarHolidayStruct(int month, int day, int recess, string holidayName)
@@ -457,15 +457,15 @@ namespace DotCommon.Utility
         //传回农历 y年m月的总天数
         private int GetChineseMonthDays(int year, int month)
         {
-	        //0X0FFFF[0000 {1111 1111 1111} 1111]
+            //0X0FFFF[0000 {1111 1111 1111} 1111]
             if (BitTest32((LunarDateArray[year - MinYear] & 0x0000FFFF), (16 - month)))
             {
                 return 30;
             }
-	        return 29;
+            return 29;
         }
 
-	    #endregion
+        #endregion
 
         #region GetChineseLeapMonth
 
@@ -553,15 +553,15 @@ namespace DotCommon.Utility
             {
                 hour += 1;
             }
-            var offset = hour/2;
+            var offset = hour / 2;
             if (offset >= 12) offset = 0;
             //zhiHour = ZhiStr[offset].ToString();
 
             //计算天干
             TimeSpan ts = _date - GanZhiStartDay;
-            var i = ts.Days%60;
+            var i = ts.Days % 60;
 
-            var indexGan = ((i%10 + 1)*2 - 1)%10 - 1;
+            var indexGan = ((i % 10 + 1) * 2 - 1) % 10 - 1;
             var tmpGan = GanStr.Substring(indexGan) + GanStr.Substring(0, indexGan + 2);
             //ganHour = GanStr[((i % 10 + 1) * 2 - 1) % 10 - 1].ToString();
 
@@ -587,27 +587,27 @@ namespace DotCommon.Utility
 
         #region CheckChineseDateLimit
 
-	    /// <summary> 检查农历日期是否合理
-	    /// </summary>
-	    private void CheckChineseDateLimit(int year, int month, int day, bool leapMonth)
-	    {
-		    if ((year < MinYear || year > MaxYear)|| (month < 1|| month > 12))
-		    {
-			    throw new ChineseCalendarException("非法农历日期");
-		    }
-		    if ((day < 1) || (day > 30)) //中国的月最多30天
-		    {
-			    throw new ChineseCalendarException("非法农历日期");
-		    }
+        /// <summary> 检查农历日期是否合理
+        /// </summary>
+        private void CheckChineseDateLimit(int year, int month, int day, bool leapMonth)
+        {
+            if ((year < MinYear || year > MaxYear) || (month < 1 || month > 12))
+            {
+                throw new ChineseCalendarException("非法农历日期");
+            }
+            if ((day < 1) || (day > 30)) //中国的月最多30天
+            {
+                throw new ChineseCalendarException("非法农历日期");
+            }
 
-		    int leap = GetChineseLeapMonth(year); // 计算该年应该闰哪个月
-		    if (leapMonth && (month != leap))
-		    {
-			    throw new ChineseCalendarException("非法农历日期");
-		    }
-	    }
+            int leap = GetChineseLeapMonth(year); // 计算该年应该闰哪个月
+            if (leapMonth && (month != leap))
+            {
+                throw new ChineseCalendarException("非法农历日期");
+            }
+        }
 
-	    #endregion
+        #endregion
 
         #region ConvertNumToChineseNum
 
@@ -732,14 +732,14 @@ namespace DotCommon.Utility
 
                     if (i > day)
                     {
-                        if ((week - 1)*7 + day + firWeekDays == date.Day)
+                        if ((week - 1) * 7 + day + firWeekDays == date.Day)
                         {
                             ret = true;
                         }
                     }
                     else
                     {
-                        if (day + firWeekDays + (week - 2)*7 == date.Day)
+                        if (day + firWeekDays + (week - 2) * 7 == date.Day)
                         {
                             ret = true;
                         }
@@ -938,7 +938,7 @@ namespace DotCommon.Utility
             {
                 TimeSpan ts = _date - ChineseConstellationReferDay;
                 var offset = ts.Days;
-                var modStarDay = offset%28;
+                var modStarDay = offset % 28;
                 return (modStarDay >= 0
                     ? ChineseConstellationName[modStarDay]
                     : ChineseConstellationName[27 + modStarDay]);
@@ -1019,7 +1019,7 @@ namespace DotCommon.Utility
                     case 30:
                         return "三十";
                     default:
-                        return NStr2[_cDay/10] + NStr1[_cDay%10].ToString();
+                        return NStr2[_cDay / 10] + NStr1[_cDay % 10].ToString();
 
                 }
             }
@@ -1127,7 +1127,7 @@ namespace DotCommon.Utility
 
                 for (int i = 1; i <= 24; i++)
                 {
-                    var num = 525948.76*(y - 1900) + STermInfo[i - 1];
+                    var num = 525948.76 * (y - 1900) + STermInfo[i - 1];
 
                     var newDate = baseDateAndTime.AddMinutes(num);
                     if (newDate.DayOfYear == _date.DayOfYear)
@@ -1153,7 +1153,7 @@ namespace DotCommon.Utility
 
                 for (int i = 24; i >= 1; i--)
                 {
-                    var num = 525948.76*(y - 1900) + STermInfo[i - 1];
+                    var num = 525948.76 * (y - 1900) + STermInfo[i - 1];
 
                     var newDate = baseDateAndTime.AddMinutes(num);
 
@@ -1184,7 +1184,7 @@ namespace DotCommon.Utility
 
                 for (int i = 1; i <= 24; i++)
                 {
-                    num = 525948.76*(y - 1900) + STermInfo[i - 1];
+                    num = 525948.76 * (y - 1900) + STermInfo[i - 1];
 
                     newDate = baseDateAndTime.AddMinutes(num); //按分钟计算
 
@@ -1218,7 +1218,7 @@ namespace DotCommon.Utility
                 int index;
                 var m = _date.Month;
                 var d = _date.Day;
-                var y = m*100 + d;
+                var y = m * 100 + d;
 
                 if (((y >= 321) && (y <= 419)))
                 {
@@ -1294,7 +1294,7 @@ namespace DotCommon.Utility
             get
             {
                 int offset = _date.Year - AnimalStartYear;
-                return (offset%12) + 1;
+                return (offset % 12) + 1;
             }
         }
 
@@ -1311,7 +1311,7 @@ namespace DotCommon.Utility
             {
                 int offset = _date.Year - AnimalStartYear; //阳历计算
                 //int offset = this._cYear - AnimalStartYear;　农历计算
-                return AnimalStr[offset%12].ToString();
+                return AnimalStr[offset % 12].ToString();
             }
         }
 
@@ -1330,8 +1330,8 @@ namespace DotCommon.Utility
         {
             get
             {
-                int i = (_cYear - GanZhiStartYear)%60; //计算干支
-                var tempStr = GanStr[i%10] + ZhiStr[i%12].ToString() + "年";
+                int i = (_cYear - GanZhiStartYear) % 60; //计算干支
+                var tempStr = GanStr[i % 10] + ZhiStr[i % 12].ToString() + "年";
                 return tempStr;
             }
         }
@@ -1362,10 +1362,10 @@ namespace DotCommon.Utility
                 //根据当年的干支年的干来计算月干的第一个
                 int ganIndex = 1;
                 string gan;
-                int i = (_cYear - GanZhiStartYear)%60; //计算干支
-                switch (i%10)
+                int i = (_cYear - GanZhiStartYear) % 60; //计算干支
+                switch (i % 10)
                 {
-                        #region ...
+                    #region ...
 
                     case 0: //甲
                         ganIndex = 3;
@@ -1400,7 +1400,7 @@ namespace DotCommon.Utility
 
                         #endregion
                 }
-                gan = GanStr[(ganIndex + _cMonth - 2)%10].ToString();
+                gan = GanStr[(ganIndex + _cMonth - 2) % 10].ToString();
 
                 return gan + zhi + "月";
             }
@@ -1419,8 +1419,8 @@ namespace DotCommon.Utility
             {
                 var ts = _date - GanZhiStartDay;
                 var offset = ts.Days;
-                var i = offset%60;
-                return GanStr[i%10] + ZhiStr[i%12].ToString() + "日";
+                var i = offset % 60;
+                return GanStr[i % 10] + ZhiStr[i % 12].ToString() + "日";
             }
         }
 

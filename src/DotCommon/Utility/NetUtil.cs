@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Utility
 {
-    public class NetUtil
+    public static class NetUtil
     {
         /***************检测判断*************/
 

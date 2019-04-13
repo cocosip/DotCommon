@@ -9,7 +9,6 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DotCommon.Http
 {
@@ -296,10 +295,9 @@ namespace DotCommon.Http
                     webRequest.ContentType = "application/x-www-form-urlencoded";
                 RequestBody = EncodeParameters();
             }
-            else if (HasBody)
+            else if (HasBody && needsContentType)
             {
-                if (needsContentType)
-                    webRequest.ContentType = RequestContentType;
+                webRequest.ContentType = RequestContentType;
             }
         }
 

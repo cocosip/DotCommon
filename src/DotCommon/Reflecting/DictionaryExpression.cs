@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace DotCommon.Reflecting
 {
-    public class DictionaryExpression
+    public static class DictionaryExpression
     {
         private static readonly IDictionary<Type, Delegate> ObjectToDictionaryDict =
             new ConcurrentDictionary<Type, Delegate>();
@@ -47,14 +47,13 @@ namespace DotCommon.Reflecting
         /// </summary>
         public static Func<Dictionary<string, object>, T> GetObjectFunc<T>() where T : class, new()
         {
-            //x=>{ x.Id=}
             var sourceType = typeof(Dictionary<string, object>);
             var targetType = typeof(T);
             // define the parameter
             var parameterExpr = Expression.Parameter(sourceType, "x");
             //collect the body
             var bodyExprs = new List<Expression>();
-            //code:var t=new T();
+            //初始化对象 var t=new T();
             var objectExpr = Expression.Variable(targetType, "obj");
             var newObjectExpr = Expression.New(targetType);
             var assignObjectExpr = Expression.Assign(objectExpr, newObjectExpr);
@@ -64,7 +63,6 @@ namespace DotCommon.Reflecting
             foreach (var property in properties)
             {
                 var nameExpr = Expression.Constant(property.Name);
-                //code:obj.Id=(int)dict["xx"];
                 var fieldExpr = Expression.PropertyOrField(objectExpr, property.Name);
                 //将object转换为对应的属性类型,int,double...
                 // 要调用索引必须先获取PropertyType类型
@@ -78,7 +76,7 @@ namespace DotCommon.Reflecting
                  select p).Single();
 
                 var indexValueExpr = Expression.Property(parameterExpr, indexer, nameExpr);
-              
+
 
                 //属性值
                 var castIndexValueExpr = Expression.Convert(indexValueExpr, property.PropertyType);

@@ -24,7 +24,6 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
 
         public ConventionalControllerOptions Create(Assembly assembly, Action<ConventionalControllerSetting> optionsAction = null)
         {
-            // var setting = new ConventionalControllerSetting(assembly, ModuleApiDescriptionModel.DefaultRootPath);
             var setting = new ConventionalControllerSetting(assembly, DefaultRootPath);
             optionsAction?.Invoke(setting);
             setting.Initialize();

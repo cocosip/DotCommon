@@ -16,10 +16,6 @@ namespace DotCommon.Http
     {
         private static readonly Version version = new AssemblyName(Assembly.GetExecutingAssembly().FullName).Version;
 
-        private static readonly Regex StructuredSyntaxSuffixRegex = new Regex(@"\+\w+$");
-
-        private static readonly Regex StructuredSyntaxSuffixWildcardRegex = new Regex(@"^\*\+\w+$");
-
         private IList<string> AcceptTypes { get; }
         private Action<HttpWebRequest> WebRequestConfigurator { get; set; }
 
@@ -66,10 +62,6 @@ namespace DotCommon.Http
         /// <summary>读写的超时时间,以毫秒为单位
         /// </summary>
         public int ReadWriteTimeout { get; set; }
-
-        /// <summary>认证
-        /// </summary>
-        //public IAuthenticator Authenticator { get; set; }
 
         /// <summary>编码
         /// </summary>
@@ -129,10 +121,8 @@ namespace DotCommon.Http
         private async Task<IHttpResponse> ExecuteAsync(IHttpRequest request, string httpMethod,
         Func<IHttp, string, Task<Response>> getResponse)
         {
-            //AuthenticateIfNeeded(this, request);
 
             IHttpResponse response = new HttpResponse();
-
             try
             {
                 var http = ConfigureHttp(request);

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -10,7 +9,7 @@ namespace DotCommon.Utility
 {
     /// <summary>Url操作类
     /// </summary>
-    public class UrlUtil
+    public static class UrlUtil
     {
 
         /// <summary>是否为Https

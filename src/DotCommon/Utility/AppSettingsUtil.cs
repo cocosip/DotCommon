@@ -5,7 +5,7 @@ namespace DotCommon.Utility
 {
     /// <summary>AppSetting节点操作工具类
     /// </summary>
-    public class AppSettingsUtil
+    public static class AppSettingsUtil
     {
         private static readonly Lazy<NameValueCollection> AppSettings = new Lazy<NameValueCollection>(InitAppSettings);
 

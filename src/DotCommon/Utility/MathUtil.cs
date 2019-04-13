@@ -6,7 +6,7 @@ namespace DotCommon.Utility
 {
     /// <summary>计算工具类
     /// </summary>
-    public class MathUtil
+    public static class MathUtil
     {
 
         #region 获取集合中差值最小的两个值

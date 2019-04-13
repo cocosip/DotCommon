@@ -6,7 +6,7 @@ namespace DotCommon.Utility
 {
     /// <summary>字节相关帮助类
     /// </summary>
-    public class ByteBufferUtil
+    public static class ByteBufferUtil
     {
         /// <summary>编码String类型,转换成Byte[] 并且附带长度
         /// </summary>

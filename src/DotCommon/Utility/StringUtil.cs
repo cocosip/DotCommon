@@ -7,7 +7,7 @@ namespace DotCommon.Utility
 {
     /// <summary>字符相关操作
     /// </summary>
-    public class StringUtil
+    public static class StringUtil
     {
 
         /// <summary>获取字符串所占直接长度
@@ -336,7 +336,7 @@ namespace DotCommon.Utility
                     if (onlyConvertChinese)
                     {
                         //非中文
-                        if(!(charbuffers[i] >= 0x4e00 && charbuffers[i] <= 0x9fbb))
+                        if (!(charbuffers[i] >= 0x4e00 && charbuffers[i] <= 0x9fbb))
                         {
                             sb.Append(charbuffers[i].ToString());
                             continue;

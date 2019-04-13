@@ -4,7 +4,7 @@ using DotCommon.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
+using Microsoft.Extensions.Primitives;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,7 +39,7 @@ namespace DotCommon.ImageResizer.AspNetCore
                 return;
             }
             //图片需要的参数
-            var resizeParameter = GetResizeParameter(path, context.Request.Query);
+            var resizeParameter = GetResizeParameter(context.Request.Query);
             //无参数,不缩放
             if (!resizeParameter.HasParams())
             {
@@ -71,79 +71,42 @@ namespace DotCommon.ImageResizer.AspNetCore
             //contentType
             context.Response.ContentType = MimeTypeNameUtil.GetMimeName(resizeParameter.Format);
             context.Response.ContentLength = imageBytes.Length;
-            await context.Response.Body.WriteAsync(imageBytes.ToArray(), 0, (int)imageBytes.Length);
+            await context.Response.Body.WriteAsync(imageBytes.ToArray(), 0, imageBytes.Length);
         }
 
         /// <summary>获取请求参数
         /// </summary>
-        private ResizeParameter GetResizeParameter(PathString path, IQueryCollection query)
+        private ResizeParameter GetResizeParameter(IQueryCollection query)
         {
             ResizeParameter resizeParameter = new ResizeParameter();
             //Format
-            resizeParameter.Format = query.ContainsKey("format") ? query["format"].ToString() : ImageUtil.DefaultFormatName;
-
+            resizeParameter.Format = GetQueryValue(query, "format", ImageUtil.DefaultFormatName);
             //自动旋转
-            bool autoRotate = false;
-            if (query.ContainsKey("autorotate"))
-            {
-                bool.TryParse(query["autorotate"], out autoRotate);
-            }
-            resizeParameter.AutoRotate = autoRotate;
-
-            int quality = 100;
-            if (query.ContainsKey("q"))
-            {
-                int.TryParse(query["q"], out quality);
-            }
-            resizeParameter.Quality = quality;
-
-            int w = 0;
-            if (query.ContainsKey("w"))
-            {
-                int.TryParse(query["w"], out w);
-            }
-            resizeParameter.Width = w;
-
-            int h = 0;
-            if (query.ContainsKey("h"))
-            {
-                int.TryParse(query["h"], out h);
-            }
-            resizeParameter.Height = h;
-            resizeParameter.Mode = ResizeMode.Zoom;
-
-            int x = 0;
-            int y = 0;
-            //CropX
-            if (query.ContainsKey("x"))
-            {
-                int.TryParse(query["x"], out x);
-            }
-            resizeParameter.CropX = x;
-            //CropY
-            if (query.ContainsKey("y"))
-            {
-                int.TryParse(query["y"], out y);
-            }
-            resizeParameter.CropY = y;
-
-            //Mode
-            if ((h != 0 || w != 0) && query.ContainsKey("mode") && ResizeMode.Modes.Any(m => string.Equals(m, query["mode"], StringComparison.OrdinalIgnoreCase)))
-            {
-                if (string.Equals(query["mode"], ResizeMode.Crop))
-                {
-                    if (resizeParameter.CropX > 0 && resizeParameter.CropY > 0)
-                    {
-                        resizeParameter.Mode = ResizeMode.Crop;
-                    }
-                }
-
-                resizeParameter.Mode = query["mode"];
-            }
-
-
+            resizeParameter.AutoRotate = bool.Parse(GetQueryValue(query, "autorotate", "false"));
+            //质量
+            resizeParameter.Quality = int.Parse(GetQueryValue(query, "q", "100"));
+            //宽度
+            resizeParameter.Width = int.Parse(GetQueryValue(query, "w", "0"));
+            //高度
+            resizeParameter.Height = int.Parse(GetQueryValue(query, "h", "0"));
+            //模式
+            resizeParameter.Mode = GetQueryValue(query, "mode", ResizeMode.Zoom);
+            //x
+            resizeParameter.CropX = int.Parse(GetQueryValue(query, "x", "0"));
+            //y
+            resizeParameter.CropY = int.Parse(GetQueryValue(query, "y", "0"));
 
             return resizeParameter;
+        }
+
+        private string GetQueryValue(IQueryCollection query, string name, string defaultValue = "")
+        {
+            StringValues value;
+            if (query.TryGetValue(name, out value))
+            {
+                return value.ToString();
+            }
+            return defaultValue;
         }
 
 
@@ -151,6 +114,7 @@ namespace DotCommon.ImageResizer.AspNetCore
         /// </summary>
         private bool IsImagePath(PathString path)
         {
+            _logger.LogInformation("非有效的图片路径,将不会进行图片的缩放");
             if (!path.HasValue)
             {
                 return false;

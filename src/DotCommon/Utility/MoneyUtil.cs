@@ -4,7 +4,7 @@ namespace DotCommon.Utility
 {
     /// <summary>钱币帮助类
     /// </summary>
-    public class MoneyUtil
+    public static class MoneyUtil
     {
         #region 将decimal类型的数据转换成中文人民币
         /// <summary> 转换人民币大小金额 

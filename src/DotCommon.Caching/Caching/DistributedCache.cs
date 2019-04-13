@@ -108,7 +108,7 @@ namespace DotCommon.Caching
             Cache.Set(
                 NormalizeKey(key),
                 ObjectSerializer.Serialize(value),
-                options ?? new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(20) } //TODO: implement per cache item and global defaults!!!
+                options ?? new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(20) } 
             );
         }
 
@@ -117,7 +117,7 @@ namespace DotCommon.Caching
             return Cache.SetAsync(
                 NormalizeKey(key),
                 ObjectSerializer.Serialize(value),
-                options ?? new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(20) }, //TODO: implement per cache item and global defaults!!!
+                options ?? new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(20) }, 
                 CancellationTokenProvider.FallbackToProvider(token)
             );
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
@@ -8,7 +7,7 @@ namespace DotCommon.Utility
 {
     /// <summary>枚举工具类
     /// </summary>
-    public class EnumUtil
+    public static class EnumUtil
     {
         /// <summary>将枚举转换成String类型
         /// </summary>

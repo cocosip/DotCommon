@@ -8,7 +8,7 @@ namespace DotCommon.Reflecting
 {
     /// <summary>属性工具类
     /// </summary>
-    public class PropertyInfoUtil
+    public static class PropertyInfoUtil
     {
         private static readonly IDictionary<Tuple<Type, BindingFlags>, List<PropertyInfo>> TypeProperties =
             new ConcurrentDictionary<Tuple<Type, BindingFlags>, List<PropertyInfo>>();

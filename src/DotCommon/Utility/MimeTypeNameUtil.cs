@@ -1,28 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DotCommon.Utility
 {
     /// <summary>Mime名称
     /// </summary>
-    public class MimeTypeNameUtil
+    public static class MimeTypeNameUtil
     {
-        private static readonly Lazy<Dictionary<string, string>> ContentTypesLazy =
-          new Lazy<Dictionary<string, string>>(Init);
-       
-        #region 初始化
-        /// <summary> 初始化
-        /// </summary>
-        private static Dictionary<string, string> Init()
-        {
-            #region 集合
 
-            var dict = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> ContentTypes = null;
+
+
+        static MimeTypeNameUtil()
+        {
+            if (ContentTypes == null)
             {
-                {".*", "application/octet-stream"},
-                {".tif", "image/tiff"},
-                {".001", "application/x-001"},
-                {".301", "application/x-301"},
+                #region 初始化
+                ContentTypes = new Dictionary<string, string>
+                {
+                { ".*", "application/octet-stream"},
+                { ".tif", "image/tiff"},
+                { ".001", "application/x-001"},
+                { ".301", "application/x-301"},
                 {".323", "text/h323"},
                 {".906", "application/x-906"},
                 {".907", "drawing/907"},
@@ -347,12 +345,14 @@ namespace DotCommon.Utility
                 {".ipa", "application/vnd.iphone"},
                 {".apk", "application/vnd.android.package-archive"},
                 {".xap", "application/x-silverlight-app"}
-            };
 
-            #endregion
-            return dict;
+
+
+                }; 
+                #endregion
+            }
         }
-        #endregion
+
 
         /// <summary>根据扩展名获取Mime类型名
         /// </summary>
@@ -363,7 +363,7 @@ namespace DotCommon.Utility
             {
                 extension = "." + extension;
             }
-            ContentTypesLazy.Value.TryGetValue(extension, out string contentType);
+            ContentTypes.TryGetValue(extension, out string contentType);
             return contentType;
         }
     }

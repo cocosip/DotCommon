@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-
-
 
 namespace DotCommon.Utility
 {
     /// <summary>请求工具类
     /// </summary>
-    public class RequestUtil
+    public static class RequestUtil
     {
 
         public static Dictionary<string, string> UserAgents
@@ -192,7 +189,7 @@ namespace DotCommon.Utility
 
         /// <summary>是否在微信中
         /// </summary>
-        public bool IsWechatPlatform(string userAgent)
+        public static bool IsWechatPlatform(string userAgent)
         {
             string[] weixinKeys = { "MicroMessenger" };
             if (weixinKeys.Any(item => userAgent != null && userAgent.Contains(item)))

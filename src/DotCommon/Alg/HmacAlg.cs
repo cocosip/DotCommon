@@ -7,12 +7,8 @@ namespace DotCommon.Alg
 {
     /// <summary>HMAC算法
     /// </summary>
-    public class HmacAlg
+    public static class HmacAlg
     {
-        protected HmacAlg()
-        {
-
-        }
 
         #region HMAC-Sha1算法
 

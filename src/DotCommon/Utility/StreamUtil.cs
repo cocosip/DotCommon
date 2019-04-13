@@ -3,7 +3,7 @@ using System.IO;
 
 namespace DotCommon.Utility
 {
-    public class StreamUtil
+    public static class StreamUtil
     {
 
         #region Stream与Byte转换

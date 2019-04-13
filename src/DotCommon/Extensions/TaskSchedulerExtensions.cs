@@ -32,7 +32,7 @@ namespace DotCommon.Extensions
             {
                 // Clean up both the cancellation token and the timer, and try to transition to completed
                 ctr1.Dispose();
-                ((Timer) self).Dispose();
+                ((Timer)self).Dispose();
                 tcs.TrySetResult(null);
             }, null, -1, -1);
 
@@ -49,8 +49,14 @@ namespace DotCommon.Extensions
             }
 
             // Start the timer and hand back the task...
-            try { timer.Change(millisecondsDelay, Timeout.Infinite); }
-            catch (ObjectDisposedException) { } // in case there's a race with cancellation; this is benign
+            try
+            {
+                timer.Change(millisecondsDelay, Timeout.Infinite);
+            }
+            catch (ObjectDisposedException)
+            {
+                // in case there's a race with cancellation; this is benign
+            }
 
             return tcs.Task.ContinueWith(_ => action(), factory.CancellationToken, TaskContinuationOptions.OnlyOnRanToCompletion, factory.Scheduler ?? TaskScheduler.Current);
         }

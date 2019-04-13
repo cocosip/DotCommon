@@ -7,10 +7,6 @@ namespace DotCommon.Utility
     /// </summary>
     public static class PinYinUtil
     {
-        static PinYinUtil()
-        {
-        }
-
         #region 拼音相关数组
         //定义拼音区编码数组
         private static readonly int[] GetValue =

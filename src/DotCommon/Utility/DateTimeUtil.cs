@@ -6,7 +6,7 @@ namespace DotCommon.Utility
 {
     /// <summary>时间帮助类
     /// </summary>
-    public class DateTimeUtil
+    public static class DateTimeUtil
     {
 
         /// <summary> 将时间转换成int32类型

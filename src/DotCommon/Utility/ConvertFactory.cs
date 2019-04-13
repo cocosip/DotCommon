@@ -4,7 +4,7 @@ namespace DotCommon.Utility
 {
     /// <summary> 说明:强制转换
     /// </summary>
-    public class ConvertFactory
+    public static class ConvertFactory
     {
 
         /// <summary> 转换成Int32类型
@@ -22,11 +22,11 @@ namespace DotCommon.Utility
         /// </summary>
         public static long ToInt64(object obj, long defaultValue)
         {
-	        if (obj != null)
-	        {
-		        long.TryParse(obj.ToString(), out defaultValue);
-	        }
-	        return defaultValue;
+            if (obj != null)
+            {
+                long.TryParse(obj.ToString(), out defaultValue);
+            }
+            return defaultValue;
         }
 
         /// <summary>转换成Double类型
@@ -55,14 +55,14 @@ namespace DotCommon.Utility
         /// </summary>
         public static DateTime ToDateTime(object obj, DateTime defaultValue)
         {
-            var d1 = defaultValue ;
+            var d1 = defaultValue;
             if (obj != null)
             {
-               var r= DateTime.TryParse(obj.ToString(), out d1);
-               if (!r)
-               {
-                   return defaultValue;
-               }
+                var r = DateTime.TryParse(obj.ToString(), out d1);
+                if (!r)
+                {
+                    return defaultValue;
+                }
             }
             return d1;
         }
@@ -76,7 +76,7 @@ namespace DotCommon.Utility
                 bool.TryParse(obj.ToString(), out defaultValue);
             }
             return defaultValue;
-        } 
+        }
 
         /// <summary>将string类型字符串转换成对应的guid
         /// </summary>

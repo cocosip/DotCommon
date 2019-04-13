@@ -15,9 +15,6 @@ namespace DotCommon
         public DotCommonApplication(IServiceCollection services)
         {
             Services = services;
-            //在沟槽函数中初始化
-            //services.TryAddObjectAccessor<IServiceProvider>();
-            //services.AddSingleton<IDotCommonApplication>(this);
         }
 
         public virtual void Dispose()
@@ -31,9 +28,9 @@ namespace DotCommon
             ServiceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = ServiceProvider;
         }
 
-        public void Initialize(IServiceProvider provider)
+        public void Initialize(IServiceProvider serviceProvider)
         {
-            ServiceScope = provider.CreateScope();
+            ServiceScope = serviceProvider.CreateScope();
             SetServiceProvider(ServiceScope.ServiceProvider);
         }
     }

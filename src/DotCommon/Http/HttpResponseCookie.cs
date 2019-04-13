@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DotCommon.Http
 {
@@ -10,7 +8,7 @@ namespace DotCommon.Http
         /// </summary>
         public string Comment { get; set; }
 
-        /// <summary>Comment of the cookie
+        /// <summary>Comment of the cookie uri
         /// </summary>
         public Uri CommentUri { get; set; }
 

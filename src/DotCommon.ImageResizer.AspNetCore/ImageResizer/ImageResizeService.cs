@@ -59,11 +59,6 @@ namespace DotCommon.ImageResizer
                     //图片裁剪
                     resizeImage = ImageResize.ImageResizer.Crop(image, resizeParameter);
                 }
-                if (resizeImage == null)
-                {
-                    throw new Exception("Resize图片出错,数据为空");
-                }
-
                 var imageFormat = ImageUtil.GetImageFormatByFormatName(resizeParameter.Format);
                 imageBytes = ImageHelper.ImageCompressToBytes(resizeImage, resizeParameter.Quality, imageFormat);
                 image.Dispose();

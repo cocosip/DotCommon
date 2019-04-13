@@ -4,7 +4,7 @@ namespace DotCommon.Utility
 {
     /// <summary>进制转换
     /// </summary>
-    public class HexUtil
+    public static class HexUtil
     {
 
         /// <summary>指定进制之间转换
@@ -17,7 +17,7 @@ namespace DotCommon.Utility
 
         /// <summary>将其他进制转换成10进制
         /// </summary>
-        public static int ToHex10(string value,int fromBase)
+        public static int ToHex10(string value, int fromBase)
         {
             return Convert.ToInt32(value, fromBase);
         }

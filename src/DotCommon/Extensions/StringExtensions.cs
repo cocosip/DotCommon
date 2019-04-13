@@ -194,7 +194,7 @@ namespace DotCommon.Extensions
         /// </summary>
         /// <param name="str">String to convert</param>
         /// <returns>camelCase of the string</returns>
-        public static string ToCamelCase(this string str) //TODO: Create an overload for invariant culture
+        public static string ToCamelCase(this string str)
         {
             if (string.IsNullOrWhiteSpace(str))
             {
