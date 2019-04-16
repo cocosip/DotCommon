@@ -10,7 +10,7 @@ using System.IO;
 
 namespace DotCommon.Log4Net
 {
-    public class Log4NetProvider : ILoggerProvider, IDisposable
+    public class Log4NetProvider : ILoggerProvider
     {
         private readonly ILoggerRepository _loggerRepository;
         private readonly ConcurrentDictionary<string, Log4NetLogger> _loggers = new ConcurrentDictionary<string, Log4NetLogger>();
@@ -61,33 +61,16 @@ namespace DotCommon.Log4Net
             return new Log4NetLogger(options);
         }
 
-        #region IDisposable Support
-        private bool disposedValue = false; // 要检测冗余调用
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    Dispose();
-                }
-                disposedValue = true;
-            }
+            _loggers.Clear();
         }
-
-        // ~Log4NetProvider() {
-        //   Dispose(false);
-        // }
-
-        // 添加此代码以正确实现可处置模式。
-        public void Dispose()
-        {
-            // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
-            Dispose(true);
-            //GC.SuppressFinalize(this);
-        }
-        #endregion
 
 
     }

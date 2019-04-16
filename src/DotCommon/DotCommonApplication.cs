@@ -17,11 +17,6 @@ namespace DotCommon
             Services = services;
         }
 
-        public virtual void Dispose()
-        {
-            ServiceScope.Dispose();
-        }
-
         protected virtual void SetServiceProvider(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
@@ -32,6 +27,16 @@ namespace DotCommon
         {
             ServiceScope = serviceProvider.CreateScope();
             SetServiceProvider(ServiceScope.ServiceProvider);
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            ServiceScope.Dispose();
         }
     }
 }

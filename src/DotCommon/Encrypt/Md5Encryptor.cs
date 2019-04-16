@@ -14,7 +14,7 @@ namespace DotCommon.Encrypt
         {
             using (var md5 = MD5.Create())
             {
-                //其他的代码写法: md5.ComputeHash(data).Aggregate("", (current, b) => current + b.ToString("X2"));
+                //其他的代码写法: md5.ComputeHash(data).Aggregate("", (current, b) => current + b.ToString("X2"))
                 return BitConverter.ToString(md5.ComputeHash(data)).Replace("-", "");
 
             }

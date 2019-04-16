@@ -53,7 +53,7 @@ namespace DotCommon.Reflecting
             var parameterExpr = Expression.Parameter(sourceType, "x");
             //collect the body
             var bodyExprs = new List<Expression>();
-            //初始化对象 var t=new T();
+            // 初始化对象
             var objectExpr = Expression.Variable(targetType, "obj");
             var newObjectExpr = Expression.New(targetType);
             var assignObjectExpr = Expression.Assign(objectExpr, newObjectExpr);
@@ -82,20 +82,19 @@ namespace DotCommon.Reflecting
                 var castIndexValueExpr = Expression.Convert(indexValueExpr, property.PropertyType);
 
 
-                //调用Convert.ChangeType(object,xxx);
+                //调用 Convert.ChangeType(object,xxx)
                 //var convertMethodExpr = Expression.Call(null,
-                //    typeof(Convert).GetTypeInfo()
-                //        .GetMethod(GetConvertName(property.PropertyType), new Type[] { typeof(object) }), indexValueExpr);
+                /* 另外的代码, typeof(Convert).GetTypeInfo().GetMethod(GetConvertName(property.PropertyType), new Type[] { typeof(object) }), indexValueExpr);*/
 
                 var assignFieldExpr = Expression.Assign(fieldExpr, castIndexValueExpr);
-                //code: if(obj.Id!=null){ ... }
+               
                 var notNullExpr = Expression.IfThen(Expression.NotEqual(indexValueExpr, Expression.Constant(null)),
                     assignFieldExpr);
 
                 //contains方法
                 var containMethodExpr = Expression.Call(parameterExpr,
                     sourceType.GetTypeInfo().GetMethod("ContainsKey", new[] { typeof(string) }), nameExpr);
-                //code: if(x.contains("xxx")){ if(x["id"]!=null){ x["id"]=obj.Id; } }
+ 
                 var ifContainExpr = Expression.IfThen(containMethodExpr, notNullExpr);
                 bodyExprs.Add(ifContainExpr);
 
@@ -103,7 +102,7 @@ namespace DotCommon.Reflecting
             //返回
             bodyExprs.Add(objectExpr);
             var methodBodyExpr = Expression.Block(targetType, new[] { objectExpr }, bodyExprs);
-            // code: entity => { ... }
+   
             var lambdaExpr = Expression.Lambda<Func<Dictionary<string, object>, T>>(methodBodyExpr, parameterExpr);
             var func = lambdaExpr.Compile();
             return func;
@@ -133,7 +132,7 @@ namespace DotCommon.Reflecting
             var parameterExpr = Expression.Parameter(sourceType, "x");
             //collect the body
             var bodyExprs = new List<Expression>();
-            //code:var dict=new Dictionary<string,object>();
+        
             var dictExpr = Expression.Variable(targetType, "dict");
             var newDictExpr = Expression.New(targetType);
             var assignDictExpr = Expression.Assign(dictExpr, newDictExpr);
@@ -141,17 +140,17 @@ namespace DotCommon.Reflecting
             var properties = PropertyInfoUtil.GetProperties(sourceType);
             foreach (var property in properties)
             {
-                // code: if(x.UserId!=null){ dict.Add("UserId",(object)1); }
+            
                 var nameExpr = Expression.Constant(property.Name);
                 var castValueExpr = Expression.Convert(Expression.Property(parameterExpr, property), typeof(object));
-                // code: dict.Add("UserId",xxx);
+             
                 var addMethodExpr = Expression.Call(dictExpr,
                     targetType.GetTypeInfo().GetMethod("Add", new[] { typeof(string), typeof(object) }), nameExpr,
                     castValueExpr);
                 //添加Null
                 var addNullMethodExpr = Expression.Call(dictExpr, targetType.GetTypeInfo().GetMethod("Add", new[] { typeof(string), typeof(object) }), nameExpr, Expression.Constant(null));
 
-                //code: if(x.UserId!=null){ ... }else{ //直接添加null};
+               
                 var ifNotNullElseExpr = Expression.IfThenElse(Expression.NotEqual(castValueExpr, Expression.Constant(null)),
                     addMethodExpr, addNullMethodExpr);
                 bodyExprs.Add(ifNotNullElseExpr);
@@ -159,7 +158,7 @@ namespace DotCommon.Reflecting
             //返回
             bodyExprs.Add(dictExpr);
             var methodBodyExpr = Expression.Block(targetType, new[] { dictExpr }, bodyExprs);
-            // code: entity => { ... }
+  
             var lambdaExpr = Expression.Lambda<Func<T, Dictionary<string, object>>>(methodBodyExpr, parameterExpr);
             var func = lambdaExpr.Compile();
             return func;
