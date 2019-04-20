@@ -9,7 +9,7 @@ namespace DotCommon.AspNetCore.Mvc
         /// </summary>
         public static IApplicationBuilder UseDotCommon(this IApplicationBuilder builder)
         {
-            builder.ApplicationServices.UseDotCommon();
+            builder.ApplicationServices.ConfigureDotCommon();
             return builder;
         }
 

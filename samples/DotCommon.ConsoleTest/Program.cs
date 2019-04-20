@@ -1,10 +1,13 @@
-﻿using DotCommon.Encrypt;
-using DotCommon.ImageResize;
+﻿using DotCommon.Caching;
+using DotCommon.DependencyInjection;
+using DotCommon.Json4Net;
+using DotCommon.Log4Net;
 using DotCommon.Logging;
-using DotCommon.Utility;
+using DotCommon.ProtoBuf;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using System;
-using System.Drawing;
 
 namespace DotCommon.ConsoleTest
 {
@@ -14,19 +17,22 @@ namespace DotCommon.ConsoleTest
         {
             Console.WriteLine("Begin!");
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            //IServiceCollection services = new ServiceCollection();
-            //services.AddLogging(c =>
-            //    {
-            //        c.AddLog4Net(new Log4NetProviderOptions());
-            //    })
-            //    .AddDotCommon()
-            //    .AddGenericsMemoryCache()
-            //    .AddProtoBuf()
-            //    .AddJson4Net();
+            IServiceCollection services = new ServiceCollection();
+            services.AddLogging(l =>
+            {
+                l.AddLog4Net();
+                l.AddNLog();
+            })
+                .AddDotCommon()
+                .AddGenericsMemoryCache()
+                .AddProtoBuf()
+                .AddJson4Net();
             //services.AddTransient<LoggerService>();
+            var provider = services.BuildServiceProvider()
+                .ConfigureDotCommon();
+            //.ConfigureLog4Net();
+            NLog.LogManager.LoadConfiguration("nlog.config");
 
-            //var provider = services.BuildServiceProvider()
-            //    .UseDotCommon();
             //var loggerService = provider.GetService<LoggerService>();
             //loggerService.Write();
 
@@ -40,12 +46,17 @@ namespace DotCommon.ConsoleTest
             // });
             // var bytes = ImageUtil.ImageToBytes(newImage);
 
-            AesEncryptor aes = new AesEncryptor("MTIzNDU2Nzg5MGFiY2RlZjEyMzQ1Njc4OTBhYmNkZWY=", "MTIzNDU2Nzg5MGFiY2RlZg==");
-            aes.KeySize = 256;
-            var a = aes.Encrypt("hello");
-            Console.WriteLine(a);
+
+            //AesEncryptor aes = new AesEncryptor("MTIzNDU2Nzg5MGFiY2RlZjEyMzQ1Njc4OTBhYmNkZWY=", "MTIzNDU2Nzg5MGFiY2RlZg==");
+            //aes.KeySize = 256;
+            //var a = aes.Encrypt("hello");
+            //Console.WriteLine(a);
+
+            var logger = provider.GetService<ILogger<Program>>();
+            logger.LogError("Hello!{0}", DateTime.Now.ToString("YYYY-MM-DD HH:mm:ss"));
+
             Console.WriteLine("完成");
-            // Console.ReadLine();
+            Console.ReadLine();
         }
 
 
