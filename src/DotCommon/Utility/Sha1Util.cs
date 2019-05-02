@@ -1,13 +1,12 @@
-﻿using DotCommon.Utility;
-using System;
+﻿using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DotCommon.Alg
+namespace DotCommon.Utility
 {
     /// <summary>SHA1算法
     /// </summary>
-    public static class Sha1Alg
+    public static class Sha1Util
     {
         /// <summary>获取字符串的Sha1 Hash
         /// </summary>

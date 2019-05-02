@@ -1,13 +1,12 @@
-using DotCommon.Utility;
 using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DotCommon.Alg
+namespace DotCommon.Utility
 {
     /// <summary>HMAC算法
     /// </summary>
-    public static class HmacAlg
+    public static class HmacUtil
     {
 
         #region HMAC-Sha1算法

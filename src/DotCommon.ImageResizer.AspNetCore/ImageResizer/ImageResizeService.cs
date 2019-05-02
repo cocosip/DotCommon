@@ -1,10 +1,8 @@
-﻿using DotCommon.Alg;
-using DotCommon.Caching;
+﻿using DotCommon.Caching;
 using DotCommon.ImageResize;
 using DotCommon.Logging;
 using DotCommon.Utility;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Drawing;
@@ -35,7 +33,7 @@ namespace DotCommon.ImageResizer
             try
             {
                 var key = $"{imagePath}{resizeParameter.ToString()}{lastWriteTimeUtc.ToString("yyyy-MM-dd HH:mm:ss")}";
-                var cacheKey = $"Image:{Sha1Alg.GetStringSha1Hash(key)}";
+                var cacheKey = $"Image:{Sha1Util.GetStringSha1Hash(key)}";
 
                 byte[] imageBytes;
                 if (_option.EnableImageCache)

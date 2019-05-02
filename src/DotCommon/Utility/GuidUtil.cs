@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotCommon.Alg
+namespace DotCommon.Utility
 {
     /// <summary>Guid相关操作
     /// </summary>
