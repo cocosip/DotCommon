@@ -2,8 +2,8 @@
   <Import Project="..\..\build\common.props" />
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>DotCommon.ImageSharp</AssemblyName>
-    <PackageId>DotCommon.ImageSharp</PackageId>
+    <AssemblyName>DotCommon.ImageUtility</AssemblyName>
+    <PackageId>DotCommon.ImageUtility</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
     <Description>DotCommon图片相关操作类</Description>
   </PropertyGroup>
@@ -13,5 +13,8 @@
   <ItemGroup>
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Folder Include="ImageResize\" />
+    <Folder Include="Utility\" />
+  </ItemGroup>
 </Project>

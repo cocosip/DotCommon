@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\build\common.props" />
   <PropertyGroup>
@@ -17,6 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DotCommon.Caching\DotCommon.Caching.csproj" />
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
-    <ProjectReference Include="..\DotCommon.ImageSharp\DotCommon.ImageSharp.csproj" />
+    <ProjectReference Include="..\DotCommon.ImageUtility\DotCommon.ImageUtility.csproj" />
   </ItemGroup>
 </Project>
