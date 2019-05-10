@@ -10,7 +10,7 @@
 | `DotCommon.Log4Net` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Log4Net.svg)](https://www.nuget.org/packages/DotCommon.Log4Net) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Log4Net.svg)|
 | `DotCommon.ProtoBuf` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ProtoBuf.svg)](https://www.nuget.org/packages/DotCommon.ProtoBuf) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ProtoBuf.svg)|
 | `DotCommon.AspNetCore.Mvc` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AspNetCore.Mvc.svg)](https://www.nuget.org/packages/DotCommon.AspNetCore.Mvc) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AspNetCore.Mvc.svg)|
-| `DotCommon.ImageSharp` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ImageSharp.svg)](https://www.nuget.org/packages/DotCommon.ImageSharp) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ImageSharp.svg)|
+| `DotCommon.ImageUtility` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ImageUtility.svg)](https://www.nuget.org/packages/DotCommon.ImageUtility) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ImageUtility.svg)|
 | `DotCommon.ImageResizer.AspNetCore` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ImageResizer.AspNetCore.svg)](https://www.nuget.org/packages/DotCommon.ImageResizer.AspNetCore) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ImageResizer.AspNetCore.svg)|
 
 ## DotCommon简介
