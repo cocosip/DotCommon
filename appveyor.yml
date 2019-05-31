@@ -11,5 +11,5 @@ environment:
   APPVEYOR_YML_DISABLE_PS_LINUX: true
 
 build_script:
-- ps: ./build.ps1
-- sh: ./build.sh
+- ps: ./build.ps1 --configuration Release
+- sh: chmod +x ./build.sh --target Appveyor --configuration Release
