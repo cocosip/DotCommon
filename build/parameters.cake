@@ -39,7 +39,7 @@ public class BuildParameters
     {
         get
         {
-            return !IsLocalBuild && !IsPullRequest && IsTagged && (IsRunningOnTravisCI || (IsRunningOnAppVeyor && IsMasterBranch));
+            return !IsLocalBuild && !IsPullRequest && IsTagged && (IsRunningOnTravisCI || (IsRunningOnAppVeyor && IsMasterBranch))&&IsRunningOnWindows;
         }
     }
 
@@ -47,7 +47,7 @@ public class BuildParameters
     {
         get
         {
-            return !IsLocalBuild && !IsPullRequest && IsTagged && (IsRunningOnTravisCI || (IsRunningOnAppVeyor && IsMasterBranch));
+            return !IsLocalBuild && !IsPullRequest && IsTagged && (IsRunningOnTravisCI || (IsRunningOnAppVeyor && IsMasterBranch))&&IsRunningOnWindows;
         }
     }
 
@@ -81,10 +81,11 @@ public class BuildParameters
             }
         }
         suffix = string.IsNullOrWhiteSpace(suffix) ? null : suffix;
-        Version = new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), versionQuality);
+
+        Version =
+            new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), versionQuality);
         Version.Suffix = suffix;
 
-        context.Information($"Suffix:{Version.Suffix},VersionWithSuffix:{Version.VersionWithSuffix()},Version:{Version.Version()}");
         Paths = BuildPaths.GetPaths(context, Configuration, Version.VersionWithSuffix());
 
         Packages = BuildPackages.GetPackages(
@@ -112,12 +113,12 @@ public class BuildParameters
             IsRunningOnUnix = context.IsRunningOnUnix(),
             IsRunningOnWindows = context.IsRunningOnWindows(),
             IsRunningOnTravisCI = buildSystem.TravisCI.IsRunningOnTravisCI,
-            IsRunningOnAppVeyor = buildSystem.AppVeyor.IsRunningOnAppVeyor,
+            IsRunningOnAppVeyor =  buildSystem.AppVeyor.IsRunningOnAppVeyor,
             IsPullRequest = IsThePullRequest(buildSystem),
             IsMasterBranch = IsTheMasterBranch(buildSystem),
             IsDevelopBranch = IsTheDevelopBranch(buildSystem),
             IsTagged = IsBuildTagged(buildSystem),
-            GitHub = null, //BuildCredentials.GetGitHubCredentials(context),
+            GitHub = null, // BuildCredentials.GetGitHubCredentials(context),
             Coveralls = null, //CoverallsCredentials.GetCoverallsCredentials(context),
             ReleaseNotes = null, //context.ParseReleaseNotes("./README.md"),
             IsPublishBuild = IsPublishing(target),
@@ -125,15 +126,16 @@ public class BuildParameters
             SkipSigning = StringComparer.OrdinalIgnoreCase.Equals("True", context.Argument("skipsigning", "True")),
             SkipGitVersion = StringComparer.OrdinalIgnoreCase.Equals("True", context.EnvironmentVariable("SKIP_GITVERSION")),
             SkipOpenCover = true, //StringComparer.OrdinalIgnoreCase.Equals("True", context.EnvironmentVariable("CAKE_SKIP_OPENCOVER"))
-            Projects = context.GetDirectories("./src/*"),
-            TestProjects = context.GetDirectories("./test/*"),
-            ProjectFiles = context.GetFiles("./src/*/*.csproj"),
-            TestProjectFiles = context.GetFiles("./test/DotCommon.Test/*.csproj"),
-            PackageIds = Util.GetPackageIds(context, context.GetFiles("./src/*/*.csproj"))
+            Projects = context.GetDirectories("./*/src/*"),
+            TestProjects = context.GetDirectories("./*/test/*"),
+            ProjectFiles = context.GetFiles("./*/src/*/*.csproj"),
+            TestProjectFiles = context.GetFiles("./*/test/*/*.csproj"),
+            PackageIds = Util.GetPackageIds(context, context.GetFiles("./*/src/*/*.csproj"))
         };
         context.Information($"Cake BuildParameters:-------------begin--------------");
         context.Information($"IsLocalBuild:{parameters.IsLocalBuild}");
         context.Information($"IsRunningOnUnix:{parameters.IsRunningOnUnix}");
+        context.Information($"IsRunningOnWindows:{parameters.IsRunningOnWindows}");
         context.Information($"IsRunningOnTravisCI:{parameters.IsRunningOnTravisCI}");
         context.Information($"IsRunningOnAppVeyor:{parameters.IsRunningOnAppVeyor}");
         context.Information($"IsPullRequest:{parameters.IsPullRequest}");

@@ -1,5 +1,6 @@
 # DotCommon使用说明
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/cocosip/DotCommon/blob/master/LICENSE) [![Build Status](https://travis-ci.com/cocosip/DotCommon.svg?branch=master)](https://travis-ci.com/cocosip/DotCommon) ![GitHub last commit](https://img.shields.io/github/last-commit/cocosip/DotCommon.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/cocosip/DotCommon.svg)
+
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/cocosip/DotCommon/blob/master/LICENSE) [![Build Status](https://ci.appveyor.com/api/projects/status/DotCommon?svg=true)](https://ci.appveyor.com/api/projects/status/DotCommon?svg=true) ![GitHub last commit](https://img.shields.io/github/last-commit/cocosip/DotCommon.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/cocosip/DotCommon.svg)
 
 | Package  | Version | Downloads|
 | -------- | ------- | -------- |
