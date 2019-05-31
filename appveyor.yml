@@ -7,10 +7,9 @@ image:
   - Visual Studio 2019
   - Ubuntu
 
+environment:
+  APPVEYOR_YML_DISABLE_PS_LINUX: true
+
 build_script:
-- ps: |
-    if($isWindows){
-      ./build.ps1  
-    }else{
-      ./build.sh
-    }
+- ps: ./build.ps1
+- sh: ./build.sh
