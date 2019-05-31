@@ -8,5 +8,11 @@ image:
   - Ubuntu
 
 build_script:
-- ps: ./build.ps1
-- sh: ./build.sh
+- ps: |
+    if($isWindows){
+    ./build.ps1  
+    }
+- sh: |
+    if ($isLinux) {
+      ./build.sh  
+    }
