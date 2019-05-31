@@ -126,11 +126,11 @@ public class BuildParameters
             SkipSigning = StringComparer.OrdinalIgnoreCase.Equals("True", context.Argument("skipsigning", "True")),
             SkipGitVersion = StringComparer.OrdinalIgnoreCase.Equals("True", context.EnvironmentVariable("SKIP_GITVERSION")),
             SkipOpenCover = true, //StringComparer.OrdinalIgnoreCase.Equals("True", context.EnvironmentVariable("CAKE_SKIP_OPENCOVER"))
-            Projects = context.GetDirectories("./*/src/*"),
-            TestProjects = context.GetDirectories("./*/test/*"),
-            ProjectFiles = context.GetFiles("./*/src/*/*.csproj"),
-            TestProjectFiles = context.GetFiles("./*/test/*/*.csproj"),
-            PackageIds = Util.GetPackageIds(context, context.GetFiles("./*/src/*/*.csproj"))
+            Projects = context.GetDirectories("./src/*"),
+            TestProjects = context.GetDirectories("./test/*"),
+            ProjectFiles = context.GetFiles("./src/*/*.csproj"),
+            TestProjectFiles = context.GetFiles("./test/DotCommon.Test/*.csproj"),
+            PackageIds = Util.GetPackageIds(context, context.GetFiles("./src/*/*.csproj"))
         };
         context.Information($"Cake BuildParameters:-------------begin--------------");
         context.Information($"IsLocalBuild:{parameters.IsLocalBuild}");
