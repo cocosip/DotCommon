@@ -10,9 +10,7 @@ image:
 build_script:
 - ps: |
     if($isWindows){
-    ./build.ps1  
-    }
-- sh: |
-    if ($isLinux) {
-      ./build.sh  
+      ./build.ps1  
+    }else{
+      ./build.sh
     }
