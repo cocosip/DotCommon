@@ -39,7 +39,7 @@ public class BuildParameters
     {
         get
         {
-            return !IsLocalBuild && !IsPullRequest && IsTagged && (IsRunningOnTravisCI || (IsRunningOnAppVeyor && IsMasterBranch))&&IsRunningOnWindows;
+            return !IsLocalBuild && !IsPullRequest && IsTagged && (IsRunningOnTravisCI || IsRunningOnAppVeyor)&&IsRunningOnWindows;
         }
     }
 
@@ -47,7 +47,7 @@ public class BuildParameters
     {
         get
         {
-            return !IsLocalBuild && !IsPullRequest && IsTagged && (IsRunningOnTravisCI || (IsRunningOnAppVeyor && IsMasterBranch))&&IsRunningOnWindows;
+            return !IsLocalBuild && !IsPullRequest && IsTagged && (IsRunningOnTravisCI || IsRunningOnAppVeyor)&&IsRunningOnWindows;
         }
     }
 
