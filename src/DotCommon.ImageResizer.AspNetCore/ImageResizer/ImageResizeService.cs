@@ -1,6 +1,5 @@
 ﻿using DotCommon.Caching;
 using DotCommon.ImageResize;
-using DotCommon.Logging;
 using DotCommon.Utility;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
@@ -15,10 +14,10 @@ namespace DotCommon.ImageResizer
         private readonly IDistributedCache<ImageCacheItem> _imageCache;
         private readonly ILogger _logger;
         private readonly ImageResizerOption _option;
-        public ImageResizeService(IDistributedCache<ImageCacheItem> imageCache, ILogger<DefaultLoggerName> logger, ImageResizerOption option)
+        public ImageResizeService(IDistributedCache<ImageCacheItem> imageCache, ILoggerFactory loggerFactory, ImageResizerOption option)
         {
             _imageCache = imageCache;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger(DotCommonConsts.LoggerName);
             _option = option;
         }
 

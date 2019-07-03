@@ -1,5 +1,4 @@
-﻿using DotCommon.Logging;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -12,9 +11,9 @@ namespace DotCommon.Scheduling
         private readonly object SyncObject = new object();
         private readonly Dictionary<string, TimerBasedTask> _taskDict = new Dictionary<string, TimerBasedTask>();
 
-        public ScheduleService(ILogger<DefaultLoggerName> logger)
+        public ScheduleService(ILoggerFactory loggerFactory)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger(DotCommonConsts.LoggerName);
         }
 
         public void StartTask(string name, Action action, int dueTime, int period)
@@ -83,8 +82,9 @@ namespace DotCommon.Scheduling
                             task.Timer.Change(task.Period, task.Period);
                         }
                     }
-                    catch (ObjectDisposedException)
+                    catch (ObjectDisposedException ex)
                     {
+                        _logger.LogError(ex, "Object has disposed,{0}", ex.Message);
                     }
                     catch (Exception ex)
                     {

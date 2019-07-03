@@ -6,15 +6,11 @@ using System.Reflection;
 
 namespace DotCommon.AutoMapper
 {
-    public class AutoAttributeMapperHelper
+    public static class AutoAttributeMapperHelper
     {
-        protected AutoAttributeMapperHelper()
-        {
-
-        }
         private static readonly object SyncObj = new object();
         //已经被映射过的程序集
-        private static List<Assembly> MappedAssemblies = new List<Assembly>();
+        private static readonly List<Assembly> MappedAssemblies = new List<Assembly>();
 
         /// <summary>创建映射
         /// </summary>

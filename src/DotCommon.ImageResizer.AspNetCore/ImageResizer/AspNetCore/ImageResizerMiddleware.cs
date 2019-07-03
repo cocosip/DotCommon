@@ -1,5 +1,4 @@
 using DotCommon.ImageResize;
-using DotCommon.Logging;
 using DotCommon.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,11 +18,11 @@ namespace DotCommon.ImageResizer.AspNetCore
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _env;
         private readonly IImageResizeService _imageResizeService;
-        public ImageResizerMiddleware(RequestDelegate next, IHostingEnvironment env, ILogger<DefaultLoggerName> logger, IImageResizeService imageResizeService)
+        public ImageResizerMiddleware(RequestDelegate next, IHostingEnvironment env, ILoggerFactory loggerFactory, IImageResizeService imageResizeService)
         {
             _next = next;
             _env = env;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger(DotCommonConsts.LoggerName);
             _imageResizeService = imageResizeService;
         }
 
