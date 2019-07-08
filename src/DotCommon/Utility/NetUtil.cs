@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
@@ -97,19 +96,9 @@ namespace DotCommon.Utility
 
         /// <summary>获取本机的局域网IPV6
         /// </summary>        
-        public static Task<IEnumerable<IPAddress>> GetIpv6()
+        public static List<IPAddress> GetMatchineIpv6s()
         {
-            var task = new TaskCompletionSource<IEnumerable<IPAddress>>();
-            //获取本机的IP列表,IP列表中的第一项是局域网IP，第二项是广域网IP
-            Dns.GetHostEntryAsync(LocalHostName()).ContinueWith(t =>
-            {
-                if (t.IsCompleted)
-                {
-                    var addresses = t.Result.AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetworkV6);
-                    task.SetResult(addresses);
-                }
-            });
-            return task.Task;
+            return Dns.GetHostEntry(LocalHostName()).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetworkV6).ToList();
         }
 
         #endregion
@@ -118,19 +107,9 @@ namespace DotCommon.Utility
 
         /// <summary> 获取本机的局域网IPV4
         /// </summary>
-        public static Task<IEnumerable<IPAddress>> GetIpv4()
+        public static List<IPAddress> GetMachineIpv4s()
         {
-            var task = new TaskCompletionSource<IEnumerable<IPAddress>>();
-            //获取本机的IP列表,IP列表中的第一项是局域网IP，第二项是广域网IP
-            Dns.GetHostEntryAsync(LocalHostName()).ContinueWith(t =>
-            {
-                if (t.IsCompleted)
-                {
-                    var addresses = t.Result.AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork);
-                    task.SetResult(addresses);
-                }
-            });
-            return task.Task;
+            return Dns.GetHostEntry(LocalHostName()).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToList();
         }
 
         #endregion
