@@ -16,10 +16,8 @@ namespace DotCommon.Utility
             //默认情况下以1970.01.01为开始时间计算
             try
             {
-                var datezero = new DateTime(1970, 1, 1, 0, 0, 0);
-                // TimeSpan seconds = end.AddDays(1) - startdate;
-                var seconds = datetime - datezero;
-                defaultValue = Convert.ToInt32(seconds.TotalSeconds);
+                var timeSpan = datetime - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                defaultValue = Convert.ToInt32(timeSpan.TotalSeconds);
             }
             catch (Exception)
             {
@@ -35,10 +33,8 @@ namespace DotCommon.Utility
             //默认情况下以1970.01.01为开始时间计算
             try
             {
-                var datezero = new DateTime(1970, 1, 1, 0, 0, 0);
-                // TimeSpan seconds = end.AddDays(1) - startdate;
-                var seconds = datetime - datezero;
-                defaultValue = Convert.ToInt64(seconds.TotalMilliseconds);
+                var timeSpan = datetime - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                defaultValue = Convert.ToInt64(timeSpan.TotalMilliseconds);
             }
             catch (Exception)
             {
@@ -62,7 +58,7 @@ namespace DotCommon.Utility
         {
 
             var begtime = Convert.ToInt64(seconds) * 10000000; //100毫微秒为单位
-            var dt1970 = new DateTime(1970, 1, 1, 0, 0, 0);
+            var dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var tricks1970 = dt1970.Ticks; //1970年1月1日刻度
             var timeTricks = tricks1970 + begtime; //日志日期刻度
             var dt = new DateTime(timeTricks); //转化为DateTime
@@ -75,7 +71,7 @@ namespace DotCommon.Utility
         public static DateTime ToDateTime(long millSeconds)
         {
             var begtime = millSeconds * 10000; //100毫微秒为单位
-            var dt1970 = new DateTime(1970, 1, 1, 0, 0, 0);
+            var dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var tricks1970 = dt1970.Ticks; //1970年1月1日刻度
             var timeTricks = tricks1970 + begtime; //日志日期刻度
             var dt = new DateTime(timeTricks); //转化为DateTime
@@ -302,5 +298,5 @@ namespace DotCommon.Utility
 
     }
 
-     
+
 }
