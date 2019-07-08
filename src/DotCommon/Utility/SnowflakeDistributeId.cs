@@ -59,8 +59,15 @@ namespace DotCommon.Utility
         //上次生成ID的时间截
         private long lastTimestamp = -1L;
 
-        private object syncObject = new object();
+        private readonly object syncObject = new object();
 
+
+        /// <summary>Ctor
+        /// </summary>
+        public SnowflakeDistributeId() : this(0L, 0L)
+        {
+
+        }
 
         /// <summary>Ctor
         /// </summary>
@@ -131,6 +138,9 @@ namespace DotCommon.Utility
             }
         }
 
+
+ 
+
         /// <summary>阻塞到下一个毫秒，直到获得新的时间戳
         /// </summary>
         protected long TilNextMillis(long lastTimestamp)
@@ -149,5 +159,13 @@ namespace DotCommon.Utility
         {
             return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
         }
+
+        /// <summary>获得下一个ID,使用默认的0L,OL作为workerId与datacenterId
+        /// </summary>
+        public static long GenerateNextId()
+        {
+            return new SnowflakeDistributeId().NextId();
+        }
+
     }
 }
