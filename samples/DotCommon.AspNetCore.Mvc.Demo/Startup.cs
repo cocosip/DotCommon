@@ -63,7 +63,7 @@ namespace DotCommon.AspNetCore.Mvc.Demo
             //Cors
 
             app.UseMvc();
-            app.UseDotCommon();
+            app.ConfigureDotCommon();
         }
 
     }

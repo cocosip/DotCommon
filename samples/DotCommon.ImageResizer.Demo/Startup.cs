@@ -1,12 +1,12 @@
-using DotCommon.AspNetCore.Mvc;
 using DotCommon.DependencyInjection;
-using DotCommon.ImageResizer.AspNetCore;
+using DotCommon.ImageResizer.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DotCommon.AspNetCore.Mvc;
 
 namespace DotCommon.ImageResizer.Demo
 {
@@ -52,10 +52,10 @@ namespace DotCommon.ImageResizer.Demo
             {
                 app.UseExceptionHandler("/Error");
             }
-            //DotCommon
-            app.UseDotCommon()
-                .UseImageResizer();
 
+            app.ApplicationServices.ConfigureDotCommon();
+            //DotCommon
+            app.UseImageResizer();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
