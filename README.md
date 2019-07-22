@@ -12,7 +12,7 @@
 | `DotCommon.ProtoBuf` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ProtoBuf.svg)](https://www.nuget.org/packages/DotCommon.ProtoBuf) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ProtoBuf.svg)|
 | `DotCommon.AspNetCore.Mvc` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AspNetCore.Mvc.svg)](https://www.nuget.org/packages/DotCommon.AspNetCore.Mvc) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AspNetCore.Mvc.svg)|
 | `DotCommon.ImageUtility` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ImageUtility.svg)](https://www.nuget.org/packages/DotCommon.ImageUtility) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ImageUtility.svg)|
-| `DotCommon.ImageResizer.AspNetCore` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ImageResizer.AspNetCore.svg)](https://www.nuget.org/packages/DotCommon.ImageResizer.AspNetCore) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ImageResizer.AspNetCore.svg)|
+| `DotCommon.ImageResizer.AspNetCore.Mvc` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ImageResizer.AspNetCore.Mvc.svg)](https://www.nuget.org/packages/DotCommon.ImageResizer.AspNetCore.Mvc) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ImageResizer.AspNetCore.Mvc.svg)|
 
 ## DotCommon简介
 
@@ -44,12 +44,13 @@ services.AddLogging(c =>
 - **Log4Net日志扩展包** PM> `Install-Package DotCommon.Log4Net`
 - **ProtoBuf二进制序列化扩展包** PM> `Install-Package DotCommon.ProtoBuf`
 - **AspNetCore扩展** PM> `Install-Package DotCommon.AspNetCore.Mvc`
-- **ImageSharp图片扩展** PM> `Install-Package DotCommon.ImageSharp`
-- **ImageResizer图片缩放** PM> `Install-Package DotCommon.ImageResizer.AspNetCore`
+- **ImageUtility图片扩展** PM> `Install-Package DotCommon.ImageUtility`
+- **ImageResizer图片缩放** PM> `Install-Package DotCommon.ImageResizer.AspNetCore.Mvc`
 
 ### 扩展包使用说明
 
 - `缓存扩展` 缓存写法参照 [Abp](https://github.com/aspnetboilerplate/aspnetboilerplate) 项目中缓存写法。
+
 > 配置缓存是基于内存:
 
 ```c#
@@ -57,6 +58,7 @@ services.AddGenericsMemoryCache();
 ```
 
 - `AutoMapper`对象映射扩展。`DotCommon.AutoMapper`扩展中定义了一些进行快速映射的属性,在类上面添加了这些自动映射属性,并且初始化后,就能直接进行映射使用。
+
 > 初始化自动映射:
 
 ```c#
