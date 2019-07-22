@@ -27,10 +27,11 @@ namespace DotCommon.AutoMapper
                 return;
             }
 
-            foreach (var targetType in TargetTypes)
-            {
-                configuration.CreateMap(type, targetType, MemberList);
-            }
+            configuration.CreateAutoAttributeMaps(type, TargetTypes, MemberList);
+            //foreach (var targetType in TargetTypes)
+            //{
+            //    configuration.CreateMap(type, targetType, MemberList);
+            //}
         }
     }
 }

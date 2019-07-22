@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using DotCommon.AutoMapper;
+using DotCommon.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,26 +12,31 @@ namespace DotCommon.Test.AutoMapper
 {
     public class AutoMapperTest
     {
+        static IServiceProvider _provider;
         static AutoMapperTest()
         {
-            Mapper.Initialize(cfg =>
+            IServiceCollection services = new ServiceCollection();
+            services
+                .AddDotCommon()
+                .AddDotCommonAutoMapper();
+            var config = new MapperConfiguration(cfg =>
             {
-                //自动映射
                 AutoAttributeMapperHelper.CreateAutoAttributeMappings(new List<Assembly>()
                 {
-                    typeof(TestUser).Assembly
+                   typeof(TestUser).Assembly
                 }, cfg);
-                //指定的映射
-                AutoAttributeMapperHelper.CreateMappings(cfg, x =>
-                {
-                });
             });
 
+            services.AddSingleton<IConfigurationProvider>(config);
+            services.AddSingleton<IMapper>(config.CreateMapper());
+            _provider = services.BuildServiceProvider();
         }
 
         [Fact]
         public void MapTest()
         {
+            var objectMapper = _provider.GetService<ObjectMapping.IObjectMapper>();
+
             var testOrder = new TestOrder()
             {
                 OrderId = 1,
@@ -38,7 +45,7 @@ namespace DotCommon.Test.AutoMapper
                 PhoneNumber = "15868702111",
                 UserId = 10
             };
-            var user = testOrder.MapTo<TestUser>();
+            var user = objectMapper.Map<TestUser>(testOrder);
             Assert.Equal(10, user.UserId);
             Assert.Equal("15868702111", user.PhoneNumber);
             Assert.Equal("张三", user.UserName);

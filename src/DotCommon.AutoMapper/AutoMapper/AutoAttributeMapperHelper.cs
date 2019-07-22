@@ -8,7 +8,8 @@ namespace DotCommon.AutoMapper
 {
     public static class AutoAttributeMapperHelper
     {
-        private static readonly object SyncObj = new object();
+        private static readonly object SyncObject = new object();
+
         //已经被映射过的程序集
         private static readonly List<Assembly> MappedAssemblies = new List<Assembly>();
 
@@ -24,7 +25,7 @@ namespace DotCommon.AutoMapper
         /// </summary>
         public static void CreateAutoAttributeMappings(List<Assembly> assemblies, IMapperConfigurationExpression configuration)
         {
-            lock (SyncObj)
+            lock (SyncObject)
             {
                 //未被映射过的程序集
                 var notMappedAssemblies = assemblies.Where(x => !MappedAssemblies.Contains(x)).ToList();

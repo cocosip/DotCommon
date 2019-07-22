@@ -1,4 +1,5 @@
 ﻿using DotCommon.Http;
+using DotCommon.ObjectMapping;
 using DotCommon.Scheduling;
 using DotCommon.Serializing;
 using DotCommon.Threading;
@@ -31,6 +32,8 @@ namespace DotCommon.DependencyInjection
             services.AddTransient<IObjectSerializer, DefaultObjectSerializer>();
             //定时器
             services.AddSingleton<IScheduleService, ScheduleService>();
+            //Mapper
+            services.AddSingleton<IObjectMapper, NullObjectMapper>();
 
             //生命周期管理
             services.AddSingleton<ICancellationTokenProvider>(NullCancellationTokenProvider.Instance);
