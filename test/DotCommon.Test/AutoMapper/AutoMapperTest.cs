@@ -18,17 +18,13 @@ namespace DotCommon.Test.AutoMapper
             IServiceCollection services = new ServiceCollection();
             services
                 .AddDotCommon()
-                .AddDotCommonAutoMapper();
-            var config = new MapperConfiguration(cfg =>
-            {
-                AutoAttributeMapperHelper.CreateAutoAttributeMappings(new List<Assembly>()
+                .AddDotCommonAutoMapper()
+                .AddAssemblyAutoMaps(typeof(TestUser).Assembly)
+                .AddAutoMapperConfigurator(c =>
                 {
-                   typeof(TestUser).Assembly
-                }, cfg);
-            });
-
-            services.AddSingleton<IConfigurationProvider>(config);
-            services.AddSingleton<IMapper>(config.CreateMapper());
+                    //自定义的一些AutoMapper配置
+                })
+                .BuildAutoMapper();
             _provider = services.BuildServiceProvider();
         }
 
