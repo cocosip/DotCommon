@@ -37,24 +37,39 @@ services.AddLogging(c =>
 
 ## 扩展包
 
-- **Autofac依赖注入扩展包:** PM> `Install-Package DotCommon.Autofac`
-- **缓存扩展包** PM> `Install-Package DotCommon.Caching`
-- **AutoMapper自动映射扩展包** PM> `Install-Package DotCommon.AutoMapper`
-- **Json4Net序列化扩展包** PM> `Install-Package DotCommon.Json4Net`
-- **Log4Net日志扩展包** PM> `Install-Package DotCommon.Log4Net`
-- **ProtoBuf二进制序列化扩展包** PM> `Install-Package DotCommon.ProtoBuf`
-- **AspNetCore扩展** PM> `Install-Package DotCommon.AspNetCore.Mvc`
-- **ImageUtility图片扩展** PM> `Install-Package DotCommon.ImageUtility`
-- **ImageResizer图片缩放** PM> `Install-Package DotCommon.ImageResizer.AspNetCore.Mvc`
+- **Autofac依赖注入扩展包:** `DotCommon.Autofac`
+- **缓存扩展包** `DotCommon.Caching`
+- **AutoMapper自动映射扩展包** `DotCommon.AutoMapper`
+- **Json4Net序列化扩展包** `DotCommon.Json4Net`
+- **Log4Net日志扩展包** `DotCommon.Log4Net`
+- **ProtoBuf二进制序列化扩展包** `DotCommon.ProtoBuf`
+- **AspNetCore扩展** `DotCommon.AspNetCore.Mvc`
+- **ImageUtility图片扩展** `DotCommon.ImageUtility`
+- **ImageResizer图片缩放(Asp.Net Core)** `DotCommon.ImageResizer.AspNetCore.Mvc`
 
 ### 扩展包使用说明
 
-- `缓存扩展` 缓存写法参照 [Abp](https://github.com/aspnetboilerplate/aspnetboilerplate) 项目中缓存写法。
+- `缓存扩展`
+
+```c#
+IServiceCollection services = new ServiceCollection();
+services
+    .AddDotCommon()
+    .AddGenericsMemoryCache();
+var provider = services.BuildServiceProvider();
+//获取缓存管理器
+var personCache = provider.GetRequiredService<IDistributedCache<PersonCacheItem>>();
+//根据key值获取缓存
+var cacheItem = await personCache.GetAsync("key1");
+//设置缓存
+await personCache.SetAsync("key2", cacheItem);
+```
 
 > 配置缓存是基于内存:
 
 ```c#
 services.AddGenericsMemoryCache();
+
 ```
 
 - `AutoMapper`对象映射扩展。`DotCommon.AutoMapper`扩展中定义了一些进行快速映射的属性,在类上面添加了这些自动映射属性,并且初始化后,就能直接进行映射使用。
@@ -64,14 +79,17 @@ services.AddGenericsMemoryCache();
 ```c#
 //需要进行自动映射的程序集
 var assemblies=new List<Assembly>();
-Mapper.Initialize(cfg =>
-{
-    //初始化自动映射
-    AutoAttributeMapperHelper.CreateAutoAttributeMappings(assemblies, cfg);
-    //指定的映射
-    AutoAttributeMapperHelper.CreateMappings(cfg, x =>
+
+IServiceCollection services = new ServiceCollection();
+services
+    .AddDotCommon()
+    .AddDotCommonAutoMapper()
+    .AddAssemblyAutoMaps(assemblies.ToArray())
+    .AddAutoMapperConfigurator(c =>
     {
-        //在此处定义需要添加的自定义映射
-    });
-});
+        //自定义的一些AutoMapper配置
+    })
+    .BuildAutoMapper();
+var provider = services.BuildServiceProvider();
+
 ```
