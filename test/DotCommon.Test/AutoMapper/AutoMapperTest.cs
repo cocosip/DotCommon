@@ -23,6 +23,7 @@ namespace DotCommon.Test.AutoMapper
                 .AddAutoMapperConfigurator(c =>
                 {
                     //自定义的一些AutoMapper配置
+                    //c.ApplyAutoMapperConfiguration()
                 })
                 .BuildAutoMapper();
             _provider = services.BuildServiceProvider();

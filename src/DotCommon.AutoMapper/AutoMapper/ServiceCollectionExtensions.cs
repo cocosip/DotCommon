@@ -48,6 +48,7 @@ namespace DotCommon.AutoMapper
             return services;
         }
 
+
         /// <summary>添加配置信息
         /// </summary>
         public static IServiceCollection AddAutoMapperConfigurator(this IServiceCollection services, Action<IMapperConfigurationExpression> configurator)
