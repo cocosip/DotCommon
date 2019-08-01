@@ -1,5 +1,4 @@
-﻿using DotCommon.Http;
-using DotCommon.ObjectMapping;
+﻿using DotCommon.ObjectMapping;
 using DotCommon.Scheduling;
 using DotCommon.Serializing;
 using DotCommon.Threading;
@@ -20,8 +19,6 @@ namespace DotCommon.DependencyInjection
             services.TryAddObjectAccessor<IServiceProvider>();
             services.AddSingleton<IDotCommonApplication>(application);
 
-            //http请求
-            services.AddTransient<IHttpClient, HttpClient>();
             //json序列化
             services.AddTransient<IJsonSerializer, DefaultJsonSerializer>();
             //xml序列化
