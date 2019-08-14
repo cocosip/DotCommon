@@ -139,11 +139,11 @@ namespace DotCommon.Utility
         }
 
 
- 
+
 
         /// <summary>阻塞到下一个毫秒，直到获得新的时间戳
         /// </summary>
-        protected long TilNextMillis(long lastTimestamp)
+        private long TilNextMillis(long lastTimestamp)
         {
             long timestamp = TimeGen();
             while (timestamp <= lastTimestamp)

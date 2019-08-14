@@ -11,45 +11,32 @@ namespace DotCommon.Utility
 
         /// <summary> 将时间转换成int32类型
         /// </summary>
-        public static int ToInt32(DateTime datetime, int defaultValue = 0)
+        public static int ToInt32(DateTime datetime)
         {
             //默认情况下以1970.01.01为开始时间计算
-            try
-            {
-                var timeSpan = datetime - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-                defaultValue = Convert.ToInt32(timeSpan.TotalSeconds);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-            return defaultValue;
+            var timeSpan = datetime.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return Convert.ToInt32(timeSpan.TotalSeconds);
         }
 
         /// <summary> 将时间转换成long类型,以毫秒为单位
         /// </summary>
-        public static long ToInt64(DateTime datetime, long defaultValue = 0)
+        public static long ToInt64(DateTime datetime)
         {
             //默认情况下以1970.01.01为开始时间计算
-            try
-            {
-                var timeSpan = datetime - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-                defaultValue = Convert.ToInt64(timeSpan.TotalMilliseconds);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-            return defaultValue;
+            var timeSpan = datetime.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return Convert.ToInt64(timeSpan.TotalMilliseconds);
         }
 
         /// <summary>将string类型的时间转换成int32
         /// </summary>
         public static int ToInt32(string datetime, int defaultValue = 0)
         {
-            if (!RegexUtil.IsDataTime(datetime)) return defaultValue;
+            if (!RegexUtil.IsDataTime(datetime))
+            {
+                return defaultValue;
+            }
             var end = Convert.ToDateTime(datetime);
-            return ToInt32(end, defaultValue);
+            return ToInt32(end);
         }
 
         /// <summary> 将Int32类型的整数转换成时间
@@ -61,8 +48,7 @@ namespace DotCommon.Utility
             var dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var tricks1970 = dt1970.Ticks; //1970年1月1日刻度
             var timeTricks = tricks1970 + begtime; //日志日期刻度
-            var dt = new DateTime(timeTricks); //转化为DateTime
-            //DateTime enddt = dt.Date;//获取到日期整数
+            var dt = new DateTime(timeTricks, DateTimeKind.Utc); //转化为DateTime
             return dt;
         }
 
@@ -74,7 +60,7 @@ namespace DotCommon.Utility
             var dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var tricks1970 = dt1970.Ticks; //1970年1月1日刻度
             var timeTricks = tricks1970 + begtime; //日志日期刻度
-            var dt = new DateTime(timeTricks); //转化为DateTime
+            var dt = new DateTime(timeTricks, DateTimeKind.Utc); //转化为DateTime
             //DateTime enddt = dt.Date;//获取到日期整数
             return dt;
         }
@@ -151,29 +137,21 @@ namespace DotCommon.Utility
             {
                 return "";
             }
-            var weekArray = new[] { 1, 2, 3, 4, 5, 6 };
+            var weekArray = new[] { 0, 1, 2, 3, 4, 5, 6 };
 
-            if ((end.Date - begin.Date).TotalDays >= 7)
+            var totalDays = (end.Date - begin.Date).TotalDays + 1;
+            if (totalDays >= 7)
             {
                 return string.Join(",", weekArray);
             }
-            var endWeek = (int)end.DayOfWeek;
-            var beginWeek = (int)begin.DayOfWeek;
-            if (beginWeek <= endWeek)
+
+            var target = new List<int>();
+            var indexDate = begin.Date;
+            for (var i = 0; i < totalDays; i++)
             {
-                var containList = new List<int>();
-                for (var i = beginWeek; i <= endWeek; i++)
-                {
-                    containList.Add(weekArray[i]);
-                }
-                return string.Join(",", containList);
+                target.Add((int)indexDate.DayOfWeek);
+                indexDate = indexDate.AddDays(1);
             }
-            var removeList = new List<int>();
-            for (var i = endWeek + 1; i <= beginWeek - 1; i++)
-            {
-                removeList.Add(weekArray[i]);
-            }
-            var target = weekArray.Except(removeList);
             return string.Join(",", target);
         }
 
@@ -202,7 +180,7 @@ namespace DotCommon.Utility
             return weekDict;
         }
 
-        /// <summary>获取某时间点第一天
+        /// <summary>获取某时间点当月的第一天
         /// </summary>
         public static DateTime GetFirstDayOfMonth(DateTime time)
         {
@@ -262,38 +240,22 @@ namespace DotCommon.Utility
             return lastDay.Date == time.Date;
         }
 
-        /// <summary>将日期转换成时间
+        /// <summary>将时间的某个日期进行修改
         /// </summary>
-        public static DateTime DayStrToTime(string day, DateTime formatDate = default(DateTime), DateTime defaultDate = default(DateTime))
+        public static DateTime ReplaceDay(string day, DateTime datetime)
         {
-            var fullTime = $"{formatDate:yyyy-MM}-{day}";
-            try
-            {
-                var date = Convert.ToDateTime(fullTime);
-                return date;
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-            return defaultDate;
+            var fullTime = $"{datetime:yyyy-MM}-{day}";
+            var date = Convert.ToDateTime(fullTime);
+            return date;
         }
 
-        /// <summary>将日期转换成时间
+        /// <summary>将时间的日期后面的时间进行替换
         /// </summary>
-        public static DateTime TimeStrToTime(string time, DateTime formatDate = default(DateTime), DateTime defaultDate = default(DateTime))
+        public static DateTime ReplaceTime(string time, DateTime datetime)
         {
-            var fullTime = $"{formatDate:yyyy-MM-dd} {time}";
-            try
-            {
-                var date = Convert.ToDateTime(fullTime);
-                return date;
-            }
-            catch (Exception)
-            {
-                return defaultDate;
-                // ignored
-            }
+            var fullTime = $"{datetime:yyyy-MM-dd} {time}";
+            var date = Convert.ToDateTime(fullTime);
+            return date;
         }
 
     }

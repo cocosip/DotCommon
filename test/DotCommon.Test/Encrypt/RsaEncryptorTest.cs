@@ -47,6 +47,14 @@ namespace DotCommon.Test.Encrypt
             rsa2Encrypter.SetHashAlg("RSA2");
             var encrypted2 = rsa2Encrypter.Encrypt(str);
             Assert.Equal(str, rsa2Encrypter.Decrypt(encrypted2));
+
+
+            var rsaEncrypter2 = new RsaEncryptor();
+            rsaEncrypter2.LoadPublicKey(PublicKey);
+            rsaEncrypter2.LoadPrivateKey(PrivateKey);
+            var encrypted2_2 = rsaEncrypter2.Encrypt(str);
+            Assert.Equal(str, rsaEncrypter2.Decrypt(encrypted2_2));
+
         }
 
         /// <summary>签名测试

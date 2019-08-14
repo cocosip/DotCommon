@@ -22,7 +22,7 @@ namespace DotCommon.Encrypt
         }
 
 
-        public AesEncryptor(string key)
+        public AesEncryptor(string key) : this()
         {
             _key = Convert.FromBase64String(key);
         }

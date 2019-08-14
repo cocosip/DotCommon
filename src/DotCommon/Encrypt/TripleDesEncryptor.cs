@@ -13,7 +13,7 @@ namespace DotCommon.Encrypt
         public PaddingMode Padding { get; set; } = PaddingMode.PKCS7;
         public TripleDesEncryptor(string key, string iv)
         {
-            if (string.IsNullOrWhiteSpace(key))
+            if (!string.IsNullOrWhiteSpace(key))
             {
                 _key = Convert.FromBase64String(key);
             }

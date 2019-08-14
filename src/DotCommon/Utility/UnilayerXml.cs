@@ -69,11 +69,11 @@ namespace DotCommon.Utility
             {
                 if (kv.Value is int)
                 {
-                    sb.Append($"<{kv.Key}>{kv.Value}</{kv.Value}>");
+                    sb.Append($"<{kv.Key}>{kv.Value}</{kv.Key}>");
                 }
                 if (kv.Value is string)
                 {
-                    sb.Append($"<{kv.Key}><![CDATA[{kv.Value}]]></{kv.Value}>");
+                    sb.Append($"<{kv.Key}><![CDATA[{kv.Value}]]></{kv.Key}>");
                 }
             }
             sb.Append($"</xml>");

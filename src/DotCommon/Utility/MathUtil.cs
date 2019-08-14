@@ -13,15 +13,15 @@ namespace DotCommon.Utility
 
         /// <summary>获取集合中差值最小的两个
         /// </summary>
-        public static Tuple<T, T> GetMinMinus<T>(List<T> source, Func<T, decimal> selector)
+        public static (T, T) GetMinMinus<T>(List<T> source, Func<T, decimal> selector)
         {
             if (source.Count < 2)
             {
-                return null;
+                return default;
             }
             if (source.Count == 2)
             {
-                return new Tuple<T, T>(source[0], source[1]);
+                return (source[0], source[1]);
             }
             source = source.OrderBy(selector).ToList();
             var difference = Math.Abs(selector(source[0]) - selector(source[1]));
@@ -35,20 +35,20 @@ namespace DotCommon.Utility
                     k = i;
                 }
             }
-            return new Tuple<T, T>(source[k], source[k + 1]);
+            return (source[k], source[k + 1]);
         }
 
         /// <summary>获取集合中差值最小的两个
         /// </summary>
-        public static Tuple<T, T> GetMinMinus<T>(List<T> source, Func<T, double> selector)
+        public static (T, T) GetMinMinus<T>(List<T> source, Func<T, double> selector)
         {
             if (source.Count < 2)
             {
-                return null;
+                return default;
             }
             if (source.Count == 2)
             {
-                return new Tuple<T, T>(source[0], source[1]);
+                return (source[0], source[1]);
             }
             source = source.OrderBy(selector).ToList();
             var difference = Math.Abs(selector(source[0]) - selector(source[1]));
@@ -62,20 +62,20 @@ namespace DotCommon.Utility
                     k = i;
                 }
             }
-            return new Tuple<T, T>(source[k], source[k + 1]);
+            return (source[k], source[k + 1]);
         }
 
         /// <summary>获取集合中差值最小的两个
         /// </summary>
-        public static Tuple<T, T> GetMinMinus<T>(List<T> source, Func<T, int> selector)
+        public static (T, T) GetMinMinus<T>(List<T> source, Func<T, int> selector)
         {
             if (source.Count < 2)
             {
-                return null;
+                return default;
             }
             if (source.Count == 2)
             {
-                return new Tuple<T, T>(source[0], source[1]);
+                return (source[0], source[1]);
             }
             source = source.OrderBy(selector).ToList();
             var difference = Math.Abs(selector(source[0]) - selector(source[1]));
@@ -89,20 +89,20 @@ namespace DotCommon.Utility
                     k = i;
                 }
             }
-            return new Tuple<T, T>(source[k], source[k + 1]);
+            return (source[k], source[k + 1]);
         }
 
         /// <summary>获取集合中差值最小的两个
         /// </summary>
-        public static Tuple<T, T> GetMinMinus<T>(List<T> source, Func<T, float> selector)
+        public static (T, T) GetMinMinus<T>(List<T> source, Func<T, float> selector)
         {
             if (source.Count < 2)
             {
-                return null;
+                return default;
             }
             if (source.Count == 2)
             {
-                return new Tuple<T, T>(source[0], source[1]);
+                return (source[0], source[1]);
             }
             source = source.OrderBy(selector).ToList();
             var difference = Math.Abs(selector(source[0]) - selector(source[1]));
@@ -116,20 +116,20 @@ namespace DotCommon.Utility
                     k = i;
                 }
             }
-            return new Tuple<T, T>(source[k], source[k + 1]);
+            return (source[k], source[k + 1]);
         }
 
         /// <summary>获取集合中差值最小的两个
         /// </summary>
-        public static Tuple<T, T> GetMinMinus<T>(List<T> source, Func<T, long> selector)
+        public static (T, T) GetMinMinus<T>(List<T> source, Func<T, long> selector)
         {
             if (source.Count < 2)
             {
-                return null;
+                return default;
             }
             if (source.Count == 2)
             {
-                return new Tuple<T, T>(source[0], source[1]);
+                return (source[0], source[1]);
             }
             source = source.OrderBy(selector).ToList();
             var difference = Math.Abs(selector(source[0]) - selector(source[1]));
@@ -143,35 +143,9 @@ namespace DotCommon.Utility
                     k = i;
                 }
             }
-            return new Tuple<T, T>(source[k], source[k + 1]);
+            return (source[k], source[k + 1]);
         }
 
-        /// <summary>获取集合中差值最小的两个
-        /// </summary>
-        public static Tuple<T, T> GetMinMinus<T>(List<T> source, Func<T, byte> selector)
-        {
-            if (source.Count < 2)
-            {
-                return null;
-            }
-            if (source.Count == 2)
-            {
-                return new Tuple<T, T>(source[0], source[1]);
-            }
-            source = source.OrderBy(selector).ToList();
-            var difference = Math.Abs(selector(source[0]) - selector(source[1]));
-            int k = 0; //数组的下标
-            for (int i = 1; i < source.Count - 1; i++)
-            {
-                var currentDifference = Math.Abs(selector(source[i]) - selector(source[i + 1]));
-                if (difference > currentDifference)
-                {
-                    difference = currentDifference;
-                    k = i;
-                }
-            }
-            return new Tuple<T, T>(source[k], source[k + 1]);
-        }
 
         #endregion
 

@@ -1,5 +1,6 @@
 ﻿using DotCommon.Extensions;
 using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
@@ -144,7 +145,7 @@ namespace DotCommon.Utility
         public static bool IsDataTime(string source)
         {
             DateTime d;
-            return NotNull(source) && DateTime.TryParse(source, out d);
+            return NotNull(source) && DateTime.TryParse(source, CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
         }
 
         /// <summary> 是否为时间,增加了最小时间

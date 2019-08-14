@@ -88,5 +88,24 @@ namespace DotCommon.Test.Utility
             Assert.Equal(expected, actual);
         }
 
+        [Theory]
+        [InlineData("http://www.baidu.com#aaa", "www.baidu.com")]
+        [InlineData("https://192.168.0.1:8081?id=20", "192.168.0.1:8081")]
+        [InlineData("HTTPs://10.9.254.168:80?id=3&name=4", "10.9.254.168:80")]
+        public void GetAuthority_Test(string url, string authority)
+        {
+            var actual = UrlUtil.GetAuthority(url);
+            Assert.Equal(authority, actual);
+        }
+
+        [Theory]
+        [InlineData("http://www.baidu.com/abc/def", "http://www.baidu.com", "/abc", "def/")]
+        [InlineData("http://10.9.254.19/qos/?id=3", "http://10.9.254.19", "", "/qos", "?id=3")]
+        public void CombineUrl_Test(string expected, params string[] parameters)
+        {
+            var actual = UrlUtil.CombineUrl(parameters);
+            Assert.Equal(expected, actual);
+        }
+
     }
 }

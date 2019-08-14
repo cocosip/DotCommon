@@ -80,8 +80,9 @@ namespace DotCommon.Utility
         public static string MapPath(string relativePath)
         {
             string locatePath = LocateServerPath();
-            var backLayer = 2; //默认回退的文件夹数为2;
-                               //根据相对路径获取回退的层数
+            //默认回退的文件夹数为2;
+            var backLayer = 2;
+            //根据相对路径获取回退的层数
             backLayer += relativePath.Length - relativePath.Replace("../", "..").Length;
             var path = BackDirectory(locatePath, backLayer);
             var usefulPaths = relativePath.Split('/').Where(x => x != ".." && x != "~");

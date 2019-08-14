@@ -14,14 +14,14 @@ namespace DotCommon.Encrypt
         {
 
         }
-        public RsaEncryptor(string privateKeyPem, string publicKeyPem)
+        public RsaEncryptor(string privateKeyPem, string publicKeyPem) : this(privateKeyPem, publicKeyPem, "RSA2")
+        {
+        }
+
+        public RsaEncryptor(string privateKeyPem, string publicKeyPem, string hashAlg)
         {
             PrivateKeyPem = privateKeyPem;
             PublicKeyPem = publicKeyPem;
-        }
-
-        public RsaEncryptor(string privateKeyPem, string publicKeyPem, string hashAlg) : this(privateKeyPem, publicKeyPem)
-        {
             HashAlg = hashAlg;
         }
 
