@@ -82,7 +82,6 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
-        #region 是否为double类型
 
         /// <summary> 是否为double类型
         /// </summary>
@@ -108,9 +107,9 @@ namespace DotCommon.Utility
             return false;
         }
 
-        #endregion
 
-        #region 是否为decimal类型,如果带有.默认为一位0
+
+
 
         /// <summary>判断是否为decimal类型
         /// </summary>
@@ -122,12 +121,12 @@ namespace DotCommon.Utility
 
         /// <summary> 判断是否为dicimal类型
         /// </summary>
-        public static bool IsDecimal(string source, double minValue, double maxValue, int digit = 3)
+        public static bool IsDecimal(string source, decimal minValue, decimal maxValue, int digit = 3)
         {
             string patten = $@"^\d{{1,9}}[.]?\d{{0,{digit}}}$";
             if (IsMatch(source, patten))
             {
-                double val = Convert.ToDouble(source);
+                decimal val = Convert.ToDecimal(source);
                 if (val >= minValue && val <= maxValue)
                 {
                     return true;
@@ -135,10 +134,8 @@ namespace DotCommon.Utility
             }
             return false;
         }
-        #endregion
 
 
-        #region 是否为有效的日期时间
 
         /// <summary> 是否为有效的日期时间
         /// </summary>
@@ -148,41 +145,8 @@ namespace DotCommon.Utility
             return NotNull(source) && DateTime.TryParse(source, CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
         }
 
-        /// <summary> 是否为时间,增加了最小时间
-        /// </summary>
-        public static bool IsDateTimeMin(string source, DateTime min)
-        {
-            DateTime d;
-            if (NotNull(source) && DateTime.TryParse(source, out d))
-            {
-                if (DateTime.Compare(d, min) >= 0)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
-
-        /// <summary>判断是否为时间,增加了最大时间的判断
-        /// </summary>
-        public static bool IsDateTimeMax(string source, DateTime max)
-        {
-            DateTime d;
-            if (NotNull(source) && DateTime.TryParse(source, out d))
-            {
-                if (DateTime.Compare(max, d) >= 0)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        #endregion
-
-        #region 是否为有效的版本号,1.3,1.1.5,1.25.256
-
-        /// <summary>是否为有效的版本号
+        /// <summary>是否为有效的版本号 1.3,1.1.5,1.25.256
         /// </summary>
         public static bool IsVersion(string txt, int length = 5)
         {
@@ -190,9 +154,7 @@ namespace DotCommon.Utility
             return IsMatch(txt, pattern);
         }
 
-        #endregion
 
-        #region 是否为新版本,后面的版本版是否大于前面的版本
         /// <summary>是否为新版本,后面的版本版是否大于前面的版本
         /// </summary>
         public static bool IsVersionUpper(string oldVersion, string newVersion)
@@ -223,9 +185,6 @@ namespace DotCommon.Utility
             }
             return false;
         }
-        #endregion
-
-
 
     }
 }

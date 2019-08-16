@@ -22,8 +22,19 @@ namespace DotCommon.Test.Utility
             var actual = RequestUtil.GetPlatform(userAgent);
             Assert.Equal("Windows", actual);
             Assert.False(RequestUtil.IsWechatPlatform(userAgent));
+            Assert.True(RequestUtil.IsWechatPlatform("aasda MicroMessenger xxxxx"));
+
             Assert.False(RequestUtil.IsMobile(userAgent));
 
+            var android = RequestUtil.GetPlatform("Android xxxxx");
+            Assert.Equal("Android", android);
+            var iphone = RequestUtil.GetPlatform("xxxx iphone IPad qqqqqqxxxxaqss");
+            Assert.Equal("IPhone", iphone);
+            var mac = RequestUtil.GetPlatform("xxxx macintosh  xx");
+            Assert.Equal("MacBook", mac);
+
+            Assert.Equal("", RequestUtil.GetPlatform("xxxx xx  xx"));
+            Assert.Equal("", RequestUtil.GetPlatform(""));
         }
 
         [Fact]

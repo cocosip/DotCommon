@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace DotCommon.Serializing
 {
@@ -8,35 +9,39 @@ namespace DotCommon.Serializing
     /// </summary>
     public class DefaultXmlSerializer : IXmlSerializer
     {
-        public string Serialize(object obj)
+        public string Serialize(object o)
         {
-            var serializer = new DataContractSerializer(obj.GetType());
-            var stream = new MemoryStream();
-            serializer.WriteObject(stream, obj);
-            stream.Position = 0;
-            var sr = new StreamReader(stream);
-            var resultStr = sr.ReadToEnd();
-            sr.Dispose();
-            stream.Dispose();
-            return resultStr;
+            var serializer = new DataContractSerializer(o.GetType());
+            using (var stream = new MemoryStream())
+            {
+                serializer.WriteObject(stream, o);
+                stream.Position = 0;
+                using (var sr = new StreamReader(stream))
+                {
+                    var resultStr = sr.ReadToEnd();
+                    return resultStr;
+                }
+            }
         }
 
         public object Deserialize(string value, Type type)
         {
             var serializer = new DataContractSerializer(type);
-            var ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(value.ToCharArray()));
-            var obj = serializer.ReadObject(ms);
-            ms.Dispose();
-            return obj;
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(value.ToCharArray())))
+            {
+                var o = serializer.ReadObject(stream);
+                return o;
+            }
         }
 
         public T Deserialize<T>(string value) where T : class
         {
             var serializer = new DataContractSerializer(typeof(T));
-            var ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(value.ToCharArray()));
-            var obj = (T)serializer.ReadObject(ms);
-            ms.Dispose();
-            return obj;
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(value.ToCharArray())))
+            {
+                var o = (T)serializer.ReadObject(stream);
+                return o;
+            }
         }
     }
 }

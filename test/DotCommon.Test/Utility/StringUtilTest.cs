@@ -8,6 +8,35 @@ namespace DotCommon.Test.Utility
 {
     public class StringUtilTest
     {
+        [Fact]
+        public void GetStringByteLength_Test()
+        {
+            var source1 = "helloworld";
+            Assert.Equal(10, StringUtil.GetStringByteLength(source1));
+            var source2 = "中国?";
+            Assert.Equal(6, StringUtil.GetStringByteLength(source2));
+
+        }
+        [Theory]
+        [InlineData("helloeter", "ter", "helloe")]
+        [InlineData("", "ter", "")]
+        [InlineData("teacher", "", "teache")]
+        public void RemoveEnd_Test(string input, string splitStr, string expected)
+        {
+            var actual = StringUtil.RemoveEnd(input, splitStr);
+            Assert.Equal(expected, actual);
+        }
+
+        //[Fact]
+        //public void Filter_Test()
+        //{
+        //    var s1 = StringUtil.FilterSpecial("heell:wqqq");
+        //    Assert.Equal("heell:wqqq", s1);
+
+        //}
+
+
+
         /// <summary>字符串转Unicode
         /// </summary>
         [Fact]

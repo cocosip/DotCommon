@@ -44,21 +44,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AspNetCore.Mvc", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AspNetCore.Mvc.Demo", "samples\DotCommon.AspNetCore.Mvc.Demo\DotCommon.AspNetCore.Mvc.Demo.csproj", "{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3259E272-B916-45B7-8360-09DC4B1A5D8D}"
-	ProjectSection(SolutionItems) = preProject
-		.travis.yml = .travis.yml
-		build.cake = build.cake
-		build.ps1 = build.ps1
-		build.sh = build.sh
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageResizer.Demo", "samples\DotCommon.ImageResizer.Demo\DotCommon.ImageResizer.Demo.csproj", "{CE305FA3-A5F3-4D5D-8753-E12D1DA327F8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageUtility", "src\DotCommon.ImageUtility\DotCommon.ImageUtility.csproj", "{9F1A9D8E-7867-4960-B468-291F4010E699}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageUtility.Test", "test\DotCommon.ImageUtility.Test\DotCommon.ImageUtility.Test.csproj", "{BD656C78-0D84-4FA3-AF30-87964DA57D51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.ImageResizer.AspNetCore.Mvc", "src\DotCommon.ImageResizer.AspNetCore.Mvc\DotCommon.ImageResizer.AspNetCore.Mvc.csproj", "{89C5B8D5-2D56-4B01-9AEA-9BA1F5796011}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageResizer.AspNetCore.Mvc", "src\DotCommon.ImageResizer.AspNetCore.Mvc\DotCommon.ImageResizer.AspNetCore.Mvc.csproj", "{89C5B8D5-2D56-4B01-9AEA-9BA1F5796011}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

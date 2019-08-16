@@ -21,6 +21,7 @@ namespace DotCommon.Test.Utility
         [InlineData("http://www.baidu", true)]
         [InlineData("http://127.0.0.1", false)]
         [InlineData("http://baidu.com", true)]
+        [InlineData("", false)]
         public void IsMainDomainTest(string url, bool expected)
         {
             var actual = UrlUtil.IsMainDomain(url);
@@ -41,6 +42,7 @@ namespace DotCommon.Test.Utility
         [InlineData("www.baidu.com", "http://www.baidu.com", true)]
         [InlineData("http://127.0.0.1", "hTTP://127.0.0.1/2233", true)]
         [InlineData("http://baidu.com", "https://baidu.com", true)]
+        [InlineData("", "https://baidu.com", false)]
         public void SameDomainTest(string url, string url2, bool expected)
         {
             var actual = UrlUtil.SameDomain(url, url2);
@@ -72,6 +74,7 @@ namespace DotCommon.Test.Utility
         [InlineData("http://www.baidu.com#aaa", "id", "10", true, "http://www.baidu.com/?id=10#aaa")]
         [InlineData("http://www.baidu.com?id=20", "id", "10", false, "http://www.baidu.com/?id=20")]
         [InlineData("http://test.yjyj.com/Web/Product/Search?Key=沙发", "page", "2", false, "http://test.yjyj.com/Web/Product/Search?Key=沙发&page=2")]
+        [InlineData("http://127.0.0.1?id=3", "id", "10", true, "http://127.0.0.1/?id=10")]
         public void UrlAttachParameterTest(string url, string key, string value, bool replaceSame, string expected)
         {
             var actual = UrlUtil.UrlAttachParameter(url, key, value, replaceSame);

@@ -9,80 +9,92 @@ namespace DotCommon.Utility
 
         /// <summary> 转换成Int32类型
         /// </summary>
-        public static int ToInt32(object obj, int defaultValue)
+        public static int ToInt32(object source, int defaultValue)
         {
-            if (obj != null)
+            if (source != null)
             {
-                int.TryParse(obj.ToString(), out defaultValue);
+                if (int.TryParse(source.ToString(), out int value))
+                {
+                    return value;
+                }
             }
             return defaultValue;
         }
 
         /// <summary> 转换成Int64类型
         /// </summary>
-        public static long ToInt64(object obj, long defaultValue)
+        public static long ToInt64(object source, long defaultValue)
         {
-            if (obj != null)
+            if (source != null)
             {
-                long.TryParse(obj.ToString(), out defaultValue);
+                if (long.TryParse(source.ToString(), out long value))
+                {
+                    return value;
+                }
             }
             return defaultValue;
         }
 
         /// <summary>转换成Double类型
         /// </summary>
-        public static double ToDouble(object obj, double defaultValue)
+        public static double ToDouble(object source, double defaultValue)
         {
-            if (obj != null)
+            if (source != null)
             {
-                double.TryParse(obj.ToString(), out defaultValue);
+                if (double.TryParse(source.ToString(), out double value))
+                {
+                    return value;
+                }
             }
             return defaultValue;
         }
         /// <summary> 转换成double类型,并保留有效的位数
         /// </summary>
-        public static double ToDouble(object obj, double defaultValue, int digit)
+        public static double ToDouble(object source, double defaultValue, int digit)
         {
-            if (obj != null)
+            if (source != null)
             {
-                double.TryParse(obj.ToString(), out defaultValue);
-                defaultValue = Math.Round(defaultValue, digit);
+                if (double.TryParse(source.ToString(), out double value))
+                {
+                    return Math.Round(value, digit);
+                }
             }
-            return defaultValue;
+            return Math.Round(defaultValue, digit);
         }
 
         /// <summary>转换成Datetime
         /// </summary>
-        public static DateTime ToDateTime(object obj, DateTime defaultValue)
+        public static DateTime ToDateTime(object source, DateTime defaultValue)
         {
-            var d1 = defaultValue;
-            if (obj != null)
+            if (source != null)
             {
-                var r = DateTime.TryParse(obj.ToString(), out d1);
-                if (!r)
+                if (DateTime.TryParse(source.ToString(), out DateTime dateTime))
                 {
-                    return defaultValue;
+                    return dateTime;
                 }
             }
-            return d1;
+            return defaultValue;
         }
 
         /// <summary>转换成Bool类型
         /// </summary>
-        public static bool ToBool(object obj, bool defaultValue)
+        public static bool ToBool(object source, bool defaultValue)
         {
-            if (obj != null)
+            if (source != null)
             {
-                bool.TryParse(obj.ToString(), out defaultValue);
+                if (bool.TryParse(source.ToString(), out bool value))
+                {
+                    return value;
+                }
             }
             return defaultValue;
         }
 
         /// <summary>将string类型字符串转换成对应的guid
         /// </summary>
-        public static Guid ToGuid(string str)
+        public static Guid ToGuid(string source)
         {
-            return new Guid(str);
+            return new Guid(source);
         }
 
     }

@@ -37,7 +37,7 @@ namespace DotCommon.Http
 
         /// <summary>Ctor
         /// </summary>
-        public HttpBuilder(Method method)
+        public HttpBuilder(Method method) : this()
         {
             Method = method;
         }

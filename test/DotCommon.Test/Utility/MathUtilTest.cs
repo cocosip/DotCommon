@@ -23,7 +23,7 @@ namespace DotCommon.Test.Utility
             Assert.Equal(default, MathUtil.GetMinMinus(new List<int>() { }, x => x));
 
             //decimal
-            var decimalArray = new decimal[] { 1.3M, 1.8M, 3.5M, 22M, 8.5M };
+            var decimalArray = new decimal[] { 3.5M, 10.8M, 1.3M, 1.8M, 22M, 8.5M };
             var decimalValue = MathUtil.GetMinMinus(decimalArray.ToList(), x => x);
             Assert.Equal((1.3M, 1.8M), decimalValue);
 

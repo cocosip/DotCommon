@@ -163,24 +163,25 @@ namespace DotCommon.Utility
         /// </summary>
         public static string GetPlatform(string userAgent)
         {
+            userAgent = userAgent.ToUpper();
             var agentFlag = "";
             string[] windowsKeys = { "Windows NT", "compatible", "MSIE", ".NET CLR" };
             string[] androidKeys = { "Android" };
             string[] iphoneKeys = { "iPhone", "iPad", "iPod" };
             string[] macKeys = { "Macintosh" };
-            if (windowsKeys.Any(item => userAgent != null && userAgent.Contains(item)))
+            if (windowsKeys.Any(item => userAgent != null && userAgent.Contains(item.ToUpper())))
             {
                 return MobilePlatform.Windows;
             }
-            if (androidKeys.Any(item => userAgent != null && userAgent.Contains(item)))
+            if (androidKeys.Any(item => userAgent != null && userAgent.Contains(item.ToUpper())))
             {
                 return MobilePlatform.Android;
             }
-            if (iphoneKeys.Any(item => userAgent != null && userAgent.Contains(item)))
+            if (iphoneKeys.Any(item => userAgent != null && userAgent.Contains(item.ToUpper())))
             {
                 return MobilePlatform.IPhone;
             }
-            if (macKeys.Any(item => userAgent != null && userAgent.Contains(item)))
+            if (macKeys.Any(item => userAgent != null && userAgent.Contains(item.ToUpper())))
             {
                 return MobilePlatform.MacBook;
             }
@@ -192,7 +193,7 @@ namespace DotCommon.Utility
         public static bool IsWechatPlatform(string userAgent)
         {
             string[] weixinKeys = { "MicroMessenger" };
-            if (weixinKeys.Any(item => userAgent != null && userAgent.Contains(item)))
+            if (weixinKeys.Any(item => userAgent != null && userAgent.ToUpper().Contains(item.ToUpper())))
             {
                 return true;
             }

@@ -19,6 +19,8 @@ namespace DotCommon.Test.Utility
             range.Join(3);
             Assert.Equal(3, range.MinValue);
             Assert.Equal(10, range.MaxValue);
+            range.Join(15);
+            Assert.Equal(15, range.MaxValue);
 
         }
 

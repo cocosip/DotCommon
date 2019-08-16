@@ -6,7 +6,7 @@ namespace DotCommon.Serializing
     /// </summary>
     public interface IXmlSerializer
     {
-        string Serialize(object obj);
+        string Serialize(object o);
         object Deserialize(string value, Type type);
         T Deserialize<T>(string value) where T : class;
     }

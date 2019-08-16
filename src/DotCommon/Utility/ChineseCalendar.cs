@@ -685,25 +685,7 @@ namespace DotCommon.Utility
         /// <returns></returns>
         private int ConvertDayOfWeek(DayOfWeek dayOfWeek)
         {
-            switch (dayOfWeek)
-            {
-                case DayOfWeek.Sunday:
-                    return 1;
-                case DayOfWeek.Monday:
-                    return 2;
-                case DayOfWeek.Tuesday:
-                    return 3;
-                case DayOfWeek.Wednesday:
-                    return 4;
-                case DayOfWeek.Thursday:
-                    return 5;
-                case DayOfWeek.Friday:
-                    return 6;
-                case DayOfWeek.Saturday:
-                    return 7;
-                default:
-                    return 0;
-            }
+            return ((int)dayOfWeek) + 1;
         }
 
         #endregion
@@ -858,7 +840,6 @@ namespace DotCommon.Utility
         public DateTime Date
         {
             get { return _date; }
-            set { _date = value; }
         }
 
         #endregion
@@ -1010,8 +991,8 @@ namespace DotCommon.Utility
             {
                 switch (_cDay)
                 {
-                    case 0:
-                        return "";
+                    //case 0:
+                    //    return "";
                     case 10:
                         return "初十";
                     case 20:
@@ -1215,7 +1196,7 @@ namespace DotCommon.Utility
         {
             get
             {
-                int index;
+                int index = 0;
                 var m = _date.Month;
                 var d = _date.Day;
                 var y = m * 100 + d;
@@ -1268,10 +1249,7 @@ namespace DotCommon.Utility
                 {
                     index = 11;
                 }
-                else
-                {
-                    index = 0;
-                }
+
 
                 return ConstellationName[index];
             }
@@ -1293,7 +1271,8 @@ namespace DotCommon.Utility
         {
             get
             {
-                int offset = _date.Year - AnimalStartYear;
+                //int offset = _date.Year - AnimalStartYear; //阳历计算
+                int offset = this._cYear - AnimalStartYear;　//农历计算
                 return (offset % 12) + 1;
             }
         }
@@ -1309,8 +1288,8 @@ namespace DotCommon.Utility
         {
             get
             {
-                int offset = _date.Year - AnimalStartYear; //阳历计算
-                //int offset = this._cYear - AnimalStartYear;　农历计算
+                //int offset = _date.Year - AnimalStartYear; //阳历计算
+                int offset = this._cYear - AnimalStartYear;　//农历计算
                 return AnimalStr[offset % 12].ToString();
             }
         }

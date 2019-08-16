@@ -50,6 +50,7 @@ namespace DotCommon.Test.Encrypt
 
 
             var rsaEncrypter2 = new RsaEncryptor();
+            rsaEncrypter2.SetHashAlg("RSA");
             rsaEncrypter2.LoadPublicKey(PublicKey);
             rsaEncrypter2.LoadPrivateKey(PrivateKey);
             var encrypted2_2 = rsaEncrypter2.Encrypt(str);

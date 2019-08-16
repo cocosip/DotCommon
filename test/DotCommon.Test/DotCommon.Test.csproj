@@ -2,11 +2,8 @@
 
   <PropertyGroup>    
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Encrypt\TripleDesEncryptorTest.cs~RF1f0b5a95.TMP" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
@@ -26,6 +23,8 @@
     <ProjectReference Include="..\..\src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj" />
     <ProjectReference Include="..\..\src\DotCommon\DotCommon.csproj" />
   </ItemGroup>
+
+ 
 
 
 </Project>

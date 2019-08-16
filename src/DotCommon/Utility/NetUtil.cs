@@ -139,17 +139,5 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 获取远程客户机的IP地址
-
-        /// <summary> 获取远程客户机的IP地址
-        /// </summary>   
-        public static string GetClientIp(Socket clientSocket)
-        {
-            var client = (IPEndPoint)clientSocket.RemoteEndPoint;
-            return client.Address.ToString();
-        }
-
-        #endregion
-
     }
 }
