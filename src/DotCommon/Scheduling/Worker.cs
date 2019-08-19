@@ -34,7 +34,10 @@ namespace DotCommon.Scheduling
         {
             lock (_lockObject)
             {
-                if (_status == Status.Running) return this;
+                if (_status == Status.Running)
+                {
+                    return this;
+                }
 
                 _status = Status.Running;
                 new Thread(Loop)
@@ -52,8 +55,10 @@ namespace DotCommon.Scheduling
         {
             lock (_lockObject)
             {
-                if (_status == Status.StopRequested) return this;
-
+                if (_status == Status.StopRequested)
+                {
+                    return this;
+                }
                 _status = Status.StopRequested;
 
                 return this;
