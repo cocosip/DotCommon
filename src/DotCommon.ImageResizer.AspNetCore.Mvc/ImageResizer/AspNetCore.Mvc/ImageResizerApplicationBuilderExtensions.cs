@@ -1,8 +1,4 @@
-﻿using DotCommon.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using Microsoft.AspNetCore.Builder;
 
 namespace DotCommon.ImageResizer.AspNetCore.Mvc
 {

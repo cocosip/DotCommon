@@ -5,7 +5,7 @@
     <AssemblyName>DotCommon.AspNetCore.Mvc</AssemblyName>
     <PackageId>DotCommon.AspNetCore.Mvc</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
-    <Description>AspNetCore Mvc相关扩展</Description>
+    <Description>DotCommon AspNetCore Mvc相关扩展</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />

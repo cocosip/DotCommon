@@ -100,8 +100,7 @@ namespace DotCommon.ImageResizer.AspNetCore.Mvc
 
         private string GetQueryValue(IQueryCollection query, string name, string defaultValue = "")
         {
-            StringValues value;
-            if (query.TryGetValue(name, out value))
+            if (query.TryGetValue(name, out StringValues value))
             {
                 return value.ToString();
             }

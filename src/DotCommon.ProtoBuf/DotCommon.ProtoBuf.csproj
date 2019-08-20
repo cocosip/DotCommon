@@ -5,6 +5,7 @@
     <AssemblyName>DotCommon.ProtoBuf</AssemblyName>
     <PackageId>DotCommon.ProtoBuf</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
+    <Description>DotCommon ProtoBuf序列化扩展</Description>
   </PropertyGroup>
 
   <ItemGroup>

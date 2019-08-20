@@ -5,6 +5,7 @@
     <AssemblyName>DotCommon.Caching</AssemblyName>
     <PackageId>DotCommon.Caching</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
+    <Description>DotCommon 缓存管理</Description>
   </PropertyGroup>
 
   <ItemGroup>

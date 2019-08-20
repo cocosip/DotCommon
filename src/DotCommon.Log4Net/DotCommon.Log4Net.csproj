@@ -5,6 +5,7 @@
     <AssemblyName>DotCommon.Log4Net</AssemblyName>
     <PackageId>DotCommon.Log4Net</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
+    <Description>DotCommon Log4Net日志管理</Description>
   </PropertyGroup>
 
   <ItemGroup>

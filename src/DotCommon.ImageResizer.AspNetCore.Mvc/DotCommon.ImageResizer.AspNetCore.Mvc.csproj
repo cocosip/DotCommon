@@ -6,7 +6,7 @@
     <AssemblyName>DotCommon.ImageResizer.AspNetCore.Mvc</AssemblyName>
     <PackageId>DotCommon.ImageResizer.AspNetCore.Mvc</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
-    <Description>AspNetCore 图片缩放功能</Description>
+    <Description>DotCommon 图片缩放扩展</Description>
   </PropertyGroup>
 
   <ItemGroup>
