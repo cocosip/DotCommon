@@ -38,10 +38,10 @@ namespace DotCommon.Reflecting
             [typeof(bool?)] = "ToBoolean"
         };
 
-        private static string GetConvertName(Type type)
-        {
-            return ConvertMethodNames[type];
-        }
+        //private static string GetConvertName(Type type)
+        //{
+        //    return ConvertMethodNames[type];
+        //}
 
         /// <summary>将字典类型转换成对象的委托
         /// </summary>

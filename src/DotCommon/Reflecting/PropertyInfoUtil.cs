@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,9 +9,6 @@ namespace DotCommon.Reflecting
     /// </summary>
     public static class PropertyInfoUtil
     {
-        private static readonly IDictionary<Tuple<Type, BindingFlags>, List<PropertyInfo>> TypeProperties =
-            new ConcurrentDictionary<Tuple<Type, BindingFlags>, List<PropertyInfo>>();
-
         /// <summary>获取某个类型下的所有属性
         /// </summary>
         public static List<PropertyInfo> GetProperties(Type type,

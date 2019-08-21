@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DotCommon.AutoMapper;
 using DotCommon.DependencyInjection;
+using DotCommon.ObjectMapping;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,17 @@ namespace DotCommon.Test.AutoMapper
             Assert.Equal(10, user.UserId);
             Assert.Equal("15868702111", user.PhoneNumber);
             Assert.Equal("张三", user.UserName);
+
+
+            var nullMapper = NullObjectMapper.Instance;
+            Assert.Throws<ArgumentException>(() =>
+            {
+                nullMapper.Map<TestUser>(testOrder);
+            });
+            Assert.Throws<ArgumentException>(() =>
+            {
+                nullMapper.Map<TestOrder, TestUser>(testOrder, user);
+            });
         }
 
     }

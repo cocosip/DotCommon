@@ -19,11 +19,13 @@ namespace DotCommon.Test.Reflecting
             };
 
             var dict = DictionaryExpression.ObjectToDictionary<TestDictionaryObject>(o);
+            var dict2 = DictionaryExpression.ObjectToDictionary<TestDictionaryObject>(o);
 
             Assert.Equal(1, dict["Id"]);
             Assert.Null(dict["Age"]);
             Assert.Null(dict["Name"]);
             Assert.Equal(30.2M, dict["Score"]);
+            Assert.Equal(dict.Count, dict2.Count);
 
 
         }
@@ -41,7 +43,7 @@ namespace DotCommon.Test.Reflecting
             };
 
             var o = DictionaryExpression.DictionaryToObject<TestDictionaryObject>(dict);
-
+            var o2 = DictionaryExpression.DictionaryToObject<TestDictionaryObject>(dict);
 
             //int id1 = 3;
             //o.Score = (decimal)id1;
@@ -50,6 +52,7 @@ namespace DotCommon.Test.Reflecting
             Assert.Null(o.Age);
             Assert.Equal("Hello", o.Name);
             Assert.Equal(22M, o.Score);
+            Assert.Equal(o.Id, o2.Id);
 
 
         }

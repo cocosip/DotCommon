@@ -34,6 +34,8 @@ namespace DotCommon.Reflecting
             return obj != null && obj.GetType() == typeof(Func<TReturn>);
         }
 
+        /// <summary>是否为原始的扩展
+        /// </summary>
         public static bool IsPrimitiveExtended(Type type, bool includeNullables = true, bool includeEnums = false)
         {
             if (IsPrimitiveExtendedInternal(type, includeEnums))
@@ -51,6 +53,8 @@ namespace DotCommon.Reflecting
             return false;
         }
 
+        /// <summary>获取第一个可空参数
+        /// </summary>
         public static Type GetFirstGenericArgumentIfNullable(this Type t)
         {
             if (t.GetGenericArguments().Length > 0 && t.GetGenericTypeDefinition() == typeof(Nullable<>))
