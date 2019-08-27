@@ -23,11 +23,11 @@ namespace DotCommon.Test.Encrypt
         public void SignDataTest()
         {
             var str = "你好,中国!";
-            var rsaEncrypter = new RsaEncryptor(PrivateKey, PublicKey);
+            var rsaEncrypter = new RsaEncryptor(PublicKey, PrivateKey);
             var signed = rsaEncrypter.SignData(str);
             Assert.True(rsaEncrypter.VerifyData(str, signed));
 
-            var rsa2Encrypter = new RsaEncryptor(PrivateKey, PublicKey);
+            var rsa2Encrypter = new RsaEncryptor(PublicKey, PrivateKey);
             rsa2Encrypter.SetHashAlg("RSA2");
             var signed2 = rsa2Encrypter.SignData(str);
             Assert.True(rsa2Encrypter.VerifyData(str, signed2));
@@ -39,11 +39,11 @@ namespace DotCommon.Test.Encrypt
         public void EncryptTest()
         {
             var str = "HelloWorld!";
-            var rsaEncrypter = new RsaEncryptor(PrivateKey, PublicKey);
+            var rsaEncrypter = new RsaEncryptor(PublicKey, PrivateKey);
             var encrypted = rsaEncrypter.Encrypt(str);
             Assert.Equal(str, rsaEncrypter.Decrypt(encrypted));
 
-            var rsa2Encrypter = new RsaEncryptor(PrivateKey, PublicKey);
+            var rsa2Encrypter = new RsaEncryptor(PublicKey, PrivateKey);
             rsa2Encrypter.SetHashAlg("RSA2");
             var encrypted2 = rsa2Encrypter.Encrypt(str);
             Assert.Equal(str, rsa2Encrypter.Decrypt(encrypted2));
@@ -64,12 +64,12 @@ namespace DotCommon.Test.Encrypt
         public void RSA2SignDataTest()
         {
             var str = "你好,中国!";
-            var rsaEncrypter = new RsaEncryptor(RSA2PrivateKey, RSA2PublicKey);
+            var rsaEncrypter = new RsaEncryptor(RSA2PublicKey, RSA2PrivateKey);
             rsaEncrypter.SetHashAlg("RSA2");
             var signed = rsaEncrypter.SignData(str);
             Assert.True(rsaEncrypter.VerifyData(str, signed));
 
-            var rsa2Encrypter = new RsaEncryptor(RSA2PrivateKey, RSA2PublicKey);
+            var rsa2Encrypter = new RsaEncryptor(RSA2PublicKey, RSA2PrivateKey);
             rsa2Encrypter.SetHashAlg("RSA2");
             var signed2 = rsa2Encrypter.SignData(str);
             Assert.True(rsa2Encrypter.VerifyData(str, signed2));

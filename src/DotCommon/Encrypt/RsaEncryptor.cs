@@ -10,18 +10,22 @@ namespace DotCommon.Encrypt
         private string PrivateKeyPem { get; set; }
         private string PublicKeyPem { get; set; }
         private string HashAlg { get; set; } = "RSA2";
+        private RSASignaturePadding SignaturePadding { get; set; } = RSASignaturePadding.Pkcs1;
+        private RSAEncryptionPadding EncryptionPadding { get; set; } = RSAEncryptionPadding.Pkcs1;
+
+
         public RsaEncryptor()
         {
 
         }
-        public RsaEncryptor(string privateKeyPem, string publicKeyPem) : this(privateKeyPem, publicKeyPem, "RSA2")
+        public RsaEncryptor(string publicKeyPem, string privateKeyPem) : this(publicKeyPem, privateKeyPem, "RSA2")
         {
         }
 
-        public RsaEncryptor(string privateKeyPem, string publicKeyPem, string hashAlg)
+        public RsaEncryptor(string publicKeyPem, string privateKeyPem, string hashAlg)
         {
-            PrivateKeyPem = privateKeyPem;
             PublicKeyPem = publicKeyPem;
+            PrivateKeyPem = privateKeyPem;
             HashAlg = hashAlg;
         }
 
@@ -32,6 +36,15 @@ namespace DotCommon.Encrypt
             HashAlg = hashAlg;
             return this;
         }
+
+        /// <summary>设置RSAEncryptionPadding
+        /// </summary>
+        public RsaEncryptor SetSignaturePadding(RSASignaturePadding signaturePadding)
+        {
+            SignaturePadding = signaturePadding;
+            return this;
+        }
+
 
         #region 加载公钥和私钥
         public RsaEncryptor LoadPublicKey(string publicKeyPem)
@@ -48,6 +61,7 @@ namespace DotCommon.Encrypt
         #endregion
 
         #region 签名与验证签名
+
         /// <summary>对数据签名
         /// </summary>
         public string SignData(string data, string code = "utf-8")
@@ -59,9 +73,11 @@ namespace DotCommon.Encrypt
         /// </summary>
         public string SignData(byte[] data)
         {
-            var rsa = CreateRsaFromPrivateKey(PrivateKeyPem);
-            var signedData = rsa.SignData(data, GetHashAlgorithmName(HashAlg), RSASignaturePadding.Pkcs1);
-            return Convert.ToBase64String(signedData);
+            using (var rsa = CreateRsaFromPrivateKey(PrivateKeyPem))
+            {
+                var signedData = rsa.SignData(data, GetHashAlgorithmName(HashAlg), SignaturePadding);
+                return Convert.ToBase64String(signedData);
+            }
         }
 
         /// <summary>验证签名
@@ -69,7 +85,7 @@ namespace DotCommon.Encrypt
         public bool VerifyData(byte[] data, byte[] signature)
         {
             var rsa = CreateRsaFromPublicKey(PublicKeyPem);
-            return rsa.VerifyData(data, signature, GetHashAlgorithmName(HashAlg), RSASignaturePadding.Pkcs1);
+            return rsa.VerifyData(data, signature, GetHashAlgorithmName(HashAlg), SignaturePadding);
         }
 
         /// <summary>验证签名
@@ -81,27 +97,51 @@ namespace DotCommon.Encrypt
         #endregion
 
         #region 加密与解密
+
+        /// <summary>加密
+        /// </summary>
+        /// <param name="data">数据</param>
+        /// <returns></returns>
         public string Encrypt(byte[] data)
         {
-            var rsa = CreateRsaFromPublicKey(PublicKeyPem);
-            var signedData = rsa.Encrypt(data, RSAEncryptionPadding.Pkcs1);
-            return Convert.ToBase64String(signedData);
+            using (var rsa = CreateRsaFromPublicKey(PublicKeyPem))
+            {
+                var signedData = rsa.Encrypt(data, EncryptionPadding);
+                return Convert.ToBase64String(signedData);
+            }
         }
 
+        /// <summary>加密
+        /// </summary>
+        /// <param name="data">数据</param>
+        /// <param name="code">编码</param>
+        /// <returns></returns>
         public string Encrypt(string data, string code = "utf-8")
         {
             return Encrypt(Encoding.GetEncoding(code).GetBytes(data));
         }
 
+        /// <summary>解密
+        /// </summary>
+        /// <param name="data">数据源</param>
+        /// <param name="code">编码</param>
+        /// <returns></returns>
         public string Decrypt(string data, string code = "utf-8")
         {
             return Decrypt(Convert.FromBase64String(data), code);
         }
 
+        /// <summary>解密
+        /// </summary>
+        /// <param name="data">数据源</param>
+        /// <param name="code">编码</param>
+        /// <returns></returns>
         public string Decrypt(byte[] data, string code = "utf-8")
         {
-            var rsa = CreateRsaFromPrivateKey(PrivateKeyPem);
-            return Encoding.GetEncoding(code).GetString(rsa.Decrypt(data, RSAEncryptionPadding.Pkcs1));
+            using (var rsa = CreateRsaFromPrivateKey(PrivateKeyPem))
+            {
+                return Encoding.GetEncoding(code).GetString(rsa.Decrypt(data, EncryptionPadding));
+            }
         }
 
         #endregion
@@ -143,12 +183,14 @@ namespace DotCommon.Encrypt
                 }
                 twobytes = binr.ReadUInt16();
                 if (twobytes != 0x0102)
+                {
                     throw new Exception("Unexpected version");
-
+                }
                 bt = binr.ReadByte();
                 if (bt != 0x00)
+                {
                     throw new Exception("Unexpected value read binr.ReadByte()");
-
+                }
                 rsAparams.Modulus = binr.ReadBytes(GetIntegerSize(binr));
                 rsAparams.Exponent = binr.ReadBytes(GetIntegerSize(binr));
                 rsAparams.D = binr.ReadBytes(GetIntegerSize(binr));
@@ -165,10 +207,11 @@ namespace DotCommon.Encrypt
 
         /// <summary>根据公钥生成RSA
         /// </summary>
-        private static RSA CreateRsaFromPublicKey(string publicKeyString)
+        private static RSA CreateRsaFromPublicKey(string publicKey)
         {
+            //1.2.840.113549.1.1.1
             byte[] seqOid = { 0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00 };
-            var x509Key = Convert.FromBase64String(publicKeyString);
+            var x509Key = Convert.FromBase64String(publicKey);
             using (var mem = new MemoryStream(x509Key))
             {
                 using (var binr = new BinaryReader(mem))
@@ -279,9 +322,10 @@ namespace DotCommon.Encrypt
             int count = 0;
             bt = binr.ReadByte();
             if (bt != 0x02)
+            {
                 return 0;
+            }
             bt = binr.ReadByte();
-
             if (bt == 0x81)
             {
                 count = binr.ReadByte();
@@ -325,6 +369,7 @@ namespace DotCommon.Encrypt
             }
             return true;
         }
+
 
     }
 }
