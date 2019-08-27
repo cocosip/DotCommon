@@ -130,12 +130,17 @@ namespace DotCommon.Encrypt
                 ushort twobytes = 0;
                 twobytes = binr.ReadUInt16();
                 if (twobytes == 0x8130)
+                {
                     binr.ReadByte();
+                }
                 else if (twobytes == 0x8230)
+                {
                     binr.ReadInt16();
+                }
                 else
+                {
                     throw new Exception("Unexpected value read binr.ReadUInt16()");
-
+                }
                 twobytes = binr.ReadUInt16();
                 if (twobytes != 0x0102)
                     throw new Exception("Unexpected version");
@@ -173,49 +178,71 @@ namespace DotCommon.Encrypt
 
                     twobytes = binr.ReadUInt16();
                     if (twobytes == 0x8130)
+                    {
                         binr.ReadByte();
+                    }
                     else if (twobytes == 0x8230)
+                    {
                         binr.ReadInt16();
+                    }
                     else
+                    {
                         return null;
-
+                    }
                     var seq = binr.ReadBytes(15);
                     if (!CompareByteArray(seq, seqOid))
+                    {
                         return null;
+                    }
 
                     twobytes = binr.ReadUInt16();
                     if (twobytes == 0x8103)
+                    {
                         binr.ReadByte();
+                    }
                     else if (twobytes == 0x8203)
+                    {
                         binr.ReadInt16();
+                    }
                     else
+                    {
                         return null;
-
+                    }
                     bt = binr.ReadByte();
                     if (bt != 0x00)
+                    {
                         return null;
-
+                    }
                     twobytes = binr.ReadUInt16();
                     if (twobytes == 0x8130)
+                    {
                         binr.ReadByte();
+                    }
                     else if (twobytes == 0x8230)
+                    {
                         binr.ReadInt16();
+                    }
                     else
+                    {
                         return null;
-
+                    }
                     twobytes = binr.ReadUInt16();
                     byte lowbyte = 0x00;
                     byte highbyte = 0x00;
 
                     if (twobytes == 0x8102)
+                    {
                         lowbyte = binr.ReadByte();
+                    }
                     else if (twobytes == 0x8202)
                     {
                         highbyte = binr.ReadByte();
                         lowbyte = binr.ReadByte();
                     }
                     else
+                    {
                         return null;
+                    }
                     byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
                     int modsize = BitConverter.ToInt32(modint, 0);
 
@@ -227,7 +254,9 @@ namespace DotCommon.Encrypt
                     }
                     byte[] modulus = binr.ReadBytes(modsize);
                     if (binr.ReadByte() != 0x02)
+                    {
                         return null;
+                    }
                     int expbytes = (int)binr.ReadByte();
                     byte[] exponent = binr.ReadBytes(expbytes);
                     var rsa = RSA.Create();
@@ -254,18 +283,22 @@ namespace DotCommon.Encrypt
             bt = binr.ReadByte();
 
             if (bt == 0x81)
-                count = binr.ReadByte();
-            else
-                if (bt == 0x82)
             {
-                var highbyte = binr.ReadByte();
-                var lowbyte = binr.ReadByte();
-                byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
-                count = BitConverter.ToInt32(modint, 0);
+                count = binr.ReadByte();
             }
             else
             {
-                count = bt;
+                if (bt == 0x82)
+                {
+                    var highbyte = binr.ReadByte();
+                    var lowbyte = binr.ReadByte();
+                    byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
+                    count = BitConverter.ToInt32(modint, 0);
+                }
+                else
+                {
+                    count = bt;
+                }
             }
 
             while (binr.ReadByte() == 0x00)
@@ -278,12 +311,16 @@ namespace DotCommon.Encrypt
         private static bool CompareByteArray(byte[] a, byte[] b)
         {
             if (a.Length != b.Length)
+            {
                 return false;
+            }
             int i = 0;
             foreach (byte c in a)
             {
                 if (c != b[i])
+                {
                     return false;
+                }
                 i++;
             }
             return true;
