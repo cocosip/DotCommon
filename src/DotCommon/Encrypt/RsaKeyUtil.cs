@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace DotCommon.Encrypt
 {
@@ -10,16 +12,19 @@ namespace DotCommon.Encrypt
     {
         /// <summary>固定内容 encoded OID sequence for PKCS #1 rsaEncryption szOID_RSA_RSA ="1.2.840.113549.1.1.1"
         /// </summary>
-        public static byte[] SeqOID = { 0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00 };
+        private static readonly byte[] SeqOID = { 0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00 };
 
         /// <summary>固定版本号
         /// </summary>
-        public static byte[] Version = { 0x02, 0x01, 0x00 };
+        private static readonly byte[] Version = { 0x02, 0x01, 0x00 };
 
 
-        /// <summary>生成RSA密钥对
+        /// <summary>生成RSA密钥对(Pem密钥格式)
         /// </summary>
-        public static (string, string) GenerateKeyPair(RSAPrivateKeyFormat format = RSAPrivateKeyFormat.PKCS1, int keySize = 1024)
+        /// <param name="format">格式,PKCS1或者PKCS8</param>
+        /// <param name="keySize">512,1024,1536,2048</param>
+        /// <returns></returns>
+        public static (string, string) GenerateKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
         {
             using (var rsa = RSA.Create())
             {
@@ -27,15 +32,60 @@ namespace DotCommon.Encrypt
 
                 var publicParameters = rsa.ExportParameters(false);
                 var privateParameters = rsa.ExportParameters(true);
-                string publicKey = ExportPublicKeyPem(publicParameters);
-                string privateKey = format == RSAPrivateKeyFormat.PKCS1 ? ExportPrivateKeyPkcs1(privateParameters) : ExportPrivateKeyPkcs8(privateParameters);
+                string publicKey = ExportPublicKey(publicParameters);
+                string privateKey = format == RSAKeyFormat.PKCS1 ? ExportPrivateKeyPkcs1(privateParameters) : ExportPrivateKeyPkcs8(privateParameters);
                 return (publicKey, privateKey);
             }
         }
 
+        /// <summary>生成RSA密钥对(带有头尾的Pem密钥格式)
+        /// </summary>
+        public static (string, string) GenerateFormatKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
+        {
+            (string publicKey, string privateKey) = GenerateKeyPair(format, keySize);
+            return (FormatPublicKey(publicKey, format), FormatPrivateKey(privateKey, format));
+        }
+
+        /// <summary>格式化公钥,带上头部与底部
+        /// </summary>
+        public static string FormatPublicKey(string publicKey, RSAKeyFormat format = RSAKeyFormat.PKCS1)
+        {
+            var header = "-----BEGIN RSA PUBLIC KEY-----";
+            var footer = "-----END RSA PUBLIC KEY-----";
+            if (format == RSAKeyFormat.PKCS8)
+            {
+                header = "-----BEGIN PUBLIC KEY-----";
+                footer = "-----END PUBLIC KEY-----";
+            }
+            var formatKey = new StringBuilder();
+            formatKey.AppendLine(header);
+            formatKey.AppendLine(publicKey);
+            formatKey.AppendLine(footer);
+            return formatKey.ToString();
+        }
+
+        /// <summary>格式化私钥,带上头部与底部
+        /// </summary>
+        public static string FormatPrivateKey(string privateKey, RSAKeyFormat format = RSAKeyFormat.PKCS1)
+        {
+            var header = "-----BEGIN RSA PRIVATE KEY-----";
+            var footer = "-----END RSA PRIVATE KEY-----";
+            if (format == RSAKeyFormat.PKCS8)
+            {
+                header = "-----BEGIN PRIVATE KEY-----";
+                footer = "-----END PRIVATE KEY-----";
+            }
+            var formatKey = new StringBuilder();
+            formatKey.AppendLine(header);
+            formatKey.AppendLine(privateKey);
+            formatKey.AppendLine(footer);
+            return formatKey.ToString();
+        }
+
+
         /// <summary>根据RSAParameters参数生成公钥
         /// </summary>
-        public static string ExportPublicKeyPem(RSAParameters rsaParameters)
+        public static string ExportPublicKey(RSAParameters rsaParameters)
         {
             //Exponent
             var exponentBytes = TLVFormat(0x02, rsaParameters.Exponent);
@@ -123,6 +173,112 @@ namespace DotCommon.Encrypt
             return Convert.ToBase64String(keyBytes.ToArray());
         }
 
+        /// <summary>从公钥中读取RSA参数
+        /// </summary>
+        public static RSAParameters ReadPublicKeyRSAParameters(string publicKey)
+        {
+            var rsaKeyInfo = new RSAParameters();
+            //公钥二进制数据
+            var keyBytes = Convert.FromBase64String(publicKey);
+            var keySpan = new Span<byte>(keyBytes);
+            if (keySpan[0] != 0x30)
+            {
+                throw new ArgumentException("RSA公钥头部标志位不正确,应该为0x30.");
+            }
+            var bodySpan = ReadContent(ReadTLV(keySpan));
+            if (!SeqOID.SequenceEqual(bodySpan.Slice(0, 15).ToArray()))
+            {
+                throw new ArgumentException("RSA公钥OID sequence不正确.");
+            }
+            //内容
+            var contentSpan = bodySpan.Slice(15);
+            if (contentSpan[0] != 0x03)
+            {
+                throw new ArgumentException("RSA公钥内容志位不正确,应该为0x03.");
+            }
+            //固定0x00
+            var fixedSpan = ReadTLV(contentSpan);
+            if (fixedSpan[0] != 0x00)
+            {
+                throw new ArgumentException("RSA公钥固定内容不正确,应为0x00");
+            }
+            //内容
+            var keyContentSpan = ReadTLV(fixedSpan.Slice(1));
+            if (keyContentSpan[0] != 0x02)
+            {
+                throw new ArgumentException("RSA公钥Modulus标志不正确,应为0x02.");
+            }
+
+            var tlvs = SplitTLVs(keyContentSpan);
+            //Modulus
+            rsaKeyInfo.Modulus = ReadContent(tlvs[0]).ToArray();
+            //Exponent
+            rsaKeyInfo.Exponent = ReadContent(tlvs[1]).ToArray();
+            return rsaKeyInfo;
+        }
+
+        /// <summary>从私钥中读取RSA参数
+        /// </summary>
+        public static (RSAKeyFormat, RSAParameters) ReadPrivateKeyRSAParameters(string privateKey)
+        {
+            var keyFormat = RSAKeyFormat.PKCS1;
+            var rsaKeyInfo = new RSAParameters();
+            var keyBytes = Convert.FromBase64String(privateKey);
+            var keySpan = new Span<byte>(keyBytes);
+            if (keySpan[0] != 0x30)
+            {
+                throw new ArgumentException("RSA私钥头部标志位不正确,应该为0x30.");
+            }
+            //Body
+            var bodySpan = ReadTLV(keySpan);
+            if (!Version.SequenceEqual(bodySpan.Slice(0, 3).ToArray()))
+            {
+                throw new ArgumentException("RSA私钥第一个固定版本不正确.");
+            }
+            //内容
+            var contentSpan = bodySpan.Slice(3);
+
+            if (contentSpan[0] == 0x30)
+            {
+                //PKCS8
+                if (SeqOID.SequenceEqual(contentSpan.Slice(0, 15).ToArray()))
+                {
+                    throw new ArgumentException("RSA私钥为PKCS8格式,OID sequence不正确");
+                }
+                //去除了OID之后的数据
+                var itemSpan1 = contentSpan.Slice(15);
+                var itemSpan2 = ReadTLV(itemSpan1);
+                var secondVersionSpan = ReadTLV(itemSpan2);
+                //第二个版本读取
+                if (!Version.SequenceEqual(secondVersionSpan.Slice(0, 3).ToArray()))
+                {
+                    throw new ArgumentException("RSA私钥为PKCS8格式,第二个固定版本不正确.");
+                }
+                //两种格式私钥的内容
+                contentSpan = secondVersionSpan.Slice(3);
+            }
+            //多个并列tlv
+            var tlvs = SplitTLVs(contentSpan);
+            //Modulus
+            rsaKeyInfo.Modulus = ReadContent(tlvs[0]).ToArray();
+            //Exponent
+            rsaKeyInfo.Exponent = ReadContent(tlvs[1]).ToArray();
+            //D
+            rsaKeyInfo.D = ReadContent(tlvs[2]).ToArray();
+            //P
+            rsaKeyInfo.P = ReadContent(tlvs[3]).ToArray();
+            //Q
+            rsaKeyInfo.Q = ReadContent(tlvs[4]).ToArray();
+            //DP
+            rsaKeyInfo.DP = ReadContent(tlvs[5]).ToArray();
+            //DQ
+            rsaKeyInfo.DQ = ReadContent(tlvs[6]).ToArray();
+            //InverseQ
+            rsaKeyInfo.InverseQ = ReadContent(tlvs[7]).ToArray();
+            return (keyFormat, rsaKeyInfo);
+        }
+
+
         /// <summary>TLV格式化(flag+长度数据占用位数+长度数值+数据)
         /// </summary>
         /// <param name="flag">标志</param>
@@ -152,7 +308,8 @@ namespace DotCommon.Encrypt
                 else
                 {
                     tlvBytes.Add(0x82);
-                    tlvBytes.AddRange(BitConverter.GetBytes((ushort)contentLength));
+                    var lengthBytes = BitConverter.GetBytes((ushort)contentLength).Reverse();
+                    tlvBytes.AddRange(lengthBytes);
                 }
             }
             else
@@ -170,12 +327,108 @@ namespace DotCommon.Encrypt
             return tlvBytes;
         }
 
+        /// <summary>读取TLV结构中的数据
+        /// </summary>
+        private static Span<byte> ReadTLV(Span<byte> tlvSpan)
+        {
+            //长度
+            int length;
+            Span<byte> contentSpan;
+            //如果该值小于0x80,代表没有长度占用位
+            if (tlvSpan[1] < 0x80)
+            {
+                length = tlvSpan[1];
+                contentSpan = tlvSpan.Slice(2, length);
+            }
+            else if (tlvSpan[1] == 0x81)
+            {
+                length = tlvSpan[2];
+                contentSpan = tlvSpan.Slice(3, length);
+            }
+            else if (tlvSpan[1] == 0x82)
+            {
+                var lengthSpan = tlvSpan.Slice(2, 2);
+                lengthSpan.Reverse();
+                length = BitConverter.ToUInt16(lengthSpan.ToArray(), 0);
+                contentSpan = tlvSpan.Slice(4, length);
+            }
+            else
+            {
+                throw new ArgumentException("TLV长度占用位不正确,应为0x81或者0x82");
+            }
+            return contentSpan;
+        }
 
+        /// <summary>分割多个TLV格式数据,返回数据列表
+        /// </summary>
+        private static List<byte[]> SplitTLVs(Span<byte> tlvs)
+        {
+            var tlvList = new List<byte[]>();
+            var tlvSpan = tlvs.Slice(0);
+            var readLength = 0;
+            while (readLength < tlvs.Length)
+            {
+                //长度
+                int length;
+                //当前Item的长度
+                int itemLength = 1;
+                Span<byte> contentSpan;
+                //如果该值小于0x80,代表没有长度占用位
+                if (tlvSpan[1] < 0x80)
+                {
+                    length = tlvSpan[1];
+                    contentSpan = tlvSpan.Slice(2, length);
+                    itemLength += 1;
+                }
+                else if (tlvSpan[1] == 0x81)
+                {
+                    length = tlvSpan[2];
+                    contentSpan = tlvSpan.Slice(3, length);
+                    itemLength += 2;
+                }
+                else if (tlvSpan[1] == 0x82)
+                {
+                    //长度占用2个字节
+                    var lengthSpan = tlvSpan.Slice(2, 2);
+                    lengthSpan.Reverse();
+                    length = BitConverter.ToUInt16(lengthSpan.ToArray(), 0);
+                    contentSpan = tlvSpan.Slice(4, length);
+                    itemLength += 3;
+                }
+                else
+                {
+                    throw new ArgumentException("TLV长度占用位不正确,应为0x81或者0x82");
+                }
+                tlvList.Add(contentSpan.ToArray());
+                itemLength += length;
+                tlvSpan = tlvSpan.Slice(itemLength);
+                readLength += itemLength;
+            }
+            return tlvList;
+        }
+
+        /// <summary>读取内容数据
+        /// </summary>
+        private static Span<byte> ReadContent(Span<byte> contentSpan)
+        {
+            if (contentSpan[0] == 0x00)
+            {
+                if (contentSpan[1] < 0x80)
+                {
+                    throw new ArgumentException("RSA读取内容数据首位小于0x80不需要补0x00");
+                }
+                return contentSpan.Slice(1);
+            }
+            else
+            {
+                return contentSpan.Slice(0);
+            }
+        }
     }
 
     /// <summary>RSA私钥编码格式
     /// </summary>
-    public enum RSAPrivateKeyFormat
+    public enum RSAKeyFormat
     {
         /// <summary>PKCS1
         /// </summary>
