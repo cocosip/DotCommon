@@ -5,7 +5,7 @@
     <AssemblyName>DotCommon.ImageUtility</AssemblyName>
     <PackageId>DotCommon.ImageUtility</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
-    <Description>DotCommon图片操作工具类库</Description>
+    <Description>DotCommon通用工具类库,封装图片的一些辅助功能</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="4.5.1" />

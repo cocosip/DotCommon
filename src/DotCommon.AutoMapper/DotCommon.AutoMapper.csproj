@@ -5,7 +5,7 @@
     <AssemblyName>DotCommon.AutoMapper</AssemblyName>
     <PackageId>DotCommon.AutoMapper</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
-    <Description>DotCommon AutoMapper扩展</Description>
+    <Description>DotCommon通用工具类库,基于AutoMapper的扩展</Description>
   </PropertyGroup>
 
   <ItemGroup>

@@ -5,7 +5,7 @@
     <AssemblyName>DotCommon.Log4Net</AssemblyName>
     <PackageId>DotCommon.Log4Net</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
-    <Description>DotCommon Log4Net日志管理</Description>
+    <Description>DotCommon通用工具类库,基于Log4Net的日志管理</Description>
   </PropertyGroup>
 
   <ItemGroup>

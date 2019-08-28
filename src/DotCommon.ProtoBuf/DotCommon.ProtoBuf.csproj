@@ -5,7 +5,7 @@
     <AssemblyName>DotCommon.ProtoBuf</AssemblyName>
     <PackageId>DotCommon.ProtoBuf</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
-    <Description>DotCommon ProtoBuf序列化扩展</Description>
+    <Description>DotCommon通用工具类库,基于ProtoBuf的序列化扩展</Description>
   </PropertyGroup>
 
   <ItemGroup>

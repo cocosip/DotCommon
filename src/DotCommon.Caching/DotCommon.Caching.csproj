@@ -5,7 +5,7 @@
     <AssemblyName>DotCommon.Caching</AssemblyName>
     <PackageId>DotCommon.Caching</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
-    <Description>DotCommon 缓存管理</Description>
+    <Description>DotCommon通用工具类库,基于内存型缓存的管理扩展</Description>
   </PropertyGroup>
 
   <ItemGroup>

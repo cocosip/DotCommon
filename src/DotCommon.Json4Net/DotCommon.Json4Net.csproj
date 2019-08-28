@@ -5,7 +5,7 @@
     <AssemblyName>DotCommon.Json4Net</AssemblyName>
     <PackageId>DotCommon.Json4Net</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
-    <Description>DotCommon Json4Net序列化扩展</Description>
+    <Description>DotCommon通用工具类库,基于Json4Net序列化扩展</Description>
   </PropertyGroup>
 
   <ItemGroup>
