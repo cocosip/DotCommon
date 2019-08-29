@@ -32,5 +32,22 @@ namespace DotCommon.Test.Encrypt
             Assert.Contains("----", privateKey);
 
         }
+
+        [Fact]
+        public void TrimKey_Test()
+        {
+            var (publicKey, privateKey) = RsaKeyUtil.GenerateFormatKeyPair();
+            var trimedPublicKey = RsaKeyUtil.TrimKey(publicKey);
+            var trimedPrivateKey = RsaKeyUtil.TrimKey(privateKey);
+            Assert.Contains("-", publicKey);
+            Assert.Contains("-", privateKey);
+            Assert.DoesNotContain("-", trimedPublicKey);
+            Assert.DoesNotContain("-", trimedPrivateKey);
+            var rsaEncryptor = new RsaEncryptor(trimedPublicKey, trimedPrivateKey);
+            var encrypted1 = rsaEncryptor.Encrypt("china");
+            var decrypted1 = rsaEncryptor.Decrypt(encrypted1);
+            Assert.Equal("china", decrypted1);
+        }
+
     }
 }

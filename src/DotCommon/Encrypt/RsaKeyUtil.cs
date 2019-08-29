@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DotCommon.Encrypt
 {
@@ -18,13 +19,12 @@ namespace DotCommon.Encrypt
         /// </summary>
         private static readonly byte[] Version = { 0x02, 0x01, 0x00 };
 
-
         /// <summary>生成RSA密钥对(Pem密钥格式)
         /// </summary>
         /// <param name="format">格式,PKCS1或者PKCS8</param>
         /// <param name="keySize">512,1024,1536,2048</param>
-        /// <returns></returns>
-        public static (string, string) GenerateKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
+        /// <returns>公钥,私钥</returns>
+        public static (string publicKey, string privateKey) GenerateKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
         {
             using (var rsa = RSA.Create())
             {
@@ -40,7 +40,10 @@ namespace DotCommon.Encrypt
 
         /// <summary>生成RSA密钥对(带有头尾的Pem密钥格式)
         /// </summary>
-        public static (string, string) GenerateFormatKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
+        /// <param name="format">格式,PKCS1还是PKCS8</param>
+        /// <param name="keySize">密钥长度,512,1024,1536,2048...</param>
+        /// <returns>公钥,私钥</returns>
+        public static (string publicKey, string privateKey) GenerateFormatKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
         {
             (string publicKey, string privateKey) = GenerateKeyPair(format, keySize);
             return (FormatPublicKey(publicKey, format), FormatPrivateKey(privateKey, format));
@@ -58,9 +61,10 @@ namespace DotCommon.Encrypt
                 footer = "-----END PUBLIC KEY-----";
             }
             var formatKey = new StringBuilder();
+            //formatKey.AppendFormat(@"{0}\r\n{1}\r\n{2}", header, publicKey, footer);
             formatKey.AppendLine(header);
             formatKey.AppendLine(publicKey);
-            formatKey.AppendLine(footer);
+            formatKey.Append(footer);
             return formatKey.ToString();
         }
 
@@ -78,10 +82,18 @@ namespace DotCommon.Encrypt
             var formatKey = new StringBuilder();
             formatKey.AppendLine(header);
             formatKey.AppendLine(privateKey);
-            formatKey.AppendLine(footer);
+            formatKey.Append(footer);
             return formatKey.ToString();
         }
 
+        /// <summary>去除RSA密钥的头部,底部,获取具体的内容
+        /// </summary>
+        public static string TrimKey(string key)
+        {
+            //使用正则表达式去除头尾,并将结尾符号\r\n替换掉
+            var newkey = Regex.Replace(key, @"\-{1,}[\w\s]*KEY\-{1,}", "").Replace("\r\n","");
+            return newkey;
+        }
 
         /// <summary>根据RSAParameters参数生成公钥
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using DotCommon.Caching;
 using DotCommon.DependencyInjection;
+using DotCommon.Encrypt;
 using DotCommon.Json4Net;
 using DotCommon.Log4Net;
 using DotCommon.Logging;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System;
+using System.IO;
 
 namespace DotCommon.ConsoleTest
 {
@@ -56,6 +58,12 @@ namespace DotCommon.ConsoleTest
             var logger = provider.GetService<ILogger<Program>>();
             logger.LogError("Hello!{0}", DateTime.Now.ToString("YYYY-MM-DD HH:mm:ss"));
 
+
+            var (publicKey, privateKey) = RsaKeyUtil.GenerateFormatKeyPair(keySize: 512);
+
+            File.WriteAllText(@"D:\public_key", publicKey);
+            File.WriteAllText(@"D:\private_key", privateKey);
+
             Console.WriteLine("完成");
             Console.ReadLine();
         }
@@ -76,7 +84,7 @@ namespace DotCommon.ConsoleTest
         public void Write()
         {
             _logger.LogWithLevel(LogLevel.Information, "LogWithLevel");
-            _logger.LogInformation("生成随机Guid:{0}",  GuidUtil.NewGuidString("N"));
+            _logger.LogInformation("生成随机Guid:{0}", GuidUtil.NewGuidString("N"));
         }
     }
 
