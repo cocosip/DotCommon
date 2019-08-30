@@ -65,5 +65,15 @@ namespace DotCommon.Test.Utility
 
         }
 
+        /// <summary>十六进制字符串与二进制数组
+        /// </summary>
+        [Fact]
+        public void ByteArray_String_Convert_Test()
+        {
+            var hexString = ByteBufferUtil.ByteArrayToString(Encoding.UTF8.GetBytes("Hello"));
+            var buffer = ByteBufferUtil.StringToByteArray(hexString);
+            var value = Encoding.UTF8.GetString(buffer);
+            Assert.Equal("Hello", value);
+        }
     }
 }

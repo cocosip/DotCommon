@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -130,8 +131,8 @@ namespace DotCommon.Utility
         }
 
 
-        #region 将Bytes数组转换为十六进制
-        /// <summary> 将Bytes数组转换为十六进制
+
+        /// <summary> 将byte[]数组转换为十六进制
         /// </summary>
         public static string ByteArrayToString(byte[] inputBytes)
         {
@@ -142,6 +143,26 @@ namespace DotCommon.Utility
             }
             return output.ToString();
         }
-        #endregion
+
+        /// <summary>将十六进制字符串转换为byte[]数组
+        /// </summary>
+        public static byte[] StringToByteArray(string sourceString)
+        {
+            if (sourceString.Length % 2 != 0)
+            {
+                throw new ArgumentException("不是有效的十六进制字符串");
+            }
+            //长度
+            var len = sourceString.Length / 2;
+            var byteArray = new byte[len];
+            var sourceSpan = sourceString.AsSpan();
+            for (var i = 0; i < len; i++)
+            {
+                var hexString = sourceSpan.Slice(i * 2, 2).ToString();
+                byteArray[i] = Convert.ToByte(hexString, 16);
+            }
+            return byteArray;
+        }
+
     }
 }
