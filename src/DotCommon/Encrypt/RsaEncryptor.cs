@@ -108,8 +108,8 @@ namespace DotCommon.Encrypt
         {
             using (var rsa = CreateRsaFromPublicKey(PublicKeyPem))
             {
-                var signedData = rsa.Encrypt(data, EncryptionPadding);
-                return Convert.ToBase64String(signedData);
+                var encryptedData = rsa.Encrypt(data, EncryptionPadding);
+                return Convert.ToBase64String(encryptedData);
             }
         }
 

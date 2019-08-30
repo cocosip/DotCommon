@@ -190,6 +190,24 @@ namespace DotCommon.Encrypt
             return Convert.ToBase64String(keyBytes.ToArray());
         }
 
+        /// <summary>将PKCS8编码格式的私钥转换成PKCS1编码格式的私钥
+        /// </summary>
+        public static string Pkcs8ToPkcs1(string pkcs8Key)
+        {
+            var rsaParams = ReadPrivateKeyInfo(pkcs8Key);
+            return ExportPrivateKeyPkcs1(rsaParams);
+        }
+
+        /// <summary>将PKCS1编码格式的私钥转换成PKCS8编码格式的私钥
+        /// </summary>
+        public static string Pkcs1ToPkcs8(string pkcs1Key)
+        {
+            var rsaParams = ReadPrivateKeyInfo(pkcs1Key);
+            return ExportPrivateKeyPkcs8(rsaParams);
+        }
+
+
+
         /// <summary>从公钥中读取RSA参数
         /// </summary>
         public static RSAParameters ReadPublicKeyInfo(string publicKey)
@@ -257,7 +275,7 @@ namespace DotCommon.Encrypt
             if (contentSpan[0] == 0x30)
             {
                 //PKCS8
-                if (SeqOID.SequenceEqual(contentSpan.Slice(0, 15).ToArray()))
+                if (!SeqOID.SequenceEqual(contentSpan.Slice(0, 15).ToArray()))
                 {
                     throw new ArgumentException("RSA私钥为PKCS8格式,OID sequence不正确");
                 }
