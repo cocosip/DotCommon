@@ -120,7 +120,7 @@ namespace DotCommon.Encrypt
 
             //密钥最终的二进制
             var keyBytes = TLVFormat(0x30, bodyBytes.ToArray());
-            return Convert.ToBase64String(keyBytes.ToArray(), Base64FormattingOptions.InsertLineBreaks);
+            return Convert.ToBase64String(keyBytes.ToArray());
         }
 
         /// <summary>根据RSAParameters参数生成PKCS1私钥

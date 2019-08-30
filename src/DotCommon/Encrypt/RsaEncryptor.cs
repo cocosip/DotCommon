@@ -67,17 +67,18 @@ namespace DotCommon.Encrypt
         /// </summary>
         public string SignData(string data, string code = "utf-8")
         {
-            return SignData(Encoding.GetEncoding(code).GetBytes(data));
+            var signedData = SignData(Encoding.GetEncoding(code).GetBytes(data));
+            return Convert.ToBase64String(signedData);
         }
 
         /// <summary>对数据签名
         /// </summary>
-        public string SignData(byte[] data)
+        public byte[] SignData(byte[] data)
         {
             using (var rsa = CreateRsaFromPrivateKey(PrivateKeyPem))
             {
                 var signedData = rsa.SignData(data, GetHashAlgorithmName(HashAlg), SignaturePadding);
-                return Convert.ToBase64String(signedData);
+                return signedData;
             }
         }
 

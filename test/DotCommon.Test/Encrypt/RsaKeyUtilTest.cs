@@ -22,6 +22,12 @@ namespace DotCommon.Test.Encrypt
             var d1 = rsaEncryptor.Encrypt("hello");
             var d2 = rsaEncryptor.Decrypt(d1);
             Assert.Equal("hello", d2);
+
+
+            var sign = rsaEncryptor.SignData("string1");
+            Assert.True(rsaEncryptor.VerifyData("string1", sign));
+
+
         }
 
         [Fact]
