@@ -4,6 +4,8 @@ using System.Text;
 
 namespace DotCommon.Encrypt
 {
+    /// <summary>RSA加密解密,签名验签
+    /// </summary>
     public class RsaEncryptor
     {
         private string PrivateKeyPem { get; set; }
