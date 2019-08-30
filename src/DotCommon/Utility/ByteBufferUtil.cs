@@ -134,28 +134,28 @@ namespace DotCommon.Utility
 
         /// <summary> 将byte[]数组转换为十六进制
         /// </summary>
-        public static string ByteArrayToString(byte[] inputBytes)
+        public static string ByteBufferToHex16(byte[] byteBuffer)
         {
-            var output = new StringBuilder(inputBytes.Length);
-            for (var i = 0; i <= inputBytes.Length - 1; i++)
+            var hex16String = new StringBuilder(byteBuffer.Length);
+            for (var i = 0; i < byteBuffer.Length; i++)
             {
-                output.Append(inputBytes[i].ToString("X2"));
+                hex16String.Append(byteBuffer[i].ToString("X2"));
             }
-            return output.ToString();
+            return hex16String.ToString();
         }
 
         /// <summary>将十六进制字符串转换为byte[]数组
         /// </summary>
-        public static byte[] StringToByteArray(string sourceString)
+        public static byte[] Hex16ToByteBuffer(string hex16String)
         {
-            if (sourceString.Length % 2 != 0)
+            if (hex16String.Length % 2 != 0)
             {
                 throw new ArgumentException("不是有效的十六进制字符串");
             }
             //长度
-            var len = sourceString.Length / 2;
+            var len = hex16String.Length / 2;
             var byteArray = new byte[len];
-            var sourceSpan = sourceString.AsSpan();
+            var sourceSpan = hex16String.AsSpan();
             for (var i = 0; i < len; i++)
             {
                 var hexString = sourceSpan.Slice(i * 2, 2).ToString();

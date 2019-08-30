@@ -14,7 +14,7 @@ namespace DotCommon.Utility
         {
             var sourceBytes = Encoding.GetEncoding(encode).GetBytes(sourceString);
             var hashBytes = GetSha1Hash(sourceBytes);
-            return ByteBufferUtil.ByteArrayToString(hashBytes);
+            return ByteBufferUtil.ByteBufferToHex16(hashBytes);
         }
 
         /// <summary>获取字符串的Sha1-Hash Base64值 
