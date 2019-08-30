@@ -15,10 +15,10 @@ namespace DotCommon.Test.Encrypt
         [Fact]
         public void GenerateKeyPair_Test()
         {
-            (string publicKey, string privateKey) = RsaKeyUtil.GenerateKeyPair(RSAKeyFormat.PKCS1, 512);
+            var keyPair = RsaUtil.GenerateKeyPair(RSAKeyFormat.PKCS1, 512);
 
-            Assert.NotEmpty(publicKey);
-            var rsaEncryptor = new RsaEncryptor(publicKey, privateKey);
+            Assert.NotEmpty(keyPair.PublicKey);
+            var rsaEncryptor = new RsaEncryptor(keyPair.PublicKey, keyPair.PrivateKey);
             var d1 = rsaEncryptor.Encrypt("hello");
             var d2 = rsaEncryptor.Decrypt(d1);
             Assert.Equal("hello", d2);
@@ -27,20 +27,20 @@ namespace DotCommon.Test.Encrypt
         [Fact]
         public void GenerateFormatKeyPair_Test()
         {
-            (string publicKey, string privateKey) = RsaKeyUtil.GenerateFormatKeyPair(RSAKeyFormat.PKCS1, 1024);
-            Assert.Contains("----", publicKey);
-            Assert.Contains("----", privateKey);
+            var keyPair = RsaUtil.GenerateFormatKeyPair(RSAKeyFormat.PKCS1, 1024);
+            Assert.Contains("----", keyPair.PublicKey);
+            Assert.Contains("----", keyPair.PrivateKey);
 
         }
 
         [Fact]
         public void TrimKey_Test()
         {
-            var (publicKey, privateKey) = RsaKeyUtil.GenerateFormatKeyPair();
-            var trimedPublicKey = RsaKeyUtil.TrimKey(publicKey);
-            var trimedPrivateKey = RsaKeyUtil.TrimKey(privateKey);
-            Assert.Contains("-", publicKey);
-            Assert.Contains("-", privateKey);
+            var keyPair = RsaUtil.GenerateFormatKeyPair();
+            var trimedPublicKey = RsaUtil.TrimKey(keyPair.PublicKey);
+            var trimedPrivateKey = RsaUtil.TrimKey(keyPair.PrivateKey);
+            Assert.Contains("-", keyPair.PublicKey);
+            Assert.Contains("-", keyPair.PrivateKey);
             Assert.DoesNotContain("-", trimedPublicKey);
             Assert.DoesNotContain("-", trimedPrivateKey);
             var rsaEncryptor = new RsaEncryptor(trimedPublicKey, trimedPrivateKey);

@@ -159,7 +159,7 @@ namespace DotCommon.Encrypt
         /// </summary>
         private static RSA CreateRsaFromPrivateKey(string privateKey)
         {
-            (_, RSAParameters rsaParams) = RsaKeyUtil.ReadPrivateKeyRSAParameters(privateKey);
+            RSAParameters rsaParams = RsaUtil.ReadPrivateKeyInfo(privateKey);
             var rsa = RSA.Create();
             rsa.ImportParameters(rsaParams);
             return rsa;
@@ -214,7 +214,7 @@ namespace DotCommon.Encrypt
         /// </summary>
         private static RSA CreateRsaFromPublicKey(string publicKey)
         {
-            var rsaParams = RsaKeyUtil.ReadPublicKeyRSAParameters(publicKey);
+            var rsaParams = RsaUtil.ReadPublicKeyInfo(publicKey);
             var rsa = RSA.Create();
             rsa.ImportParameters(rsaParams);
             return rsa;

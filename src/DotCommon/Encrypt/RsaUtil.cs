@@ -9,7 +9,7 @@ namespace DotCommon.Encrypt
 {
     /// <summary>RSA密钥工具类
     /// </summary>
-    public static class RsaKeyUtil
+    public static class RsaUtil
     {
         /// <summary>固定内容 encoded OID sequence for PKCS #1 rsaEncryption szOID_RSA_RSA ="1.2.840.113549.1.1.1"
         /// </summary>
@@ -24,7 +24,7 @@ namespace DotCommon.Encrypt
         /// <param name="format">格式,PKCS1或者PKCS8</param>
         /// <param name="keySize">512,1024,1536,2048</param>
         /// <returns>公钥,私钥</returns>
-        public static (string publicKey, string privateKey) GenerateKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
+        public static RsaKeyPair GenerateKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
         {
             using (var rsa = RSA.Create())
             {
@@ -34,7 +34,7 @@ namespace DotCommon.Encrypt
                 var privateParameters = rsa.ExportParameters(true);
                 string publicKey = ExportPublicKey(publicParameters);
                 string privateKey = format == RSAKeyFormat.PKCS1 ? ExportPrivateKeyPkcs1(privateParameters) : ExportPrivateKeyPkcs8(privateParameters);
-                return (publicKey, privateKey);
+                return new RsaKeyPair(publicKey, privateKey);
             }
         }
 
@@ -43,10 +43,15 @@ namespace DotCommon.Encrypt
         /// <param name="format">格式,PKCS1还是PKCS8</param>
         /// <param name="keySize">密钥长度,512,1024,1536,2048...</param>
         /// <returns>公钥,私钥</returns>
-        public static (string publicKey, string privateKey) GenerateFormatKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
+        public static RsaKeyPair GenerateFormatKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
         {
-            (string publicKey, string privateKey) = GenerateKeyPair(format, keySize);
-            return (FormatPublicKey(publicKey, format), FormatPrivateKey(privateKey, format));
+            var rsaKeyPair = GenerateKeyPair(format, keySize);
+
+            return new RsaKeyPair()
+            {
+                PublicKey = FormatPublicKey(rsaKeyPair.PublicKey, format),
+                PrivateKey = FormatPrivateKey(rsaKeyPair.PrivateKey, format)
+            };
         }
 
         /// <summary>格式化公钥,带上头部与底部
@@ -91,7 +96,7 @@ namespace DotCommon.Encrypt
         public static string TrimKey(string key)
         {
             //使用正则表达式去除头尾,并将结尾符号\r\n替换掉
-            var newkey = Regex.Replace(key, @"\-{1,}[\w\s]*KEY\-{1,}", "").Replace("\r\n","");
+            var newkey = Regex.Replace(key, @"\-{1,}[\w\s]*KEY\-{1,}", "").Replace("\r\n", "");
             return newkey;
         }
 
@@ -187,7 +192,7 @@ namespace DotCommon.Encrypt
 
         /// <summary>从公钥中读取RSA参数
         /// </summary>
-        public static RSAParameters ReadPublicKeyRSAParameters(string publicKey)
+        public static RSAParameters ReadPublicKeyInfo(string publicKey)
         {
             var rsaKeyInfo = new RSAParameters();
             //公钥二进制数据
@@ -231,9 +236,8 @@ namespace DotCommon.Encrypt
 
         /// <summary>从私钥中读取RSA参数
         /// </summary>
-        public static (RSAKeyFormat, RSAParameters) ReadPrivateKeyRSAParameters(string privateKey)
+        public static RSAParameters ReadPrivateKeyInfo(string privateKey)
         {
-            var keyFormat = RSAKeyFormat.PKCS1;
             var rsaKeyInfo = new RSAParameters();
             var keyBytes = Convert.FromBase64String(privateKey);
             var keySpan = new Span<byte>(keyBytes);
@@ -287,9 +291,34 @@ namespace DotCommon.Encrypt
             rsaKeyInfo.DQ = ReadContent(tlvs[6]).ToArray();
             //InverseQ
             rsaKeyInfo.InverseQ = ReadContent(tlvs[7]).ToArray();
-            return (keyFormat, rsaKeyInfo);
+            return rsaKeyInfo;
         }
 
+        /// <summary>获取RSA私钥的格式
+        /// </summary>
+        public static RSAKeyFormat GetKeyFormat(string privateKey)
+        {
+            var keyFormat = RSAKeyFormat.PKCS1;
+            var keyBytes = Convert.FromBase64String(privateKey);
+            var keySpan = new Span<byte>(keyBytes);
+            if (keySpan[0] != 0x30)
+            {
+                return RSAKeyFormat.Unknow;
+            }
+            //Body
+            var bodySpan = ReadTLV(keySpan);
+            if (!Version.SequenceEqual(bodySpan.Slice(0, 3).ToArray()))
+            {
+                return RSAKeyFormat.Unknow;
+            }
+            //内容
+            var contentSpan = bodySpan.Slice(3);
+            if (contentSpan[0] == 0x30)
+            {
+                keyFormat = RSAKeyFormat.PKCS8;
+            }
+            return keyFormat;
+        }
 
         /// <summary>TLV格式化(flag+长度数据占用位数+长度数值+数据)
         /// </summary>
@@ -448,6 +477,39 @@ namespace DotCommon.Encrypt
 
         /// <summary>PKCS8
         /// </summary>
-        PKCS8 = 2
+        PKCS8 = 2,
+
+        /// <summary>未知
+        /// </summary>
+        Unknow = 4
+    }
+
+    /// <summary>RSA密钥对
+    /// </summary>
+    public class RsaKeyPair
+    {
+        /// <summary>公钥
+        /// </summary>
+        public string PublicKey { get; set; }
+
+        /// <summary>私钥
+        /// </summary>
+        public string PrivateKey { get; set; }
+
+        /// <summary>Ctor
+        /// </summary>
+        public RsaKeyPair()
+        {
+
+        }
+
+        /// <summary>Ctor
+        /// </summary>
+        public RsaKeyPair(string publicKey, string privateKey)
+        {
+            PublicKey = publicKey;
+            PrivateKey = privateKey;
+        }
+
     }
 }

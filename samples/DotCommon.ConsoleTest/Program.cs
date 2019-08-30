@@ -59,10 +59,10 @@ namespace DotCommon.ConsoleTest
             logger.LogError("Hello!{0}", DateTime.Now.ToString("YYYY-MM-DD HH:mm:ss"));
 
 
-            var (publicKey, privateKey) = RsaKeyUtil.GenerateFormatKeyPair(keySize: 512);
+            var keyPair = RsaUtil.GenerateFormatKeyPair(keySize: 512);
 
-            File.WriteAllText(@"D:\public_key", publicKey);
-            File.WriteAllText(@"D:\private_key", privateKey);
+            File.WriteAllText(@"D:\public_key", keyPair.PublicKey);
+            File.WriteAllText(@"D:\private_key", keyPair.PrivateKey);
 
             Console.WriteLine("完成");
             Console.ReadLine();
