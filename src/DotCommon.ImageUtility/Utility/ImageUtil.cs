@@ -216,7 +216,7 @@ namespace DotCommon.Utility
         {
             using (var stream = ImageUtil.ImageToStream(image))
             {
-                return StreamUtil.StreamToBytes(stream);
+                return StreamUtil.StreamToBuffer(stream);
             }
         }
 

@@ -87,7 +87,7 @@ namespace DotCommon.Utility
             using (MemoryStream ms = new MemoryStream())
             {
                 image.Save(ms, imageCodecInfo, encoderParameters);
-                return StreamUtil.StreamToBytes(ms);
+                return StreamUtil.StreamToBuffer(ms);
             }
         }
 

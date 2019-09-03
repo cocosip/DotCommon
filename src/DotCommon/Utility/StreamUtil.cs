@@ -10,7 +10,7 @@ namespace DotCommon.Utility
 
         /// <summary>将Stream刘转换成二进制数组
         /// </summary>
-        public static byte[] StreamToBytes(Stream stream, int bufferLen = 0)
+        public static byte[] StreamToBuffer(Stream stream, int bufferLen = 0)
         {
             //将流读取位置初始到0
             if (stream.Position > 0 && stream.CanSeek)
@@ -54,9 +54,9 @@ namespace DotCommon.Utility
 
         /// <summary>将byte字节数组转换成流
         /// </summary>
-        public static Stream BytesToStream(byte[] bytes)
+        public static Stream BufferToStream(byte[] buffer)
         {
-            Stream stream = new MemoryStream(bytes);
+            Stream stream = new MemoryStream(buffer);
             return stream;
         }
 

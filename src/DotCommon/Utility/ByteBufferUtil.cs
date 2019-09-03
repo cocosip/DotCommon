@@ -11,10 +11,9 @@ namespace DotCommon.Utility
     {
         /// <summary>编码String类型,转换成Byte[] 并且附带长度
         /// </summary>
-        public static byte[] EncodeString(string sourceString, string code = "utf-8")
+        public static byte[] EncodeString(string source, string encode = "utf-8")
         {
-            var encoding = Encoding.GetEncoding(code);
-            var stringBytes = encoding.GetBytes(sourceString);
+            var stringBytes = Encoding.GetEncoding(encode).GetBytes(source);
             var lengthBytes = BitConverter.GetBytes(stringBytes.Length);
             return Combine(lengthBytes, stringBytes);
         }
@@ -113,24 +112,28 @@ namespace DotCommon.Utility
             return destination;
         }
 
+        /// <summary>SwapLong
+        /// </summary>
         public static long SwapLong(long value)
         {
             return ((SwapInt((int)value) & 0xFFFFFFFF) << 32)
                    | (SwapInt((int)(value >> 32)) & 0xFFFFFFFF);
         }
 
+        /// <summary>SwapInt
+        /// </summary>
         public static int SwapInt(int value)
         {
             return ((SwapShort((short)value) & 0xFFFF) << 16)
                    | (SwapShort((short)(value >> 16)) & 0xFFFF);
         }
 
+        /// <summary>SwapShort
+        /// </summary>
         public static short SwapShort(short value)
         {
             return (short)(((value & 0xFF) << 8) | (value >> 8) & 0xFF);
         }
-
-
 
         /// <summary> 将byte[]数组转换为十六进制
         /// </summary>

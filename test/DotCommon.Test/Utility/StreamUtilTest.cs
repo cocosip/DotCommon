@@ -12,10 +12,10 @@ namespace DotCommon.Test.Utility
         {
 
             var bytes = Encoding.UTF8.GetBytes("Hello,world");
-            using (var stream = StreamUtil.BytesToStream(bytes))
+            using (var stream = StreamUtil.BufferToStream(bytes))
             {
                 stream.Position = 1;
-                var actualBytes = StreamUtil.StreamToBytes(stream, 5);
+                var actualBytes = StreamUtil.StreamToBuffer(stream, 5);
 
                 var newArray = new byte[bytes.Length];
                 Array.Copy(actualBytes, 0, newArray, 0, bytes.Length);
@@ -23,9 +23,9 @@ namespace DotCommon.Test.Utility
                 Assert.Equal(bytes, newArray);
             }
 
-            using (var stream = StreamUtil.BytesToStream(bytes))
+            using (var stream = StreamUtil.BufferToStream(bytes))
             {
-                var actualBytes = StreamUtil.StreamToBytes(stream);
+                var actualBytes = StreamUtil.StreamToBuffer(stream);
                 var newArray = new byte[bytes.Length];
                 Array.Copy(actualBytes, 0, newArray, 0, bytes.Length);
                 Assert.Equal(bytes.Length, newArray.Length);
