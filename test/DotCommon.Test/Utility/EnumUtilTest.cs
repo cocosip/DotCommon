@@ -12,14 +12,14 @@ namespace DotCommon.Test.Utility
         [Fact]
         public void GetEnumItemsTest()
         {
-            var dict1 = EnumUtil.GetEnumItems<TestEnum>(true);
+            var dict1 = EnumUtil.GetEnumDescriptions<TestEnum>(true);
             Assert.Equal("TE1", dict1["1"]);
             Assert.Equal("这是E2", dict1["2"]);
             Assert.Equal("E3Test", dict1["3"]);
             Assert.Equal("E4", dict1["6"]);
             Assert.Equal("TE5", dict1["7"]);
 
-            var dict2 = EnumUtil.GetEnumItems<TestEnum>(false);
+            var dict2 = EnumUtil.GetEnumDescriptions<TestEnum>(false);
             Assert.Equal("TE1", dict2["E1"]);
             Assert.Equal("这是E2", dict2["E2"]);
             Assert.Equal("E3Test", dict2["E3"]);
@@ -52,13 +52,13 @@ namespace DotCommon.Test.Utility
         [Fact]
         public void ToStr_FromStr_Test()
         {
-            Assert.Equal("E1", EnumUtil.ToStr(TestEnum.E1));
-            Assert.Equal("E2", EnumUtil.ToStr(TestEnum.E2));
+            Assert.Equal("E1", EnumUtil.GetName(TestEnum.E1));
+            Assert.Equal("E2", EnumUtil.GetName(TestEnum.E2));
 
-            Assert.Equal(TestEnum.E3, EnumUtil.FromStr<TestEnum>("E3"));
-            Assert.Equal(TestEnum.E4, EnumUtil.FromStr<TestEnum>("E4"));
+            Assert.Equal(TestEnum.E3, EnumUtil.ParseToEnum<TestEnum>("E3"));
+            Assert.Equal(TestEnum.E4, EnumUtil.ParseToEnum<TestEnum>("E4"));
 
-            Assert.Equal(5, EnumUtil.GetEnumCount<TestEnum>());
+            Assert.Equal(5, EnumUtil.GetEnumLength<TestEnum>());
 
             var array = EnumUtil.GetValues<TestEnum>();
             Assert.Equal(5, array.Length);

@@ -11,21 +11,21 @@ namespace DotCommon.Utility
     {
         /// <summary>将枚举转换成String类型
         /// </summary>
-        public static string ToStr(Enum e)
+        public static string GetName(Enum e)
         {
             return Enum.GetName(e.GetType(), e);
         }
 
         /// <summary>将String类型转换成枚举类型
         /// </summary>
-        public static T FromStr<T>(string str)
+        public static T ParseToEnum<T>(string str)
         {
             return (T)Enum.Parse(typeof(T), str);
         }
 
         /// <summary>获取枚举中的全部类型的数量
         /// </summary>
-        public static int GetEnumCount<T>()
+        public static int GetEnumLength<T>()
         {
             return Enum.GetNames(typeof(T)).Length;
         }
@@ -46,13 +46,13 @@ namespace DotCommon.Utility
 
         /// <summary>获取枚举类型的描述集合
         /// </summary>
-        public static SortedList<string, string> GetEnumItems<T>(bool isInt32Key = true)
+        public static SortedList<string, string> GetEnumDescriptions<T>(bool intKey = true)
         {
             var items = new SortedList<string, string>();
             Array array = Enum.GetValues(typeof(T));
             foreach (var item in array)
             {
-                var key = isInt32Key ? Convert.ToInt32(item).ToString() : item.ToString();
+                var key = intKey ? Convert.ToInt32(item).ToString() : item.ToString();
                 var displayValue = item.ToString();
                 FieldInfo field = item.GetType().GetField(item.ToString());
                 object[] attrArray = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
