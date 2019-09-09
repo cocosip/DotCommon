@@ -27,56 +27,52 @@ namespace DotCommon.Extensions
         }
         /// <summary>判断String类型是否为空
         /// </summary>
-        public static bool IsNullOrEmpty(this string str)
+        public static bool IsNullOrEmpty(this string source)
         {
-            return string.IsNullOrEmpty(str);
+            return string.IsNullOrEmpty(source);
         }
 
         /// <summary>判断String类型是否为空或者空格
         /// </summary>
-        public static bool IsNullOrWhiteSpace(this string str)
+        public static bool IsNullOrWhiteSpace(this string source)
         {
-            return string.IsNullOrWhiteSpace(str);
+            return string.IsNullOrWhiteSpace(source);
         }
 
 
         /// <summary>截取指定长度的字符串
         /// </summary>
-        public static string Left(this string str, int len)
+        public static string Left(this string source, int len)
         {
-            if (str == null)
+            if (source == null)
             {
                 throw new ArgumentNullException("str");
             }
 
-            if (str.Length < len)
+            if (source.Length < len)
             {
                 throw new ArgumentException("len argument can not be bigger than given string's length!");
             }
 
-            return str.Substring(0, len);
+            return source.Substring(0, len);
         }
 
-        /// <summary>
-        /// </summary>
-        public static string NormalizeLineEndings(this string str)
+        public static string NormalizeLineEndings(this string source)
         {
-            return str.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", Environment.NewLine);
+            return source.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", Environment.NewLine);
         }
 
-        /// <summary>
-        /// </summary>
-        public static int NthIndexOf(this string str, char c, int n)
+        public static int NthIndexOf(this string source, char c, int n)
         {
-            if (str == null)
+            if (source == null)
             {
-                throw new ArgumentNullException(nameof(str));
+                throw new ArgumentNullException(nameof(source));
             }
 
             var count = 0;
-            for (var i = 0; i < str.Length; i++)
+            for (var i = 0; i < source.Length; i++)
             {
-                if (str[i] != c)
+                if (source[i] != c)
                 {
                     continue;
                 }
@@ -92,77 +88,77 @@ namespace DotCommon.Extensions
 
         /// <summary>移除字符串中指定结尾格式的字符
         /// </summary>
-        public static string RemovePostFix(this string str, params string[] postFixes)
+        public static string RemovePostFix(this string source, params string[] postFixes)
         {
-            if (str.IsNullOrEmpty())
+            if (source.IsNullOrEmpty())
             {
                 return null;
             }
 
             if (postFixes.IsNullOrEmpty())
             {
-                return str;
+                return source;
             }
 
             foreach (var postFix in postFixes)
             {
-                if (str.EndsWith(postFix))
+                if (source.EndsWith(postFix))
                 {
-                    return str.Left(str.Length - postFix.Length);
+                    return source.Left(source.Length - postFix.Length);
                 }
             }
 
-            return str;
+            return source;
         }
 
         /// <summary>移除字符串中指定开始格式的字符
         /// </summary>
-        public static string RemovePreFix(this string str, params string[] preFixes)
+        public static string RemovePreFix(this string source, params string[] preFixes)
         {
-            if (str.IsNullOrEmpty())
+            if (source.IsNullOrEmpty())
             {
                 return null;
             }
 
             if (preFixes.IsNullOrEmpty())
             {
-                return str;
+                return source;
             }
 
             foreach (var preFix in preFixes)
             {
-                if (str.StartsWith(preFix))
+                if (source.StartsWith(preFix))
                 {
-                    return str.Right(str.Length - preFix.Length);
+                    return source.Right(source.Length - preFix.Length);
                 }
             }
 
-            return str;
+            return source;
         }
 
         /// <summary>截取字符串右侧指定长度的字符串
         /// </summary>
-        public static string Right(this string str, int len)
+        public static string Right(this string source, int len)
         {
-            if (str == null)
+            if (source == null)
             {
                 throw new ArgumentNullException("str");
             }
 
-            if (str.Length < len)
+            if (source.Length < len)
             {
                 throw new ArgumentException("len argument can not be bigger than given string's length!");
             }
 
-            return str.Substring(str.Length - len, len);
+            return source.Substring(source.Length - len, len);
         }
 
         /// <summary>
         /// Uses string.Split method to split given string by given separator.
         /// </summary>
-        public static string[] Split(this string str, string separator)
+        public static string[] Split(this string source, string separator)
         {
-            return str.Split(new[] { separator }, StringSplitOptions.None);
+            return source.Split(new[] { separator }, StringSplitOptions.None);
         }
 
         /// <summary>

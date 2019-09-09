@@ -20,22 +20,18 @@ namespace DotCommon.DependencyInjection
             services.AddSingleton<IDotCommonApplication>(application);
 
             //json序列化
-            services.AddTransient<IJsonSerializer, DefaultJsonSerializer>();
-            //xml序列化
-            services.AddTransient<IXmlSerializer, DefaultXmlSerializer>();
-            //二进制序列化
-            services.AddTransient<IBinarySerializer, DefaultBinarySerializer>();
-            //对象序列化
-            services.AddTransient<IObjectSerializer, DefaultObjectSerializer>();
-            //定时器
-            services.AddSingleton<IScheduleService, ScheduleService>();
-            //Mapper
-            services.AddSingleton<IObjectMapper, NullObjectMapper>();
-
-            //生命周期管理
-            services.AddSingleton<ICancellationTokenProvider>(NullCancellationTokenProvider.Instance);
-            services.AddSingleton<IAmbientDataContext, AsyncLocalAmbientDataContext>();
-            services.AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientDataContextAmbientScopeProvider<>));
+            services
+                .AddTransient<IJsonSerializer, DefaultJsonSerializer>()
+                .AddTransient<IXmlSerializer, DefaultXmlSerializer>()
+                .AddTransient<IBinarySerializer, DefaultBinarySerializer>()
+                .AddTransient<IObjectSerializer, DefaultObjectSerializer>()
+                .AddSingleton<IScheduleService, ScheduleService>()
+                .AddSingleton<IObjectMapper, NullObjectMapper>()
+                //生命周期管理
+                .AddSingleton<ICancellationTokenProvider>(NullCancellationTokenProvider.Instance)
+                .AddSingleton<IAmbientDataContext, AsyncLocalAmbientDataContext>()
+                .AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientDataContextAmbientScopeProvider<>))
+                ;
             return services;
         }
 
