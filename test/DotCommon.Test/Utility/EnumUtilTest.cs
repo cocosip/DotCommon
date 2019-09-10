@@ -63,7 +63,7 @@ namespace DotCommon.Test.Utility
             var array = EnumUtil.GetValues<TestEnum>();
             Assert.Equal(5, array.Length);
 
-            Assert.True(EnumUtil.InEnum<TestEnum>(1));
+            Assert.True(EnumUtil.IsDefined<TestEnum>(1));
 
         }
 
