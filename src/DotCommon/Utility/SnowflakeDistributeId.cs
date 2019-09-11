@@ -18,40 +18,40 @@ namespace DotCommon.Utility
     {
 
         //开始时间截(2015-01-01)
-        private static long twepoch = 1420041600000L;
+        private static readonly long twepoch = 1420041600000L;
 
         //机器id所占的位数
-        private static int workerIdBits = 5;
+        private static readonly int workerIdBits = 5;
 
         //数据标识id所占的位数
-        private static int datacenterIdBits = 5;
+        private static readonly int datacenterIdBits = 5;
 
         //支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)
-        private static long maxWorkerId = -1L ^ (-1L << workerIdBits);
+        private static readonly long maxWorkerId = -1L ^ (-1L << workerIdBits);
 
         //支持的最大数据标识id，结果是31
-        private static long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
+        private static readonly long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
 
         //序列在id中占的位数
-        private static int sequenceBits = 12;
+        private static readonly int sequenceBits = 12;
 
         //机器ID向左移12位
-        private static int workerIdShift = sequenceBits;
+        private static readonly int workerIdShift = sequenceBits;
 
         //数据标识id向左移17位(12+5)
-        private static int datacenterIdShift = sequenceBits + workerIdBits;
+        private static readonly int datacenterIdShift = sequenceBits + workerIdBits;
 
         //时间截向左移22位(5+5+12)
-        private static int timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
+        private static readonly int timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
 
         // 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095)
-        private static long sequenceMask = -1L ^ (-1L << sequenceBits);
+        private static readonly long sequenceMask = -1L ^ (-1L << sequenceBits);
 
         // 工作机器ID(0~31)
-        private long workerId;
+        private readonly long workerId;
 
         //数据中心ID(0~31)
-        private long datacenterId;
+        private readonly long datacenterId;
 
         //毫秒内序列(0~4095)
         private long sequence = 0L;
@@ -59,7 +59,7 @@ namespace DotCommon.Utility
         //上次生成ID的时间截
         private long lastTimestamp = -1L;
 
-        private readonly object syncObject = new object();
+        private readonly object SyncObject = new object();
 
 
         /// <summary>Ctor
@@ -99,7 +99,7 @@ namespace DotCommon.Utility
         /// </summary>
         public long NextId()
         {
-            lock (syncObject)
+            lock (SyncObject)
             {
                 long timestamp = TimeGen();
 

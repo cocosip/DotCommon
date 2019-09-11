@@ -8,6 +8,7 @@ namespace DotCommon.Utility
     /// </summary>
     public class UnilayerXml
     {
+        private string _rootNode = "xml";
         private readonly SortedDictionary<string, object> _values = new SortedDictionary<string, object>();
         public UnilayerXml()
         {
@@ -21,12 +22,21 @@ namespace DotCommon.Utility
             var root = xmlDoc.DocumentElement;
             if (root != null)
             {
+                //根节点
+                _rootNode = root.Name;
                 foreach (XmlNode node in root.ChildNodes)
                 {
                     var xe = (XmlElement)node;
                     _values[xe.Name] = xe.InnerText;
                 }
             }
+        }
+
+        /// <summary>设置跟节点,默认为xml
+        /// </summary>
+        public void SetRootNode(string rootNode)
+        {
+            _rootNode = rootNode;
         }
 
         /// <summary>赋值
@@ -40,8 +50,7 @@ namespace DotCommon.Utility
         /// </summary>
         public object GetValue(string key)
         {
-            object o;
-            _values.TryGetValue(key, out o);
+            _values.TryGetValue(key, out object o);
             return o;
         }
 
@@ -49,11 +58,12 @@ namespace DotCommon.Utility
         /// </summary>
         public bool HasValue(string key)
         {
-            object o;
-            _values.TryGetValue(key, out o);
+            _values.TryGetValue(key, out object o);
             return null != o;
         }
 
+        /// <summary>获取根节点下全部的值
+        /// </summary>
         public SortedDictionary<string, object> GetValues()
         {
             return _values;
@@ -64,7 +74,7 @@ namespace DotCommon.Utility
         public string ToXml()
         {
             var sb = new StringBuilder();
-            sb.Append($"<xml>");
+            sb.Append($"<{_rootNode}>");
             foreach (var kv in _values)
             {
                 if (kv.Value is int)
@@ -76,7 +86,7 @@ namespace DotCommon.Utility
                     sb.Append($"<{kv.Key}><![CDATA[{kv.Value}]]></{kv.Key}>");
                 }
             }
-            sb.Append($"</xml>");
+            sb.Append($"</{_rootNode}>");
             return sb.ToString();
         }
 
