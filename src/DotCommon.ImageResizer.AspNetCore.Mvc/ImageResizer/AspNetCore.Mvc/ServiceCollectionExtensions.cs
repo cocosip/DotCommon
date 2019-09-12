@@ -9,7 +9,6 @@ namespace DotCommon.ImageResizer.AspNetCore.Mvc
     /// </summary>
     public static class ServiceCollectionExtensions
     {
-
         /// <summary>添加图片调整扩展
         /// </summary>
         public static IServiceCollection AddImageResizer(this IServiceCollection services, Action<ImageResizerOption> configure = null)
@@ -18,10 +17,14 @@ namespace DotCommon.ImageResizer.AspNetCore.Mvc
             var option = new ImageResizerOption();
             configure?.Invoke(option);
 
-            services.AddServiceWhenNull(s => s.ServiceType == typeof(IDistributedCache<>), s =>
+            //开启缓存的情况下,才需要添加缓存
+            if (option.EnableImageCache)
             {
-                services.AddGenericsMemoryCache();
-            });
+                services.AddServiceWhenNull(s => s.ServiceType == typeof(IDistributedCache<>), s =>
+                {
+                    s.AddGenericsMemoryCache();
+                });
+            }
 
             services
                 .AddTransient<IImageResizeService, ImageResizeService>()

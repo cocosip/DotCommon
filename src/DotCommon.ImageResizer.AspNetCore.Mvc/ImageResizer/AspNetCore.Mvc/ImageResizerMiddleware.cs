@@ -77,23 +77,25 @@ namespace DotCommon.ImageResizer.AspNetCore.Mvc
         /// </summary>
         private ResizeParameter GetResizeParameter(IQueryCollection query)
         {
-            ResizeParameter resizeParameter = new ResizeParameter();
-            //Format
-            resizeParameter.Format = GetQueryValue(query, "format", ImageUtil.DefaultFormatName);
-            //自动旋转
-            resizeParameter.AutoRotate = bool.Parse(GetQueryValue(query, "autorotate", "false"));
-            //质量
-            resizeParameter.Quality = int.Parse(GetQueryValue(query, "q", "100"));
-            //宽度
-            resizeParameter.Width = int.Parse(GetQueryValue(query, "w", "0"));
-            //高度
-            resizeParameter.Height = int.Parse(GetQueryValue(query, "h", "0"));
-            //模式
-            resizeParameter.Mode = GetQueryValue(query, "mode", ResizeMode.Zoom);
-            //x
-            resizeParameter.CropX = int.Parse(GetQueryValue(query, "x", "0"));
-            //y
-            resizeParameter.CropY = int.Parse(GetQueryValue(query, "y", "0"));
+            ResizeParameter resizeParameter = new ResizeParameter
+            {
+                //Format
+                Format = GetQueryValue(query, "format", ImageUtil.DefaultFormatName),
+                //自动旋转
+                AutoRotate = bool.Parse(GetQueryValue(query, "autorotate", "false")),
+                //质量
+                Quality = int.Parse(GetQueryValue(query, "q", "100")),
+                //宽度
+                Width = int.Parse(GetQueryValue(query, "w", "0")),
+                //高度
+                Height = int.Parse(GetQueryValue(query, "h", "0")),
+                //模式
+                Mode = GetQueryValue(query, "mode", ResizeMode.Zoom),
+                //x
+                CropX = int.Parse(GetQueryValue(query, "x", "0")),
+                //y
+                CropY = int.Parse(GetQueryValue(query, "y", "0"))
+            };
 
             return resizeParameter;
         }

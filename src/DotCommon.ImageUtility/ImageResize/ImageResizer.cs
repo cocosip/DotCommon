@@ -7,13 +7,8 @@ namespace DotCommon.ImageResize
 {
     /// <summary>图片尺寸调整
     /// </summary>
-    public class ImageResizer
+    public static class ImageResizer
     {
-        protected ImageResizer()
-        {
-
-        }
-
         /// <summary>图片缩放
         /// </summary>
         /// <param name="original">原图片</param>
@@ -21,10 +16,10 @@ namespace DotCommon.ImageResize
         /// <returns>图片</returns>
         public static Image Zoom(Image original, ResizeParameter parameter)
         {
-            //如果长与宽都小于0
+            //如果长与宽都小于0,直接返回原图
             if (parameter.Width <= 0 && parameter.Height <= 0)
             {
-                throw new ArgumentException("缩略图宽度和高度至少有有一项需要大于0");
+                return original;
             }
 
             if (parameter.Mode != ResizeMode.Zoom)

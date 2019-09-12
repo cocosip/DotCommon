@@ -59,11 +59,16 @@ namespace DotCommon.ImageResizer
                 var imageFormat = ImageUtil.GetImageFormatByFormatName(resizeParameter.Format);
                 imageBytes = ImageHelper.ImageCompressToBytes(resizeImage, resizeParameter.Quality, imageFormat);
                 image.Dispose();
-                //将图片缓存
-                await _imageCache.SetAsync(cacheKey, new ImageCacheItem(imageBytes), new DistributedCacheEntryOptions()
+
+                //只有开启图片缓存情况下,才会对图片再次进行缓存
+                if (_option.EnableImageCache)
                 {
-                    SlidingExpiration = TimeSpan.FromSeconds(_option.ImageCacheSlidingExpirationSeconds)
-                });
+                    //将图片缓存
+                    await _imageCache.SetAsync(cacheKey, new ImageCacheItem(imageBytes), new DistributedCacheEntryOptions()
+                    {
+                        SlidingExpiration = TimeSpan.FromSeconds(_option.ImageCacheSlidingExpirationSeconds)
+                    });
+                }
                 return imageBytes;
             }
             catch (Exception ex)
