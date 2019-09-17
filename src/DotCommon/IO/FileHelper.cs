@@ -2,6 +2,8 @@
 
 namespace DotCommon.IO
 {
+    /// <summary>文件帮助类
+    /// </summary>
     public static class FileHelper
     {
         /// <summary>如果文件存在就删除文件

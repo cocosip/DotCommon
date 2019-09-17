@@ -3,8 +3,15 @@ using System;
 
 namespace DotCommon.Logging
 {
+    /// <summary>日志扩展
+    /// </summary>
     public static class LoggerExtensions
     {
+        /// <summary>根据日志级别记录
+        /// </summary>
+        /// <param name="logger">Logger</param>
+        /// <param name="logLevel">日志级别</param>
+        /// <param name="message">日志信息</param>
         public static void LogWithLevel(this ILogger logger, LogLevel logLevel, string message)
         {
             switch (logLevel)
@@ -30,6 +37,12 @@ namespace DotCommon.Logging
             }
         }
 
+        /// <summary>根据日志级别记录
+        /// </summary>
+        /// <param name="logger">Logger</param>
+        /// <param name="logLevel">日志级别</param>
+        /// <param name="message">日志信息</param>
+        /// <param name="exception">异常信息</param>
         public static void LogWithLevel(this ILogger logger, LogLevel logLevel, string message, Exception exception)
         {
             switch (logLevel)

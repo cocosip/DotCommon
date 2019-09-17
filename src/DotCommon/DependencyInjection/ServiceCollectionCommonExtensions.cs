@@ -5,6 +5,8 @@ using System.Reflection;
 
 namespace DotCommon.DependencyInjection
 {
+    /// <summary>ServiceCollection公共扩展方法
+    /// </summary>
     public static class ServiceCollectionCommonExtensions
     {
         /// <summary>如果没有注册就进行注册
@@ -35,7 +37,7 @@ namespace DotCommon.DependencyInjection
         public static T GetSingletonInstanceOrNull<T>(this IServiceCollection services)
         {
             return (T)services
-                .FirstOrDefault(d => d.ServiceType == typeof(T)) ?
+                .FirstOrDefault(d => d.ServiceType == typeof(T))?
                 .ImplementationInstance;
         }
 

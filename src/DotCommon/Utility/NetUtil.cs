@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Utility
 {
+    /// <summary>网络工具类
+    /// </summary>
     public static class NetUtil
     {
         /***************检测判断*************/

@@ -250,6 +250,8 @@ namespace DotCommon.Reflecting
             property.SetValue(obj, value);
         }
 
+        /// <summary>是否为属性的Get Set方法
+        /// </summary>
         public static bool IsPropertyGetterSetterMethod(MethodInfo method, Type type)
         {
             if (!method.IsSpecialName)

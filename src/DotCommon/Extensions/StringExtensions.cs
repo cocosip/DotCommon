@@ -2,10 +2,14 @@
 
 namespace DotCommon.Extensions
 {
+    /// <summary>String类型扩展
+    /// </summary>
     public static class StringExtensions
     {
-        /// <summary>返回平台无关的Hashcode
+        /// <summary>获取字符串平台无关的Hashcode
         /// </summary>
+        /// <param name="s">字符串</param>
+        /// <returns></returns>
         public static int GetStringHashcode(this string s)
         {
             if (string.IsNullOrEmpty(s)) return 0;
@@ -25,15 +29,20 @@ namespace DotCommon.Extensions
                 return hash;
             }
         }
-        /// <summary>判断String类型是否为空
+
+        /// <summary>判断字符串是否为空
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         public static bool IsNullOrEmpty(this string source)
         {
             return string.IsNullOrEmpty(source);
         }
 
-        /// <summary>判断String类型是否为空或者空格
+        /// <summary>判断字符串是否为空或者空格
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         public static bool IsNullOrWhiteSpace(this string source)
         {
             return string.IsNullOrWhiteSpace(source);
@@ -42,6 +51,9 @@ namespace DotCommon.Extensions
 
         /// <summary>截取指定长度的字符串
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <param name="len">截取长度</param>
+        /// <returns></returns>
         public static string Left(this string source, int len)
         {
             if (source == null)
@@ -57,11 +69,21 @@ namespace DotCommon.Extensions
             return source.Substring(0, len);
         }
 
+        /// <summary>按照正常行结尾格式化字符串
+        /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         public static string NormalizeLineEndings(this string source)
         {
             return source.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", Environment.NewLine);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="c"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
         public static int NthIndexOf(this string source, char c, int n)
         {
             if (source == null)
@@ -88,13 +110,15 @@ namespace DotCommon.Extensions
 
         /// <summary>移除字符串中指定结尾格式的字符
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <param name="postFixes">结尾字符串数组</param>
+        /// <returns></returns>
         public static string RemovePostFix(this string source, params string[] postFixes)
         {
             if (source.IsNullOrEmpty())
             {
                 return null;
             }
-
             if (postFixes.IsNullOrEmpty())
             {
                 return source;
@@ -111,8 +135,11 @@ namespace DotCommon.Extensions
             return source;
         }
 
-        /// <summary>移除字符串中指定开始格式的字符
+        /// <summary>移除字符串中指定开始格式的前缀
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <param name="preFixes">前缀数组</param>
+        /// <returns></returns>
         public static string RemovePreFix(this string source, params string[] preFixes)
         {
             if (source.IsNullOrEmpty())

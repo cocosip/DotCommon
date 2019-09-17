@@ -3,6 +3,8 @@ using System.IO;
 
 namespace DotCommon.Utility
 {
+    /// <summary>Stream工具类
+    /// </summary>
     public static class StreamUtil
     {
 

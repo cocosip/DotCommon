@@ -199,7 +199,7 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>过滤&...;的HTML标签
+        /// <summary>过滤空格符号等HTML标签
         /// </summary>
         public static string FileterSpec(string source)
         {

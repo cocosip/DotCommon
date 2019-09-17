@@ -9,6 +9,13 @@ namespace DotCommon.Extensions
     /// </summary>
     public static class DictionaryExtensions
     {
+        /// <summary>取值
+        /// </summary>
+        /// <typeparam name="T">值的泛型类型</typeparam>
+        /// <param name="dictionary">字典</param>
+        /// <param name="key">Key</param>
+        /// <param name="value">值</param>
+        /// <returns></returns>
         public static bool TryGetValue<T>(this IDictionary<string, object> dictionary, string key, out T value)
         {
             object valueObj;
@@ -21,9 +28,16 @@ namespace DotCommon.Extensions
             return false;
         }
 
+        /// <summary>取值
+        /// </summary>
+        /// <typeparam name="TKey">Key的泛型类型</typeparam>
+        /// <typeparam name="TValue">值的泛型类型</typeparam>
+        /// <param name="dictionary">字典</param>
+        /// <param name="key">Key</param>
+        /// <param name="ignoreCase">忽略大小写</param>
+        /// <returns></returns>
         public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, bool ignoreCase = false)
         {
-            TValue obj;
             if (ignoreCase && key.GetType() == typeof(string))
             {
                 var kv = dictionary.FirstOrDefault(x => x.Key.ToString().ToUpper() == key.ToString());
@@ -32,13 +46,20 @@ namespace DotCommon.Extensions
                     key = kv.Key;
                 }
             }
-            return dictionary.TryGetValue(key, out obj) ? obj : default(TValue);
+            return dictionary.TryGetValue(key, out TValue o) ? o : default;
         }
 
+        /// <summary>取值或者添加到字典
+        /// </summary>
+        /// <typeparam name="TKey">Key的泛型类型</typeparam>
+        /// <typeparam name="TValue">值的泛型类型</typeparam>
+        /// <param name="dictionary">字典</param>
+        /// <param name="key">Key</param>
+        /// <param name="factory"><see cref="Func{TKey, TValue}" /></param>
+        /// <returns></returns>
         public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> factory)
         {
-            TValue obj;
-            if (dictionary.TryGetValue(key, out obj))
+            if (dictionary.TryGetValue(key, out TValue obj))
             {
                 return obj;
             }
@@ -46,17 +67,29 @@ namespace DotCommon.Extensions
             return dictionary[key] = factory(key);
         }
 
+        /// <summary>取值或者添加到字典
+        /// </summary>
+        /// <typeparam name="TKey">Key的泛型类型</typeparam>
+        /// <typeparam name="TValue">值的泛型类型</typeparam>
+        /// <param name="dictionary">字典</param>
+        /// <param name="key">Key</param>
+        /// <param name="factory"><see cref="Func{TValue}"/></param>
+        /// <returns></returns>
         public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> factory)
         {
             return dictionary.GetOrAdd(key, k => factory());
         }
 
-
-
-        public static bool Remove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict, TKey key)
+        /// <summary>取值或者添加到字典
+        /// </summary>
+        /// <typeparam name="TKey">Key的泛型类型</typeparam>
+        /// <typeparam name="TValue">值的泛型类型</typeparam>
+        /// <param name="dictionary">字典</param>
+        /// <param name="key">Key</param>
+        /// <returns></returns>
+        public static bool Remove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary, TKey key)
         {
-            TValue value;
-            return dict.TryRemove(key, out value);
+            return dictionary.TryRemove(key, out TValue value);
         }
     }
 }

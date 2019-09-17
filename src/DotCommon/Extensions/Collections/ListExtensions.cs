@@ -4,6 +4,8 @@ using System.Linq;
 
 namespace DotCommon.Extensions
 {
+    /// <summary>List扩展
+    /// </summary>
     public static class ListExtensions
     {
         /// <summary>移除某个项

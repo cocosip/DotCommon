@@ -9,30 +9,59 @@ namespace DotCommon.Extensions
     /// </summary>
     public static class EnumerableExtensions
     {
-        public static string JoinAsString(this IEnumerable<string> source, string separator)
+        /// <summary>将IEnumerable对象拼接成字符串
+        /// </summary>
+        /// <param name="enumerable">IEnumerable对象</param>
+        /// <param name="separator">分隔符</param>
+        /// <returns></returns>
+        public static string JoinAsString(this IEnumerable<string> enumerable, string separator)
         {
-            return string.Join(separator, source);
+            return string.Join(separator, enumerable);
         }
 
-        public static string JoinAsString<T>(this IEnumerable<T> source, string separator)
+        /// <summary>将IEnumerable对象拼接成字符串
+        /// </summary>
+        /// <param name="enumerable">IEnumerable对象</param>
+        /// <param name="separator">分隔符</param>
+        /// <returns></returns>
+        public static string JoinAsString<T>(this IEnumerable<T> enumerable, string separator)
         {
-            return string.Join(separator, source);
+            return string.Join(separator, enumerable);
         }
 
-        public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> source, bool condition, Func<T, bool> predicate)
+        /// <summary>根据条件执行Func
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="enumerable">IEnumerable对象</param>
+        /// <param name="condition">条件</param>
+        /// <param name="predicate">Func委托函数</param>
+        /// <returns></returns>
+        public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> enumerable, bool condition, Func<T, bool> predicate)
         {
             return condition
-                ? source.Where(predicate)
-                : source;
+                ? enumerable.Where(predicate)
+                : enumerable;
         }
 
-        public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> source, bool condition, Func<T, int, bool> predicate)
+        /// <summary>根据条件执行Func
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="enumerable">IEnumerable对象</param>
+        /// <param name="condition">条件</param>
+        /// <param name="predicate">Func委托函数</param>
+        /// <returns></returns>
+        public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> enumerable, bool condition, Func<T, int, bool> predicate)
         {
             return condition
-                ? source.Where(predicate)
-                : source;
+                ? enumerable.Where(predicate)
+                : enumerable;
         }
 
+        /// <summary>遍历
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="enumerable">IEnumerable对象</param>
+        /// <param name="action">Action委托函数</param>
         public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
         {
             foreach (var element in enumerable)
@@ -40,29 +69,51 @@ namespace DotCommon.Extensions
                 action(element);
             }
         }
-        public static IEnumerable<T> Safe<T>(this IEnumerable<T> collection)
+
+        /// <summary>是否为安全的IEnumerable对象
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="enumerable">IEnumerable对象</param>
+        /// <returns></returns>
+        public static IEnumerable<T> Safe<T>(this IEnumerable<T> enumerable)
         {
-            return collection ?? Enumerable.Empty<T>();
+            return enumerable ?? Enumerable.Empty<T>();
         }
 
-        public static bool Contains<T>(this IEnumerable<T> collection, Predicate<T> condition)
+        /// <summary>判断IEnumerable对象是否包含某一些元素
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="enumerable">IEnumerable对象</param>
+        /// <param name="condition">条件委托</param>
+        /// <returns></returns>
+        public static bool Contains<T>(this IEnumerable<T> enumerable, Predicate<T> condition)
         {
-            return collection.Any(x => condition(x));
+            return enumerable.Any(x => condition(x));
         }
 
-        public static bool IsEmpty<T>(this IEnumerable<T> collection)
+        /// <summary>判断IEnumerable对象是否为空
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="enumerable">IEnumerable对象</param>
+        /// <returns></returns>
+        public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
         {
-            if (collection == null)
+            if (enumerable == null)
                 return true;
-            var coll = collection as ICollection;
+            var coll = enumerable as ICollection;
             if (coll != null)
                 return coll.Count == 0;
-            return !collection.Any();
+            return !enumerable.Any();
         }
 
-        public static bool IsNotEmpty<T>(this IEnumerable<T> collection)
+        /// <summary>判断IEnumerable对象是否不为空
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="enumerable">IEnumerable对象</param>
+        /// <returns></returns>
+        public static bool IsNotEmpty<T>(this IEnumerable<T> enumerable)
         {
-            return !IsEmpty(collection);
+            return !IsEmpty(enumerable);
         }
 
     }

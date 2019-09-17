@@ -3,6 +3,8 @@ using System.Reflection;
 
 namespace DotCommon.Reflecting
 {
+    /// <summary>Emit工具类
+    /// </summary>
     public static class EmitUtil
     {
         /// <summary>可空类型判断

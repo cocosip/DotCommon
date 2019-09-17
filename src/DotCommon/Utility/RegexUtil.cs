@@ -11,20 +11,31 @@ namespace DotCommon.Utility
     {
         /// <summary>匹配正则表达式
         /// </summary>
-        public static bool IsMatch(string input, string pattern)
+        /// <param name="source">字符串</param>
+        /// <param name="pattern">正则表达式</param>
+        /// <returns></returns>
+        public static bool IsMatch(string source, string pattern)
         {
-            return IsMatch(input, pattern, RegexOptions.IgnoreCase);
+            return IsMatch(source, pattern, RegexOptions.IgnoreCase);
         }
 
-        public static bool IsMatch(string input, string pattern, RegexOptions options)
+        /// <summary>匹配正则表达式
+        /// </summary>
+        /// <param name="source">字符串</param>
+        /// <param name="pattern">正则表达式</param>
+        /// <param name="options">正则表达式属性</param>
+        /// <returns></returns>
+        public static bool IsMatch(string source, string pattern, RegexOptions options)
         {
             var regex = new Regex(pattern, options);
-            return NotNull(input) && regex.IsMatch(input);
+            return NotNull(source) && regex.IsMatch(source);
         }
 
 
-        /// <summary>非空
+        /// <summary>判断是否为空
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         private static bool NotNull(string source)
         {
             return !source.IsNullOrWhiteSpace();
@@ -33,6 +44,8 @@ namespace DotCommon.Utility
 
         /// <summary>验证是否为手机号码
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         public static bool IsMobileNumber(string source)
         {
             const string pattern = @"^1+\d{10}$";
@@ -41,6 +54,8 @@ namespace DotCommon.Utility
 
         /// <summary>验证是否为Email地址
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         public static bool IsEmailAddress(string source)
         {
             const string pattern =
@@ -50,6 +65,8 @@ namespace DotCommon.Utility
 
         /// <summary>验证是否为Url地址
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         public static bool IsUrl(string source)
         {
             const string pattern =
@@ -57,8 +74,10 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
-        /// <summary> 是否为IP地址
+        /// <summary>是否为IP地址
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         public static bool IsIp(string source)
         {
             const string pattern =
@@ -66,33 +85,44 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
-        /// <summary> 是否为1-9的正整数
+        /// <summary>是否为1-9的正整数
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         public static bool IsPositiveInteger(string source)
         {
             const string pattern = @"^[1-9]+\d*$";
             return IsMatch(source, pattern);
         }
 
-        /// <summary> 是否为Int32类型
+        /// <summary>是否为Int32类型
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         public static bool IsInt32(string source)
         {
             const string pattern = @"^(\-|\+)?[0-9]*$";
             return IsMatch(source, pattern);
         }
 
-
-        /// <summary> 是否为double类型
+        /// <summary>是否为double类型
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <param name="digit">数据位数</param>
+        /// <returns></returns>
         public static bool IsDouble(string source, int digit = 3)
         {
             string pattern = $@"^\d{{1,9}}[.]?\d{{0,{digit}}}$";
             return IsMatch(source, pattern);
         }
 
-        /// <summary> 判断是否为double类型
+        /// <summary>判断是否为double类型
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <param name="minValue">最小值</param>
+        /// <param name="maxValue">最大值</param>
+        /// <param name="digit">数据位数</param>
+        /// <returns></returns>
         public static bool IsDouble(string source, double minValue, double maxValue, int digit = 3)
         {
             string patten = $@"^\d{{1,9}}[.]?\d{{0,{digit}}}$";
@@ -113,14 +143,22 @@ namespace DotCommon.Utility
 
         /// <summary>判断是否为decimal类型
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <param name="digit">数据位数</param>
+        /// <returns></returns>
         public static bool IsDecimal(string source, int digit = 3)
         {
             string patten = $@"^\d{{1,9}}[.]?\d{{0,{digit}}}$";
             return IsMatch(source, patten);
         }
 
-        /// <summary> 判断是否为dicimal类型
+        /// <summary>判断是否为decimal类型
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <param name="minValue">最小值</param>
+        /// <param name="maxValue">最大值</param>
+        /// <param name="digit">数据位数</param>
+        /// <returns></returns>
         public static bool IsDecimal(string source, decimal minValue, decimal maxValue, int digit = 3)
         {
             string patten = $@"^\d{{1,9}}[.]?\d{{0,{digit}}}$";
@@ -137,8 +175,10 @@ namespace DotCommon.Utility
 
 
 
-        /// <summary> 是否为有效的日期时间
+        /// <summary>是否为有效的日期时间
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         public static bool IsDataTime(string source)
         {
             DateTime d;
@@ -148,15 +188,21 @@ namespace DotCommon.Utility
 
         /// <summary>是否为有效的版本号 1.3,1.1.5,1.25.256
         /// </summary>
-        public static bool IsVersion(string txt, int length = 5)
+        /// <param name="source">字符串</param>
+        /// <param name="len">长度</param>
+        /// <returns></returns>
+        public static bool IsVersion(string source, int len = 5)
         {
-            string pattern = $@"^\d{{0,6}}\.(\d{{1,6}}\.){{0,{length}}}\d{{1,6}}$";
-            return IsMatch(txt, pattern);
+            string pattern = $@"^\d{{0,6}}\.(\d{{1,6}}\.){{0,{len}}}\d{{1,6}}$";
+            return IsMatch(source, pattern);
         }
 
 
         /// <summary>是否为新版本,后面的版本版是否大于前面的版本
         /// </summary>
+        /// <param name="oldVersion">原版本</param>
+        /// <param name="newVersion">新版本</param>
+        /// <returns></returns>
         public static bool IsVersionUpper(string oldVersion, string newVersion)
         {
             if (IsVersion(oldVersion) && IsVersion(newVersion))

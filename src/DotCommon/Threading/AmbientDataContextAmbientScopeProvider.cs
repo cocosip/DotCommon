@@ -5,20 +5,29 @@ using System.Collections.Concurrent;
 
 namespace DotCommon.Threading
 {
+    /// <summary>数据槽上下文
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class AmbientDataContextAmbientScopeProvider<T> : IAmbientScopeProvider<T>
     {
-        private readonly ILogger<AmbientDataContextAmbientScopeProvider<T>> _logger;
+        private readonly ILogger _logger;
 
         private static readonly ConcurrentDictionary<string, ScopeItem> ScopeDictionary = new ConcurrentDictionary<string, ScopeItem>();
 
         private readonly IAmbientDataContext _dataContext;
 
-        public AmbientDataContextAmbientScopeProvider(ILogger<AmbientDataContextAmbientScopeProvider<T>> logger, IAmbientDataContext dataContext)
+        /// <summary>Ctor
+        /// </summary>
+        public AmbientDataContextAmbientScopeProvider(ILoggerFactory loggerFactory, IAmbientDataContext dataContext)
         {
+            _logger = loggerFactory.CreateLogger(DotCommonConsts.LoggerName);
             _dataContext = dataContext;
-            _logger = logger;
         }
 
+        /// <summary>根据上下文Key取值
+        /// </summary>
+        /// <param name="contextKey">Key</param>
+        /// <returns></returns>
         public T GetValue(string contextKey)
         {
             var item = GetCurrentItem(contextKey);
@@ -30,6 +39,11 @@ namespace DotCommon.Threading
             return item.Value;
         }
 
+        /// <summary>开始上下文生命周期
+        /// </summary>
+        /// <param name="contextKey">上下文Key</param>
+        /// <param name="value">值</param>
+        /// <returns></returns>
         public IDisposable BeginScope(string contextKey, T value)
         {
             var item = new ScopeItem(value, GetCurrentItem(contextKey));

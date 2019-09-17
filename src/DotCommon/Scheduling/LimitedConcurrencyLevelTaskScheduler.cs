@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Scheduling
 {
+    /// <summary>并发限制的调度任务
+    /// </summary>
     public class LimitedConcurrencyLevelTaskScheduler : TaskScheduler
     {
         /// <summary>Whether the current thread is processing work items.</summary>

@@ -5,10 +5,12 @@ using System.Text;
 
 namespace DotCommon.Serializing
 {
-    /// <summary>Serialize by DataContractSerializer
+    /// <summary>Xml序列化
     /// </summary>
     public class DefaultXmlSerializer : IXmlSerializer
     {
+        /// <summary>序列化对象
+        /// </summary>
         public string Serialize(object o)
         {
             var serializer = new DataContractSerializer(o.GetType());
@@ -24,6 +26,8 @@ namespace DotCommon.Serializing
             }
         }
 
+        /// <summary>反序列化对象
+        /// </summary>
         public object Deserialize(string value, Type type)
         {
             var serializer = new DataContractSerializer(type);
@@ -34,6 +38,8 @@ namespace DotCommon.Serializing
             }
         }
 
+        /// <summary>反序列化对象
+        /// </summary>
         public T Deserialize<T>(string value) where T : class
         {
             var serializer = new DataContractSerializer(typeof(T));

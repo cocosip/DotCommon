@@ -103,14 +103,36 @@ namespace DotCommon.Utility
 
     }
 
+    /// <summary>随机字符串类型
+    /// </summary>
     public enum RandomStringType
     {
+        /// <summary>仅数字
+        /// </summary>
         Number = 1,
+
+        /// <summary>仅小写字母
+        /// </summary>
         LowerLetter = 2,
+
+        /// <summary>仅大写字母
+        /// </summary>
         UpperLetter = 4,
+
+        /// <summary>混合
+        /// </summary>
         Fix = 8,
+
+        /// <summary>数字小写字母
+        /// </summary>
         NumberLower = 16,
+
+        /// <summary>数字大写字母
+        /// </summary>
         NumberUpper = 32,
+
+        /// <summary>纯字母
+        /// </summary>
         Letter = 64
     }
 }

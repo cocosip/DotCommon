@@ -7,6 +7,8 @@ using System;
 
 namespace DotCommon.DependencyInjection
 {
+    /// <summary>ServiceCollection扩展方法
+    /// </summary>
     public static class ServiceCollectionExtensions
     {
 

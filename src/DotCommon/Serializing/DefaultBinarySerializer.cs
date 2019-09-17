@@ -12,15 +12,15 @@ namespace DotCommon.Serializing
 
         /// <summary> 将对象序列化成二进制
         /// </summary>
-        public byte[] Serialize(object obj)
+        public byte[] Serialize(object o)
         {
             using (var stream = new MemoryStream())
             {
-                _binaryFormatter.Serialize(stream, obj);
+                _binaryFormatter.Serialize(stream, o);
                 stream.Position = 0;
                 var bytes = new byte[stream.Length];
                 stream.Read(bytes, 0, bytes.Length);
-                _binaryFormatter.Serialize(stream, obj);
+                _binaryFormatter.Serialize(stream, o);
                 return bytes;
             }
         }
@@ -35,6 +35,7 @@ namespace DotCommon.Serializing
                 return _binaryFormatter.Deserialize(stream);
             }
         }
+
         /// <summary> 将二进制反序列化成对象
         /// </summary>
         public T Deserialize<T>(byte[] data)

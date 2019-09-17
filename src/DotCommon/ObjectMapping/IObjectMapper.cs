@@ -1,22 +1,23 @@
 ﻿namespace DotCommon.ObjectMapping
 {
+    /// <summary>对象映射
+    /// </summary>
     public interface IObjectMapper
     {
-        /// <summary>
-        /// Converts an object to another. Creates a new object of <see cref="TDestination"/>.
+        /// <summary>将对象转为为目标对象
         /// </summary>
-        /// <typeparam name="TDestination">Type of the destination object</typeparam>
-        /// <param name="source">Source object</param>
+        /// <typeparam name="TDestination">目标对象类型</typeparam>
+        /// <param name="source">源对象</param>
+        /// <returns>映射后的对象</returns>
         TDestination Map<TDestination>(object source);
 
-        /// <summary>
-        /// Execute a mapping from the source object to the existing destination object
+        /// <summary>执行从源对象映射到现有的目标对象
         /// </summary>
-        /// <typeparam name="TSource">Source type</typeparam>
-        /// <typeparam name="TDestination">Destination type</typeparam>
-        /// <param name="source">Source object</param>
-        /// <param name="destination">Destination object</param>
-        /// <returns>Returns the same <see cref="destination"/> object after mapping operation</returns>
+        /// <typeparam name="TSource">源对象类型</typeparam>
+        /// <typeparam name="TDestination">目标对象类型</typeparam>
+        /// <param name="source">源对象</param>
+        /// <param name="destination">目标对象</param>
+        /// <returns>映射后的对象</returns>
         TDestination Map<TSource, TDestination>(TSource source, TDestination destination);
     }
 }

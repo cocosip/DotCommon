@@ -5,12 +5,25 @@ using System.Text;
 
 namespace DotCommon.Encrypt
 {
+    /// <summary>TripleDes加密
+    /// </summary>
     public class TripleDesEncryptor
     {
         private readonly byte[] _key = { 0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0x00 };
         private readonly byte[] _iv = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+
+        /// <summary>密钥模式
+        /// </summary>
         public CipherMode Mode { get; set; } = CipherMode.CBC;
+
+        /// <summary>数据填充模式
+        /// </summary>
         public PaddingMode Padding { get; set; } = PaddingMode.PKCS7;
+
+        /// <summary>Ctor
+        /// </summary>
+        /// <param name="key">密钥</param>
+        /// <param name="iv">加密向量</param>
         public TripleDesEncryptor(string key, string iv)
         {
             if (!string.IsNullOrWhiteSpace(key))
@@ -22,7 +35,10 @@ namespace DotCommon.Encrypt
                 _iv = Convert.FromBase64String(key);
             }
         }
-
+        /// <summary>Ctor
+        /// </summary>
+        /// <param name="key">密钥</param>
+        /// <param name="iv">加密向量</param>
         public TripleDesEncryptor(string key, byte[] iv)
         {
             if (!key.IsNullOrWhiteSpace())
@@ -32,6 +48,9 @@ namespace DotCommon.Encrypt
             _iv = iv;
         }
 
+        /// <summary>Ctor
+        /// </summary>
+        /// <param name="key">密钥</param>
         public TripleDesEncryptor(string key) : this(key, "")
         {
 

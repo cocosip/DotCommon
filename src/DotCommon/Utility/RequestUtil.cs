@@ -8,7 +8,8 @@ namespace DotCommon.Utility
     /// </summary>
     public static class RequestUtil
     {
-
+        /// <summary>User-Agents列表
+        /// </summary>
         public static Dictionary<string, string> UserAgents
         {
             get
@@ -203,14 +204,24 @@ namespace DotCommon.Utility
 
     }
 
+    /// <summary>手机平台
+    /// </summary>
     public class MobilePlatform
     {
+        /// <summary>安卓
+        /// </summary>
         public const string Android = "Android";
 
+        /// <summary>IPhone
+        /// </summary>
         public const string IPhone = "IPhone";
 
+        /// <summary>MacBook
+        /// </summary>
         public const string MacBook = "MacBook";
 
+        /// <summary>Windows
+        /// </summary>
         public const string Windows = "Windows";
     }
 

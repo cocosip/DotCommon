@@ -4,11 +4,12 @@ namespace DotCommon.Utility
 {
     #region ChineseCalendarException
 
-    /// <summary>
-    /// 中国日历异常处理
+    /// <summary>中国日历异常处理
     /// </summary>
     public class ChineseCalendarException : Exception
     {
+        /// <summary>Ctor
+        /// </summary>
         public ChineseCalendarException(string msg)
             : base(msg)
         {
@@ -1121,7 +1122,8 @@ namespace DotCommon.Utility
             }
         }
 
-        //当前日期前一个最近节气
+        /// <summary>当前日期前一个最近节气
+        /// </summary>
         public string ChineseTwentyFourPrevDay
         {
             get
@@ -1150,7 +1152,8 @@ namespace DotCommon.Utility
 
         }
 
-        //当前日期后一个最近节气
+        /// <summary>当前日期后一个最近节气
+        /// </summary>
         public string ChineseTwentyFourNextDay
         {
             get

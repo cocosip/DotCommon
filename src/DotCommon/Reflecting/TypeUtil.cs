@@ -72,8 +72,8 @@ namespace DotCommon.Reflecting
             return method.ReturnType.IsTaskOrTaskOfT();
         }
 
-        /// <summary>是否为Task或者Task<T>类型的方法
-        /// </summary>
+       /// <summary>是否为Task或者泛型Task
+       /// </summary>
         public static bool IsTaskOrTaskOfT(this Type type)
         {
             return type == typeof(Task) || type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>);

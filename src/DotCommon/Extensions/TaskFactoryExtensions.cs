@@ -8,6 +8,12 @@ namespace DotCommon.Extensions
     /// </summary>
     public static class TaskFactoryExtensions
     {
+        /// <summary>延迟一定时间后开启任务
+        /// </summary>
+        /// <param name="factory">TaskFactory</param>
+        /// <param name="millisecondsDelay">延迟毫秒数</param>
+        /// <param name="action">执行方法委托函数</param>
+        /// <returns></returns>
         public static Task StartDelayedTask(this TaskFactory factory, int millisecondsDelay, Action action)
         {
             // Validate arguments

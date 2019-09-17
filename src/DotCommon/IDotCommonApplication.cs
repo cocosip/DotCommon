@@ -3,6 +3,8 @@ using System;
 
 namespace DotCommon
 {
+    /// <summary>应用信息
+    /// </summary>
     public interface IDotCommonApplication : IDisposable
     {
 

@@ -2,6 +2,8 @@
 
 namespace DotCommon.IO
 {
+    /// <summary>文件夹帮助类
+    /// </summary>
     public static class DirectoryHelper
     {
         /// <summary>如果文件夹不存在,就创建新的文件夹

@@ -3,36 +3,44 @@ using System;
 
 namespace DotCommon.Serializing
 {
+    /// <summary>对象序列化
+    /// </summary>
     public class DefaultObjectSerializer : IObjectSerializer
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceProvider _provider;
         private readonly IBinarySerializer _binarySerializer;
-        public DefaultObjectSerializer(IServiceProvider serviceProvider, IBinarySerializer binarySerializer)
+
+        /// <summary>Ctor
+        /// </summary>
+        public DefaultObjectSerializer(IServiceProvider provider, IBinarySerializer binarySerializer)
         {
-            _serviceProvider = serviceProvider;
+            _provider = provider;
             _binarySerializer = binarySerializer;
         }
 
-        public virtual byte[] Serialize<T>(T obj)
+        /// <summary>对象序列化
+        /// </summary>
+        public virtual byte[] Serialize<T>(T o)
         {
-            if (obj == null)
+            if (o == null)
             {
                 return null;
             }
 
             //Check if a specific serializer is registered
-            using (var scope = _serviceProvider.CreateScope())
+            using (var scope = _provider.CreateScope())
             {
                 var specificSerializer = scope.ServiceProvider.GetService<IObjectSerializer<T>>();
                 if (specificSerializer != null)
                 {
-                    return specificSerializer.Serialize(obj);
+                    return specificSerializer.Serialize(o);
                 }
             }
-
-            return AutoSerialize(obj);
+            return AutoSerialize(o);
         }
 
+        /// <summary>对象反序列化
+        /// </summary>
         public virtual T Deserialize<T>(byte[] bytes)
         {
             if (bytes == null)
@@ -41,7 +49,7 @@ namespace DotCommon.Serializing
             }
 
             //Check if a specific serializer is registered
-            using (var scope = _serviceProvider.CreateScope())
+            using (var scope = _provider.CreateScope())
             {
                 var specificSerializer = scope.ServiceProvider.GetService<IObjectSerializer<T>>();
                 if (specificSerializer != null)
@@ -53,11 +61,15 @@ namespace DotCommon.Serializing
             return AutoDeserialize<T>(bytes);
         }
 
-        protected virtual byte[] AutoSerialize<T>(T obj)
+        /// <summary>自动序列化
+        /// </summary>
+        protected virtual byte[] AutoSerialize<T>(T o)
         {
-            return _binarySerializer.Serialize(obj);
+            return _binarySerializer.Serialize(o);
         }
 
+        /// <summary>自动反序列化
+        /// </summary>
         protected virtual T AutoDeserialize<T>(byte[] bytes)
         {
             return _binarySerializer.Deserialize<T>(bytes);

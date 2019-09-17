@@ -7,6 +7,8 @@ using System.Reflection;
 
 namespace DotCommon.Reflecting
 {
+    /// <summary>字典类型表达式树
+    /// </summary>
     public static class DictionaryExpression
     {
         private static readonly IDictionary<Type, Delegate> ObjectToDictionaryDict =
@@ -87,14 +89,14 @@ namespace DotCommon.Reflecting
                 /* 另外的代码, typeof(Convert).GetTypeInfo().GetMethod(GetConvertName(property.PropertyType), new Type[] { typeof(object) }), indexValueExpr);*/
 
                 var assignFieldExpr = Expression.Assign(fieldExpr, castIndexValueExpr);
-               
+
                 var notNullExpr = Expression.IfThen(Expression.NotEqual(indexValueExpr, Expression.Constant(null)),
                     assignFieldExpr);
 
                 //contains方法
                 var containMethodExpr = Expression.Call(parameterExpr,
                     sourceType.GetTypeInfo().GetMethod("ContainsKey", new[] { typeof(string) }), nameExpr);
- 
+
                 var ifContainExpr = Expression.IfThen(containMethodExpr, notNullExpr);
                 bodyExprs.Add(ifContainExpr);
 
@@ -102,7 +104,7 @@ namespace DotCommon.Reflecting
             //返回
             bodyExprs.Add(objectExpr);
             var methodBodyExpr = Expression.Block(targetType, new[] { objectExpr }, bodyExprs);
-   
+
             var lambdaExpr = Expression.Lambda<Func<Dictionary<string, object>, T>>(methodBodyExpr, parameterExpr);
             var func = lambdaExpr.Compile();
             return func;
@@ -132,7 +134,7 @@ namespace DotCommon.Reflecting
             var parameterExpr = Expression.Parameter(sourceType, "x");
             //collect the body
             var bodyExprs = new List<Expression>();
-        
+
             var dictExpr = Expression.Variable(targetType, "dict");
             var newDictExpr = Expression.New(targetType);
             var assignDictExpr = Expression.Assign(dictExpr, newDictExpr);
@@ -140,17 +142,17 @@ namespace DotCommon.Reflecting
             var properties = PropertyInfoUtil.GetProperties(sourceType);
             foreach (var property in properties)
             {
-            
+
                 var nameExpr = Expression.Constant(property.Name);
                 var castValueExpr = Expression.Convert(Expression.Property(parameterExpr, property), typeof(object));
-             
+
                 var addMethodExpr = Expression.Call(dictExpr,
                     targetType.GetTypeInfo().GetMethod("Add", new[] { typeof(string), typeof(object) }), nameExpr,
                     castValueExpr);
                 //添加Null
                 var addNullMethodExpr = Expression.Call(dictExpr, targetType.GetTypeInfo().GetMethod("Add", new[] { typeof(string), typeof(object) }), nameExpr, Expression.Constant(null));
 
-               
+
                 var ifNotNullElseExpr = Expression.IfThenElse(Expression.NotEqual(castValueExpr, Expression.Constant(null)),
                     addMethodExpr, addNullMethodExpr);
                 bodyExprs.Add(ifNotNullElseExpr);
@@ -158,7 +160,7 @@ namespace DotCommon.Reflecting
             //返回
             bodyExprs.Add(dictExpr);
             var methodBodyExpr = Expression.Block(targetType, new[] { dictExpr }, bodyExprs);
-  
+
             var lambdaExpr = Expression.Lambda<Func<T, Dictionary<string, object>>>(methodBodyExpr, parameterExpr);
             var func = lambdaExpr.Compile();
             return func;

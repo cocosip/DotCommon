@@ -14,15 +14,21 @@ namespace DotCommon.Encrypt
         private RSASignaturePadding SignaturePadding { get; set; } = RSASignaturePadding.Pkcs1;
         private RSAEncryptionPadding EncryptionPadding { get; set; } = RSAEncryptionPadding.Pkcs1;
 
-
+        /// <summary>Ctor
+        /// </summary>
         public RsaEncryptor()
         {
 
         }
+
+        /// <summary>Ctor
+        /// </summary>
         public RsaEncryptor(string publicKeyPem, string privateKeyPem) : this(publicKeyPem, privateKeyPem, "RSA2")
         {
         }
 
+        /// <summary>Ctor
+        /// </summary>
         public RsaEncryptor(string publicKeyPem, string privateKeyPem, string hashAlg)
         {
             PublicKeyPem = publicKeyPem;
@@ -48,12 +54,21 @@ namespace DotCommon.Encrypt
 
 
         #region 加载公钥和私钥
+
+        /// <summary>加载公钥
+        /// </summary>
+        /// <param name="publicKeyPem">pem格式公钥</param>
+        /// <returns></returns>
         public RsaEncryptor LoadPublicKey(string publicKeyPem)
         {
             PublicKeyPem = publicKeyPem;
             return this;
         }
 
+        /// <summary>加载私钥
+        /// </summary>
+        /// <param name="privateKeyPem">pem格式私钥</param>
+        /// <returns></returns>
         public RsaEncryptor LoadPrivateKey(string privateKeyPem)
         {
             PrivateKeyPem = privateKeyPem;

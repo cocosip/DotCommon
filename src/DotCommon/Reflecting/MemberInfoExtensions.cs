@@ -4,18 +4,16 @@ using System.Reflection;
 
 namespace DotCommon.Reflecting
 {
-   /// <summary>
-    /// Extensions to <see cref="MemberInfo"/>.
+    /// <summary>MemberInfo扩展 <see cref="MemberInfo"/>.
     /// </summary>
     public static class MemberInfoExtensions
     {
-        /// <summary>
-        /// Gets a single attribute for a member.
+        /// <summary>获取成员的单个属性
         /// </summary>
-        /// <typeparam name="TAttribute">Type of the attribute</typeparam>
-        /// <param name="memberInfo">The member that will be checked for the attribute</param>
-        /// <param name="inherit">Include inherited attributes</param>
-        /// <returns>Returns the attribute object if found. Returns null if not found.</returns>
+        /// <typeparam name="TAttribute">属性类型</typeparam>
+        /// <param name="memberInfo">获取属性的成员</param>
+        /// <param name="inherit">是否包含继承的属性</param>
+        /// <returns>属性返回的对象,如果未找到则返回null.</returns>
         public static TAttribute GetSingleAttributeOrNull<TAttribute>(this MemberInfo memberInfo, bool inherit = true)
             where TAttribute : Attribute
         {
@@ -33,7 +31,12 @@ namespace DotCommon.Reflecting
             return default;
         }
 
-
+        /// <summary>获取成员的单个属性或者基础类型
+        /// </summary>
+        /// <typeparam name="TAttribute">属性类型</typeparam>
+        /// <param name="type">获取属性的类型</param>
+        /// <param name="inherit">是否包含继承的属性</param>
+        /// <returns></returns>
         public static TAttribute GetSingleAttributeOfTypeOrBaseTypesOrNull<TAttribute>(this Type type, bool inherit = true)
             where TAttribute : Attribute
         {
