@@ -18,7 +18,7 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
     {
         private const string DefaultRootPath = "app";
 
-        private string[] CommonPostfixes = { "AppService", "ApplicationService", "Service" };
+        private readonly string[] CommonPostfixes = { "AppService", "ApplicationService", "Service" };
 
         private readonly DotCommonAspNetCoreMvcOptions _options;
         private readonly MvcOptions _mvcOptions;
@@ -40,8 +40,8 @@ namespace DotCommon.AspNetCore.Mvc.Conventions
                 var controllerType = controller.ControllerType.AsType();
                 var configuration = GetControllerSettingOrNull(controllerType);
 
-                //TODO: We can remove different behaviour for ImplementsRemoteServiceInterface. If there is a configuration, then it should be applied!
-                //TODO: But also consider ConventionalControllerSetting.IsRemoteService method too..!
+                //We can remove different behaviour for ImplementsRemoteServiceInterface. If there is a configuration, then it should be applied!
+                //But also consider ConventionalControllerSetting.IsRemoteService method too..!
 
                 if (ImplementsRemoteServiceInterface(controllerType))
                 {
