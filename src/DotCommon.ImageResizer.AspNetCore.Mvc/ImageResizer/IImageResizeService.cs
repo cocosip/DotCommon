@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 namespace DotCommon.ImageResizer
 {
+    /// <summary>图片缩放服务
+    /// </summary>
     public interface IImageResizeService
     {
         /// <summary>获取图片的二进制数据

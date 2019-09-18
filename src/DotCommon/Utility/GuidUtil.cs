@@ -2,14 +2,13 @@
 
 namespace DotCommon.Utility
 {
-    /// <summary>Guid相关操作
+    /// <summary>Guid工具类
     /// </summary>
     public static class GuidUtil
     {
         private static readonly long EpochMilliseconds = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks / 10000L;
 
-        #region 获取Guid
-        /// <summary>Creates a sequential GUID according to SQL Server's ordering rules.
+        /// <summary>根据SqlServer数据库主键排序规则生成Guid,能当主键进行排序
         /// </summary>
         public static Guid NewSequentialGuid()
         {
@@ -38,17 +37,17 @@ namespace DotCommon.Utility
 
             return new Guid(guidBytes);
         }
-        #endregion
 
-        #region 获取新的Guid
 
         /// <summary>获取新的Guid,Format example: D , N
         /// </summary>
+        /// <param name="format">Guid格式,D或者N格式</param>
+        /// <returns></returns>
         public static string NewGuidString(string format = "D")
         {
             return Guid.NewGuid().ToString(format);
         }
 
-        #endregion
+
     }
 }

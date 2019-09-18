@@ -34,7 +34,7 @@ namespace DotCommon.Utility
 
         /// <summary>入队消息
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">消息</param>
         public void EnqueueMessage(TMessage message)
         {
             _inputQueue.Enqueue(message);

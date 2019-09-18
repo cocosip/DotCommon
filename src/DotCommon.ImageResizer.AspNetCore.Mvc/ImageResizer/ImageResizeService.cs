@@ -9,11 +9,16 @@ using System.Threading.Tasks;
 
 namespace DotCommon.ImageResizer
 {
+    /// <summary>图片缩放服务
+    /// </summary>
     public class ImageResizeService : IImageResizeService
     {
         private readonly IDistributedCache<ImageCacheItem> _imageCache;
         private readonly ILogger _logger;
         private readonly ImageResizerOption _option;
+
+        /// <summary>Ctor
+        /// </summary>
         public ImageResizeService(IDistributedCache<ImageCacheItem> imageCache, ILoggerFactory loggerFactory, ImageResizerOption option)
         {
             _imageCache = imageCache;
@@ -75,7 +80,7 @@ namespace DotCommon.ImageResizer
             {
                 _logger.LogError("Resize图片出现错误,{0}", ex.Message);
             }
-            return default(byte[]);
+            return default;
         }
 
 

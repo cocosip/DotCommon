@@ -2,13 +2,16 @@
 
 namespace DotCommon.Utility
 {
-    /// <summary> 说明:强制转换
+    /// <summary>转换工厂
     /// </summary>
     public static class ConvertFactory
     {
 
-        /// <summary> 转换成Int32类型
+        /// <summary>转换成Int32类型
         /// </summary>
+        /// <param name="source">源对象</param>
+        /// <param name="defaultValue">默认值</param>
+        /// <returns></returns>
         public static int ToInt32(object source, int defaultValue)
         {
             if (source != null)
@@ -21,8 +24,11 @@ namespace DotCommon.Utility
             return defaultValue;
         }
 
-        /// <summary> 转换成Int64类型
+        /// <summary>转换成Int64类型
         /// </summary>
+        /// <param name="source">源对象</param>
+        /// <param name="defaultValue">默认值</param>
+        /// <returns></returns>
         public static long ToInt64(object source, long defaultValue)
         {
             if (source != null)
@@ -37,6 +43,9 @@ namespace DotCommon.Utility
 
         /// <summary>转换成Double类型
         /// </summary>
+        /// <param name="source">源对象</param>
+        /// <param name="defaultValue">默认值</param>
+        /// <returns></returns>
         public static double ToDouble(object source, double defaultValue)
         {
             if (source != null)
@@ -48,8 +57,13 @@ namespace DotCommon.Utility
             }
             return defaultValue;
         }
-        /// <summary> 转换成double类型,并保留有效的位数
+
+        /// <summary>转换成double类型,并保留有效的位数
         /// </summary>
+        /// <param name="source">源对象</param>
+        /// <param name="defaultValue">默认值</param>
+        /// <param name="digit">有效位数</param>
+        /// <returns></returns>
         public static double ToDouble(object source, double defaultValue, int digit)
         {
             if (source != null)
@@ -64,6 +78,9 @@ namespace DotCommon.Utility
 
         /// <summary>转换成Datetime
         /// </summary>
+        /// <param name="source">源对象</param>
+        /// <param name="defaultValue">默认值</param>
+        /// <returns></returns>
         public static DateTime ToDateTime(object source, DateTime defaultValue)
         {
             if (source != null)
@@ -78,6 +95,9 @@ namespace DotCommon.Utility
 
         /// <summary>转换成Bool类型
         /// </summary>
+        /// <param name="source">源对象</param>
+        /// <param name="defaultValue">默认值</param>
+        /// <returns></returns>
         public static bool ToBool(object source, bool defaultValue)
         {
             if (source != null)
@@ -92,6 +112,8 @@ namespace DotCommon.Utility
 
         /// <summary>将string类型字符串转换成对应的guid
         /// </summary>
+        /// <param name="source">字符串</param>
+        /// <returns></returns>
         public static Guid ToGuid(string source)
         {
             return new Guid(source);

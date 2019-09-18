@@ -19,11 +19,9 @@ namespace DotCommon.Utility
     #endregion
 
     /// <summary>
-    /// 中国农历类 版本V1.0 支持 1900.1.31日起至 2049.12.31日止的数据
-    /// </summary>
-    /// <remarks>
+    /// 中国农历类 版本V1.0 支持 1900.1.31日起至 2049.12.31日止的数据。
     /// 本程序使用数据来源于网上的万年历查询，并综合了一些其它数据
-    /// </remarks>
+    /// </summary>
     public class ChineseCalendar
     {
         #region 内部结构

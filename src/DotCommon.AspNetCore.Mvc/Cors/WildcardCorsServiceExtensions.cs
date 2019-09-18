@@ -6,6 +6,8 @@ using System.Linq;
 
 namespace DotCommon.AspNetCore.Mvc.Cors
 {
+    /// <summary>通配符跨域服务扩展
+    /// </summary>
     public static class WildcardCorsServiceExtensions
     {
         /// <summary>添加通配符跨域

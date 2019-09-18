@@ -56,6 +56,9 @@ namespace DotCommon.Encrypt
 
         /// <summary>格式化公钥,带上头部与底部
         /// </summary>
+        /// <param name="publicKey">公钥</param>
+        /// <param name="format">密钥格式</param>
+        /// <returns></returns>
         public static string FormatPublicKey(string publicKey, RSAKeyFormat format = RSAKeyFormat.PKCS1)
         {
             var header = "-----BEGIN RSA PUBLIC KEY-----";
@@ -75,6 +78,9 @@ namespace DotCommon.Encrypt
 
         /// <summary>格式化私钥,带上头部与底部
         /// </summary>
+        /// <param name="privateKey">私钥</param>
+        /// <param name="format">私钥格式</param>
+        /// <returns></returns>
         public static string FormatPrivateKey(string privateKey, RSAKeyFormat format = RSAKeyFormat.PKCS1)
         {
             var header = "-----BEGIN RSA PRIVATE KEY-----";
@@ -93,6 +99,8 @@ namespace DotCommon.Encrypt
 
         /// <summary>去除RSA密钥的头部,底部,获取具体的内容
         /// </summary>
+        /// <param name="key">带头部与底部的RSA密钥</param>
+        /// <returns></returns>
         public static string TrimKey(string key)
         {
             //使用正则表达式去除头尾,并将结尾符号\r\n替换掉
@@ -102,6 +110,8 @@ namespace DotCommon.Encrypt
 
         /// <summary>根据RSAParameters参数生成公钥
         /// </summary>
+        /// <param name="rsaParameters">RSA参数</param>
+        /// <returns></returns>
         public static string ExportPublicKey(RSAParameters rsaParameters)
         {
             //Exponent
@@ -125,6 +135,8 @@ namespace DotCommon.Encrypt
 
         /// <summary>根据RSAParameters参数生成PKCS1私钥
         /// </summary>
+        /// <param name="rsaParameters">RSA参数</param>
+        /// <returns></returns>
         public static string ExportPrivateKeyPkcs1(RSAParameters rsaParameters)
         {
             //密钥中,除了头部长度以外的数据
@@ -192,6 +204,8 @@ namespace DotCommon.Encrypt
 
         /// <summary>将PKCS8编码格式的私钥转换成PKCS1编码格式的私钥
         /// </summary>
+        /// <param name="pkcs8Key">PKCS8格式密钥</param>
+        /// <returns></returns>
         public static string Pkcs8ToPkcs1(string pkcs8Key)
         {
             var rsaParams = ReadPrivateKeyInfo(pkcs8Key);
@@ -200,6 +214,8 @@ namespace DotCommon.Encrypt
 
         /// <summary>将PKCS1编码格式的私钥转换成PKCS8编码格式的私钥
         /// </summary>
+        /// <param name="pkcs1Key">PKCS1格式密钥</param>
+        /// <returns></returns>
         public static string Pkcs1ToPkcs8(string pkcs1Key)
         {
             var rsaParams = ReadPrivateKeyInfo(pkcs1Key);

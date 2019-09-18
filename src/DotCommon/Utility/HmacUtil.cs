@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DotCommon.Utility
 {
-    /// <summary>HMAC算法
+    /// <summary>HMAC算法工具类
     /// </summary>
     public static class HmacUtil
     {

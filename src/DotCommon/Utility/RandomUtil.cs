@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DotCommon.Utility
 {
-    /// <summary>随机数相关操作
+    /// <summary>随机数工具类
     /// </summary>
     public static class RandomUtil
     {
@@ -31,10 +31,11 @@ namespace DotCommon.Utility
         };
 
 
-        #region 生成随机数的种子
 
         /// <summary>生成随机数的种子
         /// </summary>
+        /// <param name="len">种子长度</param>
+        /// <returns></returns>
         public static int GetRandomSeed(int len = 8)
         {
             var bytes = new byte[len];
@@ -45,24 +46,21 @@ namespace DotCommon.Utility
             return BitConverter.ToInt32(bytes, 0);
         }
 
-        #endregion
-
-        #region 生成一个指定范围的随机整数
-
         /// <summary>生成一个指定范围的随机整数
         /// </summary>
+        /// <param name="minNum">最小值</param>
+        /// <param name="maxNum">最大值</param>
+        /// <returns></returns>
         public static int GetRandomInt(int minNum, int maxNum)
         {
             var rd = new Random(GetRandomSeed());
             return rd.Next(minNum, maxNum);
         }
 
-        #endregion
-
-        #region 对一个数组进行随机排序
-
-        /// <summary> 对一个数组进行随机排序
-        /// </summary>am>
+        /// <summary>对一个数组进行随机排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr">数组</param>
         public static void GetRandomArray<T>(T[] arr)
         {
             //对数组进行随机排序的算法:随机选择两个位置，将两个位置上的值交换
@@ -82,16 +80,17 @@ namespace DotCommon.Utility
             }
         }
 
-        #endregion
-
         /// <summary>生成随机字符串
         /// </summary>
-        public static string GetRandomStr(int length, RandomStringType randomStringType = RandomStringType.Number)
+        /// <param name="len">随机字符串长度</param>
+        /// <param name="randomStringType">随机类型</param>
+        /// <returns></returns>
+        public static string GetRandomStr(int len, RandomStringType randomStringType = RandomStringType.Number)
         {
             var rd = new Random(GetRandomSeed());
             var sb = new StringBuilder();
             var range = RandomRanges[randomStringType];
-            for (var i = 0; i < length; i++)
+            for (var i = 0; i < len; i++)
             {
                 //生成随机的当前索引
                 var index = rd.Next(range.Item1, range.Item2);

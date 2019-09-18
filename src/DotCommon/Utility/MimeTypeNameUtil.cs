@@ -2,7 +2,7 @@
 
 namespace DotCommon.Utility
 {
-    /// <summary>Mime名称
+    /// <summary>Mime类型名称工具类
     /// </summary>
     public static class MimeTypeNameUtil
     {
@@ -348,7 +348,7 @@ namespace DotCommon.Utility
 
 
 
-                }; 
+                };
                 #endregion
             }
         }
@@ -356,6 +356,8 @@ namespace DotCommon.Utility
 
         /// <summary>根据扩展名获取Mime类型名
         /// </summary>
+        /// <param name="extension">带"."的扩展名</param>
+        /// <returns></returns>
         public static string GetMimeName(string extension)
         {
             extension = extension.ToLower();

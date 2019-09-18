@@ -8,10 +8,11 @@ namespace DotCommon.Utility
     public static class StreamUtil
     {
 
-        #region Stream与Byte转换
-
         /// <summary>将Stream刘转换成二进制数组
         /// </summary>
+        /// <param name="stream">流文件</param>
+        /// <param name="bufferLen">数组长度</param>
+        /// <returns></returns>
         public static byte[] StreamToBuffer(Stream stream, int bufferLen = 0)
         {
             //将流读取位置初始到0
@@ -54,15 +55,16 @@ namespace DotCommon.Utility
             return buffer;
         }
 
-        /// <summary>将byte字节数组转换成流
+        /// <summary>将byte数组转换成流
         /// </summary>
+        /// <param name="buffer">二进制数据</param>
+        /// <returns></returns>
         public static Stream BufferToStream(byte[] buffer)
         {
             Stream stream = new MemoryStream(buffer);
             return stream;
         }
 
-        #endregion
 
     }
 }

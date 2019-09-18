@@ -7,9 +7,17 @@ using System.Reflection;
 
 namespace DotCommon.AutoMapper
 {
+    /// <summary>AutoMapper配置扩展
+    /// </summary>
     public static class AutoMapperConfigurationExtensions
     {
         private static readonly object SyncObject = new object();
+
+
+        /// <summary>创建AutoMapper特性标签自动映射
+        /// </summary>
+        /// <param name="configuration">配置</param>
+        /// <param name="type">类型</param>
         public static void CreateAutoAttributeMaps(this IMapperConfigurationExpression configuration, Type type)
         {
             lock (SyncObject)
@@ -21,6 +29,12 @@ namespace DotCommon.AutoMapper
             }
         }
 
+        /// <summary>创建AutoMapper特性标签自动映射
+        /// </summary>
+        /// <param name="configuration">配置</param>
+        /// <param name="type">类型</param>
+        /// <param name="targetTypes">目标类型</param>
+        /// <param name="memberList">成员集合</param>
         public static void CreateAutoAttributeMaps(this IMapperConfigurationExpression configuration, Type type, Type[] targetTypes, MemberList memberList)
         {
             //Get all the properties in the source that have the AutoMapKeyAttribute

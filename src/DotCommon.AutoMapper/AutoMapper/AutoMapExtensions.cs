@@ -6,6 +6,8 @@ using System.Reflection;
 
 namespace DotCommon.AutoMapper
 {
+    /// <summary>AutoMap扩展方法
+    /// </summary>
     public static class AutoMapExtensions
     {
         private static readonly object SyncObject = new object();

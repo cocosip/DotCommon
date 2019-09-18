@@ -12,13 +12,11 @@ namespace DotCommon.Utility
     /// </summary>
     public static class NetUtil
     {
-        /***************检测判断*************/
-
-        #region 检查设置的IP地址是否正确，返回正确的IP地址
-
 
         /// <summary>检查设置的端口号是否正确，并返回正确的端口号,无效端口号返回-1。
         /// </summary>
+        /// <param name="port">端口号</param>
+        /// <returns></returns>
         public static int GetValidPort(string port)
         {
             //声明返回的正确端口号
@@ -45,45 +43,36 @@ namespace DotCommon.Utility
             return validPort;
         }
 
-        #endregion
-
-        /****************转换**************/
-
-        #region 将字符串形式的IP地址转换成IPAddress对象
-
         /// <summary>将字符串形式的IP地址转换成IPAddress对象
-        /// </summary>        
-        public static IPAddress ToIpAddress(string ip)
+        /// </summary>
+        /// <param name="ipString">string类型IP地址</param>
+        /// <returns></returns>
+        public static IPAddress ToIpAddress(string ipString)
         {
-            return IPAddress.Parse(ip);
+            return IPAddress.Parse(ipString);
         }
 
         /// <summary>根据传入的IP地址详情,获取IP和端口号,IP地址的详情格式为 192.168.1.100:8080
         /// </summary>
-        // ReSharper disable once InconsistentNaming
-        public static IPEndPoint GetEndPoint(string ipValue)
+        /// <param name="ipString">string类型IP地址</param>
+        /// <returns></returns>
+        public static IPEndPoint GetEndPoint(string ipString)
         {
-            var value = ipValue.Split(':');
+            var value = ipString.Split(':');
             return new IPEndPoint(IPAddress.Parse(value[0]), int.Parse(value[1]));
         }
 
-        /// <summary>获取IP地址详情集合
+        /// <summary>根据string类型ip集合获取IPEndPoint集合
         /// </summary>
-        public static List<IPEndPoint> GetEndPoints(string ipValues)
+        /// <param name="ips">string类型IP地址</param>
+        /// <returns></returns>
+        public static List<IPEndPoint> GetEndPoints(string ips)
         {
-            var values = ipValues.Split(',');
+            var values = ips.Split(',');
             return values.Select(item => item.Split(':'))
                 .Select(value => new IPEndPoint(IPAddress.Parse(value[0]), int.Parse(value[1])))
                 .ToList();
         }
-
-
-
-        #endregion
-
-        /**************获取本机的相关数据***************/
-
-        #region 获取本机的计算机名
 
         /// <summary>获取本机的计算机名
         /// </summary>
@@ -92,20 +81,12 @@ namespace DotCommon.Utility
             return Dns.GetHostName();
         }
 
-        #endregion
-
-        #region 获取本机的局域网IPV6
-
         /// <summary>获取本机的局域网IPV6
         /// </summary>        
         public static List<IPAddress> GetMatchineIpv6s()
         {
             return Dns.GetHostEntry(LocalHostName()).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetworkV6).ToList();
         }
-
-        #endregion
-
-        #region 获取本机的局域网IPV4
 
         /// <summary> 获取本机的局域网IPV4
         /// </summary>
@@ -114,32 +95,21 @@ namespace DotCommon.Utility
             return Dns.GetHostEntry(LocalHostName()).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToList();
         }
 
-        #endregion
-
-        #region 获取本机在Internet网络的广域网IP
-
         /// <summary>获取本机在Internet网络的广域网IP
         /// </summary>
-        public static Task<IPAddress> GetWlan()
+        public static IPAddress GetWlan()
         {
-            var task = new TaskCompletionSource<IPAddress>();
-            //获取本机的IP列表,IP列表中的第一项是局域网IP，第二项是广域网IP
-            Dns.GetHostEntryAsync(LocalHostName()).ContinueWith(t =>
+            //计算机名
+            var hostName = LocalHostName();
+            var addressList = Dns.GetHostEntry(hostName).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToList();
+            if (addressList.Count == 2)
             {
-                if (t.IsCompleted)
-                {
-                    var addresses =
-                        t.Result.AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToList();
-                    if (addresses.Count >= 2)
-                    {
-                        task.SetResult(addresses[1]);
-                    }
-                }
-            });
-            return task.Task;
+                return addressList[1];
+            }
+            return addressList.FirstOrDefault();
         }
 
-        #endregion
+
 
     }
 }

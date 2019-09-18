@@ -2,7 +2,7 @@
 
 namespace DotCommon.Utility
 {
-    /// <summary>进制转换
+    /// <summary>进制转换工具类
     /// </summary>
     public static class HexUtil
     {

@@ -10,16 +10,23 @@ using System.IO;
 
 namespace DotCommon.Log4Net
 {
+    /// <summary>Log4Net日志管道
+    /// </summary>
     public class Log4NetProvider : ILoggerProvider
     {
         private readonly ILoggerRepository _loggerRepository;
         private readonly ConcurrentDictionary<string, Log4NetLogger> _loggers = new ConcurrentDictionary<string, Log4NetLogger>();
         private readonly Log4NetProviderOptions _options;
 
+        /// <summary>Ctor
+        /// </summary>
         public Log4NetProvider() : this(new Log4NetProviderOptions())
         {
 
         }
+
+        /// <summary>Ctor
+        /// </summary>
         public Log4NetProvider(Log4NetProviderOptions options)
         {
             _options = options;
@@ -39,12 +46,19 @@ namespace DotCommon.Log4Net
             }
         }
 
+        /// <summary>Ctor
+        /// </summary>
         public Log4NetProvider(string configFile) : this(new Log4NetProviderOptions(configFile))
         {
 
         }
 
+        /// <summary>创建日志记录对象
+        /// </summary>
         public ILogger CreateLogger() => CreateLogger(_options.Name);
+
+        /// <summary>创建日志记录对象
+        /// </summary>
         public ILogger CreateLogger(string categoryName)
         {
             return _loggers.GetOrAdd(categoryName, CreateLoggerImplementation);
@@ -61,12 +75,16 @@ namespace DotCommon.Log4Net
             return new Log4NetLogger(options);
         }
 
+        /// <summary>释放
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>释放
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             _loggers.Clear();

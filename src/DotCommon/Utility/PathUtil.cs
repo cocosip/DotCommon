@@ -11,9 +11,11 @@ namespace DotCommon.Utility
     public static class PathUtil
     {
 
-        /// <summary>If the path is absolute is return as is, otherwise is combined with AppDomain.CurrentDomain.SetupInformation.ApplicationBase
-        /// The path are always server relative path.
+        /// <summary>如果路径是绝对路径,则原样返回,否则就结合AppDomain.CurrentDomain.SetupInformation.ApplicationBase
+        /// 路径总是服务器的相对路径
         /// </summary>
+        /// <param name="path">路径地址</param>
+        /// <returns></returns>
         public static string LocateServerPath(string path = "")
         {
             if (!Path.IsPathRooted(path))
@@ -25,6 +27,8 @@ namespace DotCommon.Utility
 
         /// <summary>合并相对路径
         /// </summary>
+        /// <param name="relativePaths">多个相对路径数组</param>
+        /// <returns></returns>
         public static string CombineRelative(params string[] relativePaths)
         {
             var pathBuilder = new StringBuilder();
@@ -51,6 +55,9 @@ namespace DotCommon.Utility
 
         /// <summary>绝对目录回退,兼容Linux
         /// </summary>
+        /// <param name="path">绝对路径地址</param>
+        /// <param name="layerCount">回退层数</param>
+        /// <returns></returns>
         public static string BackDirectory(string path, int layerCount = 1)
         {
             if (!Path.IsPathRooted(path))
@@ -77,6 +84,8 @@ namespace DotCommon.Utility
 
         /// <summary>将相对路径转换成绝对路径
         /// </summary>
+        /// <param name="relativePath">相对路径地址</param>
+        /// <returns></returns>
         public static string MapPath(string relativePath)
         {
             string locatePath = LocateServerPath();
@@ -89,8 +98,10 @@ namespace DotCommon.Utility
             return Path.Combine(path, Path.Combine(usefulPaths.ToArray()));
         }
 
-        /// <summary>获取某个路径中文件的扩展名
+        /// <summary>获取某个路径,或者文件中的文件扩展名
         /// </summary>
+        /// <param name="path">路径或者文件地址</param>
+        /// <returns></returns>
         public static string GetPathExtension(string path)
         {
             if (!path.IsNullOrWhiteSpace() && path.IndexOf('.') >= 0)

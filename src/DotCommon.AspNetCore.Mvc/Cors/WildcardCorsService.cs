@@ -11,12 +11,19 @@ namespace DotCommon.AspNetCore.Mvc.Cors
     /// </summary>
     public class WildcardCorsService : CorsService
     {
+        /// <summary>通配符跨域代理名
+        /// </summary>
         public const string WildcardCorsPolicyName = "WildcardCors";
+
+        /// <summary>Ctor
+        /// </summary>
         public WildcardCorsService(IOptions<CorsOptions> options, ILoggerFactory loggerFactory) : base(options, loggerFactory)
         {
 
         }
 
+        /// <summary>EvaluateRequest
+        /// </summary>
         public override void EvaluateRequest(HttpContext context, CorsPolicy policy, CorsResult result)
         {
             var origin = context.Request.Headers[CorsConstants.Origin];
@@ -24,6 +31,8 @@ namespace DotCommon.AspNetCore.Mvc.Cors
             base.EvaluateRequest(context, policy, result);
         }
 
+        /// <summary>EvaluatePreflightRequest
+        /// </summary>
         public override void EvaluatePreflightRequest(HttpContext context, CorsPolicy policy, CorsResult result)
         {
             var origin = context.Request.Headers[CorsConstants.Origin];

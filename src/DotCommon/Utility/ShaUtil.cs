@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DotCommon.Utility
 {
-    /// <summary>SHA1算法
+    /// <summary>SHA1算法工具类
     /// </summary>
     public static class ShaUtil
     {

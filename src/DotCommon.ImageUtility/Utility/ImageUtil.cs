@@ -8,15 +8,10 @@ using System.Linq;
 
 namespace DotCommon.Utility
 {
-    /// <summary>图片的相关操作
+    /// <summary>图片工具类
     /// </summary>
-    public class ImageUtil
+    public static class ImageUtil
     {
-        protected ImageUtil()
-        {
-
-        }
-
         /// <summary>图片信息集合
         /// </summary>
         private static List<ImageInfo> Infos { get; set; }

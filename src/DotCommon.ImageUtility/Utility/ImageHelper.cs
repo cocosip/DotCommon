@@ -5,15 +5,10 @@ using System.IO;
 
 namespace DotCommon.Utility
 {
-    /// <summary>图片的一些操作
+    /// <summary>图片工具类
     /// </summary>
-    public class ImageHelper
+    public static class ImageHelper
     {
-        protected ImageHelper()
-        {
-
-        }
-
 
         /// <summary>图片压缩
         /// </summary>
@@ -38,7 +33,6 @@ namespace DotCommon.Utility
         /// <param name="sourcePath">源图片地址</param>
         /// <param name="targetPath">目标图片保存地址</param>
         /// <param name="quality">图片质量(1-100)</param>
-        /// <param name="extension">图片扩展名</param>
         public static void ImageCompress(string sourcePath, string targetPath, int quality)
         {
             var sourceImage = Image.FromFile(sourcePath);
@@ -47,9 +41,9 @@ namespace DotCommon.Utility
 
         /// <summary>图片压缩
         /// </summary>
-        /// <param name="image"></param>
-        /// <param name="quality"></param>
-        /// <param name="extension">图片扩展名</param>
+        /// <param name="image">图片</param>
+        /// <param name="quality">图片质量(1-100)</param>
+        /// <param name="imageFormat">图片格式</param>
         /// <returns></returns>
         public static Image ImageCompress(Image image, int quality, ImageFormat imageFormat = null)
         {
@@ -72,7 +66,7 @@ namespace DotCommon.Utility
         /// </summary>
         /// <param name="image">源图片</param>
         /// <param name="quality">图片质量(1-100)</param>
-        /// <param name="extension">图片扩展名</param>
+        /// <param name="imageFormat">图片格式</param>
         public static byte[] ImageCompressToBytes(Image image, int quality, ImageFormat imageFormat = null)
         {
             if (imageFormat == null)

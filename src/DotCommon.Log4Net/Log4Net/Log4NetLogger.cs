@@ -6,33 +6,55 @@ using System;
 
 namespace DotCommon.Log4Net
 {
+    /// <summary>Log4Net日志记录
+    /// </summary>
     public class Log4NetLogger : Microsoft.Extensions.Logging.ILogger
     {
         private readonly log4net.ILog _log;
+
+        /// <summary>日志名
+        /// </summary>
         public string Name => _log.Logger.Name;
+
+        /// <summary>Ctor
+        /// </summary>
         public Log4NetLogger() : this(new Log4NetProviderOptions())
         {
 
         }
+
+        /// <summary>Ctor
+        /// </summary>
         public Log4NetLogger(Log4NetProviderOptions options)
         {
             _log = LogManager.GetLogger(options.LoggerRepositoryName, options.Name);
         }
 
+        /// <summary>BeginScope
+        /// </summary>
         public IDisposable BeginScope<TState>(TState state)
         {
             return null;
         }
 
-        /// <summary>判断是否开启记录
+        /// <summary>判断是否开启该级别的记录
         /// </summary>
+        /// <param name="logLevel">日志级别</param>
+        /// <returns></returns>
         public bool IsEnabled(LogLevel logLevel)
         {
             var convertLogLevel = ConvertLogLevel(logLevel);
             return _log.Logger.IsEnabledFor(convertLogLevel);
         }
 
-
+        /// <summary>日志记录
+        /// </summary>
+        /// <typeparam name="TState"></typeparam>
+        /// <param name="logLevel">日志级别</param>
+        /// <param name="eventId">事件Id</param>
+        /// <param name="state">状态</param>
+        /// <param name="exception">异常</param>
+        /// <param name="formatter">格式化器</param>
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             if (!IsEnabled(logLevel))
@@ -74,6 +96,10 @@ namespace DotCommon.Log4Net
             }
         }
 
+        /// <summary>将Microsoft.Extensions.Logging的日志级别转换成Log4Net日志级别
+        /// </summary>
+        /// <param name="logLevel">Microsoft.Extensions.Logging日志级别</param>
+        /// <returns></returns>
         public Level ConvertLogLevel(LogLevel logLevel)
         {
             switch (logLevel)

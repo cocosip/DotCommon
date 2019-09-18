@@ -16,6 +16,8 @@ namespace DotCommon.AspNetCore.Mvc.Formatters
     /// </summary>
     public class RawRequestBodyFormatter : InputFormatter
     {
+        /// <summary>Ctor
+        /// </summary>
         public RawRequestBodyFormatter()
         {
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/plain"));

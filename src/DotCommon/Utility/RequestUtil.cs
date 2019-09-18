@@ -18,9 +18,6 @@ namespace DotCommon.Utility
             }
         }
 
-
-        #region 与HttpContext请求相关的其他数据
-
         /// <summary> 获取UserAgent集合
         /// </summary>
         private static Dictionary<string, string> GetUserAgentDictionary()
@@ -129,25 +126,21 @@ namespace DotCommon.Utility
             return dict;
         }
 
-        /// <summary>获取UserAgent的真实值
+        /// <summary>根据UserAgent key获取UserAgent的真实值
         /// </summary>
+        /// <param name="agentKey">UserAgent-Key</param>
+        /// <returns></returns>
         public static string GetUserAgent(string agentKey)
         {
             var dict = GetUserAgentDictionary();
-            string agent;
-            dict.TryGetValue(agentKey.ToLower(), out agent);
+            dict.TryGetValue(agentKey.ToLower(), out string agent);
             return agent;
         }
 
-        #endregion
-
-
-        /*****************请求相关的数据****************/
-
-        #region 判断是否为手机用户
-
-        /// <summary>判断是否为手机用户
+        /// <summary>根据UserAgent判断是否为手机用户
         /// </summary>
+        /// <param name="userAgent">UserAgent</param>
+        /// <returns></returns>
         public static bool IsMobile(string userAgent)
         {
             var reg = new Regex(
@@ -155,10 +148,6 @@ namespace DotCommon.Utility
                 RegexOptions.IgnoreCase | RegexOptions.Compiled);
             return reg.IsMatch(userAgent);
         }
-
-        #endregion
-
-        #region 获取手机的类型
 
         /// <summary>根据UserAgent获取平台类型
         /// </summary>
@@ -189,8 +178,10 @@ namespace DotCommon.Utility
             return agentFlag;
         }
 
-        /// <summary>是否在微信中
+        /// <summary>根据UserAgent判断是否在微信中
         /// </summary>
+        /// <param name="userAgent">UserAgent</param>
+        /// <returns></returns>
         public static bool IsWechatPlatform(string userAgent)
         {
             string[] weixinKeys = { "MicroMessenger" };
@@ -200,7 +191,7 @@ namespace DotCommon.Utility
             }
             return false;
         }
-        #endregion
+
 
     }
 

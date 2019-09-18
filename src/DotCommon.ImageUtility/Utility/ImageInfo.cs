@@ -4,6 +4,8 @@ using System.Linq;
 
 namespace DotCommon.Utility
 {
+    /// <summary>图片信息
+    /// </summary>
     public class ImageInfo
     {
         /// <summary>ImageFormat
@@ -25,12 +27,15 @@ namespace DotCommon.Utility
             return Extensions.FirstOrDefault();
         }
 
-
+        /// <summary>Ctor
+        /// </summary>
         public ImageInfo()
         {
 
         }
 
+        /// <summary>Ctor
+        /// </summary>
         public ImageInfo(ImageFormat imageFormat, string formatName, params string[] extensions)
         {
             ImageFormat = imageFormat;

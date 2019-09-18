@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+
 namespace DotCommon.Encrypt
 {
     /// <summary>AES加密解密,16位密钥对应128位加密,24位密钥对应192位加密,32位密钥对应256位加密

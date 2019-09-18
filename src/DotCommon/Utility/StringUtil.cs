@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
 {
-    /// <summary>字符相关操作
+    /// <summary>字符工具类
     /// </summary>
     public static class StringUtil
     {

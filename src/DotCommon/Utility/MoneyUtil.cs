@@ -6,9 +6,11 @@ namespace DotCommon.Utility
     /// </summary>
     public static class MoneyUtil
     {
-        #region 将decimal类型的数据转换成中文人民币
-        /// <summary> 转换人民币大小金额 
-        /// </summary> 
+
+        /// <summary>将decimal数字转换为答谢人民币
+        /// </summary>
+        /// <param name="num">数字</param>
+        /// <returns></returns>
         public static string GetRmb(decimal num)
         {
             string str1 = "零壹贰叁肆伍陆柒捌玖";            //0-9所对应的汉字 
@@ -120,19 +122,16 @@ namespace DotCommon.Utility
             }
             return str5;
         }
-        #endregion
 
 
-        #region 将string类型数字转换成中文人民币
-
-        /// <summary> 
-        /// 一个重载，将字符串先转换成数字在调用CmycurD(decimal num) 
-        /// </summary> 
+        /// <summary> 将string类型数字转换成中文人民币
+        /// </summary>
+        /// <param name="numstr">string类型数据</param>
+        /// <returns></returns>
         public static string GetRmb(string numstr)
         {
             decimal num = Convert.ToDecimal(numstr);
             return GetRmb(num);
         }
-        #endregion
     }
 }

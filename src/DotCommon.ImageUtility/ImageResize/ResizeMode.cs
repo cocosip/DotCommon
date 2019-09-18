@@ -2,12 +2,8 @@
 {
     /// <summary>压缩模式
     /// </summary>
-    public class ResizeMode
+    public static class ResizeMode
     {
-        protected ResizeMode()
-        {
-
-        }
 
         /// <summary>等比例缩放
         /// </summary>

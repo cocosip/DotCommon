@@ -11,6 +11,8 @@ using System;
 
 namespace DotCommon.AspNetCore.Mvc
 {
+    /// <summary>DotCommon转换扩展
+    /// </summary>
     public static class DotCommonConventionExtensions
     {
         /// <summary>动态生成控制器

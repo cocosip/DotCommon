@@ -43,18 +43,22 @@ namespace DotCommon.ImageResize
         /// </summary>
         public int CropY { get; set; }
 
+        /// <summary>是否存在参数
+        /// </summary>
         public bool HasParams()
         {
             return (Width > 0 || Height > 0) && !Format.IsNullOrWhiteSpace() && !Mode.IsNullOrWhiteSpace();
         }
 
-
+        /// <summary>Ctor
+        /// </summary>
         public ResizeParameter()
         {
 
         }
 
-
+        /// <summary>Override ToString
+        /// </summary>
         public override string ToString()
         {
             var sb = new StringBuilder();

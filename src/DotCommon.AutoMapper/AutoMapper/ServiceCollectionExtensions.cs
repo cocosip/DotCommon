@@ -8,6 +8,8 @@ using IObjectMapper = DotCommon.ObjectMapping.IObjectMapper;
 
 namespace DotCommon.AutoMapper
 {
+    /// <summary>ServiceCollection扩展
+    /// </summary>
     public static class ServiceCollectionExtensions
     {
 

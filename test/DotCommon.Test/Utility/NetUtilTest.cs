@@ -65,9 +65,8 @@ namespace DotCommon.Test.Utility
         [Fact]
         public void GetWlan_Test()
         {
-            var task = NetUtil.GetWlan();
-            task.Wait();
-            Assert.True(task.Result != null);
+            var iPAddress = NetUtil.GetWlan();
+            Assert.True(iPAddress != null);
         }
     }
 }

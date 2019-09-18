@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
 {
-    /// <summary>拼音相关帮助类
+    /// <summary>拼音工具类
     /// </summary>
     public static class PinYinUtil
     {
@@ -94,10 +94,12 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 将汉字转换成全拼的拼音
+
 
         /// <summary>汉字转换成全拼的拼音
         /// </summary>
+        /// <param name="chStr">中文字符串</param>
+        /// <returns></returns>
         public static string ConvertToPinYin(string chStr)
         {
             var pysb = new StringBuilder();
@@ -176,13 +178,10 @@ namespace DotCommon.Utility
             return pysb.ToString(); //返回获取到的汉字拼音
         }
 
-        #endregion
-
-        #region 获取汉字的拼音首字母,两种不同的方式获取
-
-        /// <summary>
-        /// 取汉字拼音的首字母
+        /// <summary>取汉字拼音的首字母
         /// </summary>
+        /// <param name="chStr">中文字符串</param>
+        /// <returns></returns>
         public static string GetCodstring(string chStr)
         {
             var charArray = chStr.ToCharArray();
@@ -308,6 +307,6 @@ namespace DotCommon.Utility
             }
             return result.ToString();
         }
-        #endregion
+ 
     }
 }

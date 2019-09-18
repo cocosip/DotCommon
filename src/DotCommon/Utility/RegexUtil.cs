@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
 {
-    /// <summary>正则表达式验证
+    /// <summary>正则表达式工具类
     /// </summary>
     public static class RegexUtil
     {

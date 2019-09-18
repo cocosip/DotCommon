@@ -18,6 +18,9 @@ namespace DotCommon.ImageResizer.AspNetCore.Mvc
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _env;
         private readonly IImageResizeService _imageResizeService;
+        
+        /// <summary>Ctor
+        /// </summary>
         public ImageResizerMiddleware(RequestDelegate next, IHostingEnvironment env, ILoggerFactory loggerFactory, IImageResizeService imageResizeService)
         {
             _next = next;
