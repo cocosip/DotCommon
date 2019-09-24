@@ -1,16 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DotCommon.DependencyInjection;
+using DotCommon.ImageResizer.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using DotCommon.AspNetCore.Mvc;
 
-namespace DotCommon.ImageResizer.AspNetCore.Mvc.Demo
+namespace DotCommon.ImageResizer.Demo
 {
     public class Startup
     {
@@ -24,18 +22,27 @@ namespace DotCommon.ImageResizer.AspNetCore.Mvc.Demo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-            services
-                .AddDotCommon()
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddDotCommon()
                 .AddImageResizer(c =>
                 {
                     c.EnableImageCache = true;
                 });
 
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -43,25 +50,16 @@ namespace DotCommon.ImageResizer.AspNetCore.Mvc.Demo
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
             }
-            app.ConfigureDotCommon();
+
+            app.ApplicationServices.ConfigureDotCommon();
             //DotCommon
             app.UseImageResizer();
-
-
             app.UseStaticFiles();
+            app.UseCookiePolicy();
 
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvc();
         }
     }
 }
