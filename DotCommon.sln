@@ -52,6 +52,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageUtility.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageResizer.AspNetCore.Mvc", "src\DotCommon.ImageResizer.AspNetCore.Mvc\DotCommon.ImageResizer.AspNetCore.Mvc.csproj", "{89C5B8D5-2D56-4B01-9AEA-9BA1F5796011}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageResizer.AspNetCore.Mvc.Demo", "samples\DotCommon.ImageResizer.AspNetCore.Mvc.Demo\DotCommon.ImageResizer.AspNetCore.Mvc.Demo.csproj", "{93BDEECA-DDDB-41EF-BF1C-EA644A8155A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +116,10 @@ Global
 		{89C5B8D5-2D56-4B01-9AEA-9BA1F5796011}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89C5B8D5-2D56-4B01-9AEA-9BA1F5796011}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89C5B8D5-2D56-4B01-9AEA-9BA1F5796011}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93BDEECA-DDDB-41EF-BF1C-EA644A8155A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93BDEECA-DDDB-41EF-BF1C-EA644A8155A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93BDEECA-DDDB-41EF-BF1C-EA644A8155A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93BDEECA-DDDB-41EF-BF1C-EA644A8155A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -124,6 +130,7 @@ Global
 		{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9} = {9B36842E-C0C0-4613-BC3B-774A40DA6B4D}
 		{CE305FA3-A5F3-4D5D-8753-E12D1DA327F8} = {9B36842E-C0C0-4613-BC3B-774A40DA6B4D}
 		{BD656C78-0D84-4FA3-AF30-87964DA57D51} = {834211DA-7385-4208-81A9-A807405FCCFA}
+		{93BDEECA-DDDB-41EF-BF1C-EA644A8155A8} = {9B36842E-C0C0-4613-BC3B-774A40DA6B4D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17831D3C-78C0-4535-AC9A-7CA19B13DA03}

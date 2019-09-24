@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 
 namespace DotCommon.AspNetCore.Mvc.Demo
@@ -23,9 +24,9 @@ namespace DotCommon.AspNetCore.Mvc.Demo
             Configuration = configuration;
         }
 
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
-            var mvcBuilder = services.AddMvc();
+            var mvcBuilder = services.AddControllersWithViews();
             mvcBuilder.AddControllersAsServices();
 
             services.AddTransient<HomeController>();
@@ -47,7 +48,7 @@ namespace DotCommon.AspNetCore.Mvc.Demo
                 {
                     o.ConventionalControllers.Create(this.GetType().Assembly, c =>
                     {
-                        c.RootPath = "api";
+                        c.RootPath = "services";
                         c.UrlActionNameNormalizer = f =>
                         {
                             return "";
@@ -55,15 +56,35 @@ namespace DotCommon.AspNetCore.Mvc.Demo
                     });
                 });
 
-            return services.BuildServiceProvider();
+            // return services.BuildServiceProvider();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //Cors
 
-            app.UseMvc();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
             app.ConfigureDotCommon();
+
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
 
     }
