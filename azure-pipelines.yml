@@ -6,7 +6,10 @@
 trigger:
   branches:
     include:
-      - '*'
+    - master
+    - refs/tags/*
+    - dev
+    - develop
 jobs:
   - job: Windows
     pool:
