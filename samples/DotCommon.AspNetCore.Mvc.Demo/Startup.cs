@@ -11,27 +11,25 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
+using Microsoft.Extensions.Hosting;
 
 namespace DotCommon.AspNetCore.Mvc.Demo
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IServiceProvider ConfigureServices(IServiceCollection services)
-        {
-            var mvcBuilder = services.AddMvc();
-            mvcBuilder.AddControllersAsServices();
+        public IConfiguration Configuration { get; }
 
+        public void ConfigureServices(IServiceCollection services)
+        {
+            var mvcBuilder = services.AddControllersWithViews();
+            mvcBuilder.AddControllersAsServices();
             services.AddTransient<HomeController>();
             services.AddTransient<UserService>();
-
-
             services.Configure<MvcOptions>(o => { });
             services
                 .AddLogging(l =>
@@ -47,23 +45,39 @@ namespace DotCommon.AspNetCore.Mvc.Demo
                 {
                     o.ConventionalControllers.Create(this.GetType().Assembly, c =>
                     {
-                        c.RootPath = "api";
+                        c.RootPath = "services";
                         c.UrlActionNameNormalizer = f =>
                         {
                             return "";
                         };
                     });
                 });
-
-            return services.BuildServiceProvider();
+            //return services.BuildServiceProvider();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //Cors
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
 
-            app.UseMvc();
             app.ConfigureDotCommon();
+            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+             
         }
 
     }
