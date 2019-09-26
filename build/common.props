@@ -4,7 +4,6 @@
     <LangVersion>latest</LangVersion>
     <Authors>virtual</Authors>
     <Product>DotCommon</Product>
-    <PackageIcon>https://github.com/cocosip/DotCommon</PackageIcon>
     <PackageProjectUrl>https://github.com/cocosip/DotCommon</PackageProjectUrl>
     <PackageLicense>https://github.com/cocosip/DotCommon/blob/master/LICENSE</PackageLicense>
     <RepositoryType>git</RepositoryType>
