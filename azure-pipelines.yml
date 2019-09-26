@@ -1,0 +1,34 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+      - '*'
+jobs:
+  - job: Windows
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: DotNetCoreInstaller@0
+      inputs:
+        version: '3.0.100'
+    - script: |
+        ./build.ps1
+      displayName: 'Run build.ps1'
+
+  - job: Linux
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: DotNetCoreInstaller@0
+      inputs:
+        version: '3.0.100'
+    - script: |
+        chmod +x ./build.sh
+      displayName: 'Chmod build.sh'
+    - script: |
+        ./build.sh
+      displayName: 'Run build.sh'
