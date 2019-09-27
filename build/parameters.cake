@@ -67,22 +67,26 @@ public class BuildParameters
         var versionQuality = doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionQuality").InnerText;
         versionQuality = string.IsNullOrWhiteSpace(versionQuality) ? null : versionQuality;
 
-        var suffix = "";
-
-        //如果本地发布,就加dev,如果是nuget发布,就加preview
-        if (IsLocalBuild)
-        {
-            suffix += "dev-" + Util.CreateStamp();
-        }
-        else
-        {
-            //需要发布到Nuget
-            if (ShouldPublishToNuGet && !string.IsNullOrWhiteSpace(versionQuality))
+		var suffix=doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionSuffix").InnerText;
+        
+		if(string.IsNullOrWhiteSpace(suffix)){
+		    //如果本地发布,就加dev,如果是nuget发布,就加preview
+            if (IsLocalBuild)
             {
-                suffix += "preview";
+                suffix += "dev-" + Util.CreateStamp();
             }
-        }
+            else
+            {
+                //需要发布到Nuget
+                if (ShouldPublishToNuGet && !string.IsNullOrWhiteSpace(versionQuality))
+                {
+                    suffix += "preview";
+                }
+            }
+		}
         suffix = string.IsNullOrWhiteSpace(suffix) ? null : suffix;
+		
+		context.Information($"Suffix:{suffix}");
 
         Version =
             new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), versionQuality);
