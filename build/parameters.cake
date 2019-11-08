@@ -76,21 +76,14 @@ public class BuildParameters
         else
         {
             //需要发布到Nuget
-            if (string.IsNullOrWhiteSpace(suffix))
+            if (ShouldPublishToNuGet && !string.IsNullOrWhiteSpace(versionQuality))
             {
-                //需要发布到Nuget
-                if (ShouldPublishToNuGet)
-                {
-                    if (string.IsNullOrWhiteSpace(versionQuality))
-                    {
-                        suffix = string.IsNullOrWhiteSpace(suffix) ? "" : suffix;
-                    }
-                    else
-                    {
-                        suffix = "";
-                    }
-				}
+                suffix = string.IsNullOrWhiteSpace(suffix) ? "Pre" : suffix;
             }
+			else
+			{
+			    suffix = "";
+			}
         }
         suffix = string.IsNullOrWhiteSpace(suffix) ? null : suffix;
 		
