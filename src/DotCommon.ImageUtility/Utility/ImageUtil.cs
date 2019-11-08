@@ -30,27 +30,32 @@ namespace DotCommon.Utility
 
         static ImageUtil()
         {
-            Infos = new List<ImageInfo>();
-            Infos.Add(new ImageInfo(ImageFormat.Jpeg, "Jpeg", ".jpeg", ".jpg"));
-            Infos.Add(new ImageInfo(ImageFormat.Png, "Png", ".png"));
-            Infos.Add(new ImageInfo(ImageFormat.Gif, "Gif", ".Gif"));
-            Infos.Add(new ImageInfo(ImageFormat.Bmp, "Bmp", ".bmp"));
-            Infos.Add(new ImageInfo(ImageFormat.Icon, "Icon", ".icon", ".ico"));
-            Infos.Add(new ImageInfo(ImageFormat.Exif, "Exif", ".exif"));
+            Infos = new List<ImageInfo>
+            {
+                new ImageInfo(ImageFormat.Jpeg, "Jpeg", ".jpeg", ".jpg"),
+                new ImageInfo(ImageFormat.Png, "Png", ".png"),
+                new ImageInfo(ImageFormat.Gif, "Gif", ".Gif"),
+                new ImageInfo(ImageFormat.Bmp, "Bmp", ".bmp"),
+                new ImageInfo(ImageFormat.Icon, "Icon", ".icon", ".ico"),
+                new ImageInfo(ImageFormat.Exif, "Exif", ".exif"),
+                new ImageInfo(ImageFormat.Tiff, "Tiff", ".tiff")
+            };
 
             //颜色字典
 
-            ColorDict = new Dictionary<string, Color>();
-            ColorDict.Add("Red", Color.Red);
-            ColorDict.Add("Blue", Color.Blue);
-            ColorDict.Add("Yellow", Color.Yellow);
-            ColorDict.Add("White", Color.White);
-            ColorDict.Add("Black", Color.Black);
-            ColorDict.Add("Pink", Color.Pink);
-            ColorDict.Add("Green", Color.Green);
-            ColorDict.Add("Gray", Color.Gray);
-            ColorDict.Add("Orange", Color.Orange);
-            ColorDict.Add("Transparent", Color.Transparent);
+            ColorDict = new Dictionary<string, Color>
+            {
+                { "Red", Color.Red },
+                { "Blue", Color.Blue },
+                { "Yellow", Color.Yellow },
+                { "White", Color.White },
+                { "Black", Color.Black },
+                { "Pink", Color.Pink },
+                { "Green", Color.Green },
+                { "Gray", Color.Gray },
+                { "Orange", Color.Orange },
+                { "Transparent", Color.Transparent }
+            };
         }
 
 
