@@ -20,6 +20,10 @@ namespace DotCommon.Http
         /// </summary>
         public DataFormat DataFormat { get; set; } = DataFormat.None;
 
+        /// <summary>MIME content type of the parameter
+        /// </summary>
+        public string ContentType { get; set; }
+
         /// <summary>参数
         /// </summary>
         public List<Parameter> Parameters { get; set; } = new List<Parameter>();
@@ -73,6 +77,25 @@ namespace DotCommon.Http
         /// </summary>
         public HttpBuilder AddParameter(string name, object value, ParameterType type)
          => AddParameter(new Parameter(name, value, type));
+
+        /// <summary>添加参数
+        /// </summary>
+        public HttpBuilder AddParameter(string name, object value, string contentType, ParameterType type)
+         => AddParameter(new Parameter(name, value, contentType, type));
+
+        /// <summary>添加Json参数
+        /// </summary>
+        public HttpBuilder AddJsonBody(object value) => AddParameter(new Parameter("", value, ContentTypeConsts.Json, ParameterType.RequestBody)
+        {
+            DataFormat = DataFormat.Json
+        });
+
+        /// <summary>添加Xml参数
+        /// </summary>
+        public HttpBuilder AddXmlBody(object value) => AddParameter(new Parameter("", value, ContentTypeConsts.Xml, ParameterType.RequestBody)
+        {
+            DataFormat = DataFormat.Json
+        });
 
         /// <summary>添加文件
         /// </summary>

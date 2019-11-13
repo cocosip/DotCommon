@@ -88,4 +88,17 @@
         /// </summary>
         COPY
     }
+
+    /// <summary>Content-Type
+    /// </summary>
+    public static class ContentTypeConsts
+    {
+        /// <summary>Json
+        /// </summary>
+        public const string Json = "application/json";
+
+        /// <summary>Xml
+        /// </summary>
+        public const string Xml = "application/xml";
+    }
 }
