@@ -161,12 +161,6 @@ namespace DotCommon.Utility
             return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
         }
 
-        /// <summary>获得下一个ID,使用默认的0L,OL作为workerId与datacenterId
-        /// </summary>
-        public static long GenerateNextId()
-        {
-            return new SnowflakeDistributeId().NextId();
-        }
 
     }
 }

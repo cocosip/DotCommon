@@ -16,7 +16,7 @@ namespace DotCommon.Test.Utility
 
             var v1 = snowflake.NextId();
             var v2 = snowflake.NextId();
-            var v3 = SnowflakeDistributeId.GenerateNextId();
+            var v3 = new SnowflakeDistributeId().NextId();
 
             Assert.True(v1 > 0);
             Assert.True(v2 > 0);
