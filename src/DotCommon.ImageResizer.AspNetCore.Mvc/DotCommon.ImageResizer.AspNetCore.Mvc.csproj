@@ -2,7 +2,7 @@
 
   <Import Project="..\..\build\common.props" />
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>DotCommon.ImageResizer.AspNetCore.Mvc</AssemblyName>
     <PackageId>DotCommon.ImageResizer.AspNetCore.Mvc</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
@@ -15,17 +15,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
-    <DocumentationFile>bin\Debug\netcoreapp3.0\DotCommon.ImageResizer.AspNetCore.Mvc.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netcoreapp3.1\DotCommon.ImageResizer.AspNetCore.Mvc.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netcoreapp3.0\DotCommon.ImageResizer.AspNetCore.Mvc.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\netcoreapp3.1\DotCommon.ImageResizer.AspNetCore.Mvc.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.0" />
   </ItemGroup>
 
   <ItemGroup>
