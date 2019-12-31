@@ -18,9 +18,9 @@ namespace DotCommon.Threading
 
         /// <summary>Ctor
         /// </summary>
-        public AmbientDataContextAmbientScopeProvider(ILoggerFactory loggerFactory, IAmbientDataContext dataContext)
+        public AmbientDataContextAmbientScopeProvider(ILogger<AmbientDataContextAmbientScopeProvider<object>> logger, IAmbientDataContext dataContext)
         {
-            _logger = loggerFactory.CreateLogger(DotCommonConsts.LoggerName);
+            _logger = logger;
             _dataContext = dataContext;
         }
 

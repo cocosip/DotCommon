@@ -15,9 +15,9 @@ namespace DotCommon.Scheduling
 
         /// <summary>Ctor
         /// </summary>
-        public ScheduleService(ILoggerFactory loggerFactory)
+        public ScheduleService(ILogger<ScheduleService> logger)
         {
-            _logger = loggerFactory.CreateLogger(DotCommonConsts.LoggerName);
+            _logger = logger;
         }
 
         /// <summary>开始一个调度任务

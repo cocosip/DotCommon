@@ -19,10 +19,10 @@ namespace DotCommon.ImageResizer
 
         /// <summary>Ctor
         /// </summary>
-        public ImageResizeService(IDistributedCache<ImageCacheItem> imageCache, ILoggerFactory loggerFactory, ImageResizerOption option)
+        public ImageResizeService(ILogger<ImageResizeService> logger, IDistributedCache<ImageCacheItem> imageCache, ImageResizerOption option)
         {
+            _logger = logger;
             _imageCache = imageCache;
-            _logger = loggerFactory.CreateLogger(DotCommonConsts.LoggerName);
             _option = option;
         }
 

@@ -20,9 +20,9 @@ namespace DotCommon.Scheduling
 
         /// <summary>Initialize a new worker with the specified action.
         /// </summary>
-        public Worker(ILoggerFactory loggerFactory, string actionName, Action action)
+        public Worker(ILogger<Worker> logger, string actionName, Action action)
         {
-            _logger = loggerFactory.CreateLogger(DotCommonConsts.LoggerName);
+            _logger = logger;
             _actionName = actionName;
             _action = action;
             _status = Status.Initial;

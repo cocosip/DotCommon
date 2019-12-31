@@ -1,4 +1,5 @@
 ﻿using DotCommon.Scheduling;
+using Microsoft.Extensions.Logging;
 using System.Threading;
 using Xunit;
 
@@ -10,7 +11,8 @@ namespace DotCommon.Test.Serializing
         public void Work_Test()
         {
             var index = 0;
-            var worker = new Worker(new MockLoggerFactory(), "a1", () =>
+            var logger = new MockLoggerFactory().CreateLogger("Worker") as ILogger<Worker>;
+            var worker = new Worker(logger, "a1", () =>
             {
                 Interlocked.Increment(ref index);
 
