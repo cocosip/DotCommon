@@ -23,10 +23,13 @@ namespace DotCommon.Test.Dependency
 
             IServiceCollection services2 = new ServiceCollection();
             services2.AddTransient<IDependencyTestService, DependencyTestService>();
-            services2.AddServiceWhenNull<IDependencyTestService>(ServiceLifetime.Singleton, s =>
+            services2.AddServiceWhenNull(d =>
             {
-                s.AddTransient<IDependencyTestService, DependencyTestService>();
-            });
+                return d.ServiceType == typeof(IDependencyTestService)&&d.ImplementationType==typeof(DependencyTestService);
+            }, s =>
+             {
+                 s.AddTransient<IDependencyTestService, DependencyTestService>();
+             });
             var provider2 = services2.BuildServiceProvider();
             var dependencyTestService2 = provider2.GetService<IDependencyTestService>();
             Assert.Equal("123", dependencyTestService2.GetName());

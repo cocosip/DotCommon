@@ -1,4 +1,5 @@
-﻿using DotCommon.Scheduling;
+﻿using DotCommon.Logging;
+using DotCommon.Scheduling;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace DotCommon.Test.Serializing
         public void ScheduleService_Test()
         {
             var index = 0;
-            var logger = new MockLoggerFactory().CreateLogger("ScheduleService") as ILogger<ScheduleService>;
+            var logger = EmptyLoggerHelper.GetLogger<ScheduleService>();
             IScheduleService scheduleService = new ScheduleService(logger);
             scheduleService.StartTask("t1", () => { Interlocked.Increment(ref index); }, 50, 50);
             Thread.Sleep(100);
