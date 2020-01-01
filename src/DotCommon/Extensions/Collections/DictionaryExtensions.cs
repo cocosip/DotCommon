@@ -80,16 +80,5 @@ namespace DotCommon.Extensions
             return dictionary.GetOrAdd(key, k => factory());
         }
 
-        /// <summary>取值或者添加到字典
-        /// </summary>
-        /// <typeparam name="TKey">Key的泛型类型</typeparam>
-        /// <typeparam name="TValue">值的泛型类型</typeparam>
-        /// <param name="dictionary">字典</param>
-        /// <param name="key">Key</param>
-        /// <returns></returns>
-        public static bool Remove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary, TKey key)
-        {
-            return dictionary.TryRemove(key, out TValue value);
-        }
     }
 }
