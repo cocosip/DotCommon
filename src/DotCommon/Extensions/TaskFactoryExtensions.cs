@@ -17,10 +17,18 @@ namespace DotCommon.Extensions
         public static Task StartDelayedTask(this TaskFactory factory, int millisecondsDelay, Action action)
         {
             // Validate arguments
-            if (factory == null) throw new ArgumentNullException(nameof(factory));
-            if (millisecondsDelay < 0) throw new ArgumentOutOfRangeException(nameof(millisecondsDelay));
-            if (action == null) throw new ArgumentNullException(nameof(action));
-
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+            if (millisecondsDelay < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(millisecondsDelay));
+            }
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
             // Check for a pre-canceled token
             if (factory.CancellationToken.IsCancellationRequested)
             {
