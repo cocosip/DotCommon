@@ -57,18 +57,6 @@ namespace DotCommon.Extensions
                 : enumerable;
         }
 
-        /// <summary>遍历
-        /// </summary>
-        /// <typeparam name="T">泛型类型</typeparam>
-        /// <param name="enumerable">IEnumerable对象</param>
-        /// <param name="action">Action委托函数</param>
-        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
-        {
-            foreach (var element in enumerable)
-            {
-                action(element);
-            }
-        }
 
         /// <summary>是否为安全的IEnumerable对象
         /// </summary>
@@ -99,10 +87,14 @@ namespace DotCommon.Extensions
         public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
         {
             if (enumerable == null)
+            {
                 return true;
+            }
             var coll = enumerable as ICollection;
             if (coll != null)
+            {
                 return coll.Count == 0;
+            }
             return !enumerable.Any();
         }
 

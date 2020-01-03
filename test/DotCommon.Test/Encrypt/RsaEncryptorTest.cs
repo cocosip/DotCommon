@@ -24,11 +24,12 @@ namespace DotCommon.Test.Encrypt
         {
             var str = "你好,中国!";
             var rsaEncrypter = new RsaEncryptor(PublicKey, PrivateKey);
+            rsaEncrypter.SetHashAlg("RSA");
             var signed = rsaEncrypter.SignData(str);
             Assert.True(rsaEncrypter.VerifyData(str, signed));
 
             var rsa2Encrypter = new RsaEncryptor(PublicKey, PrivateKey);
-            rsa2Encrypter.SetHashAlg("RSA2");
+            rsa2Encrypter.SetHashAlg("RSA");
             var signed2 = rsa2Encrypter.SignData(str);
             Assert.True(rsa2Encrypter.VerifyData(str, signed2));
             Assert.Equal(signed, signed2);

@@ -50,7 +50,7 @@ namespace DotCommon.Test.Extensions
         }
 
         [Fact]
-        public void ForEach_Test()
+        public void Contains_Test()
         {
             var list1 = new List<int>();
             list1.Add(101);
@@ -58,26 +58,41 @@ namespace DotCommon.Test.Extensions
             list1.Add(105);
             list1.Add(107);
 
-            var list2 = new List<int>();
+            var v1 = list1.Contains(x => x == 3);
+            Assert.False(v1);
 
-            list1.ForEach(x =>
-            {
-                list2.Add(x);
-            });
+            var v2 = list1.Contains(x => x == 101);
+            Assert.True(v2);
 
-            Assert.Equal(4, list2.Count);
-            Assert.Contains(101, list2);
-            Assert.Contains(103, list2);
-            Assert.Contains(105, list2);
-            Assert.Contains(107, list2);
+        }
 
-            var list3 = list1.Safe();
-            Assert.Equal(4, list3.Count());
+        [Fact]
+        public void Safe_Test()
+        {
+            List<int> list1 = null;
+            var v1 = list1.Safe();
+            Assert.NotNull(v1);
+        }
+
+        [Fact]
+        public void IsEmpty_Test()
+        {
+            var list1 = new List<string>();
+            var v1 = list1.IsEmpty();
+            Assert.True(v1);
+
+            list1.Add("1");
+            list1.Add("100");
+            list1.Add("300");
+            var v2 = list1.IsEmpty();
+            Assert.False(v2);
+            var v3 = list1.IsNotEmpty();
+            Assert.True(v3);
+
 
             list1 = null;
-            var list4 = list1.Safe();
-            Assert.Empty(list4);
-
+            var v4 = list1.IsEmpty();
+            Assert.True(v4);
 
         }
 
