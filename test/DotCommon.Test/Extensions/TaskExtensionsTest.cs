@@ -23,11 +23,11 @@ namespace DotCommon.Test.Extensions
 
             Task<int> t2 = Task.Run(() =>
             {
-                Thread.Sleep(20);
+                Thread.Sleep(100);
                 return 2;
             });
 
-            var v2 = t2.WaitResult(10);
+            var v2 = t2.WaitResult(1);
             Assert.Equal(0, v2);
         }
 
@@ -41,12 +41,12 @@ namespace DotCommon.Test.Extensions
 
             Task t2 = Task.Run(() =>
             {
-                Thread.Sleep(20);
+                Thread.Sleep(100);
             });
 
             var aggregateException = Assert.Throws<AggregateException>(() =>
             {
-                t2.TimeoutAfter(10).Wait();
+                t2.TimeoutAfter(1).Wait();
             });
 
             var timeoutException = aggregateException.InnerExceptions.FirstOrDefault(x => x.GetType() == typeof(TimeoutException));
