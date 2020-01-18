@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System;
 using System.IO;
+using System.Text;
 
 namespace DotCommon.ConsoleTest
 {
@@ -55,14 +56,25 @@ namespace DotCommon.ConsoleTest
             //var a = aes.Encrypt("hello");
             //Console.WriteLine(a);
 
-            var logger = provider.GetService<ILogger<Program>>();
-            logger.LogError("Hello!{0}", DateTime.Now.ToString("YYYY-MM-DD HH:mm:ss"));
+            //var logger = provider.GetService<ILogger<Program>>();
+            //logger.LogError("Hello!{0}", DateTime.Now.ToString("YYYY-MM-DD HH:mm:ss"));
 
 
-            var keyPair = RsaUtil.GenerateFormatKeyPair(keySize: 512);
+            //var keyPair = RsaUtil.GenerateFormatKeyPair(keySize: 512);
 
-            File.WriteAllText(@"D:\public_key", keyPair.PublicKey);
-            File.WriteAllText(@"D:\private_key", keyPair.PrivateKey);
+            //File.WriteAllText(@"D:\public_key", keyPair.PublicKey);
+            //File.WriteAllText(@"D:\private_key", keyPair.PrivateKey);
+
+
+            var str = "13000C******6";
+
+            //var id = ShaUtil.GetHex16StringSha256Hash(str);
+            var id = ShaUtil.GetHex16StringSha1Hash(str);
+            //var id = Md5Encryptor.GetMd5(str);
+
+            Console.WriteLine("Id:{0},长度:{1}", id, id.Length);
+
+
 
             Console.WriteLine("完成");
             Console.ReadLine();

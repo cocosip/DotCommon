@@ -83,5 +83,43 @@ namespace DotCommon.Utility
                 return hashBytes;
             }
         }
+
+
+        /// <summary>获取十六进制字符串的Sha512 Hash
+        /// </summary>
+        /// <param name="source">字符串</param>
+        /// <param name="encode">编码</param>
+        /// <returns></returns>
+        public static string GetHex16StringSha512Hash(string source, string encode = "utf-8")
+        {
+            var sourceBytes = Encoding.GetEncoding(encode).GetBytes(source);
+            var hashBytes = GetSha512Hash(sourceBytes);
+            return ByteBufferUtil.ByteBufferToHex16(hashBytes);
+        }
+
+        /// <summary>获取字符串的Sha512-Hash Base64值
+        /// </summary>
+        /// <param name="source">字符串</param>
+        /// <param name="encode">编码</param>
+        /// <returns></returns>
+        public static string GetBase64StringSha512Hash(string source, string encode = "utf-8")
+        {
+            var sourceBytes = Encoding.GetEncoding(encode).GetBytes(source);
+            var hashBytes = GetSha512Hash(sourceBytes);
+            return Convert.ToBase64String(hashBytes);
+        }
+
+        /// <summary>获取二进制的Sha512值
+        /// </summary>
+        /// <param name="sourceBuffer">二进制数据</param>
+        /// <returns></returns>
+        public static byte[] GetSha512Hash(byte[] sourceBuffer)
+        {
+            using (var sha512 = SHA512.Create())
+            {
+                var hashBytes = sha512.ComputeHash(sourceBuffer);
+                return hashBytes;
+            }
+        }
     }
 }

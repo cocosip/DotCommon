@@ -171,12 +171,14 @@ namespace DotCommon.Utility
         /// </summary>
         public static string ByteBufferToHex16(byte[] byteBuffer)
         {
-            var hex16String = new StringBuilder(byteBuffer.Length);
-            for (var i = 0; i < byteBuffer.Length; i++)
-            {
-                hex16String.Append(byteBuffer[i].ToString("X2"));
-            }
-            return hex16String.ToString();
+            return byteBuffer.Aggregate("", (current, b) => current + b.ToString("X2"));
+            
+            //var hex16String = new StringBuilder(byteBuffer.Length);
+            //for (var i = 0; i < byteBuffer.Length; i++)
+            //{
+            //    hex16String.Append(byteBuffer[i].ToString("X2"));
+            //}
+            //return hex16String.ToString();
         }
 
         /// <summary>将十六进制字符串转换为byte[]数组
