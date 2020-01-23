@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.1" />
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
   </ItemGroup>
 </Project>
