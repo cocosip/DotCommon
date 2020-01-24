@@ -49,8 +49,19 @@ namespace DotCommon.Test.Extensions
                 t2.TimeoutAfter(1).Wait();
             });
 
+            var t3 = Task.Run<int>(() =>
+            {
+                Thread.Sleep(100);
+                return 1;
+            });
+
+            var aggregateException2 = Assert.Throws<AggregateException>(() =>
+            {
+                t3.TimeoutAfter<int>(1).Wait();
+            });
+
             var timeoutException = aggregateException.InnerExceptions.FirstOrDefault(x => x.GetType() == typeof(TimeoutException));
-            
+
             Assert.NotNull(timeoutException);
 
         }

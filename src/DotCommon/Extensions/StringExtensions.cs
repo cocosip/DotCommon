@@ -58,7 +58,7 @@ namespace DotCommon.Extensions
         {
             if (source == null)
             {
-                throw new ArgumentNullException("str");
+                throw new ArgumentNullException("source");
             }
 
             if (source.Length < len)
