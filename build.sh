@@ -79,7 +79,7 @@ if [ ! -f "$PACKAGES_CONFIG_MD5" ] || [ "$( cat "$PACKAGES_CONFIG_MD5" | sed 's/
     find . -type d ! -name . ! -name 'Cake.Bakery' | xargs rm -rf
 fi
 
-mono "$NUGET_EXE" install -ExcludeVersion
+ "$NUGET_EXE" install -ExcludeVersion
 if [ $? -ne 0 ]; then
     echo "Could not restore NuGet tools."
     exit 1
@@ -93,7 +93,7 @@ popd >/dev/null
 if [ -f "$ADDINS_PACKAGES_CONFIG" ]; then
     pushd "$ADDINS_DIR" >/dev/null
 
-    mono "$NUGET_EXE" install -ExcludeVersion
+     "$NUGET_EXE" install -ExcludeVersion
     if [ $? -ne 0 ]; then
         echo "Could not restore NuGet addins."
         exit 1
@@ -106,7 +106,7 @@ fi
 if [ -f "$MODULES_PACKAGES_CONFIG" ]; then
     pushd "$MODULES_DIR" >/dev/null
 
-    mono "$NUGET_EXE" install -ExcludeVersion
+     "$NUGET_EXE" install -ExcludeVersion
     if [ $? -ne 0 ]; then
         echo "Could not restore NuGet modules."
         exit 1
@@ -122,5 +122,5 @@ if [ ! -f "$CAKE_EXE" ]; then
 fi
 
 # Start Cake
-#exec mono "$CAKE_EXE" $SCRIPT "${CAKE_ARGUMENTS[@]}"
-exec mono "$CAKE_EXE" build.cake --verbosity=$VERBOSITY --configuration=$CONFIGURATION --target=$TARGET $DRYRUN "${CAKE_ARGUMENTS[@]}"
+#exec  "$CAKE_EXE" $SCRIPT "${CAKE_ARGUMENTS[@]}"
+exec "$CAKE_EXE" build.cake --verbosity=$VERBOSITY --configuration=$CONFIGURATION --target=$TARGET $DRYRUN "${CAKE_ARGUMENTS[@]}"

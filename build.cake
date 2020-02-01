@@ -1,19 +1,21 @@
-///////////////////////////////////////////////////////////////////////////////
-// ARGUMENTS
-///////////////////////////////////////////////////////////////////////////////
-
 // Install modules
 #module nuget:?package=Cake.DotNetTool.Module&version=0.4.0
+
+// Install addins.
+#addin "nuget:https://api.nuget.org/v3/index.json?package=Cake.Coveralls&version=0.10.0"
+#addin "nuget:https://api.nuget.org/v3/index.json?package=Cake.Twitter&version=0.10.0"
+#addin "nuget:https://api.nuget.org/v3/index.json?package=Cake.Gitter&version=0.11.0"
 
 // Install tools.
 #tool "nuget:https://api.nuget.org/v3/index.json?package=coveralls.io&version=1.4.2"
 #tool "nuget:https://api.nuget.org/v3/index.json?package=OpenCover&version=4.6.519"
 #tool "nuget:https://api.nuget.org/v3/index.json?package=ReportGenerator&version=4.0.4"
 #tool "nuget:https://api.nuget.org/v3/index.json?package=nuget.commandline&version=5.3.1"
+
+// Install .NET Core Global tools.
 #tool "nuget:https://api.nuget.org/v3/index.json?package=GitVersion.Tool&version=5.1.2"
 #tool "nuget:https://api.nuget.org/v3/index.json?package=SignClient&version=1.0.82"
 #tool "nuget:https://api.nuget.org/v3/index.json?package=GitReleaseManager.Tool&version=0.10.2"
-
 
 #load "./build/parameters.cake"
 
