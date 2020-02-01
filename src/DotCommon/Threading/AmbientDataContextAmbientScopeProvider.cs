@@ -1,5 +1,4 @@
 ﻿using DotCommon.Extensions;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 
@@ -10,7 +9,6 @@ namespace DotCommon.Threading
     /// <typeparam name="T"></typeparam>
     public class AmbientDataContextAmbientScopeProvider<T> : IAmbientScopeProvider<T>
     {
-        private readonly ILogger _logger;
 
         private static readonly ConcurrentDictionary<string, ScopeItem> ScopeDictionary = new ConcurrentDictionary<string, ScopeItem>();
 
@@ -18,9 +16,8 @@ namespace DotCommon.Threading
 
         /// <summary>Ctor
         /// </summary>
-        public AmbientDataContextAmbientScopeProvider(ILogger<AmbientDataContextAmbientScopeProvider<object>> logger, IAmbientDataContext dataContext)
+        public AmbientDataContextAmbientScopeProvider(IAmbientDataContext dataContext)
         {
-            _logger = logger;
             _dataContext = dataContext;
         }
 

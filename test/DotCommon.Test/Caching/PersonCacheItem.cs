@@ -1,10 +1,12 @@
-﻿using System;
+﻿using DotCommon.Caching;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DotCommon.Test.Caching
 {
     [Serializable]
+    [CacheName("PersonCache")]
     public class PersonCacheItem
     {
         public string Name { get; private set; }

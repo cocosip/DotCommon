@@ -24,7 +24,6 @@ namespace DotCommon
         /// </summary>
         public void Dispose()
         {
-            // Interlocked prevents multiple execution of the _action.
             var action = Interlocked.Exchange(ref _action, null);
             action?.Invoke();
         }

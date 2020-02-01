@@ -21,6 +21,8 @@ namespace DotCommon.Test.Caching
             //Get (not exists yet)
             var cacheItem = await personCache.GetAsync(cacheKey);
             Assert.Null(cacheItem);
+            var cacheItem1 = personCache.Get(cacheKey);
+            Assert.Equal(cacheItem, cacheItem1);
 
             //Set
             cacheItem = new PersonCacheItem(personName);
@@ -74,5 +76,6 @@ namespace DotCommon.Test.Caching
             Assert.False(factoryExecuted);
             Assert.Equal(personName, cacheItem.Name);
         }
+
     }
 }
