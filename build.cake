@@ -13,11 +13,13 @@
 #tool "nuget:https://api.nuget.org/v3/index.json?package=nuget.commandline&version=5.3.1"
 
 // Install .NET Core Global tools.
-#tool "nuget:https://api.nuget.org/v3/index.json?package=GitVersion.Tool&version=5.1.2"
-#tool "nuget:https://api.nuget.org/v3/index.json?package=SignClient&version=1.0.82"
-#tool "nuget:https://api.nuget.org/v3/index.json?package=GitReleaseManager.Tool&version=0.10.2"
+#tool "dotnet:https://api.nuget.org/v3/index.json?package=GitVersion.Tool&version=5.1.2"
+#tool "dotnet:https://api.nuget.org/v3/index.json?package=SignClient&version=1.0.82"
+#tool "dotnet:https://api.nuget.org/v3/index.json?package=GitReleaseManager.Tool&version=0.10.2"
 
+// Load other scripts.
 #load "./build/parameters.cake"
+
 
 BuildParameters parameters = BuildParameters.GetParameters(Context);
 bool publishingError = false;
