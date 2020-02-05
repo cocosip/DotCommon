@@ -19,6 +19,11 @@ namespace DotCommon.Test
             disposeAction.Dispose();
             Assert.Equal(100, id);
 
+
+            var disposeAction2 = DisposeAction.Empty;
+            disposeAction2.Dispose();
+
+
         }
     }
 }

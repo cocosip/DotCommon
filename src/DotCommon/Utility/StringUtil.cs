@@ -49,16 +49,6 @@ namespace DotCommon.Utility
         }
 
         #region 过滤方法
-        /// <summary>过滤'-.\\;:\%   >《》 *@
-        /// </summary>
-        public static string FilterSpecial(string source)
-        {
-            if (!string.IsNullOrWhiteSpace(source))
-            {
-                source = Regex.Replace(source, "'-.\\\\;:\"%<>《》\\s", "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
 
         /// <summary> 过滤'-\\;\>《》 
         /// </summary>
@@ -74,7 +64,7 @@ namespace DotCommon.Utility
 
         /// <summary> 过滤A标签
         /// </summary>
-        public static string FilterA(string source)
+        public static string FetchA(string source)
         {
             if (!string.IsNullOrEmpty(source))
             {
@@ -85,7 +75,7 @@ namespace DotCommon.Utility
 
         /// <summary>过滤DIV标签
         /// </summary>
-        public static string FilterDiv(string source)
+        public static string FetchDiv(string source)
         {
             if (!string.IsNullOrEmpty(source))
             {
@@ -96,11 +86,48 @@ namespace DotCommon.Utility
 
         /// <summary>过滤FONT标签
         /// </summary>
-        public static string FilterFont(string source)
+        public static string FetchFont(string source)
         {
             if (!string.IsNullOrEmpty(source))
             {
                 source = Regex.Replace(source, "<.?font(.|\n)*?>", "", RegexOptions.IgnoreCase);
+            }
+            return source;
+        }
+
+        /// <summary>过滤SPAN标签
+        /// </summary>
+        public static string FetchSpan(string source)
+        {
+            if (!string.IsNullOrEmpty(source))
+            {
+                source = Regex.Replace(source, "<.?span(.|\n)*?>", "", RegexOptions.IgnoreCase);
+            }
+            return source;
+        }
+
+        /// <summary>过滤TABLE、TR、TD
+        /// </summary>
+        public static string FetchTableProtery(string source)
+        {
+            if (!string.IsNullOrEmpty(source))
+            {
+                source = Regex.Replace(source, "<.?table(.|\n)*?>", "", RegexOptions.IgnoreCase);
+                source = Regex.Replace(source, "<.?tr(.|\n)*?>", "", RegexOptions.IgnoreCase);
+                source = Regex.Replace(source, "<.?td(.|\n)*?>", "", RegexOptions.IgnoreCase);
+            }
+            return source;
+        }
+
+
+        /// <summary>过滤所有HTML标签
+        /// </summary>
+        public static string FetchStripTags(string source)
+        {
+            if (!string.IsNullOrEmpty(source))
+            {
+                Regex regex = new Regex("<([^<]|\n)+?>");
+                source = regex.Replace(source, "");
             }
             return source;
         }
@@ -152,16 +179,7 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>过滤SPAN标签
-        /// </summary>
-        public static string FilterSpan(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                source = Regex.Replace(source, "<.?span(.|\n)*?>", "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
+
 
         /// <summary>过滤STYLE样式标签
         /// </summary>
@@ -175,18 +193,7 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>过滤TABLE、TR、TD
-        /// </summary>
-        public static string FilterTableProtery(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                source = Regex.Replace(source, "<.?table(.|\n)*?>", "", RegexOptions.IgnoreCase);
-                source = Regex.Replace(source, "<.?tr(.|\n)*?>", "", RegexOptions.IgnoreCase);
-                source = Regex.Replace(source, "<.?td(.|\n)*?>", "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
+
 
         /// <summary>根据传入的正则表达式进行过滤
         /// </summary>
@@ -199,31 +206,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>过滤空格符号等HTML标签
-        /// </summary>
-        public static string FileterSpec(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                foreach (Match m in Regex.Matches(source, "&.+?;"))
-                {
-                    source = source.Replace(m.Value, "");
-                }
-            }
-            return source;
-        }
 
-        /// <summary>过滤所有HTML标签
-        /// </summary>
-        public static string StripTags(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                Regex regex = new Regex("<([^<]|\n)+?>");
-                source = regex.Replace(source, "");
-            }
-            return source;
-        }
+
         /// <summary>过滤html的所有标签
         /// </summary>
         public static string FilterHtml(string source)
@@ -356,7 +340,7 @@ namespace DotCommon.Utility
         {
             if (!string.IsNullOrWhiteSpace(source))
             {
-                return new Regex(@"\\u([0-9A-F]{4})", RegexOptions.IgnoreCase | RegexOptions.Compiled).Replace(
+                source = new Regex(@"\\u([0-9A-F]{4})", RegexOptions.IgnoreCase | RegexOptions.Compiled).Replace(
                      source, x => string.Empty + Convert.ToChar(Convert.ToUInt16(x.Result("$1"), 16)));
             }
             return source;

@@ -17,6 +17,7 @@ namespace DotCommon.Test.Utility
             Assert.Equal(6, StringUtil.GetStringByteLength(source2));
 
         }
+
         [Theory]
         [InlineData("helloeter", "ter", "helloe")]
         [InlineData("", "ter", "")]
@@ -27,14 +28,99 @@ namespace DotCommon.Test.Utility
             Assert.Equal(expected, actual);
         }
 
-        //[Fact]
-        //public void Filter_Test()
-        //{
-        //    var s1 = StringUtil.FilterSpecial("heell:wqqq");
-        //    Assert.Equal("heell:wqqq", s1);
+        [Fact]
+        public void FetchDiv_Test()
+        {
+            var s1 = StringUtil.FetchDiv("<div>zhangsan</div>");
+            Assert.Equal("zhangsan", s1);
 
-        //}
+        }
 
+        [Fact]
+        private void FetchA_Test()
+        {
+            var s1 = StringUtil.FetchA("<a>sssqqq</a>");
+            Assert.Equal("sssqqq", s1);
+        }
+
+        [Fact]
+        private void FetchFont_Test()
+        {
+            var s1 = StringUtil.FetchFont("<font>font</font>");
+            Assert.Equal("font", s1);
+        }
+
+        [Fact]
+        public void FetchSpanSpan_Test()
+        {
+            var s1 = StringUtil.FetchSpan("<span>aaa</span>");
+            Assert.Equal("aaa", s1);
+        }
+
+
+        [Fact]
+        private void FilterImg_Test()
+        {
+            var s1 = StringUtil.FilterImg("aaa<img src=\"pic/aa/bb\"/>");
+            Assert.Equal("aaa", s1);
+        }
+
+        [Fact]
+        public void FilterObject_Test()
+        {
+            var s1 = StringUtil.FilterObject("<object xxx>xxxxx</object>");
+            Assert.Equal("", s1);
+        }
+
+        [Fact]
+        public void FilterScript_Test()
+        {
+            var s1 = StringUtil.FilterScript("<script>aaa</script>");
+            Assert.Equal("", s1);
+        }
+
+        [Fact]
+        public void FilterIFrame_Test()
+        {
+            var s1 = StringUtil.FilterIFrame("<iframe>aaa</iframe>");
+            Assert.Equal("", s1);
+        }
+
+        [Fact]
+        public void FilterStyle_Test()
+        {
+            var s1 = StringUtil.FilterStyle("<Style>aaa</Style>");
+            Assert.Equal("", s1);
+        }
+
+        [Fact]
+        public void FetchTableProtery_Test()
+        {
+            var s1 = StringUtil.FetchTableProtery("<table><tr>11111<tr><td>xxxxx</td></table>");
+            Assert.Equal("11111xxxxx", s1);
+        }
+
+        [Fact]
+        public void FetchStripTags_Test()
+        {
+            var s1 = StringUtil.FetchStripTags("<hell/><a>xxx</a>yyy<img src=\"123\">");
+            Assert.Equal("xxxyyy", s1);
+        }
+
+        [Fact]
+        public void HtmlToTxt_Test()
+        {
+            var s1 = StringUtil.HtmlToTxt("<html><head>xxx</head><title>测试<title/><script></script></html>");
+            Assert.Equal("xxx测试", s1);
+        }
+
+        [Fact]
+        public void SqlFilter_Test()
+        {
+            var sql1 = "select * from table1 where id=3";
+            var s1 = StringUtil.SqlFilter(sql1);
+            Assert.Equal("  * from table1 where id=3", s1);
+        }
 
 
         /// <summary>字符串转Unicode
@@ -47,6 +133,7 @@ namespace DotCommon.Test.Utility
             Assert.Equal(@"\u4f60\u597d,hello", unicodeStr);
         }
 
+      
         /// <summary>Unicode转中文字符串
         /// </summary>
         [Fact]
