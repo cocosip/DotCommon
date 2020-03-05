@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace DotCommon.Encrypt
 {
-    /// <summary>Md5加密
+    /// <summary>MD5加密相关操作
     /// </summary>
-    public static class Md5Encryptor
+    public static class MD5Helper
     {
         /// <summary>Md5加密
         /// </summary>
@@ -16,7 +17,6 @@ namespace DotCommon.Encrypt
             {
                 //其他的代码写法: md5.ComputeHash(data).Aggregate("", (current, b) => current + b.ToString("X2"))
                 return BitConverter.ToString(md5.ComputeHash(data)).Replace("-", "");
-
             }
         }
 
