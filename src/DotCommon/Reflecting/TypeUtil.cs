@@ -55,13 +55,12 @@ namespace DotCommon.Reflecting
 
         /// <summary>获取第一个可空参数
         /// </summary>
-        public static Type GetFirstGenericArgumentIfNullable(this Type t)
+        public static Type GetFirstGenericArgumentIfNullable(Type t)
         {
             if (t.GetGenericArguments().Length > 0 && t.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 return t.GetGenericArguments().FirstOrDefault();
             }
-
             return t;
         }
 
@@ -72,8 +71,8 @@ namespace DotCommon.Reflecting
             return method.ReturnType.IsTaskOrTaskOfT();
         }
 
-       /// <summary>是否为Task或者泛型Task
-       /// </summary>
+        /// <summary>是否为Task或者泛型Task
+        /// </summary>
         public static bool IsTaskOrTaskOfT(this Type type)
         {
             return type == typeof(Task) || type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>);

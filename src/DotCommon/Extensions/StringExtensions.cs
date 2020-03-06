@@ -8,26 +8,24 @@ namespace DotCommon.Extensions
     {
         /// <summary>获取字符串平台无关的Hashcode
         /// </summary>
-        /// <param name="s">字符串</param>
+        /// <param name="source">字符串</param>
         /// <returns></returns>
-        public static int GetStringHashcode(this string s)
+        public static int GetStringHashcode(this string source)
         {
-            if (string.IsNullOrEmpty(s)) return 0;
-
-            unchecked
+            if (source.IsNullOrWhiteSpace())
             {
-                int hash = 23;
-                // ReSharper disable once LoopCanBeConvertedToQuery
-                foreach (char c in s)
-                {
-                    hash = (hash << 5) - hash + c;
-                }
-                if (hash < 0)
-                {
-                    hash = Math.Abs(hash);
-                }
-                return hash;
+                return 0;
             }
+            int hash = 23;
+            foreach (char c in source)
+            {
+                hash = (hash << 5) - hash + c;
+            }
+            if (hash < 0)
+            {
+                hash = Math.Abs(hash);
+            }
+            return hash;
         }
 
         /// <summary>判断字符串是否为空
@@ -56,7 +54,7 @@ namespace DotCommon.Extensions
         /// <returns></returns>
         public static string Left(this string source, int len)
         {
-            if (source == null)
+            if (source.IsNullOrEmpty())
             {
                 throw new ArgumentNullException("source");
             }
@@ -78,35 +76,6 @@ namespace DotCommon.Extensions
             return source.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", Environment.NewLine);
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="c"></param>
-        /// <param name="n"></param>
-        /// <returns></returns>
-        public static int NthIndexOf(this string source, char c, int n)
-        {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            var count = 0;
-            for (var i = 0; i < source.Length; i++)
-            {
-                if (source[i] != c)
-                {
-                    continue;
-                }
-
-                if ((++count) == n)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
 
         /// <summary>移除字符串中指定结尾格式的字符
         /// </summary>
@@ -115,11 +84,7 @@ namespace DotCommon.Extensions
         /// <returns></returns>
         public static string RemovePostFix(this string source, params string[] postFixes)
         {
-            if (source.IsNullOrEmpty())
-            {
-                return null;
-            }
-            if (postFixes.IsNullOrEmpty())
+            if (source.IsNullOrWhiteSpace() || postFixes.IsNullOrEmpty())
             {
                 return source;
             }
@@ -131,7 +96,6 @@ namespace DotCommon.Extensions
                     return source.Left(source.Length - postFix.Length);
                 }
             }
-
             return source;
         }
 
@@ -142,16 +106,10 @@ namespace DotCommon.Extensions
         /// <returns></returns>
         public static string RemovePreFix(this string source, params string[] preFixes)
         {
-            if (source.IsNullOrEmpty())
-            {
-                return null;
-            }
-
-            if (preFixes.IsNullOrEmpty())
+            if (source.IsNullOrWhiteSpace() || preFixes.IsNullOrEmpty())
             {
                 return source;
             }
-
             foreach (var preFix in preFixes)
             {
                 if (source.StartsWith(preFix))
@@ -167,9 +125,9 @@ namespace DotCommon.Extensions
         /// </summary>
         public static string Right(this string source, int len)
         {
-            if (source == null)
+            if (source.IsNullOrWhiteSpace())
             {
-                throw new ArgumentNullException("str");
+                throw new ArgumentNullException("source");
             }
 
             if (source.Length < len)
@@ -191,69 +149,44 @@ namespace DotCommon.Extensions
         /// <summary>
         /// Uses string.Split method to split given string by given separator.
         /// </summary>
-        public static string[] Split(this string str, string separator, StringSplitOptions options)
+        public static string[] Split(this string source, string separator, StringSplitOptions options)
         {
-            return str.Split(new[] { separator }, options);
+            return source.Split(new[] { separator }, options);
         }
 
         /// <summary>
         /// Uses string.Split method to split given string by <see cref="Environment.NewLine"/>.
         /// </summary>
-        public static string[] SplitToLines(this string str)
+        public static string[] SplitToLines(this string source)
         {
-            return str.Split(Environment.NewLine);
+            return source.Split(Environment.NewLine);
         }
 
         /// <summary>
         /// Uses string.Split method to split given string by <see cref="Environment.NewLine"/>.
         /// </summary>
-        public static string[] SplitToLines(this string str, StringSplitOptions options)
+        public static string[] SplitToLines(this string source, StringSplitOptions options)
         {
-            return str.Split(Environment.NewLine, options);
+            return source.Split(Environment.NewLine, options);
         }
 
-        /// <summary>
-        /// Converts PascalCase string to camelCase string.
+        /// <summary>将首字母变成小写,驼峰写法?(非真正驼峰,驼峰写法首字母为小写,而不是收个单词)
         /// </summary>
-        /// <param name="str">String to convert</param>
-        /// <returns>camelCase of the string</returns>
-        public static string ToCamelCase(this string str)
+        public static string ToCamelCase(this string source)
         {
-            if (string.IsNullOrWhiteSpace(str))
+            if (source.IsNullOrWhiteSpace())
             {
-                return str;
+                return source;
             }
 
-            if (str.Length == 1)
+            if (source.Length == 1)
             {
-                return str.ToLowerInvariant();
+                return source.ToLowerInvariant();
             }
 
-            return char.ToLowerInvariant(str[0]) + str.Substring(1);
+            return char.ToLowerInvariant(source[0]) + source.Substring(1);
         }
 
-        /// <summary>转换成指定格式枚举
-        /// </summary>
-        public static T ToEnum<T>(this string value) where T : struct
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
 
-            return (T)Enum.Parse(typeof(T), value);
-        }
-
-        /// <summary>转换成指定格式枚举
-        /// </summary>
-        public static T ToEnum<T>(this string value, bool ignoreCase) where T : struct
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            return (T)Enum.Parse(typeof(T), value, ignoreCase);
-        }
     }
 }

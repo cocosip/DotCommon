@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace DotCommon.Encrypt
 {
@@ -145,7 +144,7 @@ namespace DotCommon.Encrypt
         /// </summary>
         /// <param name="pkcs8Key">PKCS8格式密钥</param>
         /// <returns></returns>
-        public static string Pkcs8ToPkcs1(string pkcs8Key)
+        public static string PKCS8ToPKCS1(string pkcs8Key)
         {
             var rsaParams = ReadPrivateKeyInfo(pkcs8Key);
             return ExportPrivateKeyPkcs1(rsaParams);
@@ -155,7 +154,7 @@ namespace DotCommon.Encrypt
         /// </summary>
         /// <param name="pkcs1Key">PKCS1格式密钥</param>
         /// <returns></returns>
-        public static string Pkcs1ToPkcs8(string pkcs1Key)
+        public static string PKCS1ToPKCS8(string pkcs1Key)
         {
             var rsaParams = ReadPrivateKeyInfo(pkcs1Key);
             return ExportPrivateKeyPkcs8(rsaParams);
@@ -764,7 +763,7 @@ namespace DotCommon.Encrypt
 
     /// <summary>RSA密钥对
     /// </summary>
-    public class RSAKeyPair
+    public class RSAKeyPair : IEquatable<RSAKeyPair>
     {
         /// <summary>公钥
         /// </summary>
@@ -787,6 +786,13 @@ namespace DotCommon.Encrypt
         {
             PublicKey = publicKey;
             PrivateKey = privateKey;
+        }
+
+        /// <summary>是否相同
+        /// </summary>
+        public bool Equals(RSAKeyPair other)
+        {
+            return other.PrivateKey == PrivateKey && other.PublicKey == PublicKey;
         }
     }
 

@@ -26,14 +26,28 @@ namespace DotCommon.Test.Encrypt
             var rsaParams1 = RSAHelper.ReadPrivateKeyInfo(keyPair.PrivateKey);
 
             var rsaParams2 = RSAHelper.ReadPrivateKeyInfo(keyPair.PrivateKey);
-            var rsaPrivateKey2 = RSAHelper.ExportPrivateKeyPkcs8(rsaParams2);
-
+            var rsaPrivateKey2 = RSAHelper.ExportPrivateKeyPkcs1(rsaParams1);
+            var rsaPrivateKey3 = RSAHelper.ExportPrivateKeyPkcs8(rsaParams2);
 
             var decrypted2 = RSAHelper.DecryptFromBase64(encrypted1, rsaPrivateKey2);
+            var decrypted3 = RSAHelper.DecryptFromBase64(encrypted1, rsaPrivateKey3);
             Assert.Equal("hello", decrypted2);
-
+            Assert.Equal("hello", decrypted3);
+ 
         }
 
+        [Fact]
+        public void KeyPair_Equal_Test()
+        {
+            var keyPair = RSAHelper.GenerateKeyPair(RSAKeyFormat.PKCS8, 2048);
+            var keyPair2 = new RSAKeyPair()
+            {
+                PrivateKey = keyPair.PrivateKey,
+                PublicKey = keyPair.PublicKey
+            };
+
+            Assert.Equal(keyPair, keyPair2);
+        }
 
 
 
@@ -41,22 +55,33 @@ namespace DotCommon.Test.Encrypt
         /// <summary>PKCS1与PKCS8密钥转换
         /// </summary>
         [Fact]
-        public void Pkcs8_Pkcs1_Conver_Test()
+        public void PKCS8_PKCS1_Conver_Test()
         {
-            var keyPair = RSAHelper.GenerateKeyPair();
-            var pkcs8Key = RSAHelper.Pkcs1ToPkcs8(keyPair.PrivateKey);
+            var keyPair1 = RSAHelper.GenerateKeyPair(RSAKeyFormat.PKCS1);
+            var pkcs8Key1 = RSAHelper.PKCS1ToPKCS8(keyPair1.PrivateKey);
 
-            var encrypted1 = RSAHelper.EncryptAsBase64("123456", keyPair.PublicKey);
+            var encrypted1 = RSAHelper.EncryptAsBase64("123456", keyPair1.PublicKey);
 
-            var decrypted1 = RSAHelper.DecryptFromBase64(encrypted1, keyPair.PrivateKey);
+            var decrypted1 = RSAHelper.DecryptFromBase64(encrypted1, keyPair1.PrivateKey);
             Assert.Equal("123456", decrypted1);
-            var decrypted2 = RSAHelper.DecryptFromBase64(encrypted1, pkcs8Key);
+            var decrypted2 = RSAHelper.DecryptFromBase64(encrypted1, pkcs8Key1);
             Assert.Equal("123456", decrypted2);
 
-            var pkcs1Key = RSAHelper.Pkcs8ToPkcs1(pkcs8Key);
-            Assert.Equal(keyPair.PrivateKey, pkcs1Key);
-
+            var pkcs1Key = RSAHelper.PKCS8ToPKCS1(pkcs8Key1);
+            Assert.Equal(keyPair1.PrivateKey, pkcs1Key);
         }
+
+
+        [Fact]
+        public void PKCS8KeyPair_Generate_Test()
+        {
+            var keyPair = RSAHelper.GenerateKeyPair(RSAKeyFormat.PKCS8);
+            var pkcs1Key = RSAHelper.PKCS8ToPKCS1(keyPair.PrivateKey);
+            var pkcs8Key = RSAHelper.PKCS1ToPKCS8(pkcs1Key);
+            Assert.Equal(pkcs8Key, keyPair.PrivateKey);
+        }
+
+
 
         [Fact]
         public void Encrypt_Decrypt_Test()
@@ -95,6 +120,10 @@ namespace DotCommon.Test.Encrypt
 
             var format2 = RSAHelper.GetKeyFormat(privateKey2);
             Assert.Equal(RSAKeyFormat.PKCS1, format2);
+
+            //var format3 = RSAHelper.GetKeyFormat("xxxqqqq");
+            //Assert.Equal(RSAKeyFormat.Unknow, format3);
+
 
         }
 
