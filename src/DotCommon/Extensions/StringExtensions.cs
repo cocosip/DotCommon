@@ -16,16 +16,19 @@ namespace DotCommon.Extensions
             {
                 return 0;
             }
-            int hash = 23;
-            foreach (char c in source)
+            unchecked
             {
-                hash = (hash << 5) - hash + c;
+                int hash = 23;
+                foreach (char c in source)
+                {
+                    hash = (hash << 5) - hash + c;
+                }
+                if (hash < 0)
+                {
+                    hash = Math.Abs(hash);
+                }
+                return hash;
             }
-            if (hash < 0)
-            {
-                hash = Math.Abs(hash);
-            }
-            return hash;
         }
 
         /// <summary>判断字符串是否为空

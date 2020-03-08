@@ -26,7 +26,6 @@ namespace DotCommon.Test.Extensions
 
             var v2 = o2.To<TestAsStruct>();
             Assert.Equal(typeof(TestAsStruct), v2.GetType());
-
         }
 
         [Fact]

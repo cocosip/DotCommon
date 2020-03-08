@@ -14,7 +14,7 @@ namespace DotCommon.Test.Extensions
             var str1 = "";
             Assert.Equal(0, str1.GetStringHashcode());
             var str2 = "123456";
-            Assert.NotEqual(0, str2.GetHashCode());
+            Assert.True(str2.GetStringHashcode() > 0);
         }
 
         [Fact]
@@ -101,10 +101,10 @@ namespace DotCommon.Test.Extensions
             Assert.Equal("", str2.RemovePostFix("123", "3"));
 
             var str3 = "abcdef";
-            Assert.Equal("abcde", str3.RemovePostFix("f","de","ab"));
+            Assert.Equal("abcde", str3.RemovePostFix("f", "de", "ab"));
 
             var str4 = "12345AbCde";
-            Assert.Equal("12345AbC", str4.RemovePostFix("E","de"));
+            Assert.Equal("12345AbC", str4.RemovePostFix("E", "de"));
             Assert.Equal("12345AbCde", str4.RemovePostFix("3", "De"));
         }
 
@@ -115,7 +115,7 @@ namespace DotCommon.Test.Extensions
             Assert.Equal(str1, str1.RemovePreFix("1"));
             var str2 = "123";
             Assert.Equal(str2, str2.RemovePreFix());
-            
+
             var str3 = "12AB34";
             Assert.Equal("B34", str3.RemovePreFix("12A", "12"));
             Assert.Equal("AB34", str3.RemovePreFix("12", "12A"));

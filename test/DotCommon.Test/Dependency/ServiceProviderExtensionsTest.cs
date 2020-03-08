@@ -15,6 +15,11 @@ namespace DotCommon.Test.Dependency
             var getServiceByArgsTestClass = provider.CreateInstance<GetServiceByArgsTestClass>(1, "张三");
             Assert.Equal(1, getServiceByArgsTestClass.Id);
             Assert.Equal("张三", getServiceByArgsTestClass.Name);
+
+            var getServiceByArgsTestClass2 = provider.CreateInstance(typeof(GetServiceByArgsTestClass), 1, "张三");
+            Assert.Equal(typeof(GetServiceByArgsTestClass), getServiceByArgsTestClass2.GetType());
+
+
         }
 
         [Fact]
