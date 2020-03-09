@@ -46,11 +46,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AspNetCore.Mvc.De
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageUtility", "src\DotCommon.ImageUtility\DotCommon.ImageUtility.csproj", "{9F1A9D8E-7867-4960-B468-291F4010E699}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageUtility.Test", "test\DotCommon.ImageUtility.Test\DotCommon.ImageUtility.Test.csproj", "{BD656C78-0D84-4FA3-AF30-87964DA57D51}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageResizer.AspNetCore.Mvc", "src\DotCommon.ImageResizer.AspNetCore.Mvc\DotCommon.ImageResizer.AspNetCore.Mvc.csproj", "{89C5B8D5-2D56-4B01-9AEA-9BA1F5796011}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.ImageResizer.AspNetCore.Mvc.Demo", "samples\DotCommon.ImageResizer.AspNetCore.Mvc.Demo\DotCommon.ImageResizer.AspNetCore.Mvc.Demo.csproj", "{C085CB63-EEA3-4FD9-8AA0-3C5AE606491A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageResizer.AspNetCore.Mvc.Demo", "samples\DotCommon.ImageResizer.AspNetCore.Mvc.Demo\DotCommon.ImageResizer.AspNetCore.Mvc.Demo.csproj", "{C085CB63-EEA3-4FD9-8AA0-3C5AE606491A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,10 +100,6 @@ Global
 		{9F1A9D8E-7867-4960-B468-291F4010E699}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F1A9D8E-7867-4960-B468-291F4010E699}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F1A9D8E-7867-4960-B468-291F4010E699}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD656C78-0D84-4FA3-AF30-87964DA57D51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD656C78-0D84-4FA3-AF30-87964DA57D51}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD656C78-0D84-4FA3-AF30-87964DA57D51}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD656C78-0D84-4FA3-AF30-87964DA57D51}.Release|Any CPU.Build.0 = Release|Any CPU
 		{89C5B8D5-2D56-4B01-9AEA-9BA1F5796011}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89C5B8D5-2D56-4B01-9AEA-9BA1F5796011}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89C5B8D5-2D56-4B01-9AEA-9BA1F5796011}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -122,7 +116,6 @@ Global
 		{0F36994D-849F-436E-97A6-530A05A02EFC} = {834211DA-7385-4208-81A9-A807405FCCFA}
 		{F75F6BAF-346E-4721-A193-C96BAC949EA6} = {9B36842E-C0C0-4613-BC3B-774A40DA6B4D}
 		{99CB38FE-E47D-4CC4-9E4A-3913D18FFAB9} = {9B36842E-C0C0-4613-BC3B-774A40DA6B4D}
-		{BD656C78-0D84-4FA3-AF30-87964DA57D51} = {834211DA-7385-4208-81A9-A807405FCCFA}
 		{C085CB63-EEA3-4FD9-8AA0-3C5AE606491A} = {9B36842E-C0C0-4613-BC3B-774A40DA6B4D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
