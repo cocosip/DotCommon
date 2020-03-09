@@ -29,9 +29,9 @@ namespace DotCommon.Reflecting
 
         /// <summary>是否为泛型Func类型
         /// </summary>
-        public static bool IsFunc<TReturn>(object obj)
+        public static bool IsFunc<TReturn>(object o)
         {
-            return obj != null && obj.GetType() == typeof(Func<TReturn>);
+            return o != null && o.GetType() == typeof(Func<TReturn>);
         }
 
         /// <summary>是否为原始的扩展
@@ -57,9 +57,17 @@ namespace DotCommon.Reflecting
         /// </summary>
         public static Type GetFirstGenericArgumentIfNullable(Type t)
         {
-            if (t.GetGenericArguments().Length > 0 && t.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (t == null)
             {
-                return t.GetGenericArguments().FirstOrDefault();
+                return default;
+            }
+
+            if (t.GetTypeInfo().IsGenericType)
+            {
+                if (t.GetGenericArguments().Length > 0 && t.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
+                    return t.GetGenericArguments().FirstOrDefault();
+                }
             }
             return t;
         }
@@ -75,7 +83,7 @@ namespace DotCommon.Reflecting
         /// </summary>
         public static bool IsTaskOrTaskOfT(this Type type)
         {
-            return type == typeof(Task) || type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>);
+            return type == typeof(Task) || (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>));
         }
 
         private static bool IsPrimitiveExtendedInternal(Type type, bool includeEnums)

@@ -114,14 +114,13 @@ namespace DotCommon.Reflecting
         /// </summary>
         public static T DictionaryToObject<T>(Dictionary<string, object> dict) where T : class, new()
         {
-            Delegate method;
-            if (!DictionaryToObjectDict.TryGetValue(typeof(T), out method))
+            if (!DictionaryToObjectDict.TryGetValue(typeof(T), out Delegate method))
             {
                 method = GetObjectFunc<T>();
                 DictionaryToObjectDict.Add(typeof(T), method);
             }
             var func = method as Func<Dictionary<string, object>, T>;
-            return func?.Invoke(dict);
+            return func.Invoke(dict);
         }
 
         /// <summary>将对象转换成字典类型委托
@@ -170,14 +169,13 @@ namespace DotCommon.Reflecting
         /// </summary>
         public static Dictionary<string, object> ObjectToDictionary<T>(T obj) where T : class, new()
         {
-            Delegate method;
-            if (!ObjectToDictionaryDict.TryGetValue(typeof(T), out method))
+            if (!ObjectToDictionaryDict.TryGetValue(typeof(T), out Delegate method))
             {
                 method = GetDictionaryFunc<T>();
                 ObjectToDictionaryDict.Add(typeof(T), method);
             }
             var func = method as Func<T, Dictionary<string, object>>;
-            return func?.Invoke(obj);
+            return func.Invoke(obj);
         }
 
     }

@@ -32,11 +32,14 @@ namespace DotCommon.Test.Extensions
         }
 
         [Fact]
-        public void TimeoutAfter_Test()
+        public async Task TimeoutAfter_Test()
         {
-            Task t1 = Task.FromResult(0);
-            t1.TimeoutAfter(10).Wait();
-            Assert.Equal(TaskStatus.RanToCompletion, t1.Status);
+            var t1 = Task.Run(() =>
+            {
+                return Task.FromResult(1);
+            });
+
+            Assert.Equal(1, await t1);
 
 
             Task t2 = Task.Run(() =>
