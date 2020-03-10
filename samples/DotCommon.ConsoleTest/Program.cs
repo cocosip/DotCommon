@@ -94,7 +94,7 @@ namespace DotCommon.ConsoleTest
 
             //var p1 = RsaUtil.ReadPublicKeyInfo(publicKey1);
 
-            var privateKey2 = RSAHelper.ExportPrivateKeyPkcs1(privateParam);
+            var privateKey2 = RSAHelper.ExportPrivateKeyPKCS1(privateParam);
             var publicKey2 = RSAHelper.ExportPublicKey(publicParam);
 
             Console.WriteLine("私钥:{0}", privateKey1);

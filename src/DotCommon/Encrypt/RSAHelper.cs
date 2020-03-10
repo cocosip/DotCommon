@@ -41,7 +41,7 @@ namespace DotCommon.Encrypt
                 var publicParameters = rsa.ExportParameters(false);
                 var privateParameters = rsa.ExportParameters(true);
                 string publicKey = ExportPublicKey(publicParameters);
-                string privateKey = format == RSAKeyFormat.PKCS1 ? ExportPrivateKeyPkcs1(privateParameters) : ExportPrivateKeyPkcs8(privateParameters);
+                string privateKey = format == RSAKeyFormat.PKCS1 ? ExportPrivateKeyPKCS1(privateParameters) : ExportPrivateKeyPkcs8(privateParameters);
                 return new RSAKeyPair(publicKey, privateKey);
             }
         }
@@ -75,7 +75,7 @@ namespace DotCommon.Encrypt
         /// </summary>
         /// <param name="rsaParameters">RSA参数</param>
         /// <returns></returns>
-        public static string ExportPrivateKeyPkcs1(RSAParameters rsaParameters)
+        public static string ExportPrivateKeyPKCS1(RSAParameters rsaParameters)
         {
             //密钥中,除了头部长度以外的数据
             var bodyBytes = new List<byte>();
@@ -147,7 +147,7 @@ namespace DotCommon.Encrypt
         public static string PKCS8ToPKCS1(string pkcs8Key)
         {
             var rsaParams = ReadPrivateKeyInfo(pkcs8Key);
-            return ExportPrivateKeyPkcs1(rsaParams);
+            return ExportPrivateKeyPKCS1(rsaParams);
         }
 
         /// <summary>将PKCS1编码格式的私钥转换成PKCS8编码格式的私钥
