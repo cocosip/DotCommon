@@ -27,7 +27,7 @@ namespace DotCommon.Test.Encrypt
 
             var rsaParams2 = RSAHelper.ReadPrivateKeyInfo(keyPair.PrivateKey);
             var rsaPrivateKey2 = RSAHelper.ExportPrivateKeyPKCS1(rsaParams1);
-            var rsaPrivateKey3 = RSAHelper.ExportPrivateKeyPkcs8(rsaParams2);
+            var rsaPrivateKey3 = RSAHelper.ExportPrivateKeyPKCS8(rsaParams2);
 
             var decrypted2 = RSAHelper.DecryptFromBase64(encrypted1, rsaPrivateKey2);
             var decrypted3 = RSAHelper.DecryptFromBase64(encrypted1, rsaPrivateKey3);
