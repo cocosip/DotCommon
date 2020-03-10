@@ -15,7 +15,37 @@ namespace DotCommon.Test.Reflecting
             Assert.True(ReflectionUtil.IsAssignableToGenericType(t4Type, typeof(TestGenericClass<>)));
         }
 
+        [Fact]
+        public void IsPropertyGetterSetterMethod_Test()
+        {
+            var method1 = typeof(ReflectionUtilClass1).GetMethod("GetAge");
+            Assert.False(ReflectionUtil.IsPropertyGetterSetterMethod(method1, typeof(ReflectionUtilClass1)));
+
+            var method2 = typeof(ReflectionUtilClass1).GetMethod("Do");
+            Assert.False(ReflectionUtil.IsPropertyGetterSetterMethod(method2, typeof(ReflectionUtilClass1)));
+
+            var method3 = typeof(ReflectionUtilClass1).GetMethod("get_UserName");
+            Assert.True(ReflectionUtil.IsPropertyGetterSetterMethod(method3, typeof(ReflectionUtilClass1)));
+ 
+        }
+
     }
+
+
+    class ReflectionUtilClass1
+    {
+        public string UserName { get; set; }
+        public string GetAge()
+        {
+            return "Age";
+        }
+
+        public void Do()
+        {
+
+        }
+    }
+
 
     interface ITestGenericInterface<T>
     {

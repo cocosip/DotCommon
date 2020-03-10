@@ -178,7 +178,7 @@ namespace DotCommon.Reflecting
             foreach (var propertyName in absolutePropertyPath.Split('.'))
             {
                 property = currentType.GetProperty(propertyName);
-                currentType = ((PropertyInfo) property).PropertyType;
+                currentType = ((PropertyInfo)property).PropertyType;
             }
 
             return property;
@@ -211,7 +211,7 @@ namespace DotCommon.Reflecting
 
             return value;
         }
-        
+
         /// <summary>
         /// Sets value of a property by it's full path on given object
         /// </summary>
@@ -264,7 +264,7 @@ namespace DotCommon.Reflecting
                 return false;
             }
 
-            return type.GetProperty(method.Name.Substring(4), BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null;
+            return type.GetProperty(method.Name.Substring(4), BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public) != null;
         }
     }
 }
