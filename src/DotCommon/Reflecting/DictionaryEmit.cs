@@ -133,8 +133,7 @@ namespace DotCommon.Reflecting
         /// </summary>
         public static T DictionaryToObject<T>(Dictionary<string, string> dict) where T : class, new()
         {
-            Delegate method;
-            if (!DictionaryToObjectDict.TryGetValue(typeof(T), out method))
+            if (!DictionaryToObjectDict.TryGetValue(typeof(T), out Delegate method))
             {
                 method = GetObjectFunc<T>();
                 DictionaryToObjectDict.Add(typeof(T), method);
@@ -241,8 +240,7 @@ namespace DotCommon.Reflecting
         /// </summary>
         public static Dictionary<string, string> ObjectToDictionary<T>(T t)
         {
-            Delegate method;
-            if (!ObjectToDictionaryDict.TryGetValue(typeof(T), out method))
+            if (!ObjectToDictionaryDict.TryGetValue(typeof(T), out Delegate method))
             {
                 method = GetDictionaryFunc<T>();
                 ObjectToDictionaryDict.Add(typeof(T), method);
