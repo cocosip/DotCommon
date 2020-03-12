@@ -75,6 +75,8 @@ namespace DotCommon.Test.Utility
         [InlineData("http://www.baidu.com?id=20", "id", "10", false, "http://www.baidu.com/?id=20")]
         [InlineData("http://test.yjyj.com/Web/Product/Search?Key=沙发", "page", "2", false, "http://test.yjyj.com/Web/Product/Search?Key=沙发&page=2")]
         [InlineData("http://127.0.0.1?id=3", "id", "10", true, "http://127.0.0.1/?id=10")]
+        [InlineData("http://127.0.0.1/", "", "30", true, "http://127.0.0.1/")]
+        [InlineData("http://127.0.0.1/", "name", "", false, "http://127.0.0.1/")]
         public void UrlAttachParameterTest(string url, string key, string value, bool replaceSame, string expected)
         {
             var actual = UrlUtil.UrlAttachParameter(url, key, value, replaceSame);

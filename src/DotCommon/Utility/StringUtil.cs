@@ -267,35 +267,23 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>
-        /// SQL 特殊字符(%,-,')替换处理,防SQL注入
-        /// </summary>
-        /// <returns></returns>
-        public static string SqlReplace(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                source = source.Replace("'", "''").Replace("%", "[%]").Replace("-", "[-]");
-            }
-            return source;
-        }
 
         /// <summary>
         /// 转化XML的特殊字符
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name="source"></param>
         /// <returns></returns>
-        public static string XmlEncode(string str)
+        public static string XmlEncode(string source)
         {
-            if (!string.IsNullOrEmpty(str))
+            if (!string.IsNullOrEmpty(source))
             {
-                str = str.Replace("&", "&amp;");
-                str = str.Replace("<", "&lt;");
-                str = str.Replace(">", "&gt;");
-                str = str.Replace("'", "&apos;");
-                str = str.Replace("\"", "&quot;");
+                source = source.Replace("&", "&amp;");
+                source = source.Replace("<", "&lt;");
+                source = source.Replace(">", "&gt;");
+                source = source.Replace("'", "&apos;");
+                source = source.Replace("\"", "&quot;");
             }
-            return str;
+            return source;
         }
 
         /// <summary> 检测是否有Sql危险字符

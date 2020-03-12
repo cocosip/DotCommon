@@ -1,9 +1,9 @@
-using DotCommon.Utility;
+﻿using DotCommon.Utility;
 using Xunit;
 
-namespace DotCommon.Test.Alg
+namespace DotCommon.Test.Utility
 {
-    public class HmacAlgTest
+    public class HmacUtilTest
     {
         [Fact]
         public void HmacSha1_GetStringHmac_Test()

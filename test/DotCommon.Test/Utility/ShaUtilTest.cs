@@ -1,7 +1,4 @@
 ﻿using DotCommon.Utility;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace DotCommon.Test.Utility
@@ -40,8 +37,8 @@ namespace DotCommon.Test.Utility
             var sha512_1 = ShaUtil.GetHex16StringSha512Hash("Hinatahi");
             Assert.Equal(expected1, sha512_1, ignoreCase: true);
 
-            var expected2 = "dgYH3MclklOrGdFiJZLJPj3P4L946XdpxsiyU50ZStk=";
-            var sha512_2 = ShaUtil.GetBase64StringSha256Hash("Hinatahi");
+            var expected2 = "ZQp2BVSIKdSMldXMxZozrUm7elOK3W3NwEKjkmpdZ8A2YTwGEYJxdihov55phjUXGaLixs+IjA8vNoktL8PIHg==";
+            var sha512_2 = ShaUtil.GetBase64StringSha512Hash("Helloword");
             Assert.Equal(expected2, sha512_2, ignoreCase: true);
         }
     }

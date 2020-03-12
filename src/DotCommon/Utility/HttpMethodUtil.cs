@@ -16,7 +16,7 @@ namespace DotCommon.Utility
 
         /// <summary>常规的前缀
         /// </summary>
-        public static Dictionary<string, string[]> ConventionalPrefixes { get; set; } = new Dictionary<string, string[]>
+        public static Dictionary<string, string[]> ConventionalPrefixes { get; } = new Dictionary<string, string[]>
         {
             { "GET", new [] { "GetList", "GetAll", "Get" } },
             { "PUT", new [] { "Put", "Update" } },

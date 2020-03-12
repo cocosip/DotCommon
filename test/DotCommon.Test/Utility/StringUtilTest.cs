@@ -128,12 +128,15 @@ namespace DotCommon.Test.Utility
         [Fact]
         public void StringToUnicodeTest()
         {
+            var s1 = "";
+            Assert.Equal("", StringUtil.StringToUnicode(s1));
+
             var str = "你好,hello";
             var unicodeStr = StringUtil.StringToUnicode(str);
             Assert.Equal(@"\u4f60\u597d,hello", unicodeStr);
         }
 
-      
+
         /// <summary>Unicode转中文字符串
         /// </summary>
         [Fact]
@@ -149,6 +152,43 @@ namespace DotCommon.Test.Utility
             var str2_result = StringUtil.UnicodeToString(unicodeStr2);
             Assert.Equal(str2, str2_result);
 
+        }
+
+        [Fact]
+        public void FilterHtml_Test()
+        {
+            var s1 = "";
+            Assert.Equal("", StringUtil.FilterHtml(s1));
+
+            var s2 = "<head>zhsangsan</head>";
+            Assert.Equal("zhsangsan", StringUtil.FilterHtml(s2));
+        }
+
+        [Fact]
+        public void SuperiorHtml_Test()
+        {
+            var s1 = "";
+            Assert.Equal("", StringUtil.SuperiorHtml(s1, ""));
+
+            var s2 = "<header>zhangsan";
+            Assert.Equal("zhangsan", StringUtil.SuperiorHtml(s2, @"<(.|\n)+?>"));
+        }
+
+        [Fact]
+        public void XmlEncode_Test()
+        {
+            var s1 = "";
+            Assert.Equal("", StringUtil.XmlEncode(s1));
+
+            var s2 = "<body>zhangsan</body>";
+            Assert.Equal("&lt;body&gt;zhangsan&lt;/body&gt;", StringUtil.XmlEncode(s2));
+        }
+
+        [Fact]
+        public void IsSafeSqlString_Test()
+        {
+            var s1 = "SELECT * FROM t1 WHERE Name LIKE '%ZA%'";
+            Assert.False(StringUtil.IsSafeSqlString(s1));
         }
 
 
