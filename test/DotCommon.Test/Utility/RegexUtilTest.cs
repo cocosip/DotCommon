@@ -97,7 +97,7 @@ namespace DotCommon.Test.Utility
             Assert.Equal(expected, actual);
         }
 
-       [Fact]
+        [Fact]
         public void IsDecimal_Between_Test()
         {
             Assert.True(RegexUtil.IsDecimal("12.55", 12m, 13m, 2));
@@ -133,15 +133,41 @@ namespace DotCommon.Test.Utility
         }
 
 
-        [Theory]
-        [InlineData("388.223.124.2", "388.524.2", true)]
-        [InlineData("10.10.20", "10.10.20.3", true)]
-        [InlineData("10.20.80", "10.10.3", false)]
-        [InlineData("10.20", "10", false)]
-        public void IsVersionUpper_Test(string oldVersion, string newVersion, bool expected)
+        [Fact]
+        public void IsVersionUpper_Test()
         {
-            var actual = RegexUtil.IsVersionUpper(oldVersion, newVersion);
-            Assert.Equal(expected, actual);
+            var oldVersion1 = "388.223.124.2";
+            var newVersion1 = "388.524.2";
+            Assert.True(RegexUtil.IsVersionUpper(oldVersion1, newVersion1));
+
+            var oldVersion2 = "10.10.20";
+            var newVersion2 = "10.10.20.3";
+            Assert.True(RegexUtil.IsVersionUpper(oldVersion2, newVersion2));
+
+
+            var oldVersion3 = "10.20.80";
+            var newVersion3 = "10.10.3";
+            Assert.False(RegexUtil.IsVersionUpper(oldVersion3, newVersion3));
+
+            var oldVersion4 = "10.20";
+            var newVersion4 = "10";
+            Assert.Throws<ArgumentException>(() =>
+            {
+                RegexUtil.IsVersionUpper(oldVersion4, newVersion4);
+            });
+
+            var oldVersion5 = "10.";
+            var newVersion5 = "10.222";
+            Assert.Throws<ArgumentException>(() =>
+            {
+                RegexUtil.IsVersionUpper(oldVersion5, newVersion5);
+            });
+
+
+            var oldVersion6 = "10.10.20.32";
+            var newVersion6 = "10.10";
+            Assert.False(RegexUtil.IsVersionUpper(oldVersion6, newVersion6));
+
         }
     }
 }

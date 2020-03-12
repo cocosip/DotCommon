@@ -205,30 +205,38 @@ namespace DotCommon.Utility
         /// <returns></returns>
         public static bool IsVersionUpper(string oldVersion, string newVersion)
         {
-            if (IsVersion(oldVersion) && IsVersion(newVersion))
+            if (!IsVersion(oldVersion))
             {
-                string[] strOld = oldVersion.Split('.');
-                string[] strNew = newVersion.Split('.');
-                int length = strOld.Length > strNew.Length ? strNew.Length : strOld.Length;
-                for (int i = 0; i < length; i++)
+                throw new ArgumentException($"旧版本 oldVersion:{oldVersion}不是一个有效的版本号.");
+            }
+            if (!IsVersion(newVersion))
+            {
+                throw new ArgumentException($"新版本 newVersion:{newVersion}不是一个有效的版本号.");
+            }
+
+
+            string[] strOld = oldVersion.Split('.');
+            string[] strNew = newVersion.Split('.');
+            int length = strOld.Length > strNew.Length ? strNew.Length : strOld.Length;
+            for (int i = 0; i < length; i++)
+            {
+                if (Convert.ToInt32(strOld[i]) == Convert.ToInt32(strNew[i]))
                 {
-                    if (Convert.ToInt32(strOld[i]) == Convert.ToInt32(strNew[i]))
-                    {
-                        continue;
-                    }
-                    //如果判断新版本比较高,则直接返回
-                    if (Convert.ToInt32(strOld[i]) < Convert.ToInt32(strNew[i]))
-                    {
-                        return true;
-                    }
-                    return false;
+                    continue;
                 }
-                //如果后面的版本长度大于前面的,那么就为true
-                if (strNew.Length > strOld.Length)
+                //如果判断新版本比较高,则直接返回
+                if (Convert.ToInt32(strOld[i]) < Convert.ToInt32(strNew[i]))
                 {
                     return true;
                 }
+                return false;
             }
+            //如果后面的版本长度大于前面的,那么就为true
+            if (strNew.Length > strOld.Length)
+            {
+                return true;
+            }
+
             return false;
         }
 

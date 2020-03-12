@@ -1,5 +1,6 @@
 ﻿using DotCommon.Reflecting;
 using System;
+using System.Linq;
 using System.Reflection;
 using Xunit;
 
@@ -96,6 +97,103 @@ namespace DotCommon.Test.Reflecting
             Assert.Equal(typeof(ReflectionUtilClass2).GetProperty("Age"), p4);
         }
 
+        [Fact]
+        public void GetAttributesOfMemberAndDeclaringType_Test()
+        {
+            var objects1 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType(typeof(ReflectionUtilClass3).GetMember("Id").FirstOrDefault(), true);
+            Assert.Single(objects1);
+
+            var objects2 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType(typeof(ReflectionUtilClass4).GetMember("Age").FirstOrDefault(), true);
+            Assert.Equal(2, objects2.Count);
+
+        }
+
+        [Fact]
+        public void GetAttributesOfMemberAndType_Test()
+        {
+            var objects1 = ReflectionUtil.GetAttributesOfMemberAndType(typeof(ReflectionUtilClass4).GetMember("Id").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
+            Assert.Equal(2, objects1.Count);
+
+            var objects2 = ReflectionUtil.GetAttributesOfMemberAndType(typeof(ReflectionUtilClass4).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
+            Assert.Equal(2, objects2.Count);
+
+            var objects3 = ReflectionUtil.GetAttributesOfMemberAndType(typeof(ReflectionUtilClass4).GetMember("Number").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
+            Assert.Single(objects3);
+
+            var objects4 = ReflectionUtil.GetAttributesOfMemberAndType(typeof(ReflectionUtilClass4).GetMember("Age").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
+            Assert.Equal(2, objects4.Count);
+        }
+
+        [Fact]
+        public void GetAttributesOfMemberAndDeclaringType_Strong_Test()
+        {
+            var attributes1 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType<ReflectionUtil1Attribute>(typeof(ReflectionUtilClass3).GetMember("Id").FirstOrDefault(), true);
+            Assert.Single(attributes1);
+
+            var attributes2 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType<ReflectionUtil1Attribute>(typeof(ReflectionUtilClass3).GetMember("Name").FirstOrDefault(), true);
+            Assert.Empty(attributes2);
+
+            var attributes3 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType<ReflectionUtil2Attribute>(typeof(ReflectionUtilClass4).GetMember("Name").FirstOrDefault(), true);
+            Assert.Single(attributes3);
+
+            var attributes4 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType<ReflectionUtil3Attribute>(typeof(ReflectionUtilClass4).GetMember("Age").FirstOrDefault(), true);
+            Assert.Single(attributes4);
+
+        }
+
+        [Fact]
+        public void GetAttributesOfMemberAndType_Strong_Test()
+        {
+            var attributes1 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil1Attribute>(typeof(ReflectionUtilClass3).GetMember("Id").FirstOrDefault(), typeof(ReflectionUtilClass3), true);
+            Assert.Single(attributes1);
+
+            var attributes2 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil1Attribute>(typeof(ReflectionUtilClass3).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass3), true);
+            Assert.Empty(attributes2);
+
+            var attributes3 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil2Attribute>(typeof(ReflectionUtilClass3).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass3), true);
+            Assert.Single(attributes3);
+
+            var attributes4 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil2Attribute>(typeof(ReflectionUtilClass3).GetMember("Number").FirstOrDefault(), typeof(ReflectionUtilClass3), true);
+            Assert.Empty(attributes4);
+
+            var attributes5 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil2Attribute>(typeof(ReflectionUtilClass4).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
+            Assert.Single(attributes5);
+
+            var attributes6 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil3Attribute>(typeof(ReflectionUtilClass4).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
+            Assert.Single(attributes6);
+
+            var attributes7 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil3Attribute>(typeof(ReflectionUtilClass3).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass3), true);
+            Assert.Empty(attributes7);
+        }
+
+        [Fact]
+        public void GetSingleAttributeOfMemberOrDeclaringTypeOrDefault_Test()
+        {
+            var attribute1 = ReflectionUtil.GetSingleAttributeOfMemberOrDeclaringTypeOrDefault<ReflectionUtil4Attribute>(typeof(ReflectionUtilClass5).GetMember("Id").FirstOrDefault(), new ReflectionUtil4Attribute() { Order = 10 }, true);
+
+            Assert.Equal(100, attribute1.Order);
+
+            var attribute2 = ReflectionUtil.GetSingleAttributeOfMemberOrDeclaringTypeOrDefault<ReflectionUtil4Attribute>(typeof(ReflectionUtilClass5).GetMember("Name").FirstOrDefault(), new ReflectionUtil4Attribute() { Order = 10 }, true);
+
+            Assert.Equal(10, attribute2.Order);
+
+            var attribute3 = ReflectionUtil.GetSingleAttributeOfMemberOrDeclaringTypeOrDefault<ReflectionUtil4Attribute>(typeof(ReflectionUtilClass6).GetMember("Id").FirstOrDefault(), new ReflectionUtil4Attribute() { Order = 10 }, true);
+
+            Assert.Equal(50, attribute3.Order);
+
+            var attribute4 = ReflectionUtil.GetSingleAttributeOfMemberOrDeclaringTypeOrDefault<ReflectionUtil4Attribute>(typeof(ReflectionUtilClass6).GetMember("Name").FirstOrDefault(), new ReflectionUtil4Attribute() { Order = 10 }, true);
+
+            Assert.Equal(300, attribute4.Order);
+        }
+
+        [Fact]
+        public void GetSingleAttributeOrDefault_Test()
+        {
+            var attribute1 = ReflectionUtil.GetSingleAttributeOrDefault<ReflectionUtil4Attribute>(typeof(ReflectionUtilClass5).GetMember("Id").FirstOrDefault(), new ReflectionUtil4Attribute() { Order = 10 }, true);
+            Assert.Equal(100, attribute1.Order);
+        }
+
+
     }
 
 
@@ -123,6 +221,66 @@ namespace DotCommon.Test.Reflecting
         public ReflectionUtilClass1 Class1 { get; set; }
     }
 
+
+    class ReflectionUtilClass3
+    {
+        [ReflectionUtil1]
+        public int Id { get; set; }
+
+        [ReflectionUtil2]
+        public string Name { get; set; }
+
+
+        public string Number { get; set; }
+
+    }
+
+    [ReflectionUtil3Attribute]
+
+    class ReflectionUtilClass4 : ReflectionUtilClass3
+    {
+        public string NickName { get; set; }
+
+        [ReflectionUtil2Attribute]
+        public string Age { get; set; }
+    }
+
+    class ReflectionUtilClass5
+    {
+        [ReflectionUtil4(Order = 100)]
+        public string Id { get; set; }
+
+        public string Name { get; set; }
+    }
+
+    [ReflectionUtil4(Order = 300)]
+    class ReflectionUtilClass6
+    {
+        [ReflectionUtil4(Order = 50)]
+        public string Id { get; set; }
+
+        public string Name { get; set; }
+    }
+
+    class ReflectionUtil1Attribute : Attribute
+    {
+
+    }
+
+    class ReflectionUtil2Attribute : Attribute
+    {
+
+    }
+    class ReflectionUtil3Attribute : Attribute
+    {
+
+    }
+
+    class ReflectionUtil4Attribute : Attribute
+    {
+        public int Order { get; set; }
+
+    }
 
     interface ITestGenericInterface<T>
     {
