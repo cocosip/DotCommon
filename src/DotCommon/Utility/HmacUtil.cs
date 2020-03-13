@@ -6,7 +6,7 @@ namespace DotCommon.Utility
 {
     /// <summary>HMAC算法工具类
     /// </summary>
-    public static class HmacUtil
+    public static class HMACUtil
     {
 
         #region HMAC-Sha1算法
@@ -18,9 +18,9 @@ namespace DotCommon.Utility
         /// <param name="sourceEncode">编码</param>
         /// <param name="keyEncode">密钥编码</param>
         /// <returns>Base64编码后的字符串</returns>
-        public static string GetBase64StringHmacSha1(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
+        public static string GetBase64StringHMACSHA1(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
         {
-            var hashBytes = GetHmacSha1(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
+            var hashBytes = GetHMACSHA1(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
             return Convert.ToBase64String(hashBytes);
         }
 
@@ -32,9 +32,9 @@ namespace DotCommon.Utility
         /// <param name="sourceEncode">编码</param>
         /// <param name="keyEncode">密钥编码</param>
         /// <returns>转换成16进制后的字符串</returns>
-        public static string GetHex16StringHmacSha1(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
+        public static string GetHex16StringHMACSHA1(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
         {
-            var hashBytes = GetHmacSha1(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
+            var hashBytes = GetHMACSHA1(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
             return ByteBufferUtil.ByteBufferToHex16(hashBytes);
         }
 
@@ -44,7 +44,7 @@ namespace DotCommon.Utility
         /// <param name="sourceBytes">数据二进制</param>
         /// <param name="keyBytes">密钥二进制</param>
         /// <returns></returns>
-        public static byte[] GetHmacSha1(byte[] sourceBytes, byte[] keyBytes)
+        public static byte[] GetHMACSHA1(byte[] sourceBytes, byte[] keyBytes)
         {
             using (var hmacSha1 = new HMACSHA1(keyBytes))
             {
@@ -65,9 +65,9 @@ namespace DotCommon.Utility
         /// <param name="sourceEncode">编码</param>
         /// <param name="keyEncode">密钥编码</param>
         /// <returns>Base64编码后的字符串</returns>
-        public static string GetBase64StringHmacSha256(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
+        public static string GetBase64StringHMACSHA256(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
         {
-            var hashBytes = GetHmacSha256(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
+            var hashBytes = GetHMACSHA256(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
             return Convert.ToBase64String(hashBytes);
         }
 
@@ -79,9 +79,9 @@ namespace DotCommon.Utility
         /// <param name="sourceEncode">编码</param>
         /// <param name="keyEncode">密钥编码</param>
         /// <returns>转换成16进制后的字符串</returns>
-        public static string GetHex16StringHmacSha256(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
+        public static string GetHex16StringHMACSHA256(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
         {
-            var hashBytes = GetHmacSha256(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
+            var hashBytes = GetHMACSHA256(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
             return ByteBufferUtil.ByteBufferToHex16(hashBytes);
         }
 
@@ -90,7 +90,7 @@ namespace DotCommon.Utility
         /// <param name="sourceBytes">数据二进制</param>
         /// <param name="keyBytes">密钥二进制</param>
         /// <returns></returns>
-        public static byte[] GetHmacSha256(byte[] sourceBytes, byte[] keyBytes)
+        public static byte[] GetHMACSHA256(byte[] sourceBytes, byte[] keyBytes)
         {
             using (var hmacSha256 = new HMACSHA256(keyBytes))
             {
@@ -110,9 +110,9 @@ namespace DotCommon.Utility
         /// <param name="sourceEncode">编码</param>
         /// <param name="keyEncode">密钥编码</param>
         /// <returns>Base64编码后的字符串</returns>
-        public static string GetBase64StringHmacMd5(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
+        public static string GetBase64StringHMACMD5(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
         {
-            var hashBytes = GetHmacMd5(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
+            var hashBytes = GetHMACMD5(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
             return Convert.ToBase64String(hashBytes);
         }
 
@@ -124,9 +124,9 @@ namespace DotCommon.Utility
         /// <param name="sourceEncode">编码</param>
         /// <param name="keyEncode">密钥编码</param>
         /// <returns>转换成16进制后的字符串</returns>
-        public static string GetHex16StringHmacMd5(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
+        public static string GetHex16StringHMACMD5(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
         {
-            var hashBytes = GetHmacMd5(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
+            var hashBytes = GetHMACMD5(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
             return ByteBufferUtil.ByteBufferToHex16(hashBytes);
         }
 
@@ -135,7 +135,7 @@ namespace DotCommon.Utility
         /// <param name="sourceBytes">数据二进制</param>
         /// <param name="keyBytes">密钥二进制</param>
         /// <returns></returns>
-        public static byte[] GetHmacMd5(byte[] sourceBytes, byte[] keyBytes)
+        public static byte[] GetHMACMD5(byte[] sourceBytes, byte[] keyBytes)
         {
             using (var hmacMd5 = new HMACMD5(keyBytes))
             {

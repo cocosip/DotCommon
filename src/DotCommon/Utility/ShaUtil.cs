@@ -8,36 +8,36 @@ namespace DotCommon.Utility
     /// </summary>
     public static class ShaUtil
     {
-        /// <summary>获取十六进制字符串的Sha1 Hash
+        /// <summary>获取十六进制字符串的SHA1-Hash
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="encode">编码</param>
         /// <returns></returns>
-        public static string GetHex16StringSha1Hash(string source, string encode = "utf-8")
+        public static string GetHex16StringSHA1Hash(string source, string encode = "utf-8")
         {
             var sourceBytes = Encoding.GetEncoding(encode).GetBytes(source);
-            var hashBytes = GetSha1Hash(sourceBytes);
+            var hashBytes = GetSHA1Hash(sourceBytes);
             return ByteBufferUtil.ByteBufferToHex16(hashBytes);
         }
 
-        /// <summary>获取字符串的Sha1-Hash Base64值
+        /// <summary>获取字符串的SHA1-Hash Base64值
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="encode">编码</param>
         /// <returns></returns>
-        public static string GetBase64StringSha1Hash(string source, string encode = "utf-8")
+        public static string GetBase64StringSHA1Hash(string source, string encode = "utf-8")
         {
             var sourceBytes = Encoding.GetEncoding(encode).GetBytes(source);
-            var hashBytes = GetSha1Hash(sourceBytes);
+            var hashBytes = GetSHA1Hash(sourceBytes);
             return Convert.ToBase64String(hashBytes);
         }
 
 
-        /// <summary>获取二进制的Sha1值
+        /// <summary>获取二进制的SHA1值
         /// </summary>
         /// <param name="sourceBuffer">二进制数据</param>
         /// <returns></returns>
-        public static byte[] GetSha1Hash(byte[] sourceBuffer)
+        public static byte[] GetSHA1Hash(byte[] sourceBuffer)
         {
             using (var sha1 = SHA1.Create())
             {
@@ -46,36 +46,36 @@ namespace DotCommon.Utility
             }
         }
 
-        /// <summary>获取十六进制字符串的Sha256 Hash
+        /// <summary>获取十六进制字符串的SHA256-Hash
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="encode">编码</param>
         /// <returns></returns>
-        public static string GetHex16StringSha256Hash(string source, string encode = "utf-8")
+        public static string GetHex16StringSHA256Hash(string source, string encode = "utf-8")
         {
             var sourceBytes = Encoding.GetEncoding(encode).GetBytes(source);
-            var hashBytes = GetSha256Hash(sourceBytes);
+            var hashBytes = GetSHA256Hash(sourceBytes);
             return ByteBufferUtil.ByteBufferToHex16(hashBytes);
         }
 
-        /// <summary>获取字符串的Sha256-Hash Base64值
+        /// <summary>获取字符串的SHA256-Hash Base64值
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="encode">编码</param>
         /// <returns></returns>
-        public static string GetBase64StringSha256Hash(string source, string encode = "utf-8")
+        public static string GetBase64StringSHA256Hash(string source, string encode = "utf-8")
         {
             var sourceBytes = Encoding.GetEncoding(encode).GetBytes(source);
-            var hashBytes = GetSha256Hash(sourceBytes);
+            var hashBytes = GetSHA256Hash(sourceBytes);
             return Convert.ToBase64String(hashBytes);
         }
 
 
-        /// <summary>获取二进制的Sha256值
+        /// <summary>获取二进制的SHA256值
         /// </summary>
         /// <param name="sourceBuffer">二进制数据</param>
         /// <returns></returns>
-        public static byte[] GetSha256Hash(byte[] sourceBuffer)
+        public static byte[] GetSHA256Hash(byte[] sourceBuffer)
         {
             using (var sha256 = SHA256.Create())
             {
@@ -85,35 +85,35 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary>获取十六进制字符串的Sha512 Hash
+        /// <summary>获取十六进制字符串的SHA512-Hash
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="encode">编码</param>
         /// <returns></returns>
-        public static string GetHex16StringSha512Hash(string source, string encode = "utf-8")
+        public static string GetHex16StringSHA512Hash(string source, string encode = "utf-8")
         {
             var sourceBytes = Encoding.GetEncoding(encode).GetBytes(source);
-            var hashBytes = GetSha512Hash(sourceBytes);
+            var hashBytes = GetSHA512Hash(sourceBytes);
             return ByteBufferUtil.ByteBufferToHex16(hashBytes);
         }
 
-        /// <summary>获取字符串的Sha512-Hash Base64值
+        /// <summary>获取字符串的SHA512-Hash Base64值
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="encode">编码</param>
         /// <returns></returns>
-        public static string GetBase64StringSha512Hash(string source, string encode = "utf-8")
+        public static string GetBase64StringSHA512Hash(string source, string encode = "utf-8")
         {
             var sourceBytes = Encoding.GetEncoding(encode).GetBytes(source);
-            var hashBytes = GetSha512Hash(sourceBytes);
+            var hashBytes = GetSHA512Hash(sourceBytes);
             return Convert.ToBase64String(hashBytes);
         }
 
-        /// <summary>获取二进制的Sha512值
+        /// <summary>获取二进制的SHA512值
         /// </summary>
         /// <param name="sourceBuffer">二进制数据</param>
         /// <returns></returns>
-        public static byte[] GetSha512Hash(byte[] sourceBuffer)
+        public static byte[] GetSHA512Hash(byte[] sourceBuffer)
         {
             using (var sha512 = SHA512.Create())
             {
