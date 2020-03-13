@@ -15,5 +15,24 @@ namespace DotCommon.Extensions
             return collection.Remove(collection.FirstOrDefault(predicate));
         }
 
+
+        /// <summary>比较两个集合是否相等
+        /// </summary>
+        public static bool EqualList<T>(this List<T> source, List<T> other)
+        {
+            if (source.Count != other.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < source.Count; i++)
+            {
+                if (!source[i].Equals(other[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
