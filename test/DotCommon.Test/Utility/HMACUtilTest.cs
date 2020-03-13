@@ -3,10 +3,10 @@ using Xunit;
 
 namespace DotCommon.Test.Utility
 {
-    public class HmacUtilTest
+    public class HMACUtilTest
     {
         [Fact]
-        public void HmacSha1_GetStringHmac_Test()
+        public void HMACSHA1_GetStringHMAC_Test()
         {
             var source = "helloworld";
             var hmacSha1Value = HMACUtil.GetHex16StringHMACSHA1(source, "12345678");
@@ -18,7 +18,7 @@ namespace DotCommon.Test.Utility
         }
 
         [Fact]
-        public void HmacSha256_GetStringHmac_Test()
+        public void HMACSHA256_GetStringHMAC_Test()
         {
             var source = "zero1000";
             var hmacSha256Value = HMACUtil.GetHex16StringHMACSHA256(source, "111111");
@@ -30,7 +30,7 @@ namespace DotCommon.Test.Utility
         }
 
         [Fact]
-        public void HmacMd5_GetStringHmac_Test()
+        public void HMACMD5_GetStringHMAC_Test()
         {
             var source = "zero1000";
             var hmacMd5Value = HMACUtil.GetHex16StringHMACMD5(source, "111111");

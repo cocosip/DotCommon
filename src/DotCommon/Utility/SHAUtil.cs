@@ -6,7 +6,7 @@ namespace DotCommon.Utility
 {
     /// <summary>SHA1算法工具类
     /// </summary>
-    public static class ShaUtil
+    public static class SHAUtil
     {
         /// <summary>获取十六进制字符串的SHA1-Hash
         /// </summary>
