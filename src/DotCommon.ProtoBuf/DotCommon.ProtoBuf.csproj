@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\build\common.props" />
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>DotCommon.ProtoBuf</AssemblyName>
     <PackageId>DotCommon.ProtoBuf</PackageId>
     <RootNamespace>DotCommon</RootNamespace>

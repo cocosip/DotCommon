@@ -7,26 +7,39 @@ using Xunit;
 
 namespace DotCommon.Test.Encrypt
 {
-    public class RSAHelperTest
+    public class Netstandard2RSAHelperTest
     {
         [Fact]
         public void GenerateKeyPair_Test()
         {
-            var keyPair = RSAHelper.GenerateKeyPair(RSAKeyFormat.PKCS1, 512);
+            var keyPair = Netstandard2RSAHelper.GenerateKeyPair(RSAKeyFormat.PKCS1, 512);
 
             Assert.NotEmpty(keyPair.PublicKey);
-            var encrypted1 = RSAHelper.EncryptAsBase64("hello", keyPair.PublicKey);
-            var decrypted1 = RSAHelper.DecryptFromBase64(encrypted1, keyPair.PrivateKey);
+            var encrypted1 = Netstandard2RSAHelper.EncryptAsBase64("hello", keyPair.PublicKey);
+            var decrypted1 = Netstandard2RSAHelper.DecryptFromBase64(encrypted1, keyPair.PrivateKey);
             Assert.Equal("hello", decrypted1);
 
-            var signed1 = RSAHelper.SignDataAsBase64("string1", keyPair.PrivateKey);
-            Assert.True(RSAHelper.VerifyBase64Data("string1", signed1, keyPair.PublicKey));
+            var signed1 = Netstandard2RSAHelper.SignDataAsBase64("string1", keyPair.PrivateKey);
+            Assert.True(Netstandard2RSAHelper.VerifyBase64Data("string1", signed1, keyPair.PublicKey));
+
+
+            var rsaParams1 = Netstandard2RSAHelper.ReadPrivateKeyInfo(keyPair.PrivateKey);
+
+            var rsaParams2 = Netstandard2RSAHelper.ReadPrivateKeyInfo(keyPair.PrivateKey);
+            var rsaPrivateKey2 = Netstandard2RSAHelper.ExportPrivateKeyPKCS1(rsaParams1);
+            var rsaPrivateKey3 = Netstandard2RSAHelper.ExportPrivateKeyPKCS8(rsaParams2);
+
+            var decrypted2 = Netstandard2RSAHelper.DecryptFromBase64(encrypted1, rsaPrivateKey2);
+            var decrypted3 = Netstandard2RSAHelper.DecryptFromBase64(encrypted1, rsaPrivateKey3);
+            Assert.Equal("hello", decrypted2);
+            Assert.Equal("hello", decrypted3);
+ 
         }
 
         [Fact]
         public void KeyPair_Equal_Test()
         {
-            var keyPair = RSAHelper.GenerateKeyPair(RSAKeyFormat.PKCS8, 2048);
+            var keyPair = Netstandard2RSAHelper.GenerateKeyPair(RSAKeyFormat.PKCS8, 2048);
             var keyPair2 = new RSAKeyPair()
             {
                 PrivateKey = keyPair.PrivateKey,
@@ -44,15 +57,17 @@ namespace DotCommon.Test.Encrypt
         [Fact]
         public void PKCS8_PKCS1_Conver_Test()
         {
-            var keyPair1 = RSAHelper.GenerateKeyPair(RSAKeyFormat.PKCS1);
-            var pkcs8Key1 = RSAHelper.PKCS1ToPKCS8(keyPair1.PrivateKey);
+            var keyPair1 = Netstandard2RSAHelper.GenerateKeyPair(RSAKeyFormat.PKCS1);
+            var pkcs8Key1 = Netstandard2RSAHelper.PKCS1ToPKCS8(keyPair1.PrivateKey);
 
-            var encrypted1 = RSAHelper.EncryptAsBase64("123456", keyPair1.PublicKey);
+            var encrypted1 = Netstandard2RSAHelper.EncryptAsBase64("123456", keyPair1.PublicKey);
 
-            var decrypted1 = RSAHelper.DecryptFromBase64(encrypted1, keyPair1.PrivateKey);
+            var decrypted1 = Netstandard2RSAHelper.DecryptFromBase64(encrypted1, keyPair1.PrivateKey);
             Assert.Equal("123456", decrypted1);
+            var decrypted2 = Netstandard2RSAHelper.DecryptFromBase64(encrypted1, pkcs8Key1);
+            Assert.Equal("123456", decrypted2);
 
-            var pkcs1Key = RSAHelper.PKCS8ToPKCS1(pkcs8Key1);
+            var pkcs1Key = Netstandard2RSAHelper.PKCS8ToPKCS1(pkcs8Key1);
             Assert.Equal(keyPair1.PrivateKey, pkcs1Key);
         }
 
@@ -60,9 +75,9 @@ namespace DotCommon.Test.Encrypt
         [Fact]
         public void PKCS8KeyPair_Generate_Test()
         {
-            var keyPair = RSAHelper.GenerateKeyPair(RSAKeyFormat.PKCS8);
-            var pkcs1Key = RSAHelper.PKCS8ToPKCS1(keyPair.PrivateKey);
-            var pkcs8Key = RSAHelper.PKCS1ToPKCS8(pkcs1Key);
+            var keyPair = Netstandard2RSAHelper.GenerateKeyPair(RSAKeyFormat.PKCS8);
+            var pkcs1Key = Netstandard2RSAHelper.PKCS8ToPKCS1(keyPair.PrivateKey);
+            var pkcs8Key = Netstandard2RSAHelper.PKCS1ToPKCS8(pkcs1Key);
             Assert.Equal(pkcs8Key, keyPair.PrivateKey);
         }
 
@@ -111,5 +126,6 @@ namespace DotCommon.Test.Encrypt
 
 
         }
+
     }
 }

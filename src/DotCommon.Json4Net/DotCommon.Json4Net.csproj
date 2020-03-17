@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\build\common.props" />
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>DotCommon.Json4Net</AssemblyName>
     <PackageId>DotCommon.Json4Net</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
@@ -11,11 +11,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
-    <DocumentationFile>bin\Debug\netstandard2.0\DotCommon.Json4Net.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netstandard2.1\DotCommon.Json4Net.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.0\DotCommon.Json4Net.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\netstandard2.1\DotCommon.Json4Net.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
