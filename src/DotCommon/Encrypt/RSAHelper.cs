@@ -32,7 +32,9 @@ namespace DotCommon.Encrypt
 
                 var privateKeyBuffer = format == RSAKeyFormat.PKCS1 ? rsa.ExportRSAPrivateKey() : rsa.ExportPkcs8PrivateKey();
                 var privateKey = Convert.ToBase64String(privateKeyBuffer);
-                var publicKeyBuffer = rsa.ExportRSAPublicKey();
+                //该版本下不正确
+                //var publicKeyBuffer = rsa.ExportRSAPublicKey();
+                var publicKeyBuffer = rsa.ExportSubjectPublicKeyInfo();
                 var publicKey = Convert.ToBase64String(publicKeyBuffer);
                 return new RSAKeyPair(publicKey, privateKey);
             }
@@ -82,7 +84,9 @@ namespace DotCommon.Encrypt
             using (var rsa = RSA.Create())
             {
                 var publicKeyBuffer = Convert.FromBase64String(publicKey);
-                rsa.ImportRSAPublicKey(publicKeyBuffer, out int bytesRead);
+                //该版本下不正确
+                //rsa.ImportRSAPublicKey(publicKeyBuffer, out int bytesRead);
+                rsa.ImportSubjectPublicKeyInfo(publicKeyBuffer, out int bytesRead);
 
                 encryptionPadding ??= RSAEncryptionPadding.Pkcs1;
                 var encryptedData = rsa.Encrypt(data, encryptionPadding);
@@ -116,7 +120,7 @@ namespace DotCommon.Encrypt
             {
                 var privateKeyBuffer = Convert.FromBase64String(privateKey);
                 rsa.ImportRSAPrivateKey(privateKeyBuffer, out int bytesRead);
-
+               
                 encryptionPadding ??= RSAEncryptionPadding.Pkcs1;
                 var decryptedData = rsa.Decrypt(data, encryptionPadding);
                 return decryptedData;
@@ -185,7 +189,9 @@ namespace DotCommon.Encrypt
             using (var rsa = RSA.Create())
             {
                 var publicKeyBuffer = Convert.FromBase64String(publicKey);
-                rsa.ImportRSAPublicKey(publicKeyBuffer, out int bytesRead);
+                //该版本下不正确
+                //rsa.ImportRSAPublicKey(publicKeyBuffer, out int bytesRead);
+                rsa.ImportSubjectPublicKeyInfo(publicKeyBuffer, out int bytesRead);
 
                 signaturePadding ??= RSASignaturePadding.Pkcs1;
                 return rsa.VerifyData(data, signature, HashAlgorithmNameDict[hashAlgorithmName], signaturePadding);
