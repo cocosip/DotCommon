@@ -10,6 +10,7 @@ trigger:
     - refs/tags/*
     - dev
     - develop
+    - netstandard2_1
 jobs:
   - job: Windows
     pool:
@@ -17,7 +18,7 @@ jobs:
     steps:
     - task: DotNetCoreInstaller@0
       inputs:
-        version: '3.1.101'
+        version: '3.1.102'
     - powershell: .\build.ps1
       displayName: 'Run build.ps1'
 
@@ -27,7 +28,7 @@ jobs:
     steps:
     - task: DotNetCoreInstaller@0
       inputs:
-        version: '3.1.101'
+        version: '3.1.102'
     - script: |
         chmod +x ./build.sh
       displayName: 'Chmod build.sh'
