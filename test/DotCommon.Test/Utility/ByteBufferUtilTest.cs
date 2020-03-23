@@ -75,5 +75,15 @@ namespace DotCommon.Test.Utility
             var value = Encoding.UTF8.GetString(buffer);
             Assert.Equal("Hello", value);
         }
+
+
+        [Fact]
+        public void LongToBuffer_BufferToLong_Test()
+        {
+            var b1 = ByteBufferUtil.LongToBuffer(100L);
+            var l1 = ByteBufferUtil.BufferToLong(b1);
+            Assert.Equal(8, b1.Length);
+            Assert.Equal(100L, l1);
+        }
     }
 }

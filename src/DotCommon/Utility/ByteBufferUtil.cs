@@ -172,7 +172,7 @@ namespace DotCommon.Utility
         public static string ByteBufferToHex16(byte[] byteBuffer)
         {
             return byteBuffer.Aggregate("", (current, b) => current + b.ToString("X2"));
-            
+
             //var hex16String = new StringBuilder(byteBuffer.Length);
             //for (var i = 0; i < byteBuffer.Length; i++)
             //{
@@ -201,6 +201,40 @@ namespace DotCommon.Utility
                 byteArray[i] = Convert.ToByte(hexString, 16);
             }
             return byteArray;
+        }
+
+
+        /// <summary>long类型转十六进制字节有符号字节数组
+        /// </summary>
+        public static byte[] LongToBuffer(long l)
+        {
+            byte[] buffer = new byte[8];
+            buffer[0] = (byte)((l >> 56) & 0xFF);
+            buffer[1] = (byte)((l >> 48) & 0xFF);
+            buffer[2] = (byte)((l >> 40) & 0xFF);
+            buffer[3] = (byte)((l >> 32) & 0xFF);
+            buffer[4] = (byte)((l >> 24) & 0xFF);
+            buffer[5] = (byte)((l >> 16) & 0xFF);
+            buffer[6] = (byte)((l >> 8) & 0xFF);
+            buffer[7] = (byte)(l & 0xFF);
+            return buffer;
+        }
+
+        /// <summary>十六进制有符号字节数组转long类型
+        /// </summary>
+        public static long BufferToLong(byte[] buffer, int offset = 0)
+        {
+#pragma warning disable CS0675 
+            return (((long)(buffer[offset] >= 0 ? buffer[offset] : 256 + buffer[offset])) << 56) |
+                  (((long)(buffer[offset + 1] >= 0 ? buffer[offset + 1] : 256 + buffer[offset + 1])) << 48) |
+                  (((long)(buffer[offset + 2] >= 0 ? buffer[offset + 2] : 256 + buffer[offset + 2])) << 40) |
+                  (((long)(buffer[offset + 3] >= 0 ? buffer[offset + 3] : 256 + buffer[offset + 3])) << 32) |
+                  (((long)(buffer[offset + 4] >= 0 ? buffer[offset + 4] : 256 + buffer[offset + 4])) << 24) |
+                  (((long)(buffer[offset + 5] >= 0 ? buffer[offset + 5] : 256 + buffer[offset + 5])) << 16) |
+                  (((long)(buffer[offset + 6] >= 0 ? buffer[offset + 6] : 256 + buffer[offset + 6])) << 8) |
+                  ((buffer[offset + 7] >= 0 ? buffer[offset + 7] : 256 + buffer[offset + 7]));
+#pragma warning restore CS0675 
+
         }
 
     }
