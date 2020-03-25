@@ -31,6 +31,29 @@ namespace DotCommon.DependencyInjection
             }
             return services;
         }
+
+        /// <summary>替换现有的服务
+        /// </summary>
+        /// <typeparam name="TService">服务接口类型</typeparam>
+        /// <typeparam name="TImplementation">实现类型</typeparam>
+        /// <param name="services"></param>
+        /// <param name="lifetime"></param>
+        /// <returns></returns>
+        public static IServiceCollection Replace<TService, TImplementation>(
+           this IServiceCollection services,
+           ServiceLifetime lifetime) where TService : class where TImplementation : class, TService
+        {
+            var descriptorToRemove = services.FirstOrDefault(d => d.ServiceType == typeof(TService));
+
+            services.Remove(descriptorToRemove);
+
+            var descriptorToAdd = new ServiceDescriptor(typeof(TService), typeof(TImplementation), lifetime);
+
+            services.Add(descriptorToAdd);
+
+            return services;
+        }
+
         /// <summary>获取注册的Singleton对象的实例
         /// </summary>
         public static T GetSingletonInstanceOrNull<T>(this IServiceCollection services)
