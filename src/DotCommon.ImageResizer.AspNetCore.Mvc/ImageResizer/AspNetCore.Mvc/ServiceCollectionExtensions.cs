@@ -20,7 +20,7 @@ namespace DotCommon.ImageResizer.AspNetCore.Mvc
             //开启缓存的情况下,才需要添加缓存
             if (option.EnableImageCache)
             {
-                services.AddServiceWhenNull(s => s.ServiceType == typeof(IDistributedCache<>), s =>
+                services.WhenNull(s => s.ServiceType == typeof(IDistributedCache<>), s =>
                 {
                     s.AddGenericsMemoryCache();
                 });

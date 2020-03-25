@@ -1,3 +1,4 @@
+using DotCommon.Reflecting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
@@ -10,9 +11,9 @@ namespace DotCommon.DependencyInjection
     {
         /// <summary>如果没有注册就进行注册
         /// </summary>
-        public static IServiceCollection AddServiceWhenNull<T>(this IServiceCollection services, ServiceLifetime lifetime, Action<IServiceCollection> action)
+        public static IServiceCollection WhenNull<T>(this IServiceCollection services, Action<IServiceCollection> action)
         {
-            var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(T) && d.Lifetime == lifetime);
+            var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(T));
             if (serviceDescriptor == null)
             {
                 action(services);
@@ -22,7 +23,7 @@ namespace DotCommon.DependencyInjection
 
         /// <summary>如果没有注册就进行注册
         /// </summary>
-        public static IServiceCollection AddServiceWhenNull(this IServiceCollection services, Func<ServiceDescriptor, bool> predicate, Action<IServiceCollection> action)
+        public static IServiceCollection WhenNull(this IServiceCollection services, Func<ServiceDescriptor, bool> predicate, Action<IServiceCollection> action)
         {
             var serviceDescriptor = services.FirstOrDefault(predicate);
             if (serviceDescriptor == null)
@@ -44,14 +45,39 @@ namespace DotCommon.DependencyInjection
            ServiceLifetime lifetime) where TService : class where TImplementation : class, TService
         {
             var descriptorToRemove = services.FirstOrDefault(d => d.ServiceType == typeof(TService));
-
-            services.Remove(descriptorToRemove);
-
+            if (descriptorToRemove != null)
+            {
+                services.Remove(descriptorToRemove);
+            }
             var descriptorToAdd = new ServiceDescriptor(typeof(TService), typeof(TImplementation), lifetime);
-
             services.Add(descriptorToAdd);
-
             return services;
+        }
+
+        /// <summary>替换现有的服务
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="serviceType">接口类型</param>
+        /// <param name="implType">实现类型</param>
+        /// <param name="lifetime"></param>
+        /// <returns></returns>
+        public static IServiceCollection Replace(
+           this IServiceCollection services, Type serviceType, Type implType,
+           ServiceLifetime lifetime)
+        {
+            //判断服务类型是否为泛型
+            if (implType.IsSubclassOf(serviceType) || serviceType.IsAssignableFrom(implType) || ReflectionUtil.IsAssignableToGenericType(implType, serviceType))
+            {
+                var descriptorToRemove = services.FirstOrDefault(d => d.ServiceType == serviceType);
+                if (descriptorToRemove != null)
+                {
+                    services.Remove(descriptorToRemove);
+                }
+                var descriptorToAdd = new ServiceDescriptor(serviceType, implType, lifetime);
+                services.Add(descriptorToAdd);
+                return services;
+            }
+            throw new ArgumentException($"Type {implType} is not implment type {serviceType}!");
         }
 
         /// <summary>获取注册的Singleton对象的实例
