@@ -7,7 +7,6 @@ namespace DotCommon.Utility
     /// </summary>
     public static class StreamUtil
     {
-
         /// <summary>将Stream刘转换成二进制数组
         /// </summary>
         /// <param name="stream">流文件</param>
@@ -16,11 +15,13 @@ namespace DotCommon.Utility
         public static byte[] StreamToBuffer(Stream stream, int bufferLen = 0)
         {
             //将流读取位置初始到0
-            if (stream.Position > 0 && stream.CanSeek)
+            if (stream.CanSeek)
             {
-                stream.Seek(0, SeekOrigin.Begin);
+                if (stream.Position > 0)
+                {
+                    stream.Seek(0, SeekOrigin.Begin);
+                }
             }
-
             if (bufferLen < 1)
             {
                 bufferLen = 0X8000;
