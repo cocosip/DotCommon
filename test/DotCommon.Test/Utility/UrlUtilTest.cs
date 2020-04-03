@@ -106,6 +106,7 @@ namespace DotCommon.Test.Utility
         [Theory]
         [InlineData("http://www.baidu.com/abc/def", "http://www.baidu.com", "/abc", "def/")]
         [InlineData("http://10.9.254.19/qos/?id=3", "http://10.9.254.19", "", "/qos", "?id=3")]
+        [InlineData("http://192.168.0.100/group1/01/0A/file1.jpg", "http://192.168.0.100/", "group1", "01/0A/file1.jpg")]
         public void CombineUrl_Test(string expected, params string[] parameters)
         {
             var actual = UrlUtil.CombineUrl(parameters);
