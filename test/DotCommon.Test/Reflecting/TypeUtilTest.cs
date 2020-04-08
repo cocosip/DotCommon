@@ -94,6 +94,7 @@ namespace DotCommon.Test.Reflecting
             Assert.True(TypeUtil.IsPrimitiveExtended(typeof(Enum1), includeEnums: true));
             Assert.False(TypeUtil.IsPrimitiveExtended(typeof(Enum1), includeEnums: false));
             Assert.True(TypeUtil.IsPrimitiveExtended(typeof(decimal), includeEnums: false));
+            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(double), includeEnums: false));
             Assert.True(TypeUtil.IsPrimitiveExtended(typeof(int?),true, includeEnums: false));
             Assert.False(TypeUtil.IsPrimitiveExtended(typeof(int?), false, includeEnums: false));
         }

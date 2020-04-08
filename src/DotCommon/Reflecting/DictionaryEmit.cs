@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Security;
@@ -36,6 +37,7 @@ namespace DotCommon.Reflecting
         private static readonly MethodInfo DatetimeToString = typeof(DateTime).GetTypeInfo().GetMethod("ToString",
             new[] { typeof(IFormatProvider) });
 
+
         #region 字典转换成对象
         /// <summary>获取字典转换成对象的委托
         /// </summary>
@@ -46,7 +48,7 @@ namespace DotCommon.Reflecting
                 throw new NotSupportedException("Not support type: ICollection");
             }
             var type = typeof(T);
-            var properties = PropertyInfoUtil.GetProperties(type);
+            var properties = PropertyInfoUtil.GetProperties(type).Where(x => x.CanWrite && TypeUtil.IsPrimitiveExtended(x.PropertyType, true, true)).ToList();
             DynamicMethod dynamicMethod = new DynamicMethod("DictionaryToObject", type,
                 new Type[] { typeof(Dictionary<string, string>) }, type, true)
             {
@@ -154,7 +156,7 @@ namespace DotCommon.Reflecting
                 throw new NotSupportedException("Not support type: ICollection");
             }
             var type = typeof(Dictionary<string, string>);
-            var properties = PropertyInfoUtil.GetProperties(typeof(T));
+            var properties = PropertyInfoUtil.GetProperties(typeof(T)).Where(x => x.CanRead && TypeUtil.IsPrimitiveExtended(x.PropertyType, true, true)).ToList();
             DynamicMethod dynamicMethod = new DynamicMethod("ObjectToDictionary", type,
                 new Type[] { typeof(T) }, typeof(object), true)
             {

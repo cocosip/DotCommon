@@ -59,6 +59,38 @@ namespace DotCommon.Test.Reflecting
             public DateTime Birthday { get; set; }
 
             public DateTime? DeathDate { get; set; }
+
+            private DictionaryEmitClass1State _state;
+            public DictionaryEmitClass1State State
+            {
+                get
+                {
+                    if (_state == null)
+                    {
+                        _state = new DictionaryEmitClass1State(Id, Name);
+                    }
+                    return _state;
+                }
+            }
+
+        }
+
+        public class DictionaryEmitClass1State
+        {
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+
+            public DictionaryEmitClass1State()
+            {
+
+            }
+
+            public DictionaryEmitClass1State(int id, string name)
+            {
+                Id = id;
+                Name = name;
+            }
         }
 
     }
