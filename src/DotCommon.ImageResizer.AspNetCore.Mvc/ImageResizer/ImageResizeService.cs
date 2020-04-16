@@ -3,6 +3,7 @@ using DotCommon.ImageResize;
 using DotCommon.Utility;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -19,11 +20,11 @@ namespace DotCommon.ImageResizer
 
         /// <summary>Ctor
         /// </summary>
-        public ImageResizeService(ILogger<ImageResizeService> logger, IDistributedCache<ImageCacheItem> imageCache, ImageResizerOption option)
+        public ImageResizeService(ILogger<ImageResizeService> logger, IDistributedCache<ImageCacheItem> imageCache, IOptions<ImageResizerOption> option)
         {
             _logger = logger;
             _imageCache = imageCache;
-            _option = option;
+            _option = option.Value;
         }
 
         /// <summary>获取图片的二进制数据
@@ -36,7 +37,7 @@ namespace DotCommon.ImageResizer
         {
             try
             {
-                var key = $"{imagePath}{resizeParameter.ToString()}{lastWriteTimeUtc.ToString("yyyy-MM-dd HH:mm:ss")}";
+                var key = $"{imagePath}{resizeParameter}{lastWriteTimeUtc:yyyy-MM-dd HH:mm:ss}";
                 var cacheKey = $"Image:{SHAUtil.GetHex16StringSHA1Hash(key)}";
 
                 byte[] imageBytes;
