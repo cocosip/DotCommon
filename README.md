@@ -98,3 +98,7 @@ services
 var provider = services.BuildServiceProvider();
 
 ```
+
+## 数据库参数与字段说明
+
+> 数据库参数与字段说明 [详见](/docs/database.md)
