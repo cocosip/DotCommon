@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-
 namespace DotCommon.Utility
 {
     /// <summary>Url工具类
@@ -119,8 +119,8 @@ namespace DotCommon.Utility
             var paramArray = uri.Query.Replace("?", "").Split('&');
             return paramArray.Select(param => param.Split('='))
                 .Where(itemArray =>
-                    itemArray.Length == 2 && !string.IsNullOrWhiteSpace(itemArray[0]) &&
-                    !string.IsNullOrWhiteSpace(itemArray[1]))
+                    itemArray.Length == 2 && !string.IsNullOrWhiteSpace(itemArray[0])
+                    && !string.IsNullOrWhiteSpace(itemArray[1]))
                 .ToDictionary(itemArray => itemArray[0], itemArray => itemArray[1]);
         }
 
@@ -178,7 +178,7 @@ namespace DotCommon.Utility
             }
             var uri = new Uri(url);
             var separator = sortParameters.Any() ? "?" : "";
-            var parameterUri = string.Join("&", sortParameters.Select(x => string.Concat(x.Key, "=", x.Value)));
+            var parameterUri = string.Join("&", sortParameters.Select(x => string.Concat(x.Key, "=", WebUtility.UrlEncode(x.Value))));
             UriBuilder uriBuilder = new UriBuilder()
             {
                 Host = uri.Host,
