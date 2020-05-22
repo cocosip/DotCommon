@@ -23,11 +23,12 @@ namespace DotCommon.ConsoleTest
             Console.WriteLine("Begin!");
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             IServiceCollection services = new ServiceCollection();
-            services.AddLogging(l =>
-            {
-                l.AddLog4Net();
-                l.AddNLog();
-            })
+            services
+                .AddLogging(l =>
+                {
+                    l.AddLog4Net();
+                    l.AddNLog();
+                })
                 .AddDotCommon()
                 .AddGenericsMemoryCache()
                 .AddProtoBuf()
@@ -74,7 +75,7 @@ namespace DotCommon.ConsoleTest
             ////var id = Md5Encryptor.GetMd5(str);
 
             //Console.WriteLine("Id:{0},长度:{1}", id, id.Length);
- 
+
 
             RSA rsa = RSA.Create("RSA");
             //rsa.ImportRSAPrivateKey(Encoding.UTF8.GetBytes(privateKey).AsSpan(), out int r);
