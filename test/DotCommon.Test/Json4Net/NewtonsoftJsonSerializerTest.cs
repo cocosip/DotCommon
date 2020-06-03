@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,6 +79,44 @@ namespace DotCommon.Test.Json4Net
         }
 
 
+        [Fact]
+        public void List_Serialize_Deserialize_Test()
+        {
+            var aeInfos2 = new List<TestAeInfo>();
+            aeInfos2.Add(new TestAeInfo()
+            {
+                Address = "192.168.0.1",
+                Port = 10086,
+                AeTitle = "Aet1",
+                HospitalCode = "39",
+                Describe = "desc"
+            });
+
+
+            var json = "[{\"hospitalCode\":\"39\",\"aeTitle\":\"AeTitle1\",\"address\":\"192.168.0.92\",\"port\":11112,\"describe\":\"Test\"}]";
+
+            IServiceCollection services = new ServiceCollection();
+            services.AddDotCommon()
+                .AddJson4Net(c=>
+                {
+                    //c.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                });
+            var provider = services.BuildServiceProvider();
+            var jsonSerializer = provider.GetService<IJsonSerializer>();
+
+            var json2 = jsonSerializer.Serialize(aeInfos2);
+
+
+
+            var aeInfos = jsonSerializer.Deserialize<List<TestAeInfo>>(json);
+
+
+            Assert.True(aeInfos.Count > 0);
+        }
+
+        //"[{\"hospitalCode\":\"39\",\"aeTitle\":\"AeTitle1\",\"address\":\"192.168.0.92\",\"port\":11112,\"describe\":\"Test\"}]"
+
+
 
         class NewtonsoftJsonSerializerClass1
         {
@@ -91,6 +130,33 @@ namespace DotCommon.Test.Json4Net
                 Age = age;
             }
 
+        }
+
+
+        /// <summary>AE信息
+        /// </summary>
+        [Serializable]
+        public class TestAeInfo
+        {
+            /// <summary>医院编码
+            /// </summary>
+            public string HospitalCode { get; set; }
+
+            /// <summary>AeTitle
+            /// </summary>
+            public string AeTitle { get; set; }
+
+            /// <summary>地址
+            /// </summary>
+            public string Address { get; set; }
+
+            /// <summary>端口
+            /// </summary>
+            public int? Port { get; set; }
+
+            /// <summary>描述
+            /// </summary>
+            public string Describe { get; set; }
         }
 
     }

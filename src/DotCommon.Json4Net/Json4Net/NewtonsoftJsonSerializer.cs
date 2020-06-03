@@ -45,7 +45,7 @@ namespace DotCommon.Json4Net
         /// </summary>
         public T Deserialize<T>(string value) where T : class
         {
-            return JsonConvert.DeserializeObject<T>(JObject.Parse(value).ToString(), Settings);
+            return JsonConvert.DeserializeObject<T>(value, Settings);
         }
     }
 
