@@ -4,6 +4,7 @@ using Xunit;
 
 namespace DotCommon.Test.Encrypt
 {
+#if NETCOREAPP
     public class RSAHelperTest
     {
         [Fact]
@@ -53,7 +54,6 @@ namespace DotCommon.Test.Encrypt
             Assert.Equal(keyPair1.PrivateKey, pkcs1Key);
         }
 
-
         [Fact]
         public void PKCS8KeyPair_Generate_Test()
         {
@@ -62,8 +62,6 @@ namespace DotCommon.Test.Encrypt
             var pkcs8Key = Netstandard21RSAHelper.PKCS1ToPKCS8(pkcs1Key);
             Assert.Equal(pkcs8Key, keyPair.PrivateKey);
         }
-
-
 
         [Fact]
         public void Encrypt_Decrypt_Test()
@@ -90,6 +88,7 @@ namespace DotCommon.Test.Encrypt
             Assert.True(Netstandard21RSAHelper.VerifyBase64Data(str, signed1, publicKey1));
         }
 
-    
+
     }
+#endif
 }
