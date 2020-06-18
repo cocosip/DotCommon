@@ -22,10 +22,7 @@ namespace DotCommon.AspNetCore.Mvc
             services.AddTransient<IServiceConvention, ServiceConvention>();
 
             // AddViewLocalization by default..?
-            services.WhenNull(x => x.ServiceType == typeof(IActionContextAccessor) && x.ImplementationType == typeof(ActionContextAccessor) && x.Lifetime == ServiceLifetime.Singleton, s =>
-            {
-                s.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            });
+            services.Replace(ServiceDescriptor.Singleton<IActionContextAccessor, ActionContextAccessor>());
 
             //Use DI to create controllers
             services.Replace(ServiceDescriptor.Transient<IControllerActivator, ServiceBasedControllerActivator>());

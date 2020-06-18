@@ -3,7 +3,6 @@ using DotCommon.DependencyInjection;
 using DotCommon.Encrypt;
 using DotCommon.Json4Net;
 using DotCommon.Log4Net;
-using DotCommon.Logging;
 using DotCommon.ProtoBuf;
 using DotCommon.Utility;
 using Microsoft.Extensions.DependencyInjection;
@@ -135,7 +134,6 @@ namespace DotCommon.ConsoleTest
 
         public void Write()
         {
-            _logger.LogWithLevel(LogLevel.Information, "LogWithLevel");
             _logger.LogInformation("生成随机Guid:{0}", GuidUtil.NewGuidString("N"));
         }
     }

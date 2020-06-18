@@ -1,5 +1,4 @@
 using DotCommon.Caching;
-using DotCommon.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -16,15 +15,6 @@ namespace DotCommon.ImageResizer.AspNetCore.Mvc
             //配置
             var option = new ImageResizerOption();
             configure?.Invoke(option);
-
-            //开启缓存的情况下,才需要添加缓存
-            if (option.EnableImageCache)
-            {
-                services.WhenNull(s => s.ServiceType == typeof(IDistributedCache<>), s =>
-                {
-                    s.AddGenericsMemoryCache();
-                });
-            }
 
             services
                 .AddTransient<IImageResizeService, ImageResizeService>()
