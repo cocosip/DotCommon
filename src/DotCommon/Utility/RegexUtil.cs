@@ -74,6 +74,14 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
+        /// <summary>是否包含中文
+        /// </summary>
+        public static bool IsChinese(string source)
+        {
+            const string pattern = "^[/u4e00-/u9fa5]$";
+            return IsMatch(source, pattern);
+        }
+
         /// <summary>是否为IP地址
         /// </summary>
         /// <param name="source">字符串</param>
@@ -136,10 +144,6 @@ namespace DotCommon.Utility
             }
             return false;
         }
-
-
-
-
 
         /// <summary>判断是否为decimal类型
         /// </summary>
