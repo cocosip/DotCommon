@@ -242,6 +242,16 @@ namespace DotCommon.Utility
             return new DateTime(time.Year + 1, 1, 1).AddDays(-1);
         }
 
+        /// <summary>
+        /// 获取当天的最后一秒23:59:59
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static DateTime GetLastSecondOfDay(DateTime time)
+        {
+            return new DateTime(time.Year, time.Month, time.Day).AddDays(1).AddSeconds(-1);
+        }
+
         /// <summary>判断某个时间是否为当月的第一天
         /// </summary>
         /// <param name="time">时间</param>
