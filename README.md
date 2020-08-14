@@ -13,6 +13,7 @@
 | `DotCommon.AutoMapper` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AutoMapper.svg)](https://www.nuget.org/packages/DotCommon.AutoMapper) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AutoMapper.svg)|
 | `DotCommon.Caching` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Caching.svg)](https://www.nuget.org/packages/DotCommon.Caching) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Caching.svg)|
 | `DotCommon.Json4Net` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Json4Net.svg)](https://www.nuget.org/packages/DotCommon.Json4Net) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Json4Net.svg)|
+| `DotCommon.TextJson` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.TextJson.svg)](https://www.nuget.org/packages/DotCommon.TextJson) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.TextJson.svg)|
 | `DotCommon.Log4Net` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Log4Net.svg)](https://www.nuget.org/packages/DotCommon.Log4Net) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Log4Net.svg)|
 | `DotCommon.ProtoBuf` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ProtoBuf.svg)](https://www.nuget.org/packages/DotCommon.ProtoBuf) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ProtoBuf.svg)|
 | `DotCommon.AspNetCore.Mvc` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AspNetCore.Mvc.svg)](https://www.nuget.org/packages/DotCommon.AspNetCore.Mvc) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AspNetCore.Mvc.svg)|

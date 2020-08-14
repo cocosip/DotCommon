@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\src\DotCommon.Json4Net\DotCommon.Json4Net.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.Log4Net\DotCommon.Log4Net.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj" />
+    <ProjectReference Include="..\..\src\DotCommon.TextJson\DotCommon.TextJson.csproj" />
     <ProjectReference Include="..\..\src\DotCommon\DotCommon.csproj" />
   </ItemGroup>
 

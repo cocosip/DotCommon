@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,7 +96,7 @@ namespace DotCommon.Test.Json4Net
 
             IServiceCollection services = new ServiceCollection();
             services.AddDotCommon()
-                .AddJson4Net(c=>
+                .AddJson4Net(c =>
                 {
                     //c.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 });
