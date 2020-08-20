@@ -3,7 +3,6 @@ using DotCommon.Serializing;
 using DotCommon.TextJson;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Moq;
 using System;
 using System.Linq;
 using System.Text.Encodings.Web;
@@ -14,13 +13,12 @@ namespace DotCommon.Test.TextJson
 {
     public class TextJsonSerializerTest
     {
-        private readonly Mock<IOptions<JsonSerializerOptions>> _mockJsonSerializerOptions;
+        private readonly IOptions<JsonSerializerOptions> _serializerOptions;
         private readonly IServiceProvider _provider;
         public TextJsonSerializerTest()
         {
 
-            _mockJsonSerializerOptions = new Mock<IOptions<JsonSerializerOptions>>();
-            _mockJsonSerializerOptions.SetupGet<JsonSerializerOptions>(x => x.Value).Returns(new JsonSerializerOptions()
+            _serializerOptions = Options.Create<JsonSerializerOptions>(new JsonSerializerOptions()
             {
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             });
@@ -38,7 +36,7 @@ namespace DotCommon.Test.TextJson
         [Fact]
         public void Ctor_Test()
         {
-            var jsonSerializer = new TextJsonSerializer(_mockJsonSerializerOptions.Object);
+            var jsonSerializer = new TextJsonSerializer(_serializerOptions);
             Assert.False(jsonSerializer.Options.Converters.Any());
             Assert.Equal(JavaScriptEncoder.UnsafeRelaxedJsonEscaping, jsonSerializer.Options.Encoder);
         }
@@ -47,7 +45,7 @@ namespace DotCommon.Test.TextJson
         public void Serialize_Deserialize_Test()
         {
 
-            var textJsonSerializer = new TextJsonSerializer(_mockJsonSerializerOptions.Object);
+            var textJsonSerializer = new TextJsonSerializer(_serializerOptions);
             // Assert.Null(textJsonSerializer.Serialize(s1));
             Assert.Equal("null", textJsonSerializer.Serialize(null));
 
@@ -73,6 +71,30 @@ namespace DotCommon.Test.TextJson
             Assert.Equal(o1.Age, deserializeO2.Age);
         }
 
+        [Fact]
+        public void Generics_Serialize_Deserialize_Test()
+        {
+            var textJsonSerializer = new TextJsonSerializer(_serializerOptions);
+
+            var o = new JsonTestResult<JsonTestResultItem>()
+            {
+                Success = true,
+                Data = new JsonTestResultItem()
+                {
+                    Id = "1",
+                    Name = "virtual"
+                }
+            };
+
+            var json = textJsonSerializer.Serialize(o);
+
+            var o2 = textJsonSerializer.Deserialize<JsonTestResult<JsonTestResultItem>>(json);
+
+            Assert.Equal(o.Success, o2.Success);
+            Assert.Equal(o.Data.Id, o2.Data.Id);
+            Assert.Equal(o.Data.Name, o2.Data.Name);
+        }
+
 
     }
 
@@ -93,4 +115,20 @@ namespace DotCommon.Test.TextJson
         //    Age = age;
         //}
     }
+
+    public class JsonTestResult<T>
+    {
+        public bool Success { get; set; }
+
+        public T Data { get; set; }
+    }
+
+    public class JsonTestResultItem
+    {
+        public string Id { get; set; }
+
+        public string Name { get; set; }
+    }
+
+
 }
