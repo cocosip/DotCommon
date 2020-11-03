@@ -5,11 +5,13 @@ using System.Linq;
 
 namespace DotCommon.Extensions
 {
-    /// <summary>对象扩展
+    /// <summary>
+    /// 对象扩展
     /// </summary>
     public static class ObjectExtensions
     {
-        /// <summary>对象强制转换
+        /// <summary>
+        /// 对象强制转换
         /// </summary>
         public static T As<T>(this object o)
             where T : class
@@ -17,7 +19,8 @@ namespace DotCommon.Extensions
             return (T)o;
         }
 
-        /// <summary>使用TypeDescriptor.GetConverter进行对象转换
+        /// <summary>
+        /// 使用TypeDescriptor.GetConverter进行对象转换
         /// </summary>
         public static T To<T>(this object o)
             where T : struct
@@ -30,7 +33,8 @@ namespace DotCommon.Extensions
             return (T)Convert.ChangeType(o, typeof(T), CultureInfo.InvariantCulture);
         }
 
-        /// <summary>判断某个值是否在集合中
+        /// <summary>
+        /// 判断某个值是否在集合中
         /// </summary>
         public static bool IsIn<T>(this T item, params T[] list)
         {

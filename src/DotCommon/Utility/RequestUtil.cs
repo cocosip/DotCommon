@@ -4,11 +4,13 @@ using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
 {
-    /// <summary>请求工具类
+    /// <summary>
+    /// 请求工具类
     /// </summary>
     public static class RequestUtil
     {
-        /// <summary>User-Agents列表
+        /// <summary>
+        /// User-Agents列表
         /// </summary>
         public static Dictionary<string, string> UserAgents
         {
@@ -18,7 +20,8 @@ namespace DotCommon.Utility
             }
         }
 
-        /// <summary> 获取UserAgent集合
+        /// <summary> 
+        /// 获取UserAgent集合
         /// </summary>
         private static Dictionary<string, string> GetUserAgentDictionary()
         {
@@ -126,7 +129,8 @@ namespace DotCommon.Utility
             return dict;
         }
 
-        /// <summary>根据UserAgent key获取UserAgent的真实值
+        /// <summary>
+        /// 根据UserAgent key获取UserAgent的真实值
         /// </summary>
         /// <param name="agentKey">UserAgent-Key</param>
         /// <returns></returns>
@@ -137,7 +141,8 @@ namespace DotCommon.Utility
             return agent;
         }
 
-        /// <summary>根据UserAgent判断是否为手机用户
+        /// <summary>
+        /// 根据UserAgent判断是否为手机用户
         /// </summary>
         /// <param name="userAgent">UserAgent</param>
         /// <returns></returns>
@@ -178,7 +183,8 @@ namespace DotCommon.Utility
             return agentFlag;
         }
 
-        /// <summary>根据UserAgent判断是否在微信中
+        /// <summary>
+        /// 根据UserAgent判断是否在微信中
         /// </summary>
         /// <param name="userAgent">UserAgent</param>
         /// <returns></returns>
@@ -195,23 +201,28 @@ namespace DotCommon.Utility
 
     }
 
-    /// <summary>手机平台
+    /// <summary>
+    /// 手机平台
     /// </summary>
     public class MobilePlatform
     {
-        /// <summary>安卓
+        /// <summary>
+        /// 安卓
         /// </summary>
         public const string Android = "Android";
 
-        /// <summary>IPhone
+        /// <summary>
+        /// IPhone
         /// </summary>
         public const string IPhone = "IPhone";
 
-        /// <summary>MacBook
+        /// <summary>
+        /// MacBook
         /// </summary>
         public const string MacBook = "MacBook";
 
-        /// <summary>Windows
+        /// <summary>
+        /// Windows
         /// </summary>
         public const string Windows = "Windows";
     }

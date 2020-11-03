@@ -2,11 +2,10 @@
 
 namespace DotCommon.IO
 {
-    /// <summary>文件夹帮助类
-    /// </summary>
     public static class DirectoryHelper
     {
-        /// <summary>如果文件夹不存在,就创建新的文件夹
+        /// <summary>
+        /// 如果文件夹不存在,就创建新的文件夹
         /// </summary>
         public static void CreateIfNotExists(string directory)
         {
@@ -16,7 +15,8 @@ namespace DotCommon.IO
             }
         }
 
-        /// <summary>拷贝文件夹和文件夹下的文件
+        /// <summary>
+        /// 拷贝文件夹和文件夹下的文件
         /// </summary>
         public static void DirectoryCopy(string sourceDir, string targetDir)
         {

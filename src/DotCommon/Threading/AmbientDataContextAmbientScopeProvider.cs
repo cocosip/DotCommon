@@ -4,24 +4,19 @@ using System.Collections.Concurrent;
 
 namespace DotCommon.Threading
 {
-    /// <summary>数据槽上下文
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class AmbientDataContextAmbientScopeProvider<T> : IAmbientScopeProvider<T>
     {
 
         private static readonly ConcurrentDictionary<string, ScopeItem> ScopeDictionary = new ConcurrentDictionary<string, ScopeItem>();
 
         private readonly IAmbientDataContext _dataContext;
-
-        /// <summary>Ctor
-        /// </summary>
         public AmbientDataContextAmbientScopeProvider(IAmbientDataContext dataContext)
         {
             _dataContext = dataContext;
         }
 
-        /// <summary>根据上下文Key取值
+        /// <summary>
+        /// 根据上下文Key取值
         /// </summary>
         /// <param name="contextKey">Key</param>
         /// <returns></returns>
@@ -36,7 +31,8 @@ namespace DotCommon.Threading
             return item.Value;
         }
 
-        /// <summary>开始上下文生命周期
+        /// <summary>
+        /// 开始上下文生命周期
         /// </summary>
         /// <param name="contextKey">上下文Key</param>
         /// <param name="value">值</param>
@@ -68,8 +64,7 @@ namespace DotCommon.Threading
 
         private ScopeItem GetCurrentItem(string contextKey)
         {
-            var objKey = _dataContext.GetData(contextKey) as string;
-            return objKey != null ? ScopeDictionary.GetOrDefault(objKey) : null;
+            return _dataContext.GetData(contextKey) is string objKey ? ScopeDictionary.GetOrDefault(objKey) : null;
         }
 
         private class ScopeItem

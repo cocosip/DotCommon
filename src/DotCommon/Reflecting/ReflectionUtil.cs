@@ -5,8 +5,6 @@ using System.Reflection;
 
 namespace DotCommon.Reflecting
 {
-    /// <summary>ReflectionUtil
-    /// </summary>
     public static class ReflectionUtil
     {
         /// <summary>

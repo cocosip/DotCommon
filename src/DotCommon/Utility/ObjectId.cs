@@ -8,7 +8,8 @@ using System.Threading;
 
 namespace DotCommon.Utility
 {
-    /// <summary>Represents an ObjectId
+    /// <summary>
+    /// Represents an ObjectId
     /// </summary>
     [Serializable]
     public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>
@@ -42,7 +43,6 @@ namespace DotCommon.Utility
             StaticPid = (short)GetCurrentProcessId();
         }
 
-        // constructors
         /// <summary>
         /// Initializes a new instance of the ObjectId class.
         /// </summary>
@@ -105,13 +105,11 @@ namespace DotCommon.Utility
             Unpack(ParseHexString(value), out _timestamp, out _machine, out _pid, out _increment);
         }
 
-        // public static properties
         /// <summary>
         /// Gets an instance of ObjectId where the value is empty.
         /// </summary>
         public static ObjectId Empty => EmptyInstance;
 
-	    // public properties
         /// <summary>
         /// Gets the timestamp.
         /// </summary>
@@ -204,7 +202,6 @@ namespace DotCommon.Utility
             return lhs.CompareTo(rhs) > 0;
         }
 
-        // public static methods
         /// <summary>
         /// Generates a new ObjectId with a unique value.
         /// </summary>
@@ -345,7 +342,6 @@ namespace DotCommon.Utility
             return (int)Math.Floor((ToUniversalTime(timestamp) - UnixEpoch).TotalSeconds);
         }
 
-        // public methods
         /// <summary>
         /// Compares this ObjectId to another ObjectId.
         /// </summary>
@@ -383,9 +379,9 @@ namespace DotCommon.Utility
         /// <returns>True if the other object is an ObjectId and equal to this one.</returns>
         public override bool Equals(object obj)
         {
-	        if (obj is ObjectId)
+	        if (obj is ObjectId id)
             {
-                return Equals((ObjectId)obj);
+                return Equals(id);
             }
 	        return false;
         }
@@ -468,6 +464,7 @@ namespace DotCommon.Utility
             }
             return new string(result);
         }
+
         /// <summary>
         /// Converts a DateTime to number of milliseconds since Unix epoch.
         /// </summary>
@@ -478,6 +475,7 @@ namespace DotCommon.Utility
             var utcDateTime = ToUniversalTime(dateTime);
             return (utcDateTime - UnixEpoch).Ticks / 10000;
         }
+
         /// <summary>
         /// Converts a DateTime to UTC (with special handling for MinValue and MaxValue).
         /// </summary>

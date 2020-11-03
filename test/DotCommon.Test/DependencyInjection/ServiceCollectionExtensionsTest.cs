@@ -16,7 +16,6 @@ namespace DotCommon.Test.DependencyInjection
             IServiceCollection services = new ServiceCollection();
             services.AddDotCommon();
 
-            Assert.Contains(services, x => x.ServiceType == typeof(IDotCommonApplication));
             Assert.Contains(services, x => x.ServiceType == typeof(IJsonSerializer));
             Assert.Contains(services, x => x.ServiceType == typeof(IXmlSerializer));
             Assert.Contains(services, x => x.ServiceType == typeof(IBinarySerializer));

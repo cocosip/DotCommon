@@ -2,7 +2,8 @@
 
 namespace DotCommon.Encrypt
 {
-    /// <summary>AES加密相关操作
+    /// <summary>
+    /// AES加密相关操作
     /// </summary>
     public static class AESHelper
     {
@@ -10,7 +11,8 @@ namespace DotCommon.Encrypt
         private static readonly byte[] _iv = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
 
  
-        /// <summary>加密
+        /// <summary>
+        /// 加密
         /// </summary>
         /// <param name="data">待加密的数据</param>
         /// <param name="key">密钥Key</param>
@@ -37,7 +39,8 @@ namespace DotCommon.Encrypt
         }
 
 
-        /// <summary>解密
+        /// <summary>
+        /// 解密
         /// </summary>
         /// <param name="data">加密后的数据</param>
         /// <param name="key">密钥Key</param>

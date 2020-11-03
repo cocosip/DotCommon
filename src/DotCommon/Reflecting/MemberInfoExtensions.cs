@@ -8,7 +8,8 @@ namespace DotCommon.Reflecting
     /// </summary>
     public static class MemberInfoExtensions
     {
-        /// <summary>获取成员的单个属性
+        /// <summary>
+        /// 获取成员的单个属性
         /// </summary>
         /// <typeparam name="TAttribute">属性类型</typeparam>
         /// <param name="memberInfo">获取属性的成员</param>
@@ -31,7 +32,8 @@ namespace DotCommon.Reflecting
             return default;
         }
 
-        /// <summary>获取成员的单个属性或者基础类型
+        /// <summary>
+        /// 获取成员的单个属性或者基础类型
         /// </summary>
         /// <typeparam name="TAttribute">属性类型</typeparam>
         /// <param name="type">获取属性的类型</param>

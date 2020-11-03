@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Extensions
 {
-    /// <summary>关于Task的扩展
-    /// </summary>
     public static class TaskExtensions
     {
-        /// <summary>获取Task结果的扩展
+        /// <summary>
+        /// 获取Task结果的扩展
         /// </summary>
         public static TResult WaitResult<TResult>(this Task<TResult> task, int timeoutMillis)
         {
@@ -16,10 +15,11 @@ namespace DotCommon.Extensions
             {
                 return task.Result;
             }
-            return default(TResult);
+            return default;
         }
 
-        /// <summary>设置Task过期时间
+        /// <summary>
+        /// 设置Task过期时间
         /// </summary>
         public static async Task TimeoutAfter(this Task task, int millisecondsDelay)
         {
@@ -35,7 +35,8 @@ namespace DotCommon.Extensions
             }
         }
 
-        /// <summary>设置Task过期时间
+        /// <summary>
+        /// 设置Task过期时间
         /// </summary>
         public static async Task<TResult> TimeoutAfter<TResult>(this Task<TResult> task, int millisecondsDelay)
         {

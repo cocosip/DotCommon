@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace DotCommon.Utility
 {
-    /// <summary>字节相关帮助类
+    /// <summary>
+    /// 字节相关帮助类
     /// </summary>
     public static class ByteBufferUtil
     {
-        /// <summary>将字符串转换成Byte[] 并且附带长度
+        /// <summary>
+        /// 将字符串转换成Byte[] 并且附带长度
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="encode">编码格式</param>
@@ -21,7 +22,8 @@ namespace DotCommon.Utility
             return Combine(lengthBytes, stringBytes);
         }
 
-        /// <summary>>从byte数组中取出String字符串,消息的格式为[消息长度,int4字节][消息内容]
+        /// <summary>>
+        /// 从byte数组中取出String字符串,消息的格式为[消息长度,int4字节][消息内容]
         /// </summary>
         /// <param name="sourceBuffer">源数组</param>
         /// <param name="startOffset">开始偏移量</param>
@@ -35,7 +37,8 @@ namespace DotCommon.Utility
             return encoding.GetString(DecodeBytes(sourceBuffer, startOffset, out nextStartOffset));
         }
 
-        /// <summary>从byte数组中取出short数字
+        /// <summary>
+        /// 从byte数组中取出short数字
         /// </summary>
         /// <param name="sourceBuffer">源数组</param>
         /// <param name="startOffset">开始偏移量</param>
@@ -49,7 +52,8 @@ namespace DotCommon.Utility
             return BitConverter.ToInt16(shortBytes, 0);
         }
 
-        /// <summary>从byte数组中取出int数字
+        /// <summary>
+        /// 从byte数组中取出int数字
         /// </summary>
         /// <param name="sourceBuffer">源数组</param>
         /// <param name="startOffset">开始偏移量</param>
@@ -63,7 +67,8 @@ namespace DotCommon.Utility
             return BitConverter.ToInt32(intBytes, 0);
         }
 
-        /// <summary>从byte数组中取出long数字
+        /// <summary>
+        /// 从byte数组中取出long数字
         /// </summary>
         /// <param name="sourceBuffer">源数组</param>
         /// <param name="startOffset">开始偏移量</param>
@@ -77,7 +82,8 @@ namespace DotCommon.Utility
             return BitConverter.ToInt64(longBytes, 0);
         }
 
-        /// <summary>将时间转换成long类型,再转换成byte
+        /// <summary>
+        /// 将时间转换成long类型,再转换成byte
         /// </summary>
         /// <param name="dateTime">时间</param>
         /// <returns></returns>
@@ -86,7 +92,8 @@ namespace DotCommon.Utility
             return BitConverter.GetBytes(dateTime.Ticks);
         }
 
-        /// <summary>从byte数组中取出时间
+        /// <summary>
+        /// 从byte数组中取出时间
         /// </summary>
         /// <param name="sourceBuffer">源数组</param>
         /// <param name="startOffset">开始偏移量</param>
@@ -100,7 +107,8 @@ namespace DotCommon.Utility
             return new DateTime(BitConverter.ToInt64(longBytes, 0));
         }
 
-        /// <summary>转换Byte类型的消息,转换为[消息长度4byte][消息内容,消息内容为byte]
+        /// <summary>
+        /// 转换Byte类型的消息,转换为[消息长度4byte][消息内容,消息内容为byte]
         /// </summary>
         /// <param name="sourceBuffer">二进制数组</param>
         /// <returns></returns>
@@ -110,7 +118,8 @@ namespace DotCommon.Utility
             return Combine(lengthBytes, sourceBuffer);
         }
 
-        /// <summary>从byte数组中取出byte[]
+        /// <summary>
+        /// 从byte数组中取出byte[]
         /// </summary>
         /// <param name="sourceBuffer">源数组</param>
         /// <param name="startOffset">开始偏移量</param>
@@ -130,7 +139,8 @@ namespace DotCommon.Utility
             return dataBytes;
         }
 
-        /// <summary>合并byte数组
+        /// <summary>
+        /// 合并byte数组
         /// </summary>
         public static byte[] Combine(params byte[][] arrays)
         {
@@ -144,7 +154,8 @@ namespace DotCommon.Utility
             return destination;
         }
 
-        /// <summary>SwapLong
+        /// <summary>
+        /// SwapLong
         /// </summary>
         public static long SwapLong(long value)
         {
@@ -160,14 +171,16 @@ namespace DotCommon.Utility
                    | (SwapShort((short)(value >> 16)) & 0xFFFF);
         }
 
-        /// <summary>SwapShort
+        /// <summary>
+        /// SwapShort
         /// </summary>
         public static short SwapShort(short value)
         {
             return (short)(((value & 0xFF) << 8) | (value >> 8) & 0xFF);
         }
 
-        /// <summary> 将byte[]数组转换为十六进制
+        /// <summary>
+        /// 将byte[]数组转换为十六进制
         /// </summary>
         public static string ByteBufferToHex16(byte[] byteBuffer)
         {
@@ -181,7 +194,8 @@ namespace DotCommon.Utility
             //return hex16String.ToString();
         }
 
-        /// <summary>将十六进制字符串转换为byte[]数组
+        /// <summary>
+        /// 将十六进制字符串转换为byte[]数组
         /// </summary>
         /// <param name="hex16String">十六进制字符串</param>
         /// <returns></returns>
@@ -204,7 +218,8 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary>long类型转十六进制字节有符号字节数组
+        /// <summary>
+        /// long类型转十六进制字节有符号字节数组
         /// </summary>
         public static byte[] LongToBuffer(long l)
         {
@@ -220,7 +235,8 @@ namespace DotCommon.Utility
             return buffer;
         }
 
-        /// <summary>十六进制有符号字节数组转long类型
+        /// <summary>
+        /// 十六进制有符号字节数组转long类型
         /// </summary>
         public static long BufferToLong(byte[] buffer, int offset = 0)
         {

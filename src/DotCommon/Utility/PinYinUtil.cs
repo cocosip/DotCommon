@@ -3,7 +3,8 @@ using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
 {
-    /// <summary>拼音工具类
+    /// <summary>
+    /// 拼音工具类
     /// </summary>
     public static class PinYinUtil
     {
@@ -84,7 +85,8 @@ namespace DotCommon.Utility
             "Zhuang", "Zhui", "Zhun", "Zhuo", "Zi", "Zong", "Zou", "Zu", "Zuan", "Zui", "Zun", "Zuo"
         };
 
-        /// <summary>判断是否为汉字
+        /// <summary>
+        /// 判断是否为汉字
         /// </summary>
         private static bool IsChinese(string input)
         {
@@ -96,7 +98,8 @@ namespace DotCommon.Utility
 
 
 
-        /// <summary>汉字转换成全拼的拼音
+        /// <summary>
+        /// 汉字转换成全拼的拼音
         /// </summary>
         /// <param name="chStr">中文字符串</param>
         /// <returns></returns>
@@ -178,7 +181,8 @@ namespace DotCommon.Utility
             return pysb.ToString(); //返回获取到的汉字拼音
         }
 
-        /// <summary>取汉字拼音的首字母
+        /// <summary>
+        /// 取汉字拼音的首字母
         /// </summary>
         /// <param name="chStr">中文字符串</param>
         /// <returns></returns>
@@ -299,7 +303,7 @@ namespace DotCommon.Utility
                         {
                             resultSb.Append("?");
                         }
-                        i = i + 2;
+                        i += 2;
                     }
                     #endregion
                 }

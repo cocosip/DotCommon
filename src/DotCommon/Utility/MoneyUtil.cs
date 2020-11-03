@@ -2,12 +2,14 @@
 
 namespace DotCommon.Utility
 {
-    /// <summary>钱币帮助类
+    /// <summary>
+    /// 钱币帮助类
     /// </summary>
     public static class MoneyUtil
     {
 
-        /// <summary>将decimal数字转换为答谢人民币
+        /// <summary>
+        /// 将decimal数字转换为答谢人民币
         /// </summary>
         /// <param name="num">数字</param>
         /// <returns></returns>
@@ -15,18 +17,15 @@ namespace DotCommon.Utility
         {
             string str1 = "零壹贰叁肆伍陆柒捌玖";            //0-9所对应的汉字 
             string str2 = "万仟佰拾亿仟佰拾万仟佰拾元角分"; //数字位所对应的汉字 
-            string str3 = "";    //从原num值中取出的值 
-            string str4 = "";    //数字的字符串形式 
             string str5 = "";  //人民币大写金额形式 
             int i;    //循环变量 
             int j;    //num的值乘以100的字符串长度 
-            string ch1 = "";    //数字的汉语读法 
             string ch2 = "";    //数字位的汉字读法 
             int nzero = 0;  //用来计算连续的零值是几个 
             int temp;            //从原num值中取出的值 
 
             num = Math.Round(Math.Abs(num), 2);    //将num取绝对值并四舍五入取2位小数 
-            str4 = ((long)(num * 100)).ToString();        //将num乘100并转换成字符串形式 
+            string str4 = ((long)(num * 100)).ToString();
             j = str4.Length;      //找出最高位 
             if (j > 15) { return "溢出"; }
             str2 = str2.Substring(15 - j);   //取出对应位数的str2的值。如：200.55,j为5所以str2=佰拾元角分 
@@ -34,8 +33,9 @@ namespace DotCommon.Utility
             //循环取出每一位需要转换的值 
             for (i = 0; i < j; i++)
             {
-                str3 = str4.Substring(i, 1);          //取出需转换的某一位的值 
+                string str3 = str4.Substring(i, 1);
                 temp = Convert.ToInt32(str3);      //转换为数字 
+                string ch1;
                 if (i != (j - 3) && i != (j - 7) && i != (j - 11) && i != (j - 15))
                 {
                     //当所取位数不为元、万、亿、万亿上的数字时 
@@ -43,7 +43,7 @@ namespace DotCommon.Utility
                     {
                         ch1 = "";
                         ch2 = "";
-                        nzero = nzero + 1;
+                        nzero += 1;
                     }
                     else
                     {
@@ -84,20 +84,20 @@ namespace DotCommon.Utility
                             {
                                 ch1 = "";
                                 ch2 = "";
-                                nzero = nzero + 1;
+                                nzero += 1;
                             }
                             else
                             {
                                 if (j >= 11)
                                 {
                                     ch1 = "";
-                                    nzero = nzero + 1;
+                                    nzero += 1;
                                 }
                                 else
                                 {
                                     ch1 = "";
                                     ch2 = str2.Substring(i, 1);
-                                    nzero = nzero + 1;
+                                    nzero += 1;
                                 }
                             }
                         }
@@ -113,7 +113,7 @@ namespace DotCommon.Utility
                 if (i == j - 1 && str3 == "0")
                 {
                     //最后一位（分）为0时，加上“整” 
-                    str5 = str5 + '整';
+                    str5 = $"{str5}整";
                 }
             }
             if (num == 0)
@@ -124,7 +124,8 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary> 将string类型数字转换成中文人民币
+        /// <summary>
+        /// 将string类型数字转换成中文人民币
         /// </summary>
         /// <param name="numstr">string类型数据</param>
         /// <returns></returns>

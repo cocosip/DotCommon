@@ -6,7 +6,8 @@ using System.Text;
 
 namespace DotCommon.Encrypt
 {
-    /// <summary>基于Netstandard2.1平台下的RSA操作
+    /// <summary>
+    /// 基于Netstandard2.1平台下的RSA操作
     /// </summary>
     public class Netstandard21RSAHelper
     {
@@ -42,7 +43,8 @@ namespace DotCommon.Encrypt
         }
 
 
-        /// <summary>将PKCS8编码格式的私钥转换成PKCS1编码格式的私钥
+        /// <summary>
+        /// 将PKCS8编码格式的私钥转换成PKCS1编码格式的私钥
         /// </summary>
         /// <param name="pkcs8Key">PKCS8格式密钥</param>
         /// <returns></returns>
@@ -57,7 +59,8 @@ namespace DotCommon.Encrypt
             }
         }
 
-        /// <summary>将PKCS1编码格式的私钥转换成PKCS8编码格式的私钥
+        /// <summary>
+        /// 将PKCS1编码格式的私钥转换成PKCS8编码格式的私钥
         /// </summary>
         /// <param name="pkcs1Key">PKCS1格式密钥</param>
         /// <returns></returns>
@@ -74,7 +77,8 @@ namespace DotCommon.Encrypt
 
         #region RSA加密解密,签名解签
 
-        /// <summary>加密
+        /// <summary>
+        /// 加密
         /// </summary>
         /// <param name="data">原数据</param>
         /// <param name="publicKey">公钥</param>
@@ -109,7 +113,8 @@ namespace DotCommon.Encrypt
         }
 
 
-        /// <summary>解密
+        /// <summary>
+        /// 解密
         /// </summary>
         /// <param name="data">待解密数据</param>
         /// <param name="privateKey"></param>
@@ -129,7 +134,8 @@ namespace DotCommon.Encrypt
         }
 
 
-        /// <summary>解密
+        /// <summary>
+        /// 解密
         /// </summary>
         /// <param name="data">原数据</param>
         /// <param name="privateKey">私钥</param>
@@ -143,7 +149,8 @@ namespace DotCommon.Encrypt
         }
 
 
-        /// <summary>数据签名
+        /// <summary>
+        /// 数据签名
         /// </summary>
         /// <param name="data">待签名数据</param>
         /// <param name="privateKey">私钥</param>
@@ -163,7 +170,8 @@ namespace DotCommon.Encrypt
                 return signedData;
             }
         }
-        /// <summary>数据签名
+        /// <summary>
+        /// 数据签名
         /// </summary>
         /// <param name="data">待签名数据</param>
         /// <param name="privateKey">私钥</param>
@@ -177,7 +185,8 @@ namespace DotCommon.Encrypt
             return Convert.ToBase64String(signedData);
         }
 
-        /// <summary>签名校验
+        /// <summary>
+        /// 签名校验
         /// </summary>
         /// <param name="data">原数据</param>
         /// <param name="signature">签名后数据</param>
@@ -199,7 +208,8 @@ namespace DotCommon.Encrypt
             }
         }
 
-        /// <summary>签名校验
+        /// <summary>
+        /// 签名校验
         /// </summary>
         /// <param name="data">源数据</param>
         /// <param name="base64Signature">签名后数据Base64编码</param>

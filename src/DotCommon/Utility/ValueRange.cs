@@ -2,20 +2,24 @@
 
 namespace DotCommon.Utility
 {
-    /// <summary>数据区间值
+    /// <summary>
+    /// 数据区间值
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class ValueRange<T> where T : IComparable<T>
     {
-        /// <summary>最小值
+        /// <summary>
+        /// 最小值
         /// </summary>
         public T MinValue { get; set; }
 
-        /// <summary>最大值
+        /// <summary>
+        /// 最大值
         /// </summary>
         public T MaxValue { get; set; }
 
-        /// <summary>Ctor
+        /// <summary>
+        /// Ctor
         /// </summary>
         /// <param name="min">最小值</param>
         /// <param name="max">最大值</param>
@@ -25,7 +29,8 @@ namespace DotCommon.Utility
             MaxValue = max;
         }
 
-        /// <summary>判断是否存在该值
+        /// <summary>
+        /// 判断是否存在该值
         /// </summary>
         /// <param name="value">值</param>
         /// <returns></returns>
@@ -34,7 +39,8 @@ namespace DotCommon.Utility
             return MinValue.CompareTo(value) <= 0 && MaxValue.CompareTo(value) >= 0;
         }
 
-        /// <summary>Join
+        /// <summary>
+        /// Join
         /// </summary>
         /// <param name="value">值</param>
         public void Join(T value)
@@ -51,18 +57,21 @@ namespace DotCommon.Utility
 
     }
 
-    /// <summary>时间数据区间
+    /// <summary>
+    /// 时间数据区间
     /// </summary>
     public class DateRange : ValueRange<DateTime>
     {
-        /// <summary>Ctor
+        /// <summary>
+        /// Ctor
         /// </summary>
         public DateRange() : base(DateTime.MinValue, DateTime.MaxValue)
         {
 
         }
 
-        /// <summary>Ctor
+        /// <summary>
+        /// Ctor
         /// </summary>
         /// <param name="min">最小时间</param>
         /// <param name="max">最大时间</param>
@@ -71,7 +80,8 @@ namespace DotCommon.Utility
         {
         }
 
-        /// <summary>格式化
+        /// <summary>
+        /// 格式化
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -79,15 +89,19 @@ namespace DotCommon.Utility
             return ToString("yyyyMMddHHmmss");
         }
 
-        /// <summary>格式化
+        /// <summary>
+        /// 格式化
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
         public string ToString(string format)
         {
-            var value = (MinValue == DateTime.MinValue ? String.Empty : MinValue.ToString(format)) + "-"
-                        + (MaxValue == DateTime.MaxValue ? String.Empty : MaxValue.ToString(format));
-            if (value == "-") return String.Empty;
+            var value = (MinValue == DateTime.MinValue ? string.Empty : MinValue.ToString(format)) + "-"
+                        + (MaxValue == DateTime.MaxValue ? string.Empty : MaxValue.ToString(format));
+            if (value == "-")
+            {
+                return string.Empty;
+            }
             return value;
         }
     }

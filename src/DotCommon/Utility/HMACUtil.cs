@@ -4,14 +4,16 @@ using System.Text;
 
 namespace DotCommon.Utility
 {
-    /// <summary>HMAC算法工具类
+    /// <summary>
+    /// HMAC算法工具类
     /// </summary>
     public static class HMACUtil
     {
 
         #region HMAC-Sha1算法
 
-        /// <summary>获取HMAC-SHA1加密后的Base64值
+        /// <summary>
+        /// 获取HMAC-SHA1加密后的Base64值
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="key">密钥字符串</param>
@@ -25,7 +27,8 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary>获取HMAC-SHA1加密后的十六进制值
+        /// <summary>
+        /// 获取HMAC-SHA1加密后的十六进制值
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="key">密钥字符串</param>
@@ -39,18 +42,17 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary>HMAC-SHA1加密
+        /// <summary>
+        /// HMAC-SHA1加密
         /// </summary>
         /// <param name="sourceBytes">数据二进制</param>
         /// <param name="keyBytes">密钥二进制</param>
         /// <returns></returns>
         public static byte[] GetHMACSHA1(byte[] sourceBytes, byte[] keyBytes)
         {
-            using (var hmacSha1 = new HMACSHA1(keyBytes))
-            {
-                var hashBytes = hmacSha1.ComputeHash(sourceBytes);
-                return hashBytes;
-            }
+            using var hmacSha1 = new HMACSHA1(keyBytes);
+            var hashBytes = hmacSha1.ComputeHash(sourceBytes);
+            return hashBytes;
         }
 
         #endregion
@@ -58,7 +60,8 @@ namespace DotCommon.Utility
 
         #region  HMAC-SHA256算法
 
-        /// <summary>获取HMAC-SHA256加密后的Base64值
+        /// <summary>
+        /// 获取HMAC-SHA256加密后的Base64值
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="key">密钥字符串</param>
@@ -85,25 +88,25 @@ namespace DotCommon.Utility
             return ByteBufferUtil.ByteBufferToHex16(hashBytes);
         }
 
-        /// <summary>HMAC-SHA256加密
+        /// <summary>
+        /// HMAC-SHA256加密
         /// </summary>
         /// <param name="sourceBytes">数据二进制</param>
         /// <param name="keyBytes">密钥二进制</param>
         /// <returns></returns>
         public static byte[] GetHMACSHA256(byte[] sourceBytes, byte[] keyBytes)
         {
-            using (var hmacSha256 = new HMACSHA256(keyBytes))
-            {
-                var hashBytes = hmacSha256.ComputeHash(sourceBytes);
-                return hashBytes;
-            }
+            using var hmacSha256 = new HMACSHA256(keyBytes);
+            var hashBytes = hmacSha256.ComputeHash(sourceBytes);
+            return hashBytes;
         }
         #endregion
 
 
         #region  HMAC-MD5算法
 
-        /// <summary>获取HMAC-MD5加密后的Base64值
+        /// <summary>
+        /// 获取HMAC-MD5加密后的Base64值
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="key">密钥字符串</param>
@@ -117,7 +120,8 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary>获取HMAC-MD5加密后的十六进制值
+        /// <summary>
+        /// 获取HMAC-MD5加密后的十六进制值
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="key">密钥字符串</param>
@@ -130,18 +134,17 @@ namespace DotCommon.Utility
             return ByteBufferUtil.ByteBufferToHex16(hashBytes);
         }
 
-        /// <summary>HMAC-MD5加密
+        /// <summary>
+        /// HMAC-MD5加密
         /// </summary>
         /// <param name="sourceBytes">数据二进制</param>
         /// <param name="keyBytes">密钥二进制</param>
         /// <returns></returns>
         public static byte[] GetHMACMD5(byte[] sourceBytes, byte[] keyBytes)
         {
-            using (var hmacMd5 = new HMACMD5(keyBytes))
-            {
-                var hashBytes = hmacMd5.ComputeHash(sourceBytes);
-                return hashBytes;
-            }
+            using var hmacMd5 = new HMACMD5(keyBytes);
+            var hashBytes = hmacMd5.ComputeHash(sourceBytes);
+            return hashBytes;
         }
         #endregion
     }

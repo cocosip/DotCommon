@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Utility
 {
-    /// <summary>网络工具类
+    /// <summary>
+    /// 网络工具类
     /// </summary>
     public static class NetUtil
     {
 
-        /// <summary>检查设置的端口号是否正确，并返回正确的端口号,无效端口号返回-1。
+        /// <summary>
+        /// 检查设置的端口号是否正确，并返回正确的端口号,无效端口号返回-1。
         /// </summary>
         /// <param name="port">端口号</param>
         /// <returns></returns>
@@ -43,7 +45,8 @@ namespace DotCommon.Utility
             return validPort;
         }
 
-        /// <summary>将字符串形式的IP地址转换成IPAddress对象
+        /// <summary>
+        /// 将字符串形式的IP地址转换成IPAddress对象
         /// </summary>
         /// <param name="ipString">string类型IP地址</param>
         /// <returns></returns>
@@ -52,7 +55,8 @@ namespace DotCommon.Utility
             return IPAddress.Parse(ipString);
         }
 
-        /// <summary>根据传入的IP地址详情,获取IP和端口号,IP地址的详情格式为 192.168.1.100:8080
+        /// <summary>
+        /// 根据传入的IP地址详情,获取IP和端口号,IP地址的详情格式为 192.168.1.100:8080
         /// </summary>
         /// <param name="ipString">string类型IP地址</param>
         /// <returns></returns>
@@ -62,7 +66,8 @@ namespace DotCommon.Utility
             return new IPEndPoint(IPAddress.Parse(value[0]), int.Parse(value[1]));
         }
 
-        /// <summary>根据string类型ip集合获取IPEndPoint集合
+        /// <summary>
+        /// 根据string类型ip集合获取IPEndPoint集合
         /// </summary>
         /// <param name="ips">string类型IP地址</param>
         /// <returns></returns>
@@ -74,28 +79,32 @@ namespace DotCommon.Utility
                 .ToList();
         }
 
-        /// <summary>获取本机的计算机名
+        /// <summary>
+        /// 获取本机的计算机名
         /// </summary>
         public static string LocalHostName()
         {
             return Dns.GetHostName();
         }
 
-        /// <summary>获取本机的局域网IPV6
+        /// <summary>
+        /// 获取本机的局域网IPV6
         /// </summary>        
         public static List<IPAddress> GetMatchineIpv6s()
         {
             return Dns.GetHostEntry(LocalHostName()).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetworkV6).ToList();
         }
 
-        /// <summary> 获取本机的局域网IPV4
+        /// <summary>
+        /// 获取本机的局域网IPV4
         /// </summary>
         public static List<IPAddress> GetMachineIpv4s()
         {
             return Dns.GetHostEntry(LocalHostName()).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToList();
         }
 
-        /// <summary>获取本机在Internet网络的广域网IP
+        /// <summary>
+        /// 获取本机在Internet网络的广域网IP
         /// </summary>
         public static IPAddress GetWlan()
         {
@@ -108,8 +117,6 @@ namespace DotCommon.Utility
             }
             return addressList.FirstOrDefault();
         }
-
-
-
+    
     }
 }

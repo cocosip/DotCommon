@@ -31,15 +31,18 @@ namespace DotCommon.AspNetCore.Mvc.Formatters
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override Boolean CanRead(InputFormatterContext context)
+        public override bool CanRead(InputFormatterContext context)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
             var contentType = context.HttpContext.Request.ContentType;
             if (string.IsNullOrEmpty(contentType) || contentType == "text/plain" ||
                 contentType == "application/octet-stream")
+            {
                 return true;
-
+            }
             return false;
         }
 

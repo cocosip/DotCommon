@@ -5,11 +5,13 @@ using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
 {
-    /// <summary>正则表达式工具类
+    /// <summary>
+    /// 正则表达式工具类
     /// </summary>
     public static class RegexUtil
     {
-        /// <summary>匹配正则表达式
+        /// <summary>
+        /// 匹配正则表达式
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="pattern">正则表达式</param>
@@ -19,7 +21,8 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern, RegexOptions.IgnoreCase);
         }
 
-        /// <summary>匹配正则表达式
+        /// <summary>
+        /// 匹配正则表达式
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="pattern">正则表达式</param>
@@ -32,7 +35,8 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary>判断是否为空
+        /// <summary>
+        /// 判断是否为空
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
@@ -42,7 +46,8 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary>验证是否为手机号码
+        /// <summary>
+        /// 验证是否为手机号码
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
@@ -52,7 +57,8 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
-        /// <summary>验证是否为Email地址
+        /// <summary>
+        /// 验证是否为Email地址
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
@@ -63,7 +69,8 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
-        /// <summary>验证是否为Url地址
+        /// <summary>
+        /// 验证是否为Url地址
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
@@ -74,7 +81,8 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
-        /// <summary>是否包含中文
+        /// <summary>
+        /// 是否包含中文
         /// </summary>
         public static bool IsChinese(string source)
         {
@@ -82,7 +90,8 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
-        /// <summary>是否为IP地址
+        /// <summary>
+        /// 是否为IP地址
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
@@ -93,7 +102,8 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
-        /// <summary>是否为1-9的正整数
+        /// <summary>
+        /// 是否为1-9的正整数
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
@@ -103,7 +113,8 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
-        /// <summary>是否为Int32类型
+        /// <summary>
+        /// 是否为Int32类型
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
@@ -113,7 +124,8 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
-        /// <summary>是否为double类型
+        /// <summary>
+        /// 是否为double类型
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="digit">数据位数</param>
@@ -124,7 +136,8 @@ namespace DotCommon.Utility
             return IsMatch(source, pattern);
         }
 
-        /// <summary>判断是否为double类型
+        /// <summary>
+        /// 判断是否为double类型
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="minValue">最小值</param>
@@ -145,7 +158,8 @@ namespace DotCommon.Utility
             return false;
         }
 
-        /// <summary>判断是否为decimal类型
+        /// <summary>
+        /// 判断是否为decimal类型
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="digit">数据位数</param>
@@ -156,7 +170,8 @@ namespace DotCommon.Utility
             return IsMatch(source, patten);
         }
 
-        /// <summary>判断是否为decimal类型
+        /// <summary>
+        /// 判断是否为decimal类型
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="minValue">最小值</param>
@@ -177,20 +192,19 @@ namespace DotCommon.Utility
             return false;
         }
 
-
-
-        /// <summary>是否为有效的日期时间
+        /// <summary>
+        /// 是否为有效的日期时间
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
         public static bool IsDataTime(string source)
         {
-            DateTime d;
-            return NotNull(source) && DateTime.TryParse(source, CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+            return NotNull(source) && DateTime.TryParse(source, CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
         }
 
 
-        /// <summary>是否为有效的版本号 1.3,1.1.5,1.25.256
+        /// <summary>
+        /// 是否为有效的版本号 1.3,1.1.5,1.25.256
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="len">长度</param>
@@ -202,7 +216,8 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary>是否为新版本,后面的版本版是否大于前面的版本
+        /// <summary>
+        /// 是否为新版本,后面的版本版是否大于前面的版本
         /// </summary>
         /// <param name="oldVersion">原版本</param>
         /// <param name="newVersion">新版本</param>
@@ -217,7 +232,6 @@ namespace DotCommon.Utility
             {
                 throw new ArgumentException($"新版本 newVersion:{newVersion}不是一个有效的版本号.");
             }
-
 
             string[] strOld = oldVersion.Split('.');
             string[] strNew = newVersion.Split('.');

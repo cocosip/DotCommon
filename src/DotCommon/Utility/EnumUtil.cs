@@ -5,11 +5,13 @@ using System.Reflection;
 
 namespace DotCommon.Utility
 {
-    /// <summary>枚举工具类
+    /// <summary>
+    /// 枚举工具类
     /// </summary>
     public static class EnumUtil
     {
-        /// <summary>将枚举转换成String类型
+        /// <summary>
+        /// 将枚举转换成String类型
         /// </summary>
         /// <param name="e">枚举</param>
         /// <returns></returns>
@@ -18,7 +20,8 @@ namespace DotCommon.Utility
             return Enum.GetName(e.GetType(), e);
         }
 
-        /// <summary>将String类型转换成枚举类型
+        /// <summary>
+        /// 将String类型转换成枚举类型
         /// </summary>
         /// <typeparam name="T">枚举类型</typeparam>
         /// <param name="value">String值</param>
@@ -28,7 +31,8 @@ namespace DotCommon.Utility
             return (T)Enum.Parse(typeof(T), value);
         }
 
-        /// <summary>获取枚举中的全部类型的数量
+        /// <summary>
+        /// 获取枚举中的全部类型的数量
         /// </summary>
         /// <typeparam name="T">枚举类型</typeparam>
         /// <returns></returns>
@@ -37,7 +41,8 @@ namespace DotCommon.Utility
             return Enum.GetNames(typeof(T)).Length;
         }
 
-        /// <summary>获取全部的枚举
+        /// <summary>
+        /// 获取全部的枚举
         /// </summary>
         /// <typeparam name="T">枚举类型</typeparam>
         /// <returns></returns>
@@ -46,7 +51,8 @@ namespace DotCommon.Utility
             return Enum.GetValues(typeof(T));
         }
 
-        /// <summary>判断该值是否为指定枚举中的值
+        /// <summary>
+        /// 判断该值是否为指定枚举中的值
         /// </summary>
         /// <typeparam name="T">枚举类型</typeparam>
         /// <param name="value">值</param>
@@ -56,7 +62,8 @@ namespace DotCommon.Utility
             return Enum.IsDefined(typeof(T), value);
         }
 
-        /// <summary>获取枚举类型的描述集合
+        /// <summary>
+        /// 获取枚举类型的描述集合
         /// </summary>
         /// <typeparam name="T">枚举类型</typeparam>
         /// <param name="useInt32Key">使用Int32类型的Key值</param>
@@ -82,7 +89,8 @@ namespace DotCommon.Utility
             return descriptions;
         }
 
-        /// <summary>获取枚举的某个描述值
+        /// <summary>
+        /// 获取枚举的某个描述值
         /// </summary>
         /// <param name="e">枚举</param>
         /// <returns></returns>
@@ -99,8 +107,5 @@ namespace DotCommon.Utility
             DescriptionAttribute descriptionAttr = (DescriptionAttribute)attrArray[0];
             return descriptionAttr.Description;
         }
-
-
-
     }
 }

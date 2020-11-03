@@ -6,7 +6,8 @@ using System.Text;
 
 namespace DotCommon.Encrypt
 {
-    /// <summary>RSA密码,密钥相关操作
+    /// <summary>
+    /// RSA密码,密钥相关操作
     /// </summary>
     public static class RSAHelper
     {
@@ -27,26 +28,26 @@ namespace DotCommon.Encrypt
             {"SHA512",HashAlgorithmName.SHA512 },
         };
 
-        /// <summary>生成RSA密钥对(Pem密钥格式)
+        /// <summary>
+        /// 生成RSA密钥对(Pem密钥格式)
         /// </summary>
         /// <param name="format">格式,PKCS1或者PKCS8</param>
         /// <param name="keySize">512,1024,1536,2048</param>
         /// <returns>公钥,私钥</returns>
         public static RSAKeyPair GenerateKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
         {
-            using (var rsa = RSA.Create())
-            {
-                rsa.KeySize = keySize;
+            using var rsa = RSA.Create();
+            rsa.KeySize = keySize;
 
-                var publicParameters = rsa.ExportParameters(false);
-                var privateParameters = rsa.ExportParameters(true);
-                string publicKey = ExportPublicKey(publicParameters);
-                string privateKey = format == RSAKeyFormat.PKCS1 ? ExportPrivateKeyPKCS1(privateParameters) : ExportPrivateKeyPKCS8(privateParameters);
-                return new RSAKeyPair(publicKey, privateKey);
-            }
+            var publicParameters = rsa.ExportParameters(false);
+            var privateParameters = rsa.ExportParameters(true);
+            string publicKey = ExportPublicKey(publicParameters);
+            string privateKey = format == RSAKeyFormat.PKCS1 ? ExportPrivateKeyPKCS1(privateParameters) : ExportPrivateKeyPKCS8(privateParameters);
+            return new RSAKeyPair(publicKey, privateKey);
         }
 
-        /// <summary>根据RSAParameters参数生成公钥
+        /// <summary>
+        /// 根据RSAParameters参数生成公钥
         /// </summary>
         /// <param name="rsaParameters">RSA参数</param>
         /// <returns></returns>
@@ -71,7 +72,8 @@ namespace DotCommon.Encrypt
             return Convert.ToBase64String(keyBytes.ToArray());
         }
 
-        /// <summary>根据RSAParameters参数生成PKCS1私钥
+        /// <summary>
+        /// 根据RSAParameters参数生成PKCS1私钥
         /// </summary>
         /// <param name="rsaParameters">RSA参数</param>
         /// <returns></returns>
@@ -102,7 +104,8 @@ namespace DotCommon.Encrypt
             return Convert.ToBase64String(keyBytes.ToArray());
         }
 
-        /// <summary>根据RSAParameters参数生成PKCS8私钥
+        /// <summary>
+        /// 根据RSAParameters参数生成PKCS8私钥
         /// </summary>
         public static string ExportPrivateKeyPKCS8(RSAParameters rsaParameters)
         {
@@ -140,7 +143,8 @@ namespace DotCommon.Encrypt
             return Convert.ToBase64String(keyBytes.ToArray());
         }
 
-        /// <summary>将PKCS8编码格式的私钥转换成PKCS1编码格式的私钥
+        /// <summary>
+        /// 将PKCS8编码格式的私钥转换成PKCS1编码格式的私钥
         /// </summary>
         /// <param name="pkcs8Key">PKCS8格式密钥</param>
         /// <returns></returns>
@@ -150,7 +154,8 @@ namespace DotCommon.Encrypt
             return ExportPrivateKeyPKCS1(rsaParams);
         }
 
-        /// <summary>将PKCS1编码格式的私钥转换成PKCS8编码格式的私钥
+        /// <summary>
+        /// 将PKCS1编码格式的私钥转换成PKCS8编码格式的私钥
         /// </summary>
         /// <param name="pkcs1Key">PKCS1格式密钥</param>
         /// <returns></returns>
@@ -160,9 +165,8 @@ namespace DotCommon.Encrypt
             return ExportPrivateKeyPKCS8(rsaParams);
         }
 
-
-
-        /// <summary>从公钥中读取RSA参数
+        /// <summary>
+        /// 从公钥中读取RSA参数
         /// </summary>
         public static RSAParameters ReadPublicKeyInfo(string publicKey)
         {
@@ -206,7 +210,8 @@ namespace DotCommon.Encrypt
             return rsaKeyInfo;
         }
 
-        /// <summary>从私钥中读取RSA参数
+        /// <summary>
+        /// 从私钥中读取RSA参数
         /// </summary>
         public static RSAParameters ReadPrivateKeyInfo(string privateKey)
         {
@@ -266,7 +271,8 @@ namespace DotCommon.Encrypt
             return rsaKeyInfo;
         }
 
-        /// <summary>获取RSA私钥的格式
+        /// <summary>
+        /// 获取RSA私钥的格式
         /// </summary>
         public static RSAKeyFormat GetKeyFormat(string privateKey)
         {
@@ -293,10 +299,10 @@ namespace DotCommon.Encrypt
         }
 
 
-
         #region RSA加密解密,签名解签
 
-        /// <summary>加密
+        /// <summary>
+        /// 加密
         /// </summary>
         /// <param name="data">原数据</param>
         /// <param name="publicKey">公钥</param>
@@ -304,15 +310,14 @@ namespace DotCommon.Encrypt
         /// <returns></returns>
         public static byte[] Encrypt(byte[] data, string publicKey, RSAEncryptionPadding encryptionPadding = null)
         {
-            using (var rsa = CreateRsaFromPublicKey(publicKey))
-            {
-                encryptionPadding ??= RSAEncryptionPadding.Pkcs1;
-                var encryptedData = rsa.Encrypt(data, encryptionPadding);
-                return encryptedData;
-            }
+            using var rsa = CreateRsaFromPublicKey(publicKey);
+            encryptionPadding ??= RSAEncryptionPadding.Pkcs1;
+            var encryptedData = rsa.Encrypt(data, encryptionPadding);
+            return encryptedData;
         }
 
-        /// <summary>加密
+        /// <summary>
+        /// 加密
         /// </summary>
         /// <param name="data">原数据</param>
         /// <param name="publicKey">公钥</param>
@@ -326,7 +331,8 @@ namespace DotCommon.Encrypt
         }
 
 
-        /// <summary>解密
+        /// <summary>
+        /// 解密
         /// </summary>
         /// <param name="data">待解密数据</param>
         /// <param name="privateKey"></param>
@@ -334,16 +340,15 @@ namespace DotCommon.Encrypt
         /// <returns></returns>
         public static byte[] Decrypt(byte[] data, string privateKey, RSAEncryptionPadding encryptionPadding = null)
         {
-            using (var rsa = CreateRsaFromPrivateKey(privateKey))
-            {
-                encryptionPadding ??= RSAEncryptionPadding.Pkcs1;
-                var decryptedData = rsa.Decrypt(data, encryptionPadding);
-                return decryptedData;
-            }
+            using var rsa = CreateRsaFromPrivateKey(privateKey);
+            encryptionPadding ??= RSAEncryptionPadding.Pkcs1;
+            var decryptedData = rsa.Decrypt(data, encryptionPadding);
+            return decryptedData;
         }
 
 
-        /// <summary>解密
+        /// <summary>
+        /// 解密
         /// </summary>
         /// <param name="data">原数据</param>
         /// <param name="privateKey">私钥</param>
@@ -357,7 +362,8 @@ namespace DotCommon.Encrypt
         }
 
 
-        /// <summary>数据签名
+        /// <summary>
+        /// 数据签名
         /// </summary>
         /// <param name="data">待签名数据</param>
         /// <param name="privateKey">私钥</param>
@@ -367,14 +373,13 @@ namespace DotCommon.Encrypt
 
         public static byte[] SignData(byte[] data, string privateKey, RSASignaturePadding signaturePadding = null, string hashAlgorithmName = "SHA256")
         {
-            using (var rsa = CreateRsaFromPrivateKey(privateKey))
-            {
-                signaturePadding ??= RSASignaturePadding.Pkcs1;
-                var signedData = rsa.SignData(data, HashAlgorithmNameDict[hashAlgorithmName], signaturePadding);
-                return signedData;
-            }
+            using var rsa = CreateRsaFromPrivateKey(privateKey);
+            signaturePadding ??= RSASignaturePadding.Pkcs1;
+            var signedData = rsa.SignData(data, HashAlgorithmNameDict[hashAlgorithmName], signaturePadding);
+            return signedData;
         }
-        /// <summary>数据签名
+        /// <summary>
+        /// 数据签名
         /// </summary>
         /// <param name="data">待签名数据</param>
         /// <param name="privateKey">私钥</param>
@@ -388,7 +393,8 @@ namespace DotCommon.Encrypt
             return Convert.ToBase64String(signedData);
         }
 
-        /// <summary>签名校验
+        /// <summary>
+        /// 签名校验
         /// </summary>
         /// <param name="data">原数据</param>
         /// <param name="signature">签名后数据</param>
@@ -398,14 +404,13 @@ namespace DotCommon.Encrypt
         /// <returns></returns>
         public static bool VerifyData(byte[] data, byte[] signature, string publicKey, RSASignaturePadding signaturePadding = null, string hashAlgorithmName = "SHA256")
         {
-            using (var rsa = CreateRsaFromPublicKey(publicKey))
-            {
-                signaturePadding ??= RSASignaturePadding.Pkcs1;
-                return rsa.VerifyData(data, signature, HashAlgorithmNameDict[hashAlgorithmName], signaturePadding);
-            }
+            using var rsa = CreateRsaFromPublicKey(publicKey);
+            signaturePadding ??= RSASignaturePadding.Pkcs1;
+            return rsa.VerifyData(data, signature, HashAlgorithmNameDict[hashAlgorithmName], signaturePadding);
         }
 
-        /// <summary>签名校验
+        /// <summary>
+        /// 签名校验
         /// </summary>
         /// <param name="data">源数据</param>
         /// <param name="base64Signature">签名后数据Base64编码</param>
@@ -421,9 +426,8 @@ namespace DotCommon.Encrypt
             return VerifyData(dataBytes, signature, publicKey, signaturePadding, hashAlgorithmName);
         }
 
-
-
-        /// <summary>根据RSA公钥生成RSA对象
+        /// <summary>
+        /// 根据RSA公钥生成RSA对象
         /// </summary>
         private static RSA CreateRsaFromPublicKey(string publicKey)
         {
@@ -540,7 +544,8 @@ namespace DotCommon.Encrypt
             #endregion
         }
 
-        /// <summary>根据私钥生成RSA对象
+        /// <summary>
+        /// 根据私钥生成RSA对象
         /// </summary>
         private static RSA CreateRsaFromPrivateKey(string privateKey)
         {
@@ -597,7 +602,8 @@ namespace DotCommon.Encrypt
 
         #endregion
 
-        /// <summary>TLV格式化(flag+长度数据占用位数+长度数值+数据)
+        /// <summary>
+        /// TLV格式化(flag+长度数据占用位数+长度数值+数据)
         /// </summary>
         /// <param name="flag">标志</param>
         /// <param name="content"></param>
@@ -645,7 +651,8 @@ namespace DotCommon.Encrypt
             return tlvBytes;
         }
 
-        /// <summary>读取TLV结构中的数据
+        /// <summary>
+        /// 读取TLV结构中的数据
         /// </summary>
         private static Span<byte> ReadTLV(Span<byte> tlvSpan)
         {
@@ -677,7 +684,8 @@ namespace DotCommon.Encrypt
             return contentSpan;
         }
 
-        /// <summary>分割多个TLV格式数据,返回数据列表
+        /// <summary>
+        /// 分割多个TLV格式数据,返回数据列表
         /// </summary>
         private static List<byte[]> SplitTLVs(Span<byte> tlvs)
         {
@@ -725,7 +733,8 @@ namespace DotCommon.Encrypt
             return tlvList;
         }
 
-        /// <summary>读取内容数据
+        /// <summary>
+        /// 读取内容数据
         /// </summary>
         private static Span<byte> ReadContent(Span<byte> contentSpan)
         {
@@ -748,39 +757,47 @@ namespace DotCommon.Encrypt
     /// </summary>
     public enum RSAKeyFormat
     {
-        /// <summary>PKCS1
+        /// <summary>
+        /// PKCS1
         /// </summary>
         PKCS1 = 1,
 
-        /// <summary>PKCS8
+        /// <summary>
+        /// PKCS8
         /// </summary>
         PKCS8 = 2,
 
-        /// <summary>未知
+        /// <summary>
+        /// 未知
         /// </summary>
         Unknow = 4
     }
 
-    /// <summary>RSA密钥对
+    /// <summary>
+    /// RSA密钥对
     /// </summary>
     public class RSAKeyPair : IEquatable<RSAKeyPair>
     {
-        /// <summary>公钥
+        /// <summary>
+        /// 公钥
         /// </summary>
         public string PublicKey { get; set; }
 
-        /// <summary>私钥
+        /// <summary>
+        /// 私钥
         /// </summary>
         public string PrivateKey { get; set; }
 
-        /// <summary>Ctor
+        /// <summary>
+        /// Ctor
         /// </summary>
         public RSAKeyPair()
         {
 
         }
 
-        /// <summary>Ctor
+        /// <summary>
+        /// Ctor
         /// </summary>
         public RSAKeyPair(string publicKey, string privateKey)
         {
@@ -788,7 +805,8 @@ namespace DotCommon.Encrypt
             PrivateKey = privateKey;
         }
 
-        /// <summary>是否相同
+        /// <summary>
+        /// 是否相同
         /// </summary>
         public bool Equals(RSAKeyPair other)
         {

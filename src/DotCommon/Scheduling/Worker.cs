@@ -4,31 +4,33 @@ using System.Threading;
 
 namespace DotCommon.Scheduling
 {
-    /// <summary>Represent a background worker that will repeatedly execute a specific method.
+    /// <summary>
+    /// Represent a background worker that will repeatedly execute a specific method.
     /// </summary>
     public class Worker
     {
         private readonly object _lockObject = new object();
         private readonly ILogger _logger;
-        private string _actionName;
-        private Action _action;
+        private readonly Action _action;
         private Status _status;
 
         /// <summary>Returns the action name of the current worker.
         /// </summary>
-        public string ActionName => _actionName;
+        public string ActionName { get; private set; }
 
-        /// <summary>Initialize a new worker with the specified action.
+        /// <summary>
+        /// Initialize a new worker with the specified action.
         /// </summary>
         public Worker(ILogger<Worker> logger, string actionName, Action action)
         {
             _logger = logger;
-            _actionName = actionName;
+            ActionName = actionName;
             _action = action;
             _status = Status.Initial;
         }
 
-        /// <summary>Start the worker if it is not running.
+        /// <summary>
+        /// Start the worker if it is not running.
         /// </summary>
         public Worker Start()
         {
@@ -42,7 +44,7 @@ namespace DotCommon.Scheduling
                 _status = Status.Running;
                 new Thread(Loop)
                 {
-                    Name = $"{_actionName}.Worker",
+                    Name = $"{ActionName}.Worker",
                     IsBackground = true
                 }.Start(this);
 
@@ -77,13 +79,13 @@ namespace DotCommon.Scheduling
                 }
                 catch (ThreadAbortException)
                 {
-                    _logger.LogInformation("Worker thread caught ThreadAbortException, try to resetting, actionName:{0}", _actionName);
+                    _logger.LogInformation("Worker thread caught ThreadAbortException, try to resetting, actionName:{0}", ActionName);
                     Thread.ResetAbort();
-                    _logger.LogInformation("Worker thread ThreadAbortException resetted, actionName:{0}", _actionName);
+                    _logger.LogInformation("Worker thread ThreadAbortException resetted, actionName:{0}", ActionName);
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"Worker thread has exception, actionName:{_actionName},error:{ex.Message}");
+                    throw new Exception($"Worker thread has exception, actionName:{ActionName},error:{ex.Message}");
                 }
             }
         }

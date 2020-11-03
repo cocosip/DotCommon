@@ -6,12 +6,14 @@ using System.Text;
 
 namespace DotCommon.Utility
 {
-    /// <summary>路径工具类
+    /// <summary>
+    /// 路径工具类
     /// </summary>
     public static class PathUtil
     {
 
-        /// <summary>如果路径是绝对路径,则原样返回,否则就结合AppDomain.CurrentDomain.SetupInformation.ApplicationBase
+        /// <summary>
+        /// 如果路径是绝对路径,则原样返回,否则就结合AppDomain.CurrentDomain.SetupInformation.ApplicationBase
         /// 路径总是服务器的相对路径
         /// </summary>
         /// <param name="path">路径地址</param>
@@ -25,7 +27,8 @@ namespace DotCommon.Utility
             return path;
         }
 
-        /// <summary>合并相对路径
+        /// <summary>
+        /// 合并相对路径
         /// </summary>
         /// <param name="relativePaths">多个相对路径数组</param>
         /// <returns></returns>
@@ -53,7 +56,8 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary>绝对目录回退,兼容Linux
+        /// <summary>
+        /// 绝对目录回退,兼容Linux
         /// </summary>
         /// <param name="path">绝对路径地址</param>
         /// <param name="layerCount">回退层数</param>
@@ -82,7 +86,8 @@ namespace DotCommon.Utility
             return Path.Combine(pathSpilts.ToArray());
         }
 
-        /// <summary>将相对路径转换成绝对路径
+        /// <summary>
+        /// 将相对路径转换成绝对路径
         /// </summary>
         /// <param name="relativePath">相对路径地址</param>
         /// <returns></returns>
@@ -98,7 +103,8 @@ namespace DotCommon.Utility
             return Path.Combine(path, Path.Combine(usefulPaths.ToArray()));
         }
 
-        /// <summary>获取某个路径,或者文件中的文件扩展名
+        /// <summary>
+        /// 获取某个路径,或者文件中的文件扩展名
         /// </summary>
         /// <param name="path">路径或者文件地址</param>
         /// <returns></returns>

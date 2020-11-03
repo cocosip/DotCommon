@@ -2,11 +2,10 @@
 
 namespace DotCommon.Extensions
 {
-    /// <summary>String类型扩展
-    /// </summary>
     public static class StringExtensions
     {
-        /// <summary>获取字符串平台无关的Hashcode
+        /// <summary>
+        /// 获取字符串平台无关的Hashcode
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
@@ -31,7 +30,8 @@ namespace DotCommon.Extensions
             }
         }
 
-        /// <summary>判断字符串是否为空
+        /// <summary>
+        /// 判断字符串是否为空
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
@@ -40,7 +40,8 @@ namespace DotCommon.Extensions
             return string.IsNullOrEmpty(source);
         }
 
-        /// <summary>判断字符串是否为空或者空格
+        /// <summary>
+        /// 判断字符串是否为空或者空格
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
@@ -50,7 +51,8 @@ namespace DotCommon.Extensions
         }
 
 
-        /// <summary>截取指定长度的字符串
+        /// <summary>
+        /// 截取指定长度的字符串
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="len">截取长度</param>
@@ -70,7 +72,8 @@ namespace DotCommon.Extensions
             return source.Substring(0, len);
         }
 
-        /// <summary>按照正常行结尾格式化字符串
+        /// <summary>
+        /// 按照正常行结尾格式化字符串
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>
@@ -80,7 +83,8 @@ namespace DotCommon.Extensions
         }
 
 
-        /// <summary>移除字符串中指定结尾格式的字符
+        /// <summary>
+        /// 移除字符串中指定结尾格式的字符
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="postFixes">结尾字符串数组</param>
@@ -102,7 +106,8 @@ namespace DotCommon.Extensions
             return source;
         }
 
-        /// <summary>移除字符串中指定开始格式的前缀
+        /// <summary>
+        /// 移除字符串中指定开始格式的前缀
         /// </summary>
         /// <param name="source">字符串</param>
         /// <param name="preFixes">前缀数组</param>
@@ -124,7 +129,8 @@ namespace DotCommon.Extensions
             return source;
         }
 
-        /// <summary>截取字符串右侧指定长度的字符串
+        /// <summary>
+        /// 截取字符串右侧指定长度的字符串
         /// </summary>
         public static string Right(this string source, int len)
         {
@@ -173,7 +179,8 @@ namespace DotCommon.Extensions
             return source.Split(Environment.NewLine, options);
         }
 
-        /// <summary>将首字母变成小写,驼峰写法?(非真正驼峰,驼峰写法首字母为小写,而不是收个单词)
+        /// <summary>
+        /// 将首字母变成小写,驼峰写法?(非真正驼峰,驼峰写法首字母为小写,而不是收个单词)
         /// </summary>
         public static string ToCamelCase(this string source)
         {

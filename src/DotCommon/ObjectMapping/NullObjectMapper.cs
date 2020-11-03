@@ -2,12 +2,8 @@
 
 namespace DotCommon.ObjectMapping
 {
-    /// <summary>对象映射
-    /// </summary>
     public sealed class NullObjectMapper : IObjectMapper
     {
-        /// <summary>单例
-        /// </summary>
         public static NullObjectMapper Instance { get; } = new NullObjectMapper();
 
         /// <summary>将对象转为为目标对象

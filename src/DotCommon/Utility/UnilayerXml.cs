@@ -4,14 +4,16 @@ using System.Xml;
 
 namespace DotCommon.Utility
 {
-    /// <summary>单层Xml,可用于微信xml
+    /// <summary>
+    /// 单层Xml,可用于微信xml
     /// </summary>
     public class UnilayerXml
     {
         private string _rootNode = "xml";
         private readonly SortedDictionary<string, object> _values = new SortedDictionary<string, object>();
         
-        /// <summary>Ctor
+        /// <summary>
+        /// Ctor
         /// </summary>
         public UnilayerXml()
         {
@@ -38,21 +40,24 @@ namespace DotCommon.Utility
             }
         }
 
-        /// <summary>设置跟节点,默认为xml
+        /// <summary>
+        /// 设置跟节点,默认为xml
         /// </summary>
         public void SetRootNode(string rootNode)
         {
             _rootNode = rootNode;
         }
 
-        /// <summary>赋值
+        /// <summary>
+        /// 赋值
         /// </summary>
         public void SetValue(string key, object value)
         {
             _values[key] = value;
         }
 
-        /// <summary>取值
+        /// <summary>
+        /// 取值
         /// </summary>
         public object GetValue(string key)
         {
@@ -60,7 +65,8 @@ namespace DotCommon.Utility
             return o;
         }
 
-        /// <summary>判断某个key是否已经赋值
+        /// <summary>
+        /// 判断某个key是否已经赋值
         /// </summary>
         public bool HasValue(string key)
         {
@@ -68,14 +74,16 @@ namespace DotCommon.Utility
             return null != o;
         }
 
-        /// <summary>获取根节点下全部的值
+        /// <summary>
+        /// 获取根节点下全部的值
         /// </summary>
         public SortedDictionary<string, object> GetValues()
         {
             return _values;
         }
 
-        /// <summary>转换为xml字符串
+        /// <summary>
+        /// 转换为xml字符串
         /// </summary>
         public string ToXml()
         {

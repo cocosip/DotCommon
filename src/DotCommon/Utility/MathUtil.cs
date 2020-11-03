@@ -4,7 +4,8 @@ using System.Linq;
 
 namespace DotCommon.Utility
 {
-    /// <summary>计算工具类
+    /// <summary>
+    /// 计算工具类
     /// </summary>
     public static class MathUtil
     {

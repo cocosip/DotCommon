@@ -2,12 +2,14 @@
 
 namespace DotCommon.Utility
 {
-    /// <summary>进制转换工具类
+    /// <summary>
+    /// 进制转换工具类
     /// </summary>
     public static class HexUtil
     {
 
-        /// <summary>指定进制之间转换
+        /// <summary>
+        /// 指定进制之间转换
         /// </summary>
         /// <param name="value">值</param>
         /// <param name="fromBase">源进制</param>
@@ -19,7 +21,8 @@ namespace DotCommon.Utility
             return Convert.ToString(hex10, toBase).ToUpper();
         }
 
-        /// <summary>将其他进制转换成10进制
+        /// <summary>
+        /// 将其他进制转换成10进制
         /// </summary>
         /// <param name="value">值</param>
         /// <param name="fromBase">源进制</param>
@@ -29,7 +32,8 @@ namespace DotCommon.Utility
             return Convert.ToInt32(value, fromBase);
         }
 
-        /// <summary>将十进制转换成其他进制
+        /// <summary>
+        /// 将十进制转换成其他进制
         /// </summary>
         /// <param name="value">十进制的值</param>
         /// <param name="toBase">目标进制</param>

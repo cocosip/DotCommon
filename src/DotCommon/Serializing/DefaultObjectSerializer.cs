@@ -3,22 +3,22 @@ using System;
 
 namespace DotCommon.Serializing
 {
-    /// <summary>对象序列化
+    /// <summary>
+    /// 对象序列化
     /// </summary>
     public class DefaultObjectSerializer : IObjectSerializer
     {
         private readonly IServiceProvider _provider;
         private readonly IBinarySerializer _binarySerializer;
 
-        /// <summary>Ctor
-        /// </summary>
         public DefaultObjectSerializer(IServiceProvider provider, IBinarySerializer binarySerializer)
         {
             _provider = provider;
             _binarySerializer = binarySerializer;
         }
 
-        /// <summary>对象序列化
+        /// <summary>
+        /// 对象序列化
         /// </summary>
         public virtual byte[] Serialize<T>(T o)
         {
@@ -27,7 +27,6 @@ namespace DotCommon.Serializing
                 return null;
             }
 
-            //Check if a specific serializer is registered
             using (var scope = _provider.CreateScope())
             {
                 var specificSerializer = scope.ServiceProvider.GetService<IObjectSerializer<T>>();
@@ -39,7 +38,8 @@ namespace DotCommon.Serializing
             return AutoSerialize(o);
         }
 
-        /// <summary>对象反序列化
+        /// <summary>
+        /// 对象反序列化
         /// </summary>
         public virtual T Deserialize<T>(byte[] bytes)
         {
@@ -48,7 +48,6 @@ namespace DotCommon.Serializing
                 return default;
             }
 
-            //Check if a specific serializer is registered
             using (var scope = _provider.CreateScope())
             {
                 var specificSerializer = scope.ServiceProvider.GetService<IObjectSerializer<T>>();
@@ -68,7 +67,8 @@ namespace DotCommon.Serializing
             return _binarySerializer.Serialize(o);
         }
 
-        /// <summary>自动反序列化
+        /// <summary>
+        /// 自动反序列化
         /// </summary>
         protected virtual T AutoDeserialize<T>(byte[] bytes)
         {

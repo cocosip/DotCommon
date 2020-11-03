@@ -4,12 +4,14 @@ using System.Linq;
 
 namespace DotCommon.Utility
 {
-    /// <summary>时间工具类
+    /// <summary>
+    /// 时间工具类
     /// </summary>
     public static class DateTimeUtil
     {
 
-        /// <summary>将时间转换成int32类型时间戳(从1970-01-01 00:00:00 开始计算)
+        /// <summary>
+        /// 将时间转换成int32类型时间戳(从1970-01-01 00:00:00 开始计算)
         /// </summary>
         /// <param name="datetime">时间</param>
         /// <returns></returns>
@@ -20,7 +22,8 @@ namespace DotCommon.Utility
             return Convert.ToInt32(timeSpan.TotalSeconds);
         }
 
-        /// <summary>将时间转换成long类型时间戳,以毫秒为单位(从1970-01-01 00:00:00 开始计算)
+        /// <summary>
+        /// 将时间转换成long类型时间戳,以毫秒为单位(从1970-01-01 00:00:00 开始计算)
         /// </summary>
         /// <param name="datetime">时间</param>
         /// <returns></returns>
@@ -31,7 +34,8 @@ namespace DotCommon.Utility
             return Convert.ToInt64(timeSpan.TotalMilliseconds);
         }
 
-        /// <summary>将string类型的时间转换成int32
+        /// <summary>
+        /// 将string类型的时间转换成int32
         /// </summary>
         /// <param name="datetime">string类型时间</param>
         /// <param name="defaultValue">默认值</param>
@@ -46,7 +50,8 @@ namespace DotCommon.Utility
             return ToInt32(end);
         }
 
-        /// <summary>将int32类型的整数时间戳转换成时间
+        /// <summary>
+        /// 将int32类型的整数时间戳转换成时间
         /// </summary>
         /// <param name="seconds">整数时间戳(从1970-01-01 00:00:00 开始计算的总秒数)</param>
         /// <returns></returns>
@@ -61,7 +66,8 @@ namespace DotCommon.Utility
             return dt;
         }
 
-        /// <summary>将long类型的整数时间(以毫秒为单位)转换成时间
+        /// <summary>
+        /// 将long类型的整数时间(以毫秒为单位)转换成时间
         /// </summary>
         /// <param name="millSeconds">long类型时间戳(从1970-01-01 00:00:00 开始计算的总毫秒数)</param>
         /// <returns></returns>
@@ -76,7 +82,8 @@ namespace DotCommon.Utility
             return dt;
         }
 
-        /// <summary>获取String类型的时间拼接,拼接到天
+        /// <summary>
+        /// 获取String类型的时间拼接,拼接到天
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -88,7 +95,8 @@ namespace DotCommon.Utility
             return pad;
         }
 
-        /// <summary>获取string类型拼接的时间 拼接到秒
+        /// <summary>
+        /// 获取string类型拼接的时间 拼接到秒
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -103,7 +111,8 @@ namespace DotCommon.Utility
             return pad;
         }
 
-        /// <summary>获取string类型拼接的时间,拼接到秒,但是不包括最早的2位
+        /// <summary>
+        /// 获取string类型拼接的时间,拼接到秒,但是不包括最早的2位
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -118,7 +127,8 @@ namespace DotCommon.Utility
             return pad;
         }
 
-        /// <summary>获取string类型拼接的时间,拼接到毫秒
+        /// <summary>
+        /// 获取string类型拼接的时间,拼接到毫秒
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -134,7 +144,8 @@ namespace DotCommon.Utility
             return pad;
         }
 
-        /// <summary>获取string类型拼接的时间,拼接到秒,但是不包括最早的2位,精确到毫秒
+        /// <summary>
+        /// 获取string类型拼接的时间,拼接到秒,但是不包括最早的2位,精确到毫秒
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -150,7 +161,8 @@ namespace DotCommon.Utility
             return pad;
         }
 
-        /// <summary>获取两个时间之间经历的星期几
+        /// <summary>
+        /// 获取两个时间之间经历的星期几
         /// </summary>
         /// <param name="begin">开始时间</param>
         /// <param name="end">结束时间</param>
@@ -179,7 +191,8 @@ namespace DotCommon.Utility
             return string.Join(",", target);
         }
 
-        /// <summary>获取某个时间的中文星期
+        /// <summary>
+        /// 获取某个时间的中文星期
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -189,7 +202,8 @@ namespace DotCommon.Utility
             return GetWeekDays().FirstOrDefault(x => x.Key == dayOfWeek).Value;
         }
 
-        /// <summary>获取星期中的所有天数
+        /// <summary>
+        /// 获取星期中的所有天数
         /// </summary>
         public static Dictionary<int, string> GetWeekDays()
         {
@@ -206,7 +220,8 @@ namespace DotCommon.Utility
             return weekDict;
         }
 
-        /// <summary>获取某时间点当月的第一天
+        /// <summary>
+        /// 获取某时间点当月的第一天
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -215,7 +230,8 @@ namespace DotCommon.Utility
             return new DateTime(time.Year, time.Month, 1);
         }
 
-        /// <summary>获取某个时间点当月的最后一天
+        /// <summary>
+        /// 获取某个时间点当月的最后一天
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -224,7 +240,8 @@ namespace DotCommon.Utility
             return new DateTime(time.Year, time.Month, 1).AddMonths(1).AddDays(-1);
         }
 
-        /// <summary>获取某个时间点当年的第一天
+        /// <summary>
+        /// 获取某个时间点当年的第一天
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -233,7 +250,8 @@ namespace DotCommon.Utility
             return new DateTime(time.Year, 1, 1);
         }
 
-        /// <summary>获取某个时间点当年的最后一天
+        /// <summary>
+        /// 获取某个时间点当年的最后一天
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -252,7 +270,8 @@ namespace DotCommon.Utility
             return new DateTime(time.Year, time.Month, time.Day).AddDays(1).AddSeconds(-1);
         }
 
-        /// <summary>判断某个时间是否为当月的第一天
+        /// <summary>
+        /// 判断某个时间是否为当月的第一天
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -262,7 +281,8 @@ namespace DotCommon.Utility
             return firstDay.Date == time.Date;
         }
 
-        /// <summary>判断某个时间是否为当月的最后一天
+        /// <summary>
+        /// 判断某个时间是否为当月的最后一天
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -272,7 +292,8 @@ namespace DotCommon.Utility
             return lastDay.Date == time.Date;
         }
 
-        /// <summary>判断某个时间是否为当年的第一天
+        /// <summary>
+        /// 判断某个时间是否为当年的第一天
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -282,7 +303,8 @@ namespace DotCommon.Utility
             return firstDay.Date == time.Date;
         }
 
-        /// <summary>判断某个时间是否为当年的最后一天
+        /// <summary>
+        /// 判断某个时间是否为当年的最后一天
         /// </summary>
         /// <param name="time">时间</param>
         /// <returns></returns>
@@ -292,7 +314,8 @@ namespace DotCommon.Utility
             return lastDay.Date == time.Date;
         }
 
-        /// <summary>将时间的某个日期进行修改
+        /// <summary>
+        /// 将时间的某个日期进行修改
         /// </summary>
         /// <param name="day">日期</param>
         /// <param name="datetime">时间</param>
@@ -304,7 +327,8 @@ namespace DotCommon.Utility
             return date;
         }
 
-        /// <summary>将时间的日期后面的时间进行替换
+        /// <summary>
+        /// 将时间的日期后面的时间进行替换
         /// </summary>
         /// <param name="time">日期后面的时间</param>
         /// <param name="datetime">时间</param>

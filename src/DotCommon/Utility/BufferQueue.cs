@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Utility
 {
-    /// <summary>双缓冲队列
+    /// <summary>
+    /// 双缓冲队列
     /// </summary>
     /// <typeparam name="TMessage"></typeparam>
     public class BufferQueue<TMessage>
@@ -17,7 +18,7 @@ namespace DotCommon.Utility
         private readonly string _name;
         private int _isProcesingMessage;
 
-        /// <summary>Ctor
+        /// <summary>初始化
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="requestsWriteThreshold">请求写入的阈值</param>
@@ -32,7 +33,8 @@ namespace DotCommon.Utility
 
         }
 
-        /// <summary>入队消息
+        /// <summary>
+        /// 入队消息
         /// </summary>
         /// <param name="message">消息</param>
         public void EnqueueMessage(TMessage message)

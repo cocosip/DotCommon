@@ -33,8 +33,7 @@ namespace DotCommon.ConsoleTest
                 .AddProtoBuf()
                 .AddJson4Net();
             //services.AddTransient<LoggerService>();
-            var provider = services.BuildServiceProvider()
-                .ConfigureDotCommon();
+            var provider = services.BuildServiceProvider();
             //.ConfigureLog4Net();
             NLog.LogManager.LoadConfiguration("nlog.config");
 

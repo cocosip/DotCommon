@@ -5,7 +5,8 @@ using System.Text;
 
 namespace DotCommon.Utility
 {
-    /// <summary>随机数工具类
+    /// <summary>
+    /// 随机数工具类
     /// </summary>
     public static class RandomUtil
     {
@@ -32,7 +33,8 @@ namespace DotCommon.Utility
 
 
 
-        /// <summary>生成随机数的种子
+        /// <summary>
+        /// 生成随机数的种子
         /// </summary>
         /// <param name="len">种子长度</param>
         /// <returns></returns>
@@ -46,7 +48,8 @@ namespace DotCommon.Utility
             return BitConverter.ToInt32(bytes, 0);
         }
 
-        /// <summary>生成一个指定范围的随机整数
+        /// <summary>
+        /// 生成一个指定范围的随机整数
         /// </summary>
         /// <param name="minNum">最小值</param>
         /// <param name="maxNum">最大值</param>
@@ -80,7 +83,8 @@ namespace DotCommon.Utility
             }
         }
 
-        /// <summary>生成随机字符串
+        /// <summary>
+        /// 生成随机字符串
         /// </summary>
         /// <param name="len">随机字符串长度</param>
         /// <param name="randomStringType">随机类型</param>
@@ -102,7 +106,8 @@ namespace DotCommon.Utility
 
     }
 
-    /// <summary>随机字符串类型
+    /// <summary>
+    /// 随机字符串类型
     /// </summary>
     public enum RandomStringType
     {

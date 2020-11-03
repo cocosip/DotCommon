@@ -5,12 +5,14 @@ using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
 {
-    /// <summary>字符工具类
+    /// <summary>
+    /// 字符工具类
     /// </summary>
     public static class StringUtil
     {
 
-        /// <summary>获取字符串所占直接长度
+        /// <summary>
+        /// 获取字符串所占直接长度
         /// </summary>
         public static int GetStringByteLength(string source)
         {
@@ -27,7 +29,8 @@ namespace DotCommon.Utility
             return byteLength;
         }
 
-        /// <summary> 去除末尾的字符串
+        /// <summary>
+        /// 去除末尾的字符串
         /// </summary>
         public static string RemoveEnd(string inputStr, string splitStr)
         {
@@ -50,7 +53,8 @@ namespace DotCommon.Utility
 
         #region 过滤方法
 
-        /// <summary> 过滤'-\\;\>《》 
+        /// <summary>
+        /// 过滤'-\\;\>《》 
         /// </summary>
         public static string FilterUrl(string source)
         {
@@ -62,7 +66,8 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary> 过滤A标签
+        /// <summary>
+        /// 过滤A标签
         /// </summary>
         public static string FetchA(string source)
         {
@@ -73,7 +78,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>过滤DIV标签
+        /// <summary>
+        /// 过滤DIV标签
         /// </summary>
         public static string FetchDiv(string source)
         {
@@ -84,7 +90,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>过滤FONT标签
+        /// <summary>
+        /// 过滤FONT标签
         /// </summary>
         public static string FetchFont(string source)
         {
@@ -95,7 +102,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>过滤SPAN标签
+        /// <summary>
+        /// 过滤SPAN标签
         /// </summary>
         public static string FetchSpan(string source)
         {
@@ -106,7 +114,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>过滤TABLE、TR、TD
+        /// <summary>
+        /// 过滤TABLE、TR、TD
         /// </summary>
         public static string FetchTableProtery(string source)
         {
@@ -119,8 +128,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-
-        /// <summary>过滤所有HTML标签
+        /// <summary>
+        /// 过滤所有HTML标签
         /// </summary>
         public static string FetchStripTags(string source)
         {
@@ -132,7 +141,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>过滤IMG标签
+        /// <summary>
+        /// 过滤IMG标签
         /// </summary>
         public static string FilterImg(string source)
         {
@@ -143,7 +153,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>过滤OBJECT标签
+        /// <summary>
+        /// 过滤OBJECT标签
         /// </summary>
         public static string FilterObject(string source)
         {
@@ -155,7 +166,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>过滤JavaScript标签
+        /// <summary>
+        /// 过滤JavaScript标签
         /// </summary>
         public static string FilterScript(string source)
         {
@@ -167,7 +179,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary> 过滤IFRAME标签
+        /// <summary> 
+        /// 过滤IFRAME标签
         /// </summary>
         public static string FilterIFrame(string source)
         {
@@ -180,8 +193,8 @@ namespace DotCommon.Utility
         }
 
 
-
-        /// <summary>过滤STYLE样式标签
+        /// <summary>
+        /// 过滤STYLE样式标签
         /// </summary>
         public static string FilterStyle(string source)
         {
@@ -193,9 +206,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-
-
-        /// <summary>根据传入的正则表达式进行过滤
+        /// <summary>
+        /// 根据传入的正则表达式进行过滤
         /// </summary>
         public static string SuperiorHtml(string source, string pattern)
         {
@@ -206,9 +218,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-
-
-        /// <summary>过滤html的所有标签
+        /// <summary>
+        /// 过滤html的所有标签
         /// </summary>
         public static string FilterHtml(string source)
         {
@@ -221,7 +232,9 @@ namespace DotCommon.Utility
             }
             return source;
         }
-        /// <summary>HTML转行成TEXT
+
+        /// <summary>
+        /// HTML转行成TEXT
         /// </summary>
         public static string HtmlToTxt(string strHtml)
         {
@@ -286,7 +299,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary> 检测是否有Sql危险字符
+        /// <summary> 
+        /// 检测是否有Sql危险字符
         /// </summary>
         public static bool IsSafeSqlString(string sql)
         {
@@ -294,7 +308,8 @@ namespace DotCommon.Utility
         }
         #endregion
 
-        /// <summary>将字符串中的中文转换成unicode
+        /// <summary>
+        /// 将字符串中的中文转换成unicode
         /// </summary>
         public static string StringToUnicode(string source, bool onlyConvertChinese = true)
         {
@@ -322,7 +337,8 @@ namespace DotCommon.Utility
             return source;
         }
 
-        /// <summary>将Unicode字符串转换成String
+        /// <summary>
+        /// 将Unicode字符串转换成String
         /// </summary>
         public static string UnicodeToString(string source)
         {

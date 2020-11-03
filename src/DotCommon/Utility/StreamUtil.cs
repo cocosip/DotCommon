@@ -3,11 +3,13 @@ using System.IO;
 
 namespace DotCommon.Utility
 {
-    /// <summary>Stream工具类
+    /// <summary>
+    /// Stream工具类
     /// </summary>
     public static class StreamUtil
     {
-        /// <summary>将Stream刘转换成二进制数组
+        /// <summary>
+        /// 将Stream刘转换成二进制数组
         /// </summary>
         /// <param name="stream">流文件</param>
         /// <param name="bufferLen">数组长度</param>
@@ -56,7 +58,8 @@ namespace DotCommon.Utility
             return buffer;
         }
 
-        /// <summary>将byte数组转换成流
+        /// <summary>
+        /// 将byte数组转换成流
         /// </summary>
         /// <param name="buffer">二进制数据</param>
         /// <returns></returns>
@@ -65,7 +68,5 @@ namespace DotCommon.Utility
             Stream stream = new MemoryStream(buffer);
             return stream;
         }
-
-
     }
 }

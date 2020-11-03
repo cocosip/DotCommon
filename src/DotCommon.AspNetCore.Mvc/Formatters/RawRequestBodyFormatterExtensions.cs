@@ -3,11 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DotCommon.AspNetCore.Mvc.Formatters
 {
-    /// <summary>RawRequestBody格式化扩展
+    /// <summary>
+    /// RawRequestBody formatter extensions
     /// </summary>
     public static class RawRequestBodyFormatterExtensions
     {
-        /// <summary>添加RawRequestBody格式化
+        /// <summary>
+        /// Add RawRequestBody Formatter
         /// </summary>
         public static IServiceCollection AddRawRequestBodyFormatter(this IServiceCollection services)
         {

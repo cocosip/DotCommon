@@ -5,7 +5,8 @@ using System.Threading;
 
 namespace DotCommon.Scheduling
 {
-    /// <summary>调度器
+    /// <summary>
+    /// 调度器
     /// </summary>
     public class ScheduleService : IScheduleService
     {
@@ -13,14 +14,13 @@ namespace DotCommon.Scheduling
         private readonly object SyncObject = new object();
         private readonly Dictionary<string, TimerBasedTask> _taskDict = new Dictionary<string, TimerBasedTask>();
 
-        /// <summary>Ctor
-        /// </summary>
         public ScheduleService(ILogger<ScheduleService> logger)
         {
             _logger = logger;
         }
 
-        /// <summary>开始一个调度任务
+        /// <summary>
+        /// 开始一个调度任务
         /// </summary>
         /// <param name="name">任务名</param>
         /// <param name="action">任务操作</param>
@@ -49,7 +49,8 @@ namespace DotCommon.Scheduling
             }
         }
 
-        /// <summary>根据任务名停止调度任务
+        /// <summary>
+        /// 根据任务名停止调度任务
         /// </summary>
         /// <param name="name">任务名</param>
         public void StopTask(string name)

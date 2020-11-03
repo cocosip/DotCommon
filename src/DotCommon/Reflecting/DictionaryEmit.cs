@@ -10,8 +10,6 @@ using System.Security;
 
 namespace DotCommon.Reflecting
 {
-    /// <summary>字典类型Emit
-    /// </summary>
     public static class DictionaryEmit
     {
         private static readonly IDictionary<Type, Delegate> ObjectToDictionaryDict =
@@ -39,7 +37,9 @@ namespace DotCommon.Reflecting
 
 
         #region 字典转换成对象
-        /// <summary>获取字典转换成对象的委托
+
+        /// <summary>
+        /// 获取字典转换成对象的委托
         /// </summary>
         public static Func<Dictionary<string, string>, T> GetObjectFunc<T>() where T : class, new()
         {
@@ -104,9 +104,7 @@ namespace DotCommon.Reflecting
             il.Emit(OpCodes.Ldloc_S, result);
             il.Emit(OpCodes.Ret);
 
-            var func =
-                dynamicMethod.CreateDelegate(typeof(Func<Dictionary<string, string>, T>)) as Func<Dictionary<string, string>, T>;
-            if (func == null)
+            if (!(dynamicMethod.CreateDelegate(typeof(Func<Dictionary<string, string>, T>)) is Func<Dictionary<string, string>, T> func))
             {
                 throw new VerificationException();
             }
@@ -131,7 +129,8 @@ namespace DotCommon.Reflecting
             }
         }
 
-        /// <summary>将Dictionary(string,string)字典转换为指定的不带有嵌套类型的实体
+        /// <summary>
+        /// 将Dictionary(string,string)字典转换为指定的不带有嵌套类型的实体
         /// </summary>
         public static T DictionaryToObject<T>(Dictionary<string, string> dict) where T : class, new()
         {
@@ -147,7 +146,9 @@ namespace DotCommon.Reflecting
         #endregion
 
         #region 将对象转换成字典类型
-        /// <summary>获取将对象转换成字典类型的委托
+
+        /// <summary>
+        /// 获取将对象转换成字典类型的委托
         /// </summary>
         public static Func<T, Dictionary<string, string>> GetDictionaryFunc<T>()
         {
@@ -229,16 +230,15 @@ namespace DotCommon.Reflecting
             il.Emit(OpCodes.Ldloc_S, result);
             il.Emit(OpCodes.Ret);
 
-            var func =
-                dynamicMethod.CreateDelegate(typeof(Func<T, Dictionary<string, string>>)) as Func<T, Dictionary<string, string>>;
-            if (func == null)
+            if (!(dynamicMethod.CreateDelegate(typeof(Func<T, Dictionary<string, string>>)) is Func<T, Dictionary<string, string>> func))
             {
                 throw new VerificationException();
             }
             return func;
         }
 
-        /// <summary>将对象转换成Dictionary(string,string)类型
+        /// <summary>
+        /// 将对象转换成Dictionary(string,string)类型
         /// </summary>
         public static Dictionary<string, string> ObjectToDictionary<T>(T t)
         {

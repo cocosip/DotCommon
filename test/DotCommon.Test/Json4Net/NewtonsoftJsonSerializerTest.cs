@@ -35,7 +35,6 @@ namespace DotCommon.Test.Json4Net
                 .AddJson4Net();
 
             _provider = services.BuildServiceProvider();
-            _provider.ConfigureDotCommon();
         }
 
         [Fact]

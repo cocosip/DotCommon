@@ -7,7 +7,8 @@ using System.Reflection;
 
 namespace DotCommon.Reflecting
 {
-    /// <summary>字典类型表达式树
+    /// <summary>
+    /// 字典类型表达式树
     /// </summary>
     public static class DictionaryExpression
     {
@@ -16,36 +17,32 @@ namespace DotCommon.Reflecting
 
         private static readonly IDictionary<Type, Delegate> DictionaryToObjectDict =
             new ConcurrentDictionary<Type, Delegate>();
-        private static readonly IDictionary<Type, string> ConvertMethodNames = new ConcurrentDictionary<Type, string>()
-        {
-            [typeof(short)] = "ToInt16",
-            [typeof(int)] = "ToInt32",
-            [typeof(long)] = "ToInt64",
-            [typeof(double)] = "ToDouble",
-            [typeof(decimal)] = "ToDecimal",
-            [typeof(string)] = "ToString",
-            [typeof(DateTime)] = "ToDateTime",
-            [typeof(byte)] = "ToByte",
-            [typeof(char)] = "ToChar",
-            [typeof(bool)] = "ToBoolean",
-
-            [typeof(short?)] = "ToInt16",
-            [typeof(int?)] = "ToInt32",
-            [typeof(long?)] = "ToInt64",
-            [typeof(double?)] = "ToDouble",
-            [typeof(decimal?)] = "ToDecimal",
-            [typeof(DateTime?)] = "ToDateTime",
-            [typeof(byte?)] = "ToByte",
-            [typeof(char?)] = "ToChar",
-            [typeof(bool?)] = "ToBoolean"
-        };
-
-        //private static string GetConvertName(Type type)
+        //private static readonly IDictionary<Type, string> ConvertMethodNames = new ConcurrentDictionary<Type, string>()
         //{
-        //    return ConvertMethodNames[type];
-        //}
+        //    [typeof(short)] = "ToInt16",
+        //    [typeof(int)] = "ToInt32",
+        //    [typeof(long)] = "ToInt64",
+        //    [typeof(double)] = "ToDouble",
+        //    [typeof(decimal)] = "ToDecimal",
+        //    [typeof(string)] = "ToString",
+        //    [typeof(DateTime)] = "ToDateTime",
+        //    [typeof(byte)] = "ToByte",
+        //    [typeof(char)] = "ToChar",
+        //    [typeof(bool)] = "ToBoolean",
 
-        /// <summary>将字典类型转换成对象的委托
+        //    [typeof(short?)] = "ToInt16",
+        //    [typeof(int?)] = "ToInt32",
+        //    [typeof(long?)] = "ToInt64",
+        //    [typeof(double?)] = "ToDouble",
+        //    [typeof(decimal?)] = "ToDecimal",
+        //    [typeof(DateTime?)] = "ToDateTime",
+        //    [typeof(byte?)] = "ToByte",
+        //    [typeof(char?)] = "ToChar",
+        //    [typeof(bool?)] = "ToBoolean"
+        //};
+
+        /// <summary>
+        /// 将字典类型转换成对象的委托
         /// </summary>
         public static Func<Dictionary<string, object>, T> GetObjectFunc<T>() where T : class, new()
         {
@@ -110,7 +107,8 @@ namespace DotCommon.Reflecting
             return func;
         }
 
-        /// <summary>将字典类型转换成对象
+        /// <summary>
+        /// 将字典类型转换成对象
         /// </summary>
         public static T DictionaryToObject<T>(Dictionary<string, object> dict) where T : class, new()
         {
@@ -123,7 +121,8 @@ namespace DotCommon.Reflecting
             return func.Invoke(dict);
         }
 
-        /// <summary>将对象转换成字典类型委托
+        /// <summary>
+        /// 将对象转换成字典类型委托
         /// </summary>
         public static Func<T, Dictionary<string, object>> GetDictionaryFunc<T>() where T : class, new()
         {
@@ -165,7 +164,8 @@ namespace DotCommon.Reflecting
             return func;
         }
 
-        /// <summary>将对象转换成字典类型
+        /// <summary>
+        /// 将对象转换成字典类型
         /// </summary>
         public static Dictionary<string, object> ObjectToDictionary<T>(T obj) where T : class, new()
         {

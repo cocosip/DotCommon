@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace DotCommon.Encrypt
 {
-    /// <summary>MD5加密相关操作
-    /// </summary>
     public static class MD5Helper
     {
 
-        /// <summary>MD5加密
+        /// <summary>
+        /// MD5加密
         /// </summary>
         public static byte[] GetMD5Internal(byte[] data)
         {
@@ -20,7 +18,8 @@ namespace DotCommon.Encrypt
             }
         }
 
-        /// <summary>Md5加密
+        /// <summary>
+        /// Md5加密
         /// </summary>
         public static string GetMD5(byte[] data)
         {
@@ -29,7 +28,8 @@ namespace DotCommon.Encrypt
             return BitConverter.ToString(md5Bytes).Replace("-", "");
         }
 
-        /// <summary>Md5加密
+        /// <summary>
+        /// Md5加密
         /// </summary>
         public static string GetMD5(string data, string encode = "utf-8")
         {

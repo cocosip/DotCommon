@@ -30,7 +30,6 @@ namespace DotCommon.Test.TextJson
                 .AddTextJson();
 
             _provider = services.BuildServiceProvider();
-            _provider.ConfigureDotCommon();
         }
 
         [Fact]

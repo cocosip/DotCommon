@@ -1,7 +1,5 @@
 ﻿namespace DotCommon.ObjectMapping
 {
-    /// <summary>对象映射
-    /// </summary>
     public interface IObjectMapper
     {
         /// <summary>将对象转为为目标对象

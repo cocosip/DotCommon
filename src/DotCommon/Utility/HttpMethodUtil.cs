@@ -10,11 +10,10 @@ namespace DotCommon.Utility
     /// </summary>
     public static class HttpMethodUtil
     {
-        /// <summary>默认Http请求类型
-        /// </summary>
         public const string DefaultHttpVerb = "POST";
 
-        /// <summary>常规的前缀
+        /// <summary>
+        /// 常规的前缀
         /// </summary>
         public static Dictionary<string, string[]> ConventionalPrefixes { get; } = new Dictionary<string, string[]>
         {
@@ -25,7 +24,8 @@ namespace DotCommon.Utility
             { "PATCH", new [] { "Patch" } }
         };
 
-        /// <summary>获取常规请求方法名
+        /// <summary>
+        /// 获取常规请求方法名
         /// </summary>
         /// <param name="methodName">请求方法名</param>
         /// <returns></returns>
@@ -42,7 +42,8 @@ namespace DotCommon.Utility
             return DefaultHttpVerb;
         }
 
-        /// <summary>移除HttpMethod前缀
+        /// <summary>
+        /// 移除HttpMethod前缀
         /// </summary>
         /// <param name="methodName">方法名</param>
         /// <param name="httpMethod">HttpMethod</param>
@@ -59,33 +60,25 @@ namespace DotCommon.Utility
             return methodName.RemovePreFix(prefixes);
         }
 
-        /// <summary>将Http方法名转换为HttpMethod
+        /// <summary>
+        /// 将Http方法名转换为HttpMethod
         /// </summary>
         /// <param name="httpMethod">方法名</param>
         /// <returns></returns>
         public static HttpMethod ConvertToHttpMethod(string httpMethod)
         {
-            switch (httpMethod.ToUpperInvariant())
+            return (httpMethod.ToUpperInvariant()) switch
             {
-                case "GET":
-                    return HttpMethod.Get;
-                case "POST":
-                    return HttpMethod.Post;
-                case "PUT":
-                    return HttpMethod.Put;
-                case "DELETE":
-                    return HttpMethod.Delete;
-                case "OPTIONS":
-                    return HttpMethod.Options;
-                case "TRACE":
-                    return HttpMethod.Trace;
-                case "HEAD":
-                    return HttpMethod.Head;
-                case "PATCH":
-                    return new HttpMethod("PATCH");
-                default:
-                    throw new ArgumentException("Unknown HTTP METHOD: " + httpMethod);
-            }
+                "GET" => HttpMethod.Get,
+                "POST" => HttpMethod.Post,
+                "PUT" => HttpMethod.Put,
+                "DELETE" => HttpMethod.Delete,
+                "OPTIONS" => HttpMethod.Options,
+                "TRACE" => HttpMethod.Trace,
+                "HEAD" => HttpMethod.Head,
+                "PATCH" => new HttpMethod("PATCH"),
+                _ => throw new ArgumentException("Unknown HTTP METHOD: " + httpMethod),
+            };
         }
     }
 }

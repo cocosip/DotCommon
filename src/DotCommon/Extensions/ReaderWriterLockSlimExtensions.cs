@@ -3,11 +3,13 @@ using System.Threading;
 
 namespace DotCommon.Extensions
 {
-    /// <summary>An extension class to provide utility lock mechanism.
+    /// <summary>
+    /// An extension class to provide utility lock mechanism.
     /// </summary>
     public static class ReaderWriterLockSlimExtensions
     {
-        /// <summary>An atom read action wrapper.
+        /// <summary>
+        /// An atom read action wrapper.
         /// </summary>
         /// <param name="readerWriterLockSlim"></param>
         /// <param name="action"></param>
@@ -34,7 +36,9 @@ namespace DotCommon.Extensions
                 readerWriterLockSlim.ExitReadLock();
             }
         }
-        /// <summary>An atom read func wrapper.
+
+        /// <summary>
+        /// An atom read func wrapper.
         /// </summary>
         /// <param name="readerWriterLockSlim"></param>
         /// <param name="function"></param>
@@ -63,7 +67,9 @@ namespace DotCommon.Extensions
                 readerWriterLockSlim.ExitReadLock();
             }
         }
-        /// <summary>An atom write action wrapper.
+
+        /// <summary>
+        /// An atom write action wrapper.
         /// </summary>
         /// <param name="readerWriterLockSlim"></param>
         /// <param name="action"></param>
@@ -90,7 +96,9 @@ namespace DotCommon.Extensions
                 readerWriterLockSlim.ExitWriteLock();
             }
         }
-        /// <summary>An atom write func wrapper.
+
+        /// <summary>
+        /// An atom write func wrapper.
         /// </summary>
         /// <param name="readerWriterLockSlim"></param>
         /// <param name="function"></param>

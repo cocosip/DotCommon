@@ -7,12 +7,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 namespace DotCommon.Utility
 {
-    /// <summary>Url工具类
+    /// <summary>
+    /// Url工具类
     /// </summary>
     public static class UrlUtil
     {
 
-        /// <summary>判断是否为Https
+        /// <summary>
+        /// 判断是否为Https
         /// </summary>
         /// <param name="url">url地址</param>
         /// <returns></returns>
@@ -23,7 +25,8 @@ namespace DotCommon.Utility
         }
 
 
-        /// <summary>判断是否为主域名或者www开头的域名
+        /// <summary>
+        /// 判断是否为主域名或者www开头的域名
         /// </summary>
         /// <param name="url">url地址</param>
         /// <returns></returns>
@@ -39,7 +42,8 @@ namespace DotCommon.Utility
             return false;
         }
 
-        /// <summary>将url转换成对应的协议模式下的url
+        /// <summary>
+        /// 将url转换成对应的协议模式下的url
         /// </summary>
         /// <param name="url">url地址</param>
         /// <param name="schema">架构</param>
@@ -54,7 +58,8 @@ namespace DotCommon.Utility
             return url;
         }
 
-        /// <summary>获取服务器的域名系统 (DNS) 主机名或 IP 地址和端口号
+        /// <summary>
+        /// 获取服务器的域名系统 (DNS) 主机名或 IP 地址和端口号
         /// </summary>
         /// <param name="url">url地址</param>
         /// <returns></returns>
@@ -64,7 +69,8 @@ namespace DotCommon.Utility
             return new Uri(url).Authority;
         }
 
-        /// <summary>合并Url,比如:http://www.baidu.com 与 /img/xxxx合并
+        /// <summary>
+        /// 合并Url,比如:http://www.baidu.com 与 /img/xxxx合并
         /// </summary>
         /// <param name="urls">url数组</param>
         /// <returns></returns>
@@ -88,7 +94,8 @@ namespace DotCommon.Utility
             return urlBuilder.ToString();
         }
 
-        /// <summary>判断两个url地址是否为同域名
+        /// <summary>
+        /// 判断两个url地址是否为同域名
         /// </summary>
         /// <param name="url1">url地址1</param>
         /// <param name="url2">url地址2</param>
@@ -109,7 +116,8 @@ namespace DotCommon.Utility
             return false;
         }
 
-        /// <summary>获取url地址中的全部参数
+        /// <summary>
+        /// 获取url地址中的全部参数
         /// </summary>
         /// <param name="url">url地址</param>
         /// <returns></returns>
@@ -124,7 +132,8 @@ namespace DotCommon.Utility
                 .ToDictionary(itemArray => itemArray[0], itemArray => itemArray[1]);
         }
 
-        /// <summary>获取除某些参数以外的参数集合
+        /// <summary>
+        /// 获取除某些参数以外的参数集合
         /// </summary>
         /// <param name="url">url地址</param>
         /// <param name="excepts">移除的参数</param>
@@ -136,7 +145,8 @@ namespace DotCommon.Utility
             return parameters.Where(x => !lowerExpects.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
         }
 
-        /// <summary>将参数附加到url上
+        /// <summary>
+        /// 将参数附加到url上
         /// </summary>
         /// <param name="url">url地址</param>
         /// <param name="key">参数key</param>
@@ -148,7 +158,8 @@ namespace DotCommon.Utility
             return UrlAttachParameters(url, new Dictionary<string, string>() { { key, value } }, replaceSame);
         }
 
-        /// <summary>将参数附加到url上
+        /// <summary>
+        /// 将参数附加到url上
         /// </summary>
         /// <param name="url">url地址</param>
         /// <param name="paramDict">参数字典</param>

@@ -41,7 +41,6 @@ namespace DotCommon.ImageResizer.AspNetCore.Mvc.Demo
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.ConfigureDotCommon();
             app.UseImageResizer();
 
             app.UseStaticFiles();

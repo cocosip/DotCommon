@@ -2,12 +2,13 @@
 
 namespace DotCommon.Utility
 {
-    /// <summary>转换工厂
+    /// <summary>
+    /// 转换工厂类
     /// </summary>
     public static class ConvertFactory
     {
-
-        /// <summary>转换成Int32类型
+        /// <summary>
+        /// 转换成Int32类型
         /// </summary>
         /// <param name="source">源对象</param>
         /// <param name="defaultValue">默认值</param>
@@ -24,7 +25,8 @@ namespace DotCommon.Utility
             return defaultValue;
         }
 
-        /// <summary>转换成Int64类型
+        /// <summary>
+        /// 转换成Int64类型
         /// </summary>
         /// <param name="source">源对象</param>
         /// <param name="defaultValue">默认值</param>
@@ -41,7 +43,8 @@ namespace DotCommon.Utility
             return defaultValue;
         }
 
-        /// <summary>转换成Double类型
+        /// <summary>
+        /// 转换成Double类型
         /// </summary>
         /// <param name="source">源对象</param>
         /// <param name="defaultValue">默认值</param>
@@ -58,7 +61,8 @@ namespace DotCommon.Utility
             return defaultValue;
         }
 
-        /// <summary>转换成double类型,并保留有效的位数
+        /// <summary>
+        /// 转换成double类型,并保留有效的位数
         /// </summary>
         /// <param name="source">源对象</param>
         /// <param name="defaultValue">默认值</param>
@@ -76,7 +80,8 @@ namespace DotCommon.Utility
             return Math.Round(defaultValue, digit);
         }
 
-        /// <summary>转换成Datetime
+        /// <summary>
+        /// 转换成Datetime
         /// </summary>
         /// <param name="source">源对象</param>
         /// <param name="defaultValue">默认值</param>
@@ -93,7 +98,8 @@ namespace DotCommon.Utility
             return defaultValue;
         }
 
-        /// <summary>转换成Bool类型
+        /// <summary>
+        /// 转换成Bool类型
         /// </summary>
         /// <param name="source">源对象</param>
         /// <param name="defaultValue">默认值</param>
@@ -110,7 +116,8 @@ namespace DotCommon.Utility
             return defaultValue;
         }
 
-        /// <summary>将string类型字符串转换成对应的guid
+        /// <summary>
+        /// 将string类型字符串转换成对应的guid
         /// </summary>
         /// <param name="source">字符串</param>
         /// <returns></returns>

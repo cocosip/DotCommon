@@ -4,13 +4,15 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace DotCommon.Serializing
 {
-    /// <summary>使用系统默认的二进制序列化方式进行序列化
+    /// <summary>
+    /// 使用系统默认的二进制序列化方式进行序列化
     /// </summary>
     public class DefaultBinarySerializer : IBinarySerializer
     {
         private readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
 
-        /// <summary> 将对象序列化成二进制
+        /// <summary>
+        /// 将对象序列化成二进制
         /// </summary>
         public byte[] Serialize(object o)
         {
@@ -25,7 +27,8 @@ namespace DotCommon.Serializing
             }
         }
 
-        /// <summary> 将二进制反序列化成byte
+        /// <summary>
+        /// 将二进制反序列化成byte
         /// </summary>
         public object Deserialize(byte[] data, Type type)
         {
@@ -36,7 +39,8 @@ namespace DotCommon.Serializing
             }
         }
 
-        /// <summary> 将二进制反序列化成对象
+        /// <summary>
+        /// 将二进制反序列化成对象
         /// </summary>
         public T Deserialize<T>(byte[] data)
         {

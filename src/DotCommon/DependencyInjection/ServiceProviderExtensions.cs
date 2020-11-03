@@ -4,8 +4,6 @@ using System.Linq;
 
 namespace DotCommon.DependencyInjection
 {
-    /// <summary>ServiceProvider扩展
-    /// </summary>
     public static class ServiceProviderExtensions
     {
         /// <summary>根据类型使用IServiceProvider创建对象
@@ -36,13 +34,5 @@ namespace DotCommon.DependencyInjection
             return provider.GetServices<T>().FirstOrDefault(predicate);
         }
 
-        /// <summary>初始化DotCommon
-        /// </summary>
-        public static IServiceProvider ConfigureDotCommon(this IServiceProvider provider)
-        {
-            var application = provider.GetRequiredService<IDotCommonApplication>();
-            application.Initialize(provider);
-            return provider;
-        }
     }
 }

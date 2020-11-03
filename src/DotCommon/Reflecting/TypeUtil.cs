@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Reflecting
 {
-    /// <summary>类型Util
-    /// </summary>
     public static class TypeUtil
     {
-        /// <summary>是否为Func类型
+        /// <summary>
+        /// 判断是否为方法
         /// </summary>
         public static bool IsFunc(object obj)
         {
@@ -27,14 +26,16 @@ namespace DotCommon.Reflecting
             return type.GetGenericTypeDefinition() == typeof(Func<>);
         }
 
-        /// <summary>是否为泛型Func类型
+        /// <summary>
+        /// 判断是否为泛型Func类型
         /// </summary>
         public static bool IsFunc<TReturn>(object o)
         {
             return o != null && o.GetType() == typeof(Func<TReturn>);
         }
 
-        /// <summary>是否为原始的扩展
+        /// <summary>
+        /// 判断是否为原始的扩展
         /// </summary>
         public static bool IsPrimitiveExtended(Type type, bool includeNullables = true, bool includeEnums = false)
         {
@@ -53,7 +54,8 @@ namespace DotCommon.Reflecting
             return false;
         }
 
-        /// <summary>获取第一个可空参数
+        /// <summary>
+        /// 获取第一个可空参数
         /// </summary>
         public static Type GetFirstGenericArgumentIfNullable(Type t)
         {
@@ -72,14 +74,16 @@ namespace DotCommon.Reflecting
             return t;
         }
 
-        /// <summary>是否为Async方法
+        /// <summary>
+        /// 是否为Async方法
         /// </summary>
         public static bool IsAsync(this MethodInfo method)
         {
             return method.ReturnType.IsTaskOrTaskOfT();
         }
 
-        /// <summary>是否为Task或者泛型Task
+        /// <summary>
+        /// 是否为Task或者泛型Task
         /// </summary>
         public static bool IsTaskOrTaskOfT(this Type type)
         {
