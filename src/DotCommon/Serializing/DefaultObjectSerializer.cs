@@ -11,6 +11,11 @@ namespace DotCommon.Serializing
         private readonly IServiceProvider _provider;
         private readonly IBinarySerializer _binarySerializer;
 
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="binarySerializer"></param>
         public DefaultObjectSerializer(IServiceProvider provider, IBinarySerializer binarySerializer)
         {
             _provider = provider;

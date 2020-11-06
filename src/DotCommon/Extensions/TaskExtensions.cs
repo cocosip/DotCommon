@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Extensions
 {
+    /// <summary>
+    /// Task扩展类
+    /// </summary>
     public static class TaskExtensions
     {
         /// <summary>

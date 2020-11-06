@@ -6,10 +6,14 @@ using System.Net.Http;
 
 namespace DotCommon.Utility
 {
-    /// <summary>HttpMethod工具类
+    /// <summary>
+    /// HttpMethod工具类
     /// </summary>
     public static class HttpMethodUtil
     {
+        /// <summary>
+        /// 默认Http请求类型
+        /// </summary>
         public const string DefaultHttpVerb = "POST";
 
         /// <summary>

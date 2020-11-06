@@ -4,6 +4,9 @@ using System.Text;
 
 namespace DotCommon.Encrypt
 {
+    /// <summary>
+    /// MD5工具类
+    /// </summary>
     public static class MD5Helper
     {
 

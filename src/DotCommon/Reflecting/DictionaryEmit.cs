@@ -10,6 +10,9 @@ using System.Security;
 
 namespace DotCommon.Reflecting
 {
+    /// <summary>
+    /// 字典Emit
+    /// </summary>
     public static class DictionaryEmit
     {
         private static readonly IDictionary<Type, Delegate> ObjectToDictionaryDict =

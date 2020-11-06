@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace DotCommon.Reflecting
 {
+    /// <summary>
+    /// 属性工具类
+    /// </summary>
     public static class PropertyInfoUtil
     {
         /// <summary>

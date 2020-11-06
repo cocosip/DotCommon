@@ -8,10 +8,17 @@ namespace DotCommon
     /// </summary>
     public class DisposeAction : IDisposable
     {
+        /// <summary>
+        /// 空的DisposeAction
+        /// </summary>
         public static readonly DisposeAction Empty = new DisposeAction(null);
 
         private Action _action;
 
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="action"></param>
         public DisposeAction(Action action)
         {
             _action = action;

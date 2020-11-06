@@ -19,7 +19,7 @@ namespace DotCommon.Utility
         public T MaxValue { get; set; }
 
         /// <summary>
-        /// Ctor
+        /// ctor
         /// </summary>
         /// <param name="min">最小值</param>
         /// <param name="max">最大值</param>
@@ -63,7 +63,7 @@ namespace DotCommon.Utility
     public class DateRange : ValueRange<DateTime>
     {
         /// <summary>
-        /// Ctor
+        /// ctor
         /// </summary>
         public DateRange() : base(DateTime.MinValue, DateTime.MaxValue)
         {
@@ -71,7 +71,7 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// Ctor
+        /// ctor
         /// </summary>
         /// <param name="min">最小时间</param>
         /// <param name="max">最大时间</param>

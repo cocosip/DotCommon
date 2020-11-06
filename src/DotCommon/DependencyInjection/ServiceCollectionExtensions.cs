@@ -6,9 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DotCommon.DependencyInjection
 {
+    /// <summary>
+    /// 依赖注入扩展类
+    /// </summary>
     public static class ServiceCollectionExtensions
     {
-
         /// <summary>
         /// 注册DotCommon
         /// </summary>

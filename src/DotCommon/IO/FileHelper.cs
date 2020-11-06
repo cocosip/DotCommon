@@ -2,6 +2,9 @@
 
 namespace DotCommon.IO
 {
+    /// <summary>
+    /// 文件工具类
+    /// </summary>
     public static class FileHelper
     {
         /// <summary>

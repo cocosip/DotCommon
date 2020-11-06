@@ -3,9 +3,11 @@ using System.Text;
 
 namespace DotCommon.Encrypt
 {
+    /// <summary>
+    /// Base64工具类
+    /// </summary>
     public static class Base64Helper
     {
-
         /// <summary>
         /// base64编码
         /// </summary>

@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace DotCommon.Reflecting
 {
+    /// <summary>
+    /// 反射工具类
+    /// </summary>
     public static class ReflectionUtil
     {
         /// <summary>

@@ -789,7 +789,7 @@ namespace DotCommon.Encrypt
         public string PrivateKey { get; set; }
 
         /// <summary>
-        /// Ctor
+        /// ctor
         /// </summary>
         public RSAKeyPair()
         {
@@ -797,7 +797,7 @@ namespace DotCommon.Encrypt
         }
 
         /// <summary>
-        /// Ctor
+        /// ctor
         /// </summary>
         public RSAKeyPair(string publicKey, string privateKey)
         {

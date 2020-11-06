@@ -2,6 +2,9 @@
 
 namespace DotCommon.IO
 {
+    /// <summary>
+    /// 目录工具类
+    /// </summary>
     public static class DirectoryHelper
     {
         /// <summary>
@@ -14,6 +17,20 @@ namespace DotCommon.IO
                 Directory.CreateDirectory(directory);
             }
         }
+
+        /// <summary>
+        /// 如果文件夹存在,就删除(可递归删除)
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <param name="recursive"></param>
+        public static void DeleteIfExist(string directory, bool recursive = false)
+        {
+            if (Directory.Exists(directory))
+            {
+                Directory.Delete(directory, recursive);
+            }
+        }
+
 
         /// <summary>
         /// 拷贝文件夹和文件夹下的文件

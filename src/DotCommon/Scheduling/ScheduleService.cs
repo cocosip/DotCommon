@@ -14,6 +14,10 @@ namespace DotCommon.Scheduling
         private readonly object SyncObject = new object();
         private readonly Dictionary<string, TimerBasedTask> _taskDict = new Dictionary<string, TimerBasedTask>();
 
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="logger"></param>
         public ScheduleService(ILogger<ScheduleService> logger)
         {
             _logger = logger;

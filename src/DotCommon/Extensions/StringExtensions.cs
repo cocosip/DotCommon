@@ -2,6 +2,9 @@
 
 namespace DotCommon.Extensions
 {
+    /// <summary>
+    /// 字符串扩展类
+    /// </summary>
     public static class StringExtensions
     {
         /// <summary>

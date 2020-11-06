@@ -4,7 +4,9 @@ using System.Linq;
 
 namespace DotCommon.DependencyInjection
 {
-
+    /// <summary>
+    /// 依赖注入公共扩展类
+    /// </summary>
     public static class ServiceCollectionCommonExtensions
     {
         /// <summary>

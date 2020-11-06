@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Reflecting
 {
+    /// <summary>
+    /// 类型工具类
+    /// </summary>
     public static class TypeUtil
     {
         /// <summary>

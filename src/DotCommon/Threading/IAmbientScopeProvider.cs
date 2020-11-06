@@ -2,6 +2,10 @@
 
 namespace DotCommon.Threading
 {
+    /// <summary>
+    /// IAmbientScopeProvider
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IAmbientScopeProvider<T>
     {
         /// <summary>

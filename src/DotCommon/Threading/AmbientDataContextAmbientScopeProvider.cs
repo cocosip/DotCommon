@@ -4,12 +4,21 @@ using System.Collections.Concurrent;
 
 namespace DotCommon.Threading
 {
+    /// <summary>
+    /// AmbientDataContextAmbientScopeProvider
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class AmbientDataContextAmbientScopeProvider<T> : IAmbientScopeProvider<T>
     {
 
         private static readonly ConcurrentDictionary<string, ScopeItem> ScopeDictionary = new ConcurrentDictionary<string, ScopeItem>();
 
         private readonly IAmbientDataContext _dataContext;
+
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="dataContext"></param>
         public AmbientDataContextAmbientScopeProvider(IAmbientDataContext dataContext)
         {
             _dataContext = dataContext;

@@ -8,7 +8,7 @@ namespace DotCommon.Utility
     /// </summary>
     public class ChineseCalendarException : Exception
     {
-        /// <summary>Ctor
+        /// <summary>ctor
         /// </summary>
         public ChineseCalendarException(string msg)
             : base(msg)

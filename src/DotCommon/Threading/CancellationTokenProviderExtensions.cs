@@ -2,6 +2,9 @@
 
 namespace DotCommon.Threading
 {
+    /// <summary>
+    /// CancellationTokenProvider扩展类
+    /// </summary>
     public static class CancellationTokenProviderExtensions
     {
         /// <summary>

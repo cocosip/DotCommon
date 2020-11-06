@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace DotCommon.Extensions
 {
+    /// <summary>
+    /// TaskFactory扩展类
+    /// </summary>
     public static class TaskFactoryExtensions
     {
         /// <summary>

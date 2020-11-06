@@ -4,6 +4,9 @@ using System.Reflection;
 
 namespace DotCommon.Extensions
 {
+    /// <summary>
+    /// 类型扩展类
+    /// </summary>
     public static class TypeExtensions
     {
         /// <summary>

@@ -13,14 +13,14 @@ namespace DotCommon.Utility
         private readonly SortedDictionary<string, object> _values = new SortedDictionary<string, object>();
         
         /// <summary>
-        /// Ctor
+        /// ctor
         /// </summary>
         public UnilayerXml()
         {
 
         }
 
-        /// <summary>Ctor
+        /// <summary>ctor
         /// </summary>
         /// <param name="xml">xml字符串</param>
         public UnilayerXml(string xml)
