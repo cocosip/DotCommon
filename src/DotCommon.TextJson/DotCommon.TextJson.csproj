@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  
   <Import Project="..\..\build\common.props" />
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>DotCommon.TextJson</AssemblyName>
     <PackageId>DotCommon.TextJson</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
@@ -14,7 +15,6 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Release|AnyCPU|netstandard2.0'">
     <DocumentationFile>bin\Release\netstandard2.0\DotCommon.TextJson.xml</DocumentationFile>
-    <WarningsAsErrors />
   </PropertyGroup>
 
   <ItemGroup>
