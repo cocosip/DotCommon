@@ -94,6 +94,33 @@ namespace DotCommon.Test.TextJson
             Assert.Equal(o.Data.Name, o2.Data.Name);
         }
 
+        /// <summary>
+        /// 依赖注入获取对象
+        /// </summary>
+        [Fact]
+        public void DependencyInjection_Serialize_Deserialize_Test()
+        {
+            var serializer = _provider.GetService<IJsonSerializer>();
+
+            var o = new JsonTestResult<JsonTestResultItem>()
+            {
+                Success = true,
+                Data = new JsonTestResultItem()
+                {
+                    Id = "1",
+                    Name = "virtual"
+                }
+            };
+
+            var json = serializer.Serialize(o);
+
+            var o2 = serializer.Deserialize<JsonTestResult<JsonTestResultItem>>(json);
+
+            Assert.Equal(o.Success, o2.Success);
+            Assert.Equal(o.Data.Id, o2.Data.Id);
+            Assert.Equal(o.Data.Name, o2.Data.Name);
+        }
+
 
     }
 

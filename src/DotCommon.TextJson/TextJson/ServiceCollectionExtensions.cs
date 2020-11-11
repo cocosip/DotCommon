@@ -19,14 +19,19 @@ namespace DotCommon.TextJson
         /// <returns></returns>
         public static IServiceCollection AddTextJson(this IServiceCollection services, Action<JsonSerializerOptions> configure = null)
         {
-            //默认配置
-            static void defaultConfigure(JsonSerializerOptions c)
+
+            if (configure == null)
             {
-                c.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+                configure = new Action<JsonSerializerOptions>(options =>
+                {
+                    options.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+                });
             }
 
+            //默认配置
+
             services
-                .Configure<JsonSerializerOptions>(defaultConfigure)
+                .Configure<JsonSerializerOptions>(configure)
                 .AddTransient<IJsonSerializer, TextJsonSerializer>();
 
             if (configure != null)
