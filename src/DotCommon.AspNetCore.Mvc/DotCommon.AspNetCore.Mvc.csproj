@@ -11,18 +11,6 @@
     <Description>DotCommon通用工具类库,针对AspNetCore的相关扩展</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <DocumentationFile>bin\Debug\net5.0\DotCommon.AspNetCore.Mvc.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\net5.0\DotCommon.AspNetCore.Mvc.xml</DocumentationFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-  </PropertyGroup>
-  
   <ItemGroup>
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
   </ItemGroup>

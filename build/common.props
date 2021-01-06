@@ -8,6 +8,8 @@
     <PackageLicense>https://github.com/cocosip/DotCommon/blob/master/LICENSE</PackageLicense>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/cocosip/DotCommon</RepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,5 +18,5 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  
+
 </Project>

@@ -9,14 +9,6 @@
     <Description>DotCommon通用工具类库,基于AutoMapper的扩展</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|netstandard2.1'">
-    <DocumentationFile>bin\Debug\netstandard2.1\DotCommon.AutoMapper.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Release|AnyCPU|netstandard2.1'">
-    <DocumentationFile>bin\Release\netstandard2.1\DotCommon.AutoMapper.xml</DocumentationFile>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
   </ItemGroup>

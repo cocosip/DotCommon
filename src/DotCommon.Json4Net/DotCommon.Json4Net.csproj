@@ -9,14 +9,6 @@
     <Description>DotCommon通用工具类库,基于Json4Net序列化扩展</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|netstandard2.1'">
-    <DocumentationFile>bin\Debug\netstandard2.1\DotCommon.Json4Net.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Release|AnyCPU|netstandard2.1'">
-    <DocumentationFile>bin\Release\netstandard2.1\DotCommon.Json4Net.xml</DocumentationFile>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
