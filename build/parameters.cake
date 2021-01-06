@@ -30,6 +30,7 @@ public class BuildParameters
     public BuildVersion Version { get; private set; }
     public BuildPaths Paths { get; private set; }
     public BuildPackages Packages { get; private set; }
+    public BuildPackages SymbolsPackages { get; private set; }
 
     public DirectoryPathCollection Projects { get; set; }
     public DirectoryPathCollection TestProjects { get; set; }
@@ -97,6 +98,12 @@ public class BuildParameters
         Paths = BuildPaths.GetPaths(context, Configuration, Version.VersionWithSuffix());
 
         Packages = BuildPackages.GetPackages(
+            Paths.Directories.NugetRoot,
+            Version.VersionWithSuffix(),
+            PackageIds,
+            new string[] {});
+
+        SymbolsPackages = BuildPackages.GetSymbolsPackages(
             Paths.Directories.NugetRoot,
             Version.VersionWithSuffix(),
             PackageIds,
