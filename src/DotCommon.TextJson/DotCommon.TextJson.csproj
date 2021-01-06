@@ -9,14 +9,6 @@
     <Description>DotCommon通用工具类库,基于System.Text.Json序列化扩展</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|netstandard2.0'">
-    <DocumentationFile>bin\Debug\netstandard2.0\DotCommon.TextJson.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Release|AnyCPU|netstandard2.0'">
-    <DocumentationFile>bin\Release\netstandard2.0\DotCommon.TextJson.xml</DocumentationFile>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="5.0.0" />
   </ItemGroup>

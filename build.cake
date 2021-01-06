@@ -119,7 +119,7 @@ Task("Pack")
       {
          Configuration = parameters.Configuration,
          VersionSuffix = parameters.Version.Suffix,
-         IncludeSymbols = false,
+         IncludeSymbols = true,
          OutputDirectory = parameters.Paths.Directories.NugetRoot,
          MSBuildSettings = msBuildSettings
       };
@@ -148,7 +148,6 @@ Task("Publish")
       //有标签,并且是Release才会发布
       if (parameters.ShouldPublish)
       {
-         Information($"publish,");
          // Resolve the API key.
          var apiKey = EnvironmentVariable("NUGET_API_KEY");
          if (string.IsNullOrEmpty(apiKey))
@@ -169,7 +168,7 @@ Task("Publish")
             NuGetPush(package.PackagePath, new NuGetPushSettings
             {
                ApiKey = apiKey,
-                  Source = apiUrl
+               Source = apiUrl
             });
             Information($"publish nuget:{package.PackagePath}");
          }

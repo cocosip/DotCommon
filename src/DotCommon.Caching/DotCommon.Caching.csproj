@@ -9,14 +9,6 @@
     <Description>DotCommon通用工具类库,基于内存型缓存的管理扩展</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|netstandard2.1'">
-    <DocumentationFile>bin\Debug\netstandard2.1\DotCommon.Caching.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Release|AnyCPU|netstandard2.1'">
-    <DocumentationFile>bin\Release\netstandard2.1\DotCommon.Caching.xml</DocumentationFile>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Nito.AsyncEx" Version="5.1.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />

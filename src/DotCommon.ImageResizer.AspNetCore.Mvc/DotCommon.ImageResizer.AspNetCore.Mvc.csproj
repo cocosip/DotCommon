@@ -11,19 +11,6 @@
     <Description>DotCommon通用工具类库,图片在AspNetCore下自动进行缩放、排版功能</Description>
   </PropertyGroup>
 
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <DocumentationFile>bin\Debug\net5.0\DotCommon.ImageResizer.AspNetCore.Mvc.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\net5.0\DotCommon.ImageResizer.AspNetCore.Mvc.xml</DocumentationFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\DotCommon.Caching\DotCommon.Caching.csproj" />
     <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
