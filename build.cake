@@ -62,15 +62,14 @@ Task("Restore-NuGet-Packages")
       var settings = new DotNetCoreRestoreSettings
       {
          ArgumentCustomization = args =>
-            {
-               args.Append($"/p:VersionSuffix={parameters.Version.Suffix}");
-               return args;
-            },
-            Sources = new [] { "https://api.nuget.org/v3/index.json" }
+         {
+            args.Append($"/p:VersionSuffix={parameters.Version.Suffix}");
+            return args;
+         },
+         Sources = new [] { "https://api.nuget.org/v3/index.json" }
       };
       foreach (var project in parameters.ProjectFiles)
       {
-         //Information(project.FullPath);
          DotNetCoreRestore(project.FullPath, settings);
       }
    });
