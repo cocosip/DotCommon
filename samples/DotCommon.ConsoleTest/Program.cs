@@ -31,6 +31,8 @@ namespace DotCommon.ConsoleTest
 
             var provider = services.BuildServiceProvider();
 
+            RSASignTest t = new RSASignTest();
+            t.Run();
 
             Console.WriteLine("完成");
             Console.ReadLine();
