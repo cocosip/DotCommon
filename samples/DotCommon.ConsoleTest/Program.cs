@@ -1,14 +1,12 @@
 ﻿using DotCommon.Caching;
 using DotCommon.DependencyInjection;
-using DotCommon.Log4Net;
 using DotCommon.ProtoBuf;
+using DotCommon.TextJson;
 using DotCommon.Utility;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System;
-using DotCommon.TextJson;
-using DotCommon.Serializing;
 
 namespace DotCommon.ConsoleTest
 {

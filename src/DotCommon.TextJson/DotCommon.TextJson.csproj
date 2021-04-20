@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   
   <Import Project="..\..\build\common.props" />
+  
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <AssemblyName>DotCommon.TextJson</AssemblyName>
     <PackageId>DotCommon.TextJson</PackageId>
     <RootNamespace>DotCommon</RootNamespace>
