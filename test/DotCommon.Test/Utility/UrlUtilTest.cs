@@ -94,6 +94,28 @@ namespace DotCommon.Test.Utility
         }
 
         [Theory]
+        [InlineData("https://www.baidu.com#aaa", "https://www.baidu.com:443/")]
+        [InlineData("http://www.baidu.com/search=1", "http://www.baidu.com:80/")]
+        [InlineData("https://192.168.0.100:999/home?id=20", "https://192.168.0.100:999/")]
+        [InlineData("HTTP://127.0.0.1/home", "http://127.0.0.1:80/")]
+        public void GetHostUrlTest(string url, string expected)
+        {
+            var actual = UrlUtil.GetHostUrl(url);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("https://www.baidu.com#aaa", "https://www.baidu.com:443/#aaa")]
+        [InlineData("http://www.baidu.com/search=1", "http://www.baidu.com:80/search=1")]
+        [InlineData("https://192.168.0.100:999/home?id=20", "https://192.168.0.100:999/home?id=20")]
+        [InlineData("HTTP://127.0.0.1/home", "http://127.0.0.1:80/home")]
+        public void ParseUrl(string url, string expected)
+        {
+            var actual = UrlUtil.ParseUrl(url);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
         [InlineData("http://www.baidu.com#aaa", "www.baidu.com")]
         [InlineData("https://192.168.0.1:8081?id=20", "192.168.0.1:8081")]
         [InlineData("HTTPs://10.9.254.168:80?id=3&name=4", "10.9.254.168:80")]

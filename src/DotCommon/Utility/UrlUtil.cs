@@ -24,6 +24,33 @@ namespace DotCommon.Utility
             return uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// 获取带有域名的地址
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static string GetHostUrl(string url)
+        {
+            var uri = new Uri(url);
+            var builder = new UriBuilder()
+            {
+                Scheme = uri.Scheme,
+                Host = uri.Host,
+                Port = uri.Port
+            };
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Parse url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static string ParseUrl(string url)
+        {
+            var builder = new UriBuilder(url);
+            return builder.ToString();
+        }
 
         /// <summary>
         /// 判断是否为主域名或者www开头的域名
