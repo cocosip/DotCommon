@@ -29,8 +29,12 @@ namespace DotCommon.ConsoleTest
 
             var provider = services.BuildServiceProvider();
 
-            RSASignTest t = new RSASignTest();
-            t.Run();
+
+            SnowflakeDistributeId snowflakeDistributeId = new SnowflakeDistributeId(1, 2);
+
+            Console.WriteLine(snowflakeDistributeId.NextId());
+            Console.WriteLine(snowflakeDistributeId.NextId());
+
 
             Console.WriteLine("完成");
             Console.ReadLine();
