@@ -62,5 +62,14 @@ namespace DotCommon.Encrypt
         {
             return other.PrivateKey == PrivateKey && other.PublicKey == PublicKey;
         }
+
+        /// <summary>
+        /// Hash code
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return StringComparer.InvariantCulture.GetHashCode(PublicKey) ^ StringComparer.InvariantCulture.GetHashCode(PrivateKey);
+        }
     }
 }

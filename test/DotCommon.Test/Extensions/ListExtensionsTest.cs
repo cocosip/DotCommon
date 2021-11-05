@@ -104,7 +104,7 @@ namespace DotCommon.Test.Extensions
             }
             public override int GetHashCode()
             {
-                return (StringComparer.InvariantCulture.GetHashCode(Id) + StringComparer.InvariantCulture.GetHashCode(Name));
+                return (StringComparer.InvariantCulture.GetHashCode(Id) ^ StringComparer.InvariantCulture.GetHashCode(Name));
             }
 
             //public bool Equals(ListExtensionsClass1 other)
