@@ -1,21 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
-  <Import Project="..\..\build\common.props" />
-  
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-    <AssemblyName>DotCommon.ProtoBuf</AssemblyName>
-    <PackageId>DotCommon.ProtoBuf</PackageId>
-    <RootNamespace>DotCommon</RootNamespace>
-    <Description>DotCommon通用工具类库,基于ProtoBuf的序列化扩展</Description>
-  </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="protobuf-net" Version="3.0.101" />
-  </ItemGroup>
+	<Import Project="..\..\common.props" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+		<AssemblyName>DotCommon.ProtoBuf</AssemblyName>
+		<PackageId>DotCommon.ProtoBuf</PackageId>
+		<RootNamespace>DotCommon</RootNamespace>
+		<Description>DotCommon通用工具类库,基于ProtoBuf的序列化扩展</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="protobuf-net" Version="3.0.101" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DotCommon\DotCommon.csproj" />
+	</ItemGroup>
 
 </Project>
