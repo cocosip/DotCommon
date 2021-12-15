@@ -2,10 +2,7 @@
 
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu) [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/cocosip/DotCommon/blob/master/LICENSE) ![GitHub last commit](https://img.shields.io/github/last-commit/cocosip/DotCommon.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/cocosip/DotCommon.svg)
 
-| Build Server | Platform | Build Status |
-| ------------ | -------- | ------------ |
-| Azure Pipelines| Windows |[![Build Status](https://dev.azure.com/cocosip/DotCommon/_apis/build/status/cocosip.DotCommon?branchName=master&jobName=Windows)](https://dev.azure.com/cocosip/DotCommon/_build/latest?definitionId=4&branchName=master)|
-| Azure Pipelines| Linux |[![Build Status](https://dev.azure.com/cocosip/DotCommon/_apis/build/status/cocosip.DotCommon?branchName=master&jobName=Linux)](https://dev.azure.com/cocosip/DotCommon/_build/latest?definitionId=4&branchName=master)|
+[![build and publish](https://github.com/cocosip/DotCommon/actions/workflows/publish.yml/badge.svg)](https://github.com/cocosip/DotCommon/actions/workflows/publish.yml)
 
 | Package  | Version | Downloads|
 | -------- | ------- | -------- |
