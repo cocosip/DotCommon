@@ -3,7 +3,7 @@
 	<Import Project="..\..\common.props" />
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+	    <TargetFramework>netstandard2.1</TargetFramework>
 		<AssemblyName>DotCommon.AutoMapper</AssemblyName>
 		<PackageId>DotCommon.AutoMapper</PackageId>
 		<RootNamespace>DotCommon</RootNamespace>

@@ -64,8 +64,10 @@ namespace DotCommon.ImageResizer
                 }
                 var imageFormat = ImageUtil.GetImageFormatByFormatName(resizeParameter.Format);
                 imageBytes = ImageHelper.ImageCompressToBytes(resizeImage, resizeParameter.Quality, imageFormat);
-                image.Dispose();
 
+#if NETSTANDARD2_0
+                image.Dispose();
+#endif
                 //只有开启图片缓存情况下,才会对图片再次进行缓存
                 if (_option.EnableImageCache)
                 {
