@@ -156,7 +156,7 @@ namespace DotCommon.Utility
                 .Where(itemArray =>
                     itemArray.Length == 2 && !string.IsNullOrWhiteSpace(itemArray[0])
                     && !string.IsNullOrWhiteSpace(itemArray[1]))
-                .ToDictionary(itemArray => itemArray[0], itemArray => itemArray[1]);
+                .ToDictionary(itemArray => itemArray[0], itemArray => WebUtility.UrlDecode(itemArray[1]));
         }
 
         /// <summary>
@@ -205,18 +205,18 @@ namespace DotCommon.Utility
                     {
                         if (replaceSame)
                         {
-                            sortParameters[kv.Key.ToLower()] = kv.Value;
+                            sortParameters[kv.Key.ToLower()] = WebUtility.UrlEncode(kv.Value);
                         }
                     }
                     else
                     {
-                        sortParameters.Add(kv.Key, kv.Value);
+                        sortParameters.Add(kv.Key, WebUtility.UrlEncode(kv.Value));
                     }
                 }
             }
             var uri = new Uri(url);
             var separator = sortParameters.Any() ? "?" : "";
-            var parameterUri = string.Join("&", sortParameters.Select(x => string.Concat(x.Key, "=", WebUtility.UrlEncode(x.Value))));
+            var parameterUri = string.Join("&", sortParameters.Select(x => string.Concat(x.Key, "=", x.Value)));
             UriBuilder uriBuilder = new UriBuilder()
             {
                 Host = uri.Host,
