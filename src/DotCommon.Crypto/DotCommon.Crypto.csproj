@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\..\common.props" />
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<AssemblyName>DotCommon.Crypto</AssemblyName>
+		<PackageId>DotCommon.Crypto</PackageId>
+		<RootNamespace>DotCommon</RootNamespace>
+		<Description>DotCommon通用工具类库,加密工具</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="BouncyCastle.Cryptography" Version="2.1.1" />
+	</ItemGroup>
+
+ 
+</Project>

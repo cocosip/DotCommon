@@ -50,6 +50,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ImageResizer.AspN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.TextJson", "src\DotCommon.TextJson\DotCommon.TextJson.csproj", "{1CBF7325-07CC-47EA-A133-822E3DC1B15E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.Crypto", "src\DotCommon.Crypto\DotCommon.Crypto.csproj", "{A77A4CC6-13B5-4017-8F87-4B7F07BA4E8C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,6 +110,10 @@ Global
 		{1CBF7325-07CC-47EA-A133-822E3DC1B15E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CBF7325-07CC-47EA-A133-822E3DC1B15E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CBF7325-07CC-47EA-A133-822E3DC1B15E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A77A4CC6-13B5-4017-8F87-4B7F07BA4E8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A77A4CC6-13B5-4017-8F87-4B7F07BA4E8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A77A4CC6-13B5-4017-8F87-4B7F07BA4E8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A77A4CC6-13B5-4017-8F87-4B7F07BA4E8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
