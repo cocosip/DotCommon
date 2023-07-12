@@ -29,6 +29,7 @@ namespace DotCommon.Test.Utility
             Assert.Equal(33, int32DateTime4);
         }
 
+
         [Fact]
         public void ToInt64_FromInt64_Test()
         {
@@ -39,6 +40,11 @@ namespace DotCommon.Test.Utility
 
             var dvalue = dateTime2 - dateTime;
             Assert.True(dvalue.TotalSeconds < 1);
+
+            var d2 = DateTime.UtcNow;
+            var i1 = DateTimeUtil.ToInt64(dateTime);
+            var d2_2 = DateTimeUtil.ToDateTime(i1);
+            Assert.Equal(d2.Hour, d2_2.Hour);
         }
 
         [Fact]
