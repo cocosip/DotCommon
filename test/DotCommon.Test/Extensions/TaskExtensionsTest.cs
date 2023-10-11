@@ -47,9 +47,9 @@ namespace DotCommon.Test.Extensions
                 Thread.Sleep(100);
             });
 
-            var aggregateException = Assert.Throws<AggregateException>(() =>
+            var aggregateException = await Assert.ThrowsAsync<AggregateException>(() =>
             {
-                t2.TimeoutAfter(1).Wait();
+                return t2.TimeoutAfter(1);
             });
 
             var t3 = Task.Run<int>(() =>
@@ -58,9 +58,9 @@ namespace DotCommon.Test.Extensions
                 return 1;
             });
 
-            var aggregateException2 = Assert.Throws<AggregateException>(() =>
+            var aggregateException2 = await Assert.ThrowsAsync<AggregateException>(() =>
             {
-                t3.TimeoutAfter<int>(1).Wait();
+                return t3.TimeoutAfter<int>(1);
             });
 
             var timeoutException = aggregateException.InnerExceptions.FirstOrDefault(x => x.GetType() == typeof(TimeoutException));

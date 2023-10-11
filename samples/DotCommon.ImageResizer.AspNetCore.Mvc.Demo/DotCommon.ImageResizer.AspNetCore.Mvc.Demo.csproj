@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DotCommon.AspNetCore.Mvc\DotCommon.AspNetCore.Mvc.csproj" />
-    <ProjectReference Include="..\..\src\DotCommon.ImageResizer.AspNetCore.Mvc\DotCommon.ImageResizer.AspNetCore.Mvc.csproj" />
   </ItemGroup>
 
 </Project>

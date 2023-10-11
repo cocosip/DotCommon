@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotCommon.Extensions;
+using System;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -348,6 +349,51 @@ namespace DotCommon.Utility
                      source, x => string.Empty + Convert.ToChar(Convert.ToUInt16(x.Result("$1"), 16)));
             }
             return source;
+        }
+
+        /// <summary>
+        /// 对字符串进行匿名处理
+        /// </summary>
+        /// <param name="source">字符串</param>
+        /// <param name="length">长度</param>
+        /// <param name="replace">替换字符char</param>
+        /// <returns></returns>
+        public static string Anonymous(string source, int length, char replace = '*')
+        {
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                return "";
+            }
+
+            var chars = new char[length];
+            for (var i = 0; i < chars.Length; i++)
+            {
+                chars[i] = replace;
+            }
+
+            var valueChars = source.ToCharArray();
+            if (valueChars.Length == 1)
+            {
+                valueChars[0] = replace;
+            }
+            else if (valueChars.Length == 2)
+            {
+                chars[chars.Length - 1] = replace;
+            }
+            else
+            {
+                if (valueChars.Length < length)
+                {
+                    chars[chars.Length - 1] = valueChars[valueChars.Length - 1];
+                }
+                else
+                {
+                    chars[0] = valueChars[0];
+                    chars[chars.Length - 1] = valueChars[valueChars.Length - 1];
+                }
+            }
+
+            return chars.ToString();
         }
 
     }
