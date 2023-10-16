@@ -372,15 +372,11 @@ namespace DotCommon.Utility
             }
 
             var valueChars = source.ToCharArray();
-            if (valueChars.Length == 1)
+            if (valueChars.Length == 2)
             {
-                valueChars[0] = replace;
+                chars[chars.Length - 1] = valueChars[valueChars.Length - 1];
             }
-            else if (valueChars.Length == 2)
-            {
-                chars[chars.Length - 1] = replace;
-            }
-            else
+            else if (valueChars.Length > 2)
             {
                 if (valueChars.Length < length)
                 {
@@ -393,7 +389,7 @@ namespace DotCommon.Utility
                 }
             }
 
-            return chars.ToString();
+            return new string(chars);
         }
 
     }

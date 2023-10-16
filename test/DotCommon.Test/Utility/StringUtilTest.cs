@@ -191,6 +191,28 @@ namespace DotCommon.Test.Utility
             Assert.False(StringUtil.IsSafeSqlString(s1));
         }
 
+        [Fact]
+        public void Anonymous_Test()
+        {
+            var n1 = "周";
+            var n2 = "张三";
+            var n3 = "曾国藩";
+            var n4 = "ZHANGJIAGANG";
+
+            var v1 = StringUtil.Anonymous(n1, 4);
+            Assert.Equal("****", v1);
+
+            var v2 = StringUtil.Anonymous(n2, 4);
+            Assert.Equal("***三", v2);
+
+            var v3 = StringUtil.Anonymous(n3, 4);
+            var v3_3 = StringUtil.Anonymous(n3, 3);
+            Assert.Equal("***藩", v3);
+            Assert.Equal("曾*藩", v3_3);
+
+            var v4 = StringUtil.Anonymous(n4, 4);
+            Assert.Equal("Z**G", v4);
+        }
 
     }
 }
