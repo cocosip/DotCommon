@@ -2,24 +2,20 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
-    <PackageReference Include="System.Text.Encodings.Web" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="NLog.Extensions.Logging" />
+    <PackageReference Include="System.Text.Encoding.CodePages" />
+    <PackageReference Include="System.Text.Encodings.Web" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj" />
-    <ProjectReference Include="..\..\src\DotCommon.Caching\DotCommon.Caching.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.Crypto\DotCommon.Crypto.csproj" />
-    <ProjectReference Include="..\..\src\DotCommon.Json4Net\DotCommon.Json4Net.csproj" />
-    <ProjectReference Include="..\..\src\DotCommon.Log4Net\DotCommon.Log4Net.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj" />
-    <ProjectReference Include="..\..\src\DotCommon.TextJson\DotCommon.TextJson.csproj" />
     <ProjectReference Include="..\..\src\DotCommon\DotCommon.csproj" />
   </ItemGroup>
 

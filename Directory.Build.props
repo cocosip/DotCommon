@@ -1,0 +1,11 @@
+<Project>
+	<PropertyGroup>
+
+		<!--Project Frameworks-->
+		<ProjectFrameworks>netstandard2.0;netstandard2.1;$(NetCoreFx)</ProjectFrameworks>
+
+		<!--Net Core Framework-->
+		<NetCoreFx>net8.0</NetCoreFx>
+
+	</PropertyGroup>
+</Project>

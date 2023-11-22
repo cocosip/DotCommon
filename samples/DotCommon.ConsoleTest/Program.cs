@@ -1,22 +1,11 @@
-﻿using DotCommon.Caching;
-using DotCommon.Crypto;
+﻿using DotCommon.Crypto;
 using DotCommon.DependencyInjection;
 using DotCommon.ProtoBuf;
-using DotCommon.TextJson;
 using DotCommon.Utility;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using Org.BouncyCastle.Asn1.GM;
-using Org.BouncyCastle.Crypto.Agreement;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities.Encoders;
 using System;
-using System.Text;
 
 namespace DotCommon.ConsoleTest
 {
@@ -33,9 +22,7 @@ namespace DotCommon.ConsoleTest
                     l.AddNLog();
                 })
                 .AddDotCommon()
-                .AddGenericsMemoryCache()
-                .AddProtoBuf()
-                .AddTextJson();
+                .AddProtoBuf();
 
             var provider = services.BuildServiceProvider();
 

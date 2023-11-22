@@ -1,22 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>    
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Moq" Version="4.20.69" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
-    <PackageReference Include="System.Text.Encodings.Web" Version="7.0.0" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="System.Text.Encodings.Web" />
   
-    <PackageReference Include="xunit" Version="2.5.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.1">
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
-    <PackageReference Include="coverlet.collector" Version="6.0.0">
+    <PackageReference Include="coverlet.collector">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -24,10 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj" />
-    <ProjectReference Include="..\..\src\DotCommon.Caching\DotCommon.Caching.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.Crypto\DotCommon.Crypto.csproj" />
-    <ProjectReference Include="..\..\src\DotCommon.Json4Net\DotCommon.Json4Net.csproj" />
-    <ProjectReference Include="..\..\src\DotCommon.Log4Net\DotCommon.Log4Net.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.TextJson\DotCommon.TextJson.csproj" />
     <ProjectReference Include="..\..\src\DotCommon\DotCommon.csproj" />

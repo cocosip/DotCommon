@@ -3,7 +3,7 @@
 	<Import Project="..\..\common.props" />
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<AssemblyName>DotCommon.AspNetCore.Mvc</AssemblyName>
 		<PackageId>DotCommon.AspNetCore.Mvc</PackageId>
 		<RootNamespace>DotCommon</RootNamespace>
