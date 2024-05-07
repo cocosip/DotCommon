@@ -21,11 +21,11 @@
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageVersion Include="log4net" Version="2.0.15" />
         <PackageVersion Include="protobuf-net" Version="3.2.30" />
-        <PackageVersion Include="NLog.Extensions.Logging" Version="5.3.8" />
+        <PackageVersion Include="NLog.Extensions.Logging" Version="5.3.10" />
         <PackageVersion Include="Moq" Version="4.20.70" />
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-        <PackageVersion Include="xunit" Version="2.7.1" />
-        <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.8" />
+        <PackageVersion Include="xunit" Version="2.8.0" />
+        <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.0" />
         <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     </ItemGroup>
 </Project>
