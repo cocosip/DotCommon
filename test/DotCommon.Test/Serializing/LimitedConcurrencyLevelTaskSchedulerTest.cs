@@ -13,7 +13,7 @@ namespace DotCommon.Test.Serializing
         [Fact]
         public void LimitedConcurrencyLevelTaskScheduler_Test()
         {
-            var scheduler = new LimitedConcurrencyLevelTaskScheduler(1);
+            var scheduler = new LimitedConcurrencyLevelTaskScheduler(2);
             var index = 1;
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
