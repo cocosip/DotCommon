@@ -1,6 +1,7 @@
 ﻿using DotCommon.ObjectMapping;
 using DotCommon.Scheduling;
 using DotCommon.Serializing;
+using DotCommon.Threading;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DotCommon.DependencyInjection
@@ -19,14 +20,14 @@ namespace DotCommon.DependencyInjection
             services
                 .AddTransient<IJsonSerializer, DefaultJsonSerializer>()
                 .AddTransient<IXmlSerializer, DefaultXmlSerializer>()
-                //.AddTransient<IBinarySerializer, DefaultBinarySerializer>()
-                //.AddTransient<IObjectSerializer, DefaultObjectSerializer>()
+                .AddTransient<IBinarySerializer, DefaultBinarySerializer>()
+                .AddTransient<IObjectSerializer, DefaultObjectSerializer>()
                 .AddSingleton<IScheduleService, ScheduleService>()
                 .AddSingleton<IObjectMapper, NullObjectMapper>()
-                ////生命周期管理
-                //.AddSingleton<ICancellationTokenProvider>(NullCancellationTokenProvider.Instance)
-                //.AddSingleton<IAmbientDataContext, AsyncLocalAmbientDataContext>()
-                //.AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientDataContextAmbientScopeProvider<>))
+                //生命周期管理
+                .AddSingleton<ICancellationTokenProvider>(NullCancellationTokenProvider.Instance)
+                .AddSingleton<IAmbientDataContext, AsyncLocalAmbientDataContext>()
+                .AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientDataContextAmbientScopeProvider<>))
                 ;
             return services;
         }

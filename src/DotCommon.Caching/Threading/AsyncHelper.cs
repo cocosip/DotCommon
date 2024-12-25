@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace DotCommon
+namespace DotCommon.Threading
 {
     /// <summary>异步工具类
     /// </summary>
