@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\..\common.props" />
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+		<AssemblyName>DotCommon.Caching</AssemblyName>
+		<PackageId>DotCommon.Caching</PackageId>
+		<RootNamespace>DotCommon</RootNamespace>
+		<Description>DotCommon通用工具类库, 缓存模块</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Nito.AsyncEx" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DotCommon\DotCommon.csproj" />
+	</ItemGroup>
+
+</Project>

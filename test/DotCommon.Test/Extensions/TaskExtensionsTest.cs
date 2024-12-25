@@ -45,7 +45,7 @@ namespace DotCommon.Test.Extensions
 
             var aggregateException = await Assert.ThrowsAsync<TimeoutException>(() =>
             {
-                return t2.TimeoutAfter(1);
+                return t2.TimeoutAfter(2);
             });
 
             var t3 = Task.Run<int>(() =>
