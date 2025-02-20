@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AutoMapper", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ProtoBuf", "src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj", "{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{834211DA-7385-4208-81A9-A807405FCCFA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{834211DA-7385-4208-81A9-A807405FCCFA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{5BF7440F-AD5D-4FBB-92FC-BCBA8C6019A6}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,18 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{9B36
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ConsoleTest", "samples\DotCommon.ConsoleTest\DotCommon.ConsoleTest.csproj", "{F75F6BAF-346E-4721-A193-C96BAC949EA6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{83219023-621D-4A58-8D91-17B1C8DE1C8B}"
-	ProjectSection(SolutionItems) = preProject
-		build\common.props = build\common.props
-		build\credentials.cake = build\credentials.cake
-		build\packages.cake = build\packages.cake
-		build\parameters.cake = build\parameters.cake
-		build\paths.cake = build\paths.cake
-		build\util.cake = build\util.cake
-		build\version.cake = build\version.cake
-		build\version.props = build\version.props
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AspNetCore.Mvc", "src\DotCommon.AspNetCore.Mvc\DotCommon.AspNetCore.Mvc.csproj", "{ADF9F59B-BAB9-4900-B9BA-271493FE2B2B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.Crypto", "src\DotCommon.Crypto\DotCommon.Crypto.csproj", "{A77A4CC6-13B5-4017-8F87-4B7F07BA4E8C}"
@@ -41,6 +29,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.TextJson", "src\DotCommon.TextJson\DotCommon.TextJson.csproj", "{8F0CBC50-489B-43BC-884B-D866C0D6586C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.Caching", "src\DotCommon.Caching\DotCommon.Caching.csproj", "{A4308E19-7D96-499C-9191-694EDF9B1E1D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutions", "solutions", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		common.props = common.props
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

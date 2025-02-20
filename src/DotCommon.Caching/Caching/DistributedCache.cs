@@ -1,13 +1,11 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using Nito.AsyncEx;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using DotCommon.Threading;
+using System.Threading.Tasks;
 using DotCommon.Serializing;
+using DotCommon.Threading;
+using Microsoft.Extensions.Caching.Distributed;
+using Nito.AsyncEx;
 
 namespace DotCommon.Caching
 {
@@ -105,8 +103,10 @@ namespace DotCommon.Caching
                 }
 
                 value = factory();
-                Set(key, value);
-
+                if (value != null)
+                {
+                    Set(key, value);
+                }
             }
 
             return value;
@@ -135,9 +135,11 @@ namespace DotCommon.Caching
                 }
 
                 value = await factory();
-                await SetAsync(key, value, token: token);
+                if (value != null)
+                {
+                    await SetAsync(key, value, token: token);
+                }
             }
-
             return value;
         }
 
