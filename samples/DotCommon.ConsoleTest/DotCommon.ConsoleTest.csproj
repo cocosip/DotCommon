@@ -15,7 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj" />
     <ProjectReference Include="..\..\src\DotCommon.Crypto\DotCommon.Crypto.csproj" />
-    <ProjectReference Include="..\..\src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj" />
     <ProjectReference Include="..\..\src\DotCommon\DotCommon.csproj" />
   </ItemGroup>
 

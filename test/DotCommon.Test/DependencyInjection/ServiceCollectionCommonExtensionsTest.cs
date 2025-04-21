@@ -1,6 +1,5 @@
-﻿using DotCommon.DependencyInjection;
+﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using Xunit;
 
 

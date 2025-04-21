@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
-using Xunit;
-using DotCommon.Extensions;
 using Moq;
+using Xunit;
 
 namespace DotCommon.Test.Extensions
 {

@@ -1,7 +1,6 @@
-﻿using DotCommon.DependencyInjection;
+﻿using DotCommon.Json;
 using DotCommon.ObjectMapping;
 using DotCommon.Scheduling;
-using DotCommon.Serializing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -16,7 +15,6 @@ namespace DotCommon.Test.DependencyInjection
             services.AddDotCommon();
 
             Assert.Contains(services, x => x.ServiceType == typeof(IJsonSerializer));
-            Assert.Contains(services, x => x.ServiceType == typeof(IXmlSerializer));
             //Assert.Contains(services, x => x.ServiceType == typeof(IBinarySerializer));
             //Assert.Contains(services, x => x.ServiceType == typeof(IObjectSerializer));
             Assert.Contains(services, x => x.ServiceType == typeof(IScheduleService));

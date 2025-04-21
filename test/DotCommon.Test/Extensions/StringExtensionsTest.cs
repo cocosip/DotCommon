@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
-using DotCommon.Extensions;
 
 namespace DotCommon.Test.Extensions
 {

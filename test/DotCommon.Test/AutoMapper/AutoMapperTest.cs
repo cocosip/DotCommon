@@ -1,12 +1,7 @@
-﻿using AutoMapper;
+﻿using System;
 using DotCommon.AutoMapper;
-using DotCommon.DependencyInjection;
 using DotCommon.ObjectMapping;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using Xunit;
 
 namespace DotCommon.Test.AutoMapper
@@ -20,13 +15,11 @@ namespace DotCommon.Test.AutoMapper
             services
                 .AddDotCommon()
                 .AddDotCommonAutoMapper()
-                .AddAssemblyAutoMaps(typeof(TestUser).Assembly)
-                .AddAutoMapperConfigurator(c =>
+                .AddAutoMapperObjectMapper()
+                .Configure<DotCommonAutoMapperOptions>(options =>
                 {
-                    //自定义的一些AutoMapper配置
-                    //c.ApplyAutoMapperConfiguration()
-                })
-                .BuildAutoMapper();
+                    options.AddMaps<AutoMapperTest>();
+                });
             _provider = services.BuildServiceProvider();
         }
 
@@ -43,21 +36,10 @@ namespace DotCommon.Test.AutoMapper
                 PhoneNumber = "15868702111",
                 UserId = 10
             };
-            var user = objectMapper.Map<TestUser>(testOrder);
+            var user = objectMapper.Map<TestOrder,TestUser>(testOrder);
             Assert.Equal(10, user.UserId);
             Assert.Equal("15868702111", user.PhoneNumber);
             Assert.Equal("张三", user.UserName);
-
-
-            var nullMapper = NullObjectMapper.Instance;
-            Assert.Throws<ArgumentException>(() =>
-            {
-                nullMapper.Map<TestUser>(testOrder);
-            });
-            Assert.Throws<ArgumentException>(() =>
-            {
-                nullMapper.Map<TestOrder, TestUser>(testOrder, user);
-            });
         }
 
     }

@@ -4,20 +4,41 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>Nullable</WarningsAsErrors>
 		<AssemblyName>DotCommon</AssemblyName>
 		<PackageId>DotCommon</PackageId>
-		<RootNamespace>DotCommon</RootNamespace>
+		<RootNamespace></RootNamespace>
 		<Description>Common Utility Library</Description>
+		<AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="TimeZoneConverter" />
+		<PackageReference Include="System.Text.Json" />
 		<PackageReference Include="Microsoft.Extensions.Logging" />
+		<PackageReference Include="JetBrains.Annotations" />
+		<PackageReference Include="Nito.AsyncEx.Context" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+		<PackageReference Include="System.Threading.Tasks.Extensions" />
 		<PackageReference Include="System.Reflection.Emit.ILGeneration" />
 		<PackageReference Include="System.Reflection.Emit.Lightweight" />
 	</ItemGroup>
+	
+	<ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETStandard' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '2.1')) ">
+		<PackageReference Include="System.ComponentModel.Annotations" />
+	</ItemGroup>
 
+	<ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETStandard' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '2.0')) ">
+		<PackageReference Include="Nullable">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
 </Project>

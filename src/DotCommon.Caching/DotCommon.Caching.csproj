@@ -4,15 +4,21 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>Nullable</WarningsAsErrors>
 		<AssemblyName>DotCommon.Caching</AssemblyName>
 		<PackageId>DotCommon.Caching</PackageId>
-		<RootNamespace>DotCommon</RootNamespace>
-		<Description>DotCommon通用工具类库, 缓存模块</Description>
+		<RootNamespace></RootNamespace>
+		<Description>Common Caching Library</Description>
+		<AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Nito.AsyncEx" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
 	</ItemGroup>
 
 	<ItemGroup>

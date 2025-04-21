@@ -1,7 +1,4 @@
-﻿using DotCommon.AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using AutoMapper;
 
 namespace DotCommon.Test.AutoMapper
 {

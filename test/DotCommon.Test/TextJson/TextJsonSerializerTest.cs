@@ -1,50 +1,34 @@
-﻿using DotCommon.DependencyInjection;
-using DotCommon.Serializing;
-using DotCommon.TextJson;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System;
-using System.Linq;
+﻿using System;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using DotCommon.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DotCommon.Test.TextJson
 {
     public class TextJsonSerializerTest
     {
-        private readonly IOptions<JsonSerializerOptions> _serializerOptions;
+ 
         private readonly IServiceProvider _provider;
         public TextJsonSerializerTest()
         {
 
-            _serializerOptions = Options.Create<JsonSerializerOptions>(new JsonSerializerOptions()
-            {
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            });
+           
 
             IServiceCollection services = new ServiceCollection();
             services
                 .AddLogging()
-                .AddDotCommon()
-                .AddTextJson();
-
+                .AddDotCommon();
             _provider = services.BuildServiceProvider();
-        }
-
-        [Fact]
-        public void Ctor_Test()
-        {
-            var jsonSerializer = new TextJsonSerializer(_serializerOptions);
-            Assert.False(jsonSerializer.Options.Converters.Any());
-            Assert.Equal(JavaScriptEncoder.UnsafeRelaxedJsonEscaping, jsonSerializer.Options.Encoder);
         }
 
         [Fact]
         public void Serialize_Deserialize_Test()
         {
 
-            var textJsonSerializer = new TextJsonSerializer(_serializerOptions);
+            var textJsonSerializer = _provider.GetRequiredService<IJsonSerializer>();
             // Assert.Null(textJsonSerializer.Serialize(s1));
             Assert.Equal("null", textJsonSerializer.Serialize(null));
 
@@ -56,7 +40,7 @@ namespace DotCommon.Test.TextJson
             };
 
             var json1 = textJsonSerializer.Serialize(o1);
-            var deserializeO1 = textJsonSerializer.Deserialize(json1, typeof(TextJsonSerializerClass1));
+            var deserializeO1 = textJsonSerializer.Deserialize<TextJsonSerializerClass1>(json1);
 
             Assert.Equal(typeof(TextJsonSerializerClass1), deserializeO1.GetType());
 
@@ -73,7 +57,7 @@ namespace DotCommon.Test.TextJson
         [Fact]
         public void Generics_Serialize_Deserialize_Test()
         {
-            var textJsonSerializer = new TextJsonSerializer(_serializerOptions);
+            var textJsonSerializer = _provider.GetRequiredService<IJsonSerializer>();
 
             var o = new JsonTestResult<JsonTestResultItem>()
             {

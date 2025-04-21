@@ -1,11 +1,9 @@
-﻿using DotCommon.Crypto;
-using DotCommon.DependencyInjection;
-using DotCommon.ProtoBuf;
+﻿using System;
+using DotCommon.Crypto;
 using DotCommon.Utility;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using System;
 
 namespace DotCommon.ConsoleTest
 {
@@ -21,8 +19,7 @@ namespace DotCommon.ConsoleTest
                     //l.AddLog4Net();
                     l.AddNLog();
                 })
-                .AddDotCommon()
-                .AddProtoBuf();
+                .AddDotCommon();
 
             var provider = services.BuildServiceProvider();
 

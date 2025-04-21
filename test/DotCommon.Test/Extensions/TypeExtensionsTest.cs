@@ -1,4 +1,4 @@
-﻿using DotCommon.Extensions;
+﻿using System;
 using Xunit;
 
 namespace DotCommon.Test.Extensions

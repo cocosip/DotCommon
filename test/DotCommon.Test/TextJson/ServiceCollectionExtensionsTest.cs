@@ -1,6 +1,5 @@
-﻿using DotCommon.DependencyInjection;
-using DotCommon.Serializing;
-using DotCommon.TextJson;
+﻿using DotCommon.Json;
+using DotCommon.Json.SystemTextJson;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -13,12 +12,11 @@ namespace DotCommon.Test.TextJson
         {
             IServiceCollection services = new ServiceCollection();
             services
-                .AddDotCommon()
-                .AddTextJson();
+                .AddDotCommon();
 
             var provider = services.BuildServiceProvider();
             var jsonSerializer = provider.GetService<IJsonSerializer>();
-            Assert.Equal(typeof(TextJsonSerializer), jsonSerializer.GetType());
+            Assert.Equal(typeof(DotCommonSystemTextJsonSerializer), jsonSerializer.GetType());
         }
     }
 }

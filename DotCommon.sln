@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.Test", "test\DotC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AutoMapper", "src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj", "{3F0FB329-AB91-4386-B176-387CF7D61B00}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.ProtoBuf", "src\DotCommon.ProtoBuf\DotCommon.ProtoBuf.csproj", "{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{834211DA-7385-4208-81A9-A807405FCCFA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{5BF7440F-AD5D-4FBB-92FC-BCBA8C6019A6}"
@@ -26,8 +24,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.AspNetCore.Mvc", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.Crypto", "src\DotCommon.Crypto\DotCommon.Crypto.csproj", "{A77A4CC6-13B5-4017-8F87-4B7F07BA4E8C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotCommon.TextJson", "src\DotCommon.TextJson\DotCommon.TextJson.csproj", "{8F0CBC50-489B-43BC-884B-D866C0D6586C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.Caching", "src\DotCommon.Caching\DotCommon.Caching.csproj", "{A4308E19-7D96-499C-9191-694EDF9B1E1D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutions", "solutions", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
@@ -36,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutions", "solutions", "{
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotCommon.Serialization", "src\DotCommon.Serialization\DotCommon.Serialization.csproj", "{0BCDDAC5-3BB0-47B3-8128-2F45DCFBAEC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +53,6 @@ Global
 		{3F0FB329-AB91-4386-B176-387CF7D61B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F0FB329-AB91-4386-B176-387CF7D61B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F0FB329-AB91-4386-B176-387CF7D61B00}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5EA52E9C-AD8E-4A15-B00A-E3014BE4380D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F75F6BAF-346E-4721-A193-C96BAC949EA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F75F6BAF-346E-4721-A193-C96BAC949EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F75F6BAF-346E-4721-A193-C96BAC949EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -71,14 +65,14 @@ Global
 		{A77A4CC6-13B5-4017-8F87-4B7F07BA4E8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A77A4CC6-13B5-4017-8F87-4B7F07BA4E8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A77A4CC6-13B5-4017-8F87-4B7F07BA4E8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F0CBC50-489B-43BC-884B-D866C0D6586C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F0CBC50-489B-43BC-884B-D866C0D6586C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F0CBC50-489B-43BC-884B-D866C0D6586C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F0CBC50-489B-43BC-884B-D866C0D6586C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A4308E19-7D96-499C-9191-694EDF9B1E1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A4308E19-7D96-499C-9191-694EDF9B1E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4308E19-7D96-499C-9191-694EDF9B1E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4308E19-7D96-499C-9191-694EDF9B1E1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BCDDAC5-3BB0-47B3-8128-2F45DCFBAEC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BCDDAC5-3BB0-47B3-8128-2F45DCFBAEC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BCDDAC5-3BB0-47B3-8128-2F45DCFBAEC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BCDDAC5-3BB0-47B3-8128-2F45DCFBAEC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

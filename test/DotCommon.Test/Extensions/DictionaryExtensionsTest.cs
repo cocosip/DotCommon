@@ -2,46 +2,34 @@
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
-using DotCommon.Extensions;
 
 namespace DotCommon.Test.Extensions
 {
     public class DictionaryExtensionsTest
     {
-        [Fact]
-        public void TryGetValue_Test()
-        {
-            var dict = new Dictionary<string, object>();
-            dict.Add("1", "hello");
-            dict.Add("2", 2);
-
-            var r1 = dict.TryGetValue<string>("1", out string v1);
-            Assert.True(r1);
-            Assert.Equal("hello", v1);
-
-            var r2 = dict.TryGetValue<int>("3", out int v2);
-            Assert.False(r2);
-            Assert.Equal(0, v2);
-
-        }
+ 
 
 
         [Fact]
         public void GetOrDefault_Test()
         {
-            var dict1 = new Dictionary<string, int>();
-            dict1.Add("1", 100);
-            dict1.Add("2", 200);
-            var v1 = dict1.GetOrDefault("1", true);
+            var dict1 = new Dictionary<string, int>
+            {
+                { "1", 100 },
+                { "2", 200 }
+            };
+            var v1 = dict1.GetOrDefault("1");
             Assert.Equal(100, v1);
 
-            var dict2 = new Dictionary<int, string>();
-            dict2.Add(10, "10");
-            dict2.Add(22, "220");
+            var dict2 = new Dictionary<int, string>
+            {
+                { 10, "10" },
+                { 22, "220" }
+            };
 
-            var v2 = dict2.GetOrDefault(10, true);
-            var v3 = dict2.GetOrDefault(22, false);
-            var v4 = dict2.GetOrDefault(50, true);
+            var v2 = dict2.GetOrDefault(10);
+            var v3 = dict2.GetOrDefault(22);
+            var v4 = dict2.GetOrDefault(50);
             Assert.Equal("10", v2);
             Assert.Equal("220", v3);
             Assert.Null(v4);

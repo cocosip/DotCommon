@@ -4,10 +4,16 @@
 
 	<PropertyGroup>
 	    <TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>Nullable</WarningsAsErrors>
 		<AssemblyName>DotCommon.AutoMapper</AssemblyName>
 		<PackageId>DotCommon.AutoMapper</PackageId>
-		<RootNamespace>DotCommon</RootNamespace>
+		<RootNamespace></RootNamespace>
 		<Description>DotCommon通用工具类库,基于AutoMapper的扩展</Description>
+		<AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
 	</PropertyGroup>
 
 	<ItemGroup>
