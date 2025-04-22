@@ -1,34 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>    
-    <TargetFramework>net9.0</TargetFramework>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Moq" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="System.Text.Encodings.Web" />
-  
-    <PackageReference Include="xunit" />
-    <PackageReference Include="xunit.runner.visualstudio">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+	<ItemGroup>
+		<PackageReference Include="Moq" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+		<PackageReference Include="System.Text.Encodings.Web" />
 
-    <PackageReference Include="coverlet.collector">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+		<PackageReference Include="xunit" />
+		<PackageReference Include="xunit.runner.visualstudio">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj" />
-    <ProjectReference Include="..\..\src\DotCommon.Crypto\DotCommon.Crypto.csproj" />
-    <ProjectReference Include="..\..\src\DotCommon\DotCommon.csproj" />
-  </ItemGroup>
+		<PackageReference Include="coverlet.collector">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
- 
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj" />
+		<ProjectReference Include="..\..\src\DotCommon.Crypto\DotCommon.Crypto.csproj" />
+		<ProjectReference Include="..\..\src\DotCommon\DotCommon.csproj" />
+	</ItemGroup>
+
+
 
 
 </Project>
