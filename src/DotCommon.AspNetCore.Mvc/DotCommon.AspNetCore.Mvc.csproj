@@ -6,8 +6,8 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>Nullable</WarningsAsErrors>
-		<AssemblyName>DotCommon</AssemblyName>
-		<PackageId>DotCommon</PackageId>
+		<AssemblyName>DotCommon.AspNetCore.Mvc</AssemblyName>
+		<PackageId>DotCommon.AspNetCore.Mvc</PackageId>
 		<RootNamespace></RootNamespace>
 		<Description>Common AspNetCore Mvc Library</Description>
 		<AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>

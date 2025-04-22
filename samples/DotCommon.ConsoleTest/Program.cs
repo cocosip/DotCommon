@@ -1,9 +1,11 @@
 ﻿using System;
 using DotCommon.Crypto;
+using DotCommon.Crypto.SM2;
 using DotCommon.Utility;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using Org.BouncyCastle.Crypto.Engines;
 
 namespace DotCommon.ConsoleTest
 {
@@ -19,7 +21,8 @@ namespace DotCommon.ConsoleTest
                     //l.AddLog4Net();
                     l.AddNLog();
                 })
-                .AddDotCommon();
+                .AddDotCommon()
+                .AddDotCommonCrypto();
 
             var provider = services.BuildServiceProvider();
 
@@ -30,19 +33,20 @@ namespace DotCommon.ConsoleTest
             Console.WriteLine(snowflakeDistributeId.NextId());
 
 
-            var k = SM2Util.GenerateKeyPair();
+            var sm2Service = provider.GetService<ISm2EncryptionService>();
 
-            var encrypted = SM2Util.Encrypt(k.Item2, "ABC", c132: true);
-            var decrypted = SM2Util.Decrypt(k.Item1, encrypted, c132: true);
+            var k = sm2Service.GenerateSm2KeyPair();
+
+            var encrypted = sm2Service.Encrypt(k.ExportPublicKey(), "ABC", mode: SM2Engine.Mode.C1C3C2);
+            var decrypted = sm2Service.Decrypt(k.ExportPrivateKey(), encrypted, mode: SM2Engine.Mode.C1C3C2);
 
             Console.WriteLine("Encrypted:{0}", encrypted);
             Console.WriteLine("Decrypted:{0}", decrypted);
 
-            var signed = SM2Util.Sign(k.Item1, "123456");
+            var signed = sm2Service.Sign(k.ExportPrivateKey(), "123456");
             Console.WriteLine(signed);
 
-            Console.WriteLine(SM2Util.VerifySign(k.Item2, "123456", signed));
-
+            Console.WriteLine(sm2Service.VerifySign(k.ExportPublicKey(), "123456", signed));
 
             Console.WriteLine("完成");
             Console.ReadLine();
