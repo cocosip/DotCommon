@@ -1,18 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Project="..\..\common.props" />
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>Nullable</WarningsAsErrors>
 		<AssemblyName>DotCommon.Crypto</AssemblyName>
 		<PackageId>DotCommon.Crypto</PackageId>
-		<RootNamespace>DotCommon</RootNamespace>
-		<Description>DotCommon通用工具类库,加密工具</Description>
+		<RootNamespace></RootNamespace>
+		<Description>Common Crypto Library</Description>
+		<AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="BouncyCastle.Cryptography" />
+		<PackageReference Include="BouncyCastle.Cryptography" />
 	</ItemGroup>
 
- 
+	<ItemGroup>
+	  <ProjectReference Include="..\DotCommon\DotCommon.csproj" />
+	</ItemGroup>
+
 </Project>

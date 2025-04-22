@@ -13,7 +13,7 @@
 		
         <PackageVersion Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
         <PackageVersion Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
-		<PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
+		<PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
 
 		<PackageVersion Include="System.Collections.Immutable" Version="9.0.4" />
 		<PackageVersion Include="Microsoft.Extensions.Localization" Version="9.0.4" />
