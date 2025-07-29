@@ -16,6 +16,7 @@ namespace DotCommon.Test.AutoMapper
                 .AddDotCommon()
                 .AddDotCommonAutoMapper()
                 .AddAutoMapperObjectMapper()
+                .AddLogging()
                 .Configure<DotCommonAutoMapperOptions>(options =>
                 {
                     options.AddMaps<AutoMapperTest>();

@@ -4,6 +4,7 @@ using AutoMapper.Internal;
 using DotCommon.AutoMapper;
 using DotCommon.ObjectMapping;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -25,7 +26,9 @@ namespace Microsoft.Extensions.DependencyInjection
                     {
                         configurator(autoMapperConfigurationContext);
                     }
-                    var mapperConfiguration = new MapperConfiguration(mapperConfigurationExpression);
+
+                    var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
+                    var mapperConfiguration = new MapperConfiguration(mapperConfigurationExpression, loggerFactory);
 
                     foreach (var profileType in options.ValidatingProfiles)
                     {

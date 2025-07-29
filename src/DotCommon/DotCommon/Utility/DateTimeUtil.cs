@@ -9,6 +9,25 @@ namespace DotCommon.Utility
     /// </summary>
     public static class DateTimeUtil
     {
+        /// <summary>
+        /// 将某个时间精确到毫秒级
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <returns></returns>
+        public static DateTime TruncateToMilliseconds(this DateTime datetime)
+        {
+            return new DateTime(datetime.Year, datetime.Month, datetime.Day, datetime.Hour, datetime.Minute, datetime.Second, datetime.Millisecond);
+        }
+
+        /// <summary>
+        /// 将某个时间精确到秒级
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <returns></returns>
+        public static DateTime TruncateToSeconds(this DateTime datetime)
+        {
+            return new DateTime(datetime.Year, datetime.Month, datetime.Day, datetime.Hour, datetime.Minute, datetime.Second);
+        }
 
         /// <summary>
         /// 将时间转换成int32类型时间戳(从1970-01-01 00:00:00 开始计算)
