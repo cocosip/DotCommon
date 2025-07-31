@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -6,390 +6,265 @@ using System.Text.RegularExpressions;
 namespace DotCommon.Utility
 {
     /// <summary>
-    /// 字符工具类
+    /// Provides utility methods for string manipulation, filtering, and encoding.
     /// </summary>
     public static class StringUtil
     {
+        #region Regex Definitions
+
+        private static readonly Regex UrlFilterRegex = new Regex("['-\\;<>《》\\s]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex ATagRegex = new Regex("<a\\b[^>]*>.*?</a>", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex DivTagRegex = new Regex("<div\\b[^>]*>.*?</div>", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex FontTagRegex = new Regex("<font\\b[^>]*>.*?</font>", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex SpanTagRegex = new Regex("<span\\b[^>]*>.*?</span>", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex TableTagRegex = new Regex("<table\\b[^>]*>.*?</table>", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex ImgTagRegex = new Regex("<img(.|\n)*?>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex ObjectTagRegex = new Regex("<object((?:.|\n)*?)</object>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex ScriptTagRegex = new Regex("<script((?:.|\n)*?)</script>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex IframeTagRegex = new Regex("<iframe((?:.|\n)*?)</iframe>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex StyleTagRegex = new Regex("<style((?:.|\n)*?)</style>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex AllTagsRegex = new Regex("<([^<]|\n)+?>", RegexOptions.Compiled);
+        private static readonly Regex SqlFilterRegex = new Regex("exec|insert|select|delete|'|update|chr|mid|master|truncate|char|declare|and|--", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex UnsafeSqlCharsRegex = new Regex(@"[-|;|,|\/|\(|\)|\[|\]|\}|\{|%|@|\*|!|\']", RegexOptions.Compiled);
+        private static readonly Regex UnicodeRegex = new Regex(@"\\u([0-9A-F]{4})", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        #endregion
 
         /// <summary>
-        /// 获取字符串所占直接长度
+        /// Calculates the display width of a string, treating East Asian characters as 2 units wide and others as 1.
         /// </summary>
-        public static int GetStringByteLength(string source)
+        /// <param name="source">The string to measure.</param>
+        /// <returns>The calculated display width.</returns>
+        public static int GetEastAsianWidthCount(string source)
         {
-            var sourceBytes = Encoding.ASCII.GetBytes(source);
-            int byteLength = 0;
-            for (int i = 0; i <= sourceBytes.Length - 1; i++)
+            if (string.IsNullOrEmpty(source))
             {
-                if (sourceBytes[i] == 63)
-                {
-                    byteLength++;
-                }
-                byteLength++;
+                return 0;
             }
-            return byteLength;
-        }
-
-        /// <summary>
-        /// 去除末尾的字符串
-        /// </summary>
-        public static string RemoveEnd(string inputStr, string splitStr)
-        {
-            if (!string.IsNullOrWhiteSpace(inputStr))
+            int width = 0;
+            foreach (char c in source)
             {
-                if (string.IsNullOrWhiteSpace(splitStr))
+                // CJK characters and full-width forms are typically in this range.
+                if (c >= 0x4E00 && c <= 0x9FA5 || c >= 0xFF00 && c <= 0xFFEF)
                 {
-                    inputStr = inputStr.Substring(0, inputStr.Length - 1);
+                    width += 2;
                 }
                 else
                 {
-                    if (inputStr.EndsWith(splitStr))
-                    {
-                        inputStr = inputStr.Substring(0, inputStr.LastIndexOf(splitStr, StringComparison.Ordinal));
-                    }
+                    width += 1;
                 }
             }
-            return inputStr;
+            return width;
         }
 
-        #region 过滤方法
-
         /// <summary>
-        /// 过滤'-\\;\>《》 
+        /// Removes a specified suffix from the end of a string.
         /// </summary>
-        public static string FilterUrl(string source)
+        /// <param name="source">The source string.</param>
+        /// <param name="suffix">The suffix to remove. If null or empty, the last character is removed.</param>
+        /// <returns>The trimmed string.</returns>
+        public static string TrimEnd(string source, string suffix)
         {
-            if (!string.IsNullOrEmpty(source))
+            if (string.IsNullOrEmpty(source))
             {
-                source = Regex.Replace(source, "'-\\\\;\\<>《》\\s", "", RegexOptions.IgnoreCase);
+                return source;
             }
+
+            if (!string.IsNullOrEmpty(suffix) && source.EndsWith(suffix, StringComparison.Ordinal))
+            {
+                return source.Substring(0, source.Length - suffix.Length);
+            }
+
+            if (string.IsNullOrEmpty(suffix))
+            {
+                return source.Substring(0, source.Length - 1);
+            }
+
             return source;
         }
 
+        #region HTML Filtering
 
         /// <summary>
-        /// 过滤A标签
+        /// Removes special characters to sanitize a string for use in a URL.
         /// </summary>
-        public static string FetchA(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                source = Regex.Replace(source, @"<.?a(.|\n)*?>", "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
+        public static string SanitizeForUrl(string source) => string.IsNullOrEmpty(source) ? source : UrlFilterRegex.Replace(source, "");
 
         /// <summary>
-        /// 过滤DIV标签
+        /// Strips all 'a' (anchor) tags from a string.
         /// </summary>
-        public static string FetchDiv(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                source = Regex.Replace(source, @"<.?div(.|\n)*?>", "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
+        public static string StripATags(string source) => string.IsNullOrEmpty(source) ? source : ATagRegex.Replace(source, "");
 
         /// <summary>
-        /// 过滤FONT标签
+        /// Strips all 'div' tags from a string.
         /// </summary>
-        public static string FetchFont(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                source = Regex.Replace(source, "<.?font(.|\n)*?>", "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
+        public static string StripDivTags(string source) => string.IsNullOrEmpty(source) ? source : DivTagRegex.Replace(source, "");
 
         /// <summary>
-        /// 过滤SPAN标签
+        /// Strips all 'font' tags from a string.
         /// </summary>
-        public static string FetchSpan(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                source = Regex.Replace(source, "<.?span(.|\n)*?>", "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
+        public static string StripFontTags(string source) => string.IsNullOrEmpty(source) ? source : FontTagRegex.Replace(source, "");
 
         /// <summary>
-        /// 过滤TABLE、TR、TD
+        /// Strips all 'span' tags from a string.
         /// </summary>
-        public static string FetchTableProtery(string source)
+        public static string StripSpanTags(string source) => string.IsNullOrEmpty(source) ? source : SpanTagRegex.Replace(source, "");
+
+        /// <summary>
+        /// Strips all 'table', 'tr', and 'td' tags from a string.
+        /// </summary>
+        public static string StripTableTags(string source)
         {
-            if (!string.IsNullOrEmpty(source))
+            if (string.IsNullOrEmpty(source))
             {
-                source = Regex.Replace(source, "<.?table(.|\n)*?>", "", RegexOptions.IgnoreCase);
-                source = Regex.Replace(source, "<.?tr(.|\n)*?>", "", RegexOptions.IgnoreCase);
-                source = Regex.Replace(source, "<.?td(.|\n)*?>", "", RegexOptions.IgnoreCase);
+                return source;
             }
+            source = TableTagRegex.Replace(source, "");
             return source;
         }
 
         /// <summary>
-        /// 过滤所有HTML标签
+        /// Strips all HTML tags from a string.
         /// </summary>
-        public static string FetchStripTags(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                Regex regex = new Regex("<([^<]|\n)+?>");
-                source = regex.Replace(source, "");
-            }
-            return source;
-        }
+        public static string StripAllHtmlTags(string source) => string.IsNullOrEmpty(source) ? source : AllTagsRegex.Replace(source, "");
 
         /// <summary>
-        /// 过滤IMG标签
+        /// Strips all 'img' tags from a string.
         /// </summary>
-        public static string FilterImg(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                source = Regex.Replace(source, "<img(.|\n)*?>", "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
+        public static string StripImgTags(string source) => string.IsNullOrEmpty(source) ? source : ImgTagRegex.Replace(source, "");
 
         /// <summary>
-        /// 过滤OBJECT标签
+        /// Strips all 'object' tags from a string.
         /// </summary>
-        public static string FilterObject(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                string pattern = @"<object((?:.|\n)*?)</object>";
-                source = Regex.Replace(source, pattern, "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
+        public static string StripObjectTags(string source) => string.IsNullOrEmpty(source) ? source : ObjectTagRegex.Replace(source, "");
 
         /// <summary>
-        /// 过滤JavaScript标签
+        /// Strips all 'script' tags from a string.
         /// </summary>
-        public static string FilterScript(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                string pattern = @"<script((?:.|\n)*?)</script>";
-                source = Regex.Replace(source, pattern, "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
-
-        /// <summary> 
-        /// 过滤IFRAME标签
-        /// </summary>
-        public static string FilterIFrame(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                string pattern = @"<iframe((?:.|\n)*?)</iframe>";
-                source = Regex.Replace(source, pattern, "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
-
+        public static string StripScriptTags(string source) => string.IsNullOrEmpty(source) ? source : ScriptTagRegex.Replace(source, "");
 
         /// <summary>
-        /// 过滤STYLE样式标签
+        /// Strips all 'iframe' tags from a string.
         /// </summary>
-        public static string FilterStyle(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                string pattern = @"<style((?:.|\n)*?)</style>";
-                source = Regex.Replace(source, pattern, "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
+        public static string StripIframeTags(string source) => string.IsNullOrEmpty(source) ? source : IframeTagRegex.Replace(source, "");
 
         /// <summary>
-        /// 根据传入的正则表达式进行过滤
+        /// Strips all 'style' tags from a string.
         /// </summary>
-        public static string SuperiorHtml(string source, string pattern)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                source = Regex.Replace(source, pattern, "", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
+        public static string StripStyleTags(string source) => string.IsNullOrEmpty(source) ? source : StyleTagRegex.Replace(source, "");
 
         /// <summary>
-        /// 过滤html的所有标签
+        /// Strips HTML elements based on a custom regex pattern.
         /// </summary>
-        public static string FilterHtml(string source)
+        public static string StripHtmlByPattern(string source, string pattern)
         {
-            if (!string.IsNullOrEmpty(source))
+            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(pattern))
             {
-                foreach (Match m in Regex.Matches(source, @"<(.|\n)+?>"))
-                {
-                    source = source.Replace(m.Value, "");
-                }
+                return source;
             }
-            return source;
+            return Regex.Replace(source, pattern, "", RegexOptions.IgnoreCase);
         }
 
-        /// <summary>
-        /// HTML转行成TEXT
-        /// </summary>
-        public static string HtmlToTxt(string strHtml)
-        {
-            string[] aryReg =
-            {
-                @"<script[^>]*?>.*?</script>",
-                @"<(\/\s*)?!?((\w+:)?\w+)(\w+(\s*=?\s*(([""'])(\\[""'tbnr]|[^\7])*?\7|\w+)|.{0})|\s)*?(\/\s*)?>",
-                @"([\r\n])[\s]+",
-                @"&(quot|#34);",
-                @"&(amp|#38);",
-                @"&(lt|#60);",
-                @"&(gt|#62);",
-                @"&(nbsp|#160);",
-                @"&(iexcl|#161);",
-                @"&(cent|#162);",
-                @"&(pound|#163);",
-                @"&(copy|#169);",
-                @"&#(\d+);",
-                @"-->",
-                @"<!--.*\n"
-            };
-            string strOutput = aryReg.Select(t => new Regex(t, RegexOptions.IgnoreCase))
-                .Aggregate(strHtml, (current, regex) => regex.Replace(current, string.Empty));
-            strOutput = strOutput.Replace("<", "").Replace(">", "").Replace("\r\n", "");
-
-            return strOutput;
-        }
         #endregion
 
-        #region 数据安全
+        #region Data Security
 
         /// <summary>
-        /// SQL 特殊字符过滤,防SQL注入
+        /// Filters a string to remove potentially dangerous SQL keywords.
+        /// Warning: This is a basic blacklist and not a substitute for parameterized queries.
         /// </summary>
-        /// <returns></returns>
-        public static string SqlFilter(string source)
-        {
-            if (!string.IsNullOrEmpty(source))
-            {
-                string _pattern = "exec|insert|select|delete|'|update|chr|mid|master|truncate|char|declare|and|--";
-                source = Regex.Replace(source.ToLower(), _pattern, " ", RegexOptions.IgnoreCase);
-            }
-            return source;
-        }
-
+        public static string SanitizeSql(string source) => string.IsNullOrEmpty(source) ? source : SqlFilterRegex.Replace(source, " ");
 
         /// <summary>
-        /// 转化XML的特殊字符
+        /// Encodes a string for safe use in XML by replacing special characters with their corresponding entities.
         /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static string XmlEncode(string source)
+        public static string EncodeForXml(string source)
         {
-            if (!string.IsNullOrEmpty(source))
+            if (string.IsNullOrEmpty(source))
             {
-                source = source.Replace("&", "&amp;");
-                source = source.Replace("<", "&lt;");
-                source = source.Replace(">", "&gt;");
-                source = source.Replace("'", "&apos;");
-                source = source.Replace("\"", "&quot;");
+                return source;
             }
-            return source;
+            var sb = new StringBuilder(source);
+            sb.Replace("&", "&amp;");
+            sb.Replace("<", "&lt;");
+            sb.Replace(">", "&gt;");
+            sb.Replace("'", "&apos;");
+            sb.Replace("\"", "&quot;");
+            return sb.ToString();
         }
 
-        /// <summary> 
-        /// 检测是否有Sql危险字符
+        /// <summary>
+        /// Checks for characters that are commonly used in SQL injection attacks.
+        /// Warning: This is a basic check and not a comprehensive security solution.
         /// </summary>
-        public static bool IsSafeSqlString(string sql)
+        public static bool IsSqlSafe(string sql) => string.IsNullOrEmpty(sql) || !UnsafeSqlCharsRegex.IsMatch(sql);
+
+        #endregion
+
+        #region Unicode Conversion
+
+        /// <summary>
+        /// Converts a string to its Unicode escape sequence representation (e.g., "\uXXXX").
+        /// </summary>
+        /// <param name="source">The string to convert.</param>
+        /// <param name="onlyConvertChinese">If true, only converts Chinese characters (CJK Unified Ideographs).</param>
+        /// <returns>The Unicode-escaped string.</returns>
+        public static string ToUnicode(string source, bool onlyConvertChinese = true)
         {
-            return !Regex.IsMatch(sql, @"[-|;|,|\/|\(|\)|\[|\]|\}|\{|%|@|\*|!|\']");
+            if (string.IsNullOrEmpty(source))
+            {
+                return source;
+            }
+
+            var sb = new StringBuilder();
+            foreach (char c in source)
+            {
+                if (onlyConvertChinese && !(c >= 0x4e00 && c <= 0x9fbb))
+                {
+                    sb.Append(c);
+                }
+                else
+                {
+                    sb.AppendFormat("\\u{0:x4}", (int)c);
+                }
+            }
+            return sb.ToString();
         }
+
+        /// <summary>
+        /// Converts a string with Unicode escape sequences (e.g., "\uXXXX") back to its normal representation.
+        /// </summary>
+        public static string FromUnicode(string source) => string.IsNullOrEmpty(source) ? source : UnicodeRegex.Replace(source, m => ((char)Convert.ToUInt16(m.Groups[1].Value, 16)).ToString());
+
         #endregion
 
         /// <summary>
-        /// 将字符串中的中文转换成unicode
+        /// Anonymizes a string by replacing characters with a specified symbol.
         /// </summary>
-        public static string StringToUnicode(string source, bool onlyConvertChinese = true)
+        /// <param name="source">The string to anonymize.</param>
+        /// <param name="visibleStart">The number of characters to leave visible at the start.</param>
+        /// <param name="visibleEnd">The number of characters to leave visible at the end.</param>
+        /// <param name="replaceChar">The character to use for masking.</param>
+        /// <returns>The anonymized string.</returns>
+        public static string Anonymize(string source, int visibleStart, int visibleEnd, char replaceChar = '*')
         {
-            if (!string.IsNullOrWhiteSpace(source))
-            {
-                char[] charbuffers = source.ToCharArray();
-                byte[] buffer;
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < charbuffers.Length; i++)
-                {
-                    if (onlyConvertChinese)
-                    {
-                        //非中文
-                        if (!(charbuffers[i] >= 0x4e00 && charbuffers[i] <= 0x9fbb))
-                        {
-                            sb.Append(charbuffers[i].ToString());
-                            continue;
-                        }
-                    }
-                    buffer = Encoding.Unicode.GetBytes(charbuffers[i].ToString());
-                    sb.AppendFormat("\\u{0:x2}{1:x2}", buffer[1], buffer[0]);
-                }
-                return sb.ToString();
-            }
-            return source;
-        }
-
-        /// <summary>
-        /// 将Unicode字符串转换成String
-        /// </summary>
-        public static string UnicodeToString(string source)
-        {
-            if (!string.IsNullOrWhiteSpace(source))
-            {
-                source = new Regex(@"\\u([0-9A-F]{4})", RegexOptions.IgnoreCase | RegexOptions.Compiled).Replace(
-                     source, x => string.Empty + Convert.ToChar(Convert.ToUInt16(x.Result("$1"), 16)));
-            }
-            return source;
-        }
-
-        /// <summary>
-        /// 对字符串进行匿名处理
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="length">长度</param>
-        /// <param name="replace">替换字符char</param>
-        /// <returns></returns>
-        public static string Anonymous(string source, int length, char replace = '*')
-        {
-            if (string.IsNullOrWhiteSpace(source))
+            if (string.IsNullOrEmpty(source))
             {
                 return "";
             }
 
-            var chars = new char[length];
-            for (var i = 0; i < chars.Length; i++)
+            int len = source.Length;
+            if (visibleStart + visibleEnd >= len)
             {
-                chars[i] = replace;
+                return source; // Not enough characters to mask
             }
 
-            var valueChars = source.ToCharArray();
-            if (valueChars.Length == 2)
-            {
-                chars[chars.Length - 1] = valueChars[valueChars.Length - 1];
-            }
-            else if (valueChars.Length > 2)
-            {
-                if (valueChars.Length < length)
-                {
-                    chars[chars.Length - 1] = valueChars[valueChars.Length - 1];
-                }
-                else
-                {
-                    chars[0] = valueChars[0];
-                    chars[chars.Length - 1] = valueChars[valueChars.Length - 1];
-                }
-            }
+            var sb = new StringBuilder();
+            sb.Append(source.Substring(0, visibleStart));
+            sb.Append(new string(replaceChar, len - visibleStart - visibleEnd));
+            sb.Append(source.Substring(len - visibleEnd));
 
-            return new string(chars);
+            return sb.ToString();
         }
-
     }
 }

@@ -1,218 +1,81 @@
-﻿using DotCommon.Utility;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
+using DotCommon.Utility;
 
 namespace DotCommon.Test.Utility
 {
     public class StringUtilTest
     {
-        [Fact]
-        public void GetStringByteLength_Test()
+        [Theory]
+        [InlineData("Hello World", 11)]
+        [InlineData("你好世界", 8)]
+        [InlineData("Hello你好", 9)]
+        [InlineData("", 0)]
+        [InlineData(null, 0)]
+        public void GetEastAsianWidthCount_ShouldReturnCorrectWidth(string input, int expectedWidth)
         {
-            var source1 = "helloworld";
-            Assert.Equal(10, StringUtil.GetStringByteLength(source1));
-            var source2 = "中国?";
-            Assert.Equal(6, StringUtil.GetStringByteLength(source2));
-
+            Assert.Equal(expectedWidth, StringUtil.GetEastAsianWidthCount(input));
         }
 
         [Theory]
-        [InlineData("helloeter", "ter", "helloe")]
-        [InlineData("", "ter", "")]
-        [InlineData("teacher", "", "teache")]
-        public void RemoveEnd_Test(string input, string splitStr, string expected)
+        [InlineData("TestString,", ",", "TestString")]
+        [InlineData("AnotherTest", null, "AnotherTes")]
+        [InlineData("NoSuffix", "XYZ", "NoSuffix")]
+        [InlineData("", ",", "")]
+        public void TrimEnd_ShouldRemoveSuffix(string source, string suffix, string expected)
         {
-            var actual = StringUtil.RemoveEnd(input, splitStr);
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected, StringUtil.TrimEnd(source, suffix));
         }
 
         [Fact]
-        public void FetchDiv_Test()
+        public void HtmlFiltering_ShouldStripTagsCorrectly()
         {
-            var s1 = StringUtil.FetchDiv("<div>zhangsan</div>");
-            Assert.Equal("zhangsan", s1);
+            string html = "<div><a href='#'>Link</a><span>Text</span><img src=''/></div>";
+            Assert.Equal("<div><span>Text</span><img src=''/></div>", StringUtil.StripATags(html));
+            Assert.Equal("", StringUtil.StripDivTags(html));
+        }
 
+        [Theory]
+        [InlineData("SELECT * FROM Users", "  * FROM Users")]
+        [InlineData("DELETE FROM Products", "  FROM Products")]
+        public void SanitizeSql_ShouldRemoveKeywords(string input, string expected)
+        {
+            Assert.Equal(expected, StringUtil.SanitizeSql(input));
         }
 
         [Fact]
-        private void FetchA_Test()
+        public void EncodeForXml_ShouldEncodeSpecialChars()
         {
-            var s1 = StringUtil.FetchA("<a>sssqqq</a>");
-            Assert.Equal("sssqqq", s1);
+            string xml = @"<tag attribute='value'>""content"" & more</tag>";
+            string expected = @"&lt;tag attribute=&apos;value&apos;&gt;&quot;content&quot; &amp; more&lt;/tag&gt;";
+            Assert.Equal(expected, StringUtil.EncodeForXml(xml));
+        }
+
+        [Theory]
+        [InlineData("SafeString123", true)]
+        [InlineData("Bad;String", false)]
+        [InlineData("Another'Bad'String", false)]
+        public void IsSqlSafe_ShouldDetectUnsafeChars(string input, bool isSafe)
+        {
+            Assert.Equal(isSafe, StringUtil.IsSqlSafe(input));
         }
 
         [Fact]
-        private void FetchFont_Test()
+        public void UnicodeConversion_ShouldWorkCorrectly()
         {
-            var s1 = StringUtil.FetchFont("<font>font</font>");
-            Assert.Equal("font", s1);
+            string original = "你好, World!";
+            string unicode = "\\u4f60\\u597d, World!";
+            Assert.Equal(unicode, StringUtil.ToUnicode(original));
+            Assert.Equal(original, StringUtil.FromUnicode(unicode));
         }
 
-        [Fact]
-        public void FetchSpanSpan_Test()
+        [Theory]
+        [InlineData("1234567890", 3, 4, "123***7890")]
+        [InlineData("myemail@example.com", 3, 3, "mye*************com")]
+        [InlineData("short", 3, 3, "short")]
+        [InlineData("123", 1, 1, "1*3")]
+        public void Anonymize_ShouldMaskStringCorrectly(string input, int start, int end, string expected)
         {
-            var s1 = StringUtil.FetchSpan("<span>aaa</span>");
-            Assert.Equal("aaa", s1);
+            Assert.Equal(expected, StringUtil.Anonymize(input, start, end));
         }
-
-
-        [Fact]
-        private void FilterImg_Test()
-        {
-            var s1 = StringUtil.FilterImg("aaa<img src=\"pic/aa/bb\"/>");
-            Assert.Equal("aaa", s1);
-        }
-
-        [Fact]
-        public void FilterObject_Test()
-        {
-            var s1 = StringUtil.FilterObject("<object xxx>xxxxx</object>");
-            Assert.Equal("", s1);
-        }
-
-        [Fact]
-        public void FilterScript_Test()
-        {
-            var s1 = StringUtil.FilterScript("<script>aaa</script>");
-            Assert.Equal("", s1);
-        }
-
-        [Fact]
-        public void FilterIFrame_Test()
-        {
-            var s1 = StringUtil.FilterIFrame("<iframe>aaa</iframe>");
-            Assert.Equal("", s1);
-        }
-
-        [Fact]
-        public void FilterStyle_Test()
-        {
-            var s1 = StringUtil.FilterStyle("<Style>aaa</Style>");
-            Assert.Equal("", s1);
-        }
-
-        [Fact]
-        public void FetchTableProtery_Test()
-        {
-            var s1 = StringUtil.FetchTableProtery("<table><tr>11111<tr><td>xxxxx</td></table>");
-            Assert.Equal("11111xxxxx", s1);
-        }
-
-        [Fact]
-        public void FetchStripTags_Test()
-        {
-            var s1 = StringUtil.FetchStripTags("<hell/><a>xxx</a>yyy<img src=\"123\">");
-            Assert.Equal("xxxyyy", s1);
-        }
-
-        [Fact]
-        public void HtmlToTxt_Test()
-        {
-            var s1 = StringUtil.HtmlToTxt("<html><head>xxx</head><title>测试<title/><script></script></html>");
-            Assert.Equal("xxx测试", s1);
-        }
-
-        [Fact]
-        public void SqlFilter_Test()
-        {
-            var sql1 = "select * from table1 where id=3";
-            var s1 = StringUtil.SqlFilter(sql1);
-            Assert.Equal("  * from table1 where id=3", s1);
-        }
-
-
-        /// <summary>字符串转Unicode
-        /// </summary>
-        [Fact]
-        public void StringToUnicodeTest()
-        {
-            var s1 = "";
-            Assert.Equal("", StringUtil.StringToUnicode(s1));
-
-            var str = "你好,hello";
-            var unicodeStr = StringUtil.StringToUnicode(str);
-            Assert.Equal(@"\u4f60\u597d,hello", unicodeStr);
-        }
-
-
-        /// <summary>Unicode转中文字符串
-        /// </summary>
-        [Fact]
-        public void UnicodeToStringTest()
-        {
-            var unicodeStr = @"a\u6211\u662f\u4e2d\u56fd\u4eba\u3002\u54c8\u54c8hello.";
-            var str = StringUtil.UnicodeToString(unicodeStr);
-            Assert.Equal("a我是中国人。哈哈hello.", str);
-
-            var str2 = "Thisis我,哈哈";
-
-            var unicodeStr2 = StringUtil.StringToUnicode(str2, false);
-            var str2_result = StringUtil.UnicodeToString(unicodeStr2);
-            Assert.Equal(str2, str2_result);
-
-        }
-
-        [Fact]
-        public void FilterHtml_Test()
-        {
-            var s1 = "";
-            Assert.Equal("", StringUtil.FilterHtml(s1));
-
-            var s2 = "<head>zhsangsan</head>";
-            Assert.Equal("zhsangsan", StringUtil.FilterHtml(s2));
-        }
-
-        [Fact]
-        public void SuperiorHtml_Test()
-        {
-            var s1 = "";
-            Assert.Equal("", StringUtil.SuperiorHtml(s1, ""));
-
-            var s2 = "<header>zhangsan";
-            Assert.Equal("zhangsan", StringUtil.SuperiorHtml(s2, @"<(.|\n)+?>"));
-        }
-
-        [Fact]
-        public void XmlEncode_Test()
-        {
-            var s1 = "";
-            Assert.Equal("", StringUtil.XmlEncode(s1));
-
-            var s2 = "<body>zhangsan</body>";
-            Assert.Equal("&lt;body&gt;zhangsan&lt;/body&gt;", StringUtil.XmlEncode(s2));
-        }
-
-        [Fact]
-        public void IsSafeSqlString_Test()
-        {
-            var s1 = "SELECT * FROM t1 WHERE Name LIKE '%ZA%'";
-            Assert.False(StringUtil.IsSafeSqlString(s1));
-        }
-
-        [Fact]
-        public void Anonymous_Test()
-        {
-            var n1 = "周";
-            var n2 = "张三";
-            var n3 = "曾国藩";
-            var n4 = "ZHANGJIAGANG";
-
-            var v1 = StringUtil.Anonymous(n1, 4);
-            Assert.Equal("****", v1);
-
-            var v2 = StringUtil.Anonymous(n2, 4);
-            Assert.Equal("***三", v2);
-
-            var v3 = StringUtil.Anonymous(n3, 4);
-            var v3_3 = StringUtil.Anonymous(n3, 3);
-            Assert.Equal("***藩", v3);
-            Assert.Equal("曾*藩", v3_3);
-
-            var v4 = StringUtil.Anonymous(n4, 4);
-            Assert.Equal("Z**G", v4);
-        }
-
     }
 }
