@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -6,115 +6,107 @@ using System.Text;
 namespace DotCommon.Utility
 {
     /// <summary>
-    /// 路径工具类
+    /// Provides utility methods for working with file and directory paths.
     /// </summary>
     public static class PathUtil
     {
-
         /// <summary>
-        /// 如果路径是绝对路径,则原样返回,否则就结合AppDomain.CurrentDomain.SetupInformation.ApplicationBase
-        /// 路径总是服务器的相对路径
+        /// Resolves a given path to an absolute path. If the path is already absolute, it is returned as is.
+        /// Otherwise, it is combined with the application's base directory.
         /// </summary>
-        /// <param name="path">路径地址</param>
-        /// <returns></returns>
-        public static string LocateServerPath(string path = "")
+        /// <param name="path">The path to resolve. Can be absolute or relative.</param>
+        /// <returns>The absolute path.</returns>
+        public static string GetAbsolutePath(string path = "")
         {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return AppContext.BaseDirectory;
+            }
             if (!Path.IsPathRooted(path))
             {
-                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+                return Path.Combine(AppContext.BaseDirectory, path);
             }
             return path;
         }
 
         /// <summary>
-        /// 合并相对路径
+        /// Combines an array of paths into a single path.
+        /// This method correctly handles path separators for the current operating system.
         /// </summary>
-        /// <param name="relativePaths">多个相对路径数组</param>
-        /// <returns></returns>
-        public static string CombineRelative(params string[] relativePaths)
+        /// <param name="paths">An array of paths to combine.</param>
+        /// <returns>The combined path.</returns>
+        public static string CombinePaths(params string[] paths)
         {
-            var pathBuilder = new StringBuilder();
-            for (int i = 0; i < relativePaths.Length; i++)
+            if (paths == null || paths.Length == 0)
             {
-                if (i > 0)
-                {
-                    relativePaths[i] = relativePaths[i].Replace("~/", "").Replace("../", "");
-                }
-                if (!relativePaths[i].EndsWith("/"))
-                {
-                    relativePaths[i] = $"{relativePaths[i]}/";
-                }
-                if (relativePaths[i].StartsWith("/"))
-                {
-                    relativePaths[i] = relativePaths[i].Remove(0, 1);
-                }
-                pathBuilder.Append(relativePaths[i]);
+                return string.Empty;
             }
-            pathBuilder.Remove(pathBuilder.Length - 1, 1);
-            return pathBuilder.ToString();
+            return Path.Combine(paths);
         }
 
-
         /// <summary>
-        /// 绝对目录回退,兼容Linux
+        /// Navigates up the directory tree from a given path by a specified number of layers.
         /// </summary>
-        /// <param name="path">绝对路径地址</param>
-        /// <param name="layerCount">回退层数</param>
-        /// <returns></returns>
-        public static string BackDirectory(string path, int layerCount = 1)
+        /// <param name="path">The starting absolute path.</param>
+        /// <param name="layerCount">The number of layers to go up. Must be non-negative.</param>
+        /// <returns>The ancestor directory path. If navigating beyond the root, the root path is returned.</returns>
+        /// <exception cref="ArgumentException">Thrown if the provided path is not absolute or layerCount is negative.</exception>
+        public static string GetAncestorDirectory(string path, int layerCount = 1)
         {
             if (!Path.IsPathRooted(path))
             {
-                return path;
+                throw new ArgumentException("Path must be an absolute path.", nameof(path));
             }
-            //默认为Linux合并符
-            var combineChar = Path.DirectorySeparatorChar;
-            //默认Linux盘符,为空
-            var rootPath = Path.GetPathRoot(path);
-            //windows不包含盘符
-            var pathSpilts = path.Split(combineChar).Where(x => !x.IsNullOrWhiteSpace() && !x.Contains(":")).ToList();
-            //如果路径集的个数小于回退目录的个数,那么就直接返回根目录
-            if (pathSpilts.Count <= layerCount)
+            if (layerCount < 0)
             {
-                return rootPath;
+                throw new ArgumentException("Layer count cannot be negative.", nameof(layerCount));
             }
-            //移除不要的
-            pathSpilts.RemoveRange(pathSpilts.Count - layerCount, layerCount);
-            //路径集合中加入盘符
-            pathSpilts.Insert(0, rootPath);
-            return Path.Combine(pathSpilts.ToArray());
+
+            // Normalize path separators to the current OS's separator
+            string normalizedPath = path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            string? currentPath = normalizedPath;
+            for (int i = 0; i < layerCount; i++)
+            {
+                if (currentPath == null || Path.GetPathRoot(currentPath) == currentPath)
+                {
+                    // Already at or above the root
+                    return Path.GetPathRoot(normalizedPath);
+                }
+                currentPath = Path.GetDirectoryName(currentPath);
+            }
+            return currentPath ?? Path.GetPathRoot(normalizedPath); // Return root if currentPath becomes null
         }
 
         /// <summary>
-        /// 将相对路径转换成绝对路径
+        /// Resolves a virtual path (e.g., "~/", "../") to a physical file system path.
+        /// This method is similar to ASP.NET's Server.MapPath.
         /// </summary>
-        /// <param name="relativePath">相对路径地址</param>
-        /// <returns></returns>
-        public static string MapPath(string relativePath)
+        /// <param name="virtualPath">The virtual path to resolve.</param>
+        /// <returns>The resolved physical path.</returns>
+        public static string ResolveVirtualPath(string virtualPath)
         {
-            string locatePath = LocateServerPath();
-            //默认回退的文件夹数为2;
-            var backLayer = 2;
-            //根据相对路径获取回退的层数
-            backLayer += relativePath.Length - relativePath.Replace("../", "..").Length;
-            var path = BackDirectory(locatePath, backLayer);
-            var usefulPaths = relativePath.Split('/').Where(x => x != ".." && x != "~");
-            return Path.Combine(path, Path.Combine(usefulPaths.ToArray()));
+            if (string.IsNullOrWhiteSpace(virtualPath))
+            {
+                return AppContext.BaseDirectory;
+            }
+
+            // Handle application root (~) and parent directory (..) references
+            string fullPath = virtualPath.Replace("~/", AppContext.BaseDirectory);
+            fullPath = Path.GetFullPath(fullPath);
+
+            return fullPath;
         }
 
         /// <summary>
-        /// 获取某个路径,或者文件中的文件扩展名
+        /// Gets the file extension of the specified path string.
         /// </summary>
-        /// <param name="path">路径或者文件地址</param>
-        /// <returns></returns>
-        public static string GetPathExtension(string path)
+        /// <param name="path">The path string from which to get the extension.</param>
+        /// <returns>The extension of the specified path (including the "period "."), or <c>null</c> if the path is null, 
+        /// or an empty string if the path does not have extension information.</returns>
+        public static string? GetFileExtension(string? path)
         {
-            if (!path.IsNullOrWhiteSpace() && path.IndexOf('.') >= 0)
-            {
-                return path.Substring(path.LastIndexOf('.'));
-            }
-            return "";
+            return Path.GetExtension(path);
         }
-
     }
 }

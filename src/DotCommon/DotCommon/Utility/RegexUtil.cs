@@ -1,261 +1,253 @@
-﻿using System;
+using System;
 using System.Globalization;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
 {
     /// <summary>
-    /// 正则表达式工具类
+    /// A utility class for regular expression and string validation operations.
     /// </summary>
     public static class RegexUtil
     {
+        // Using a timeout for all regex operations to prevent ReDoS attacks.
+        private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(100);
+
         /// <summary>
-        /// 匹配正则表达式
+        /// Checks if the input string matches the given regular expression pattern.
         /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="pattern">正则表达式</param>
-        /// <returns></returns>
+        /// <param name="source">The string to validate.</param>
+        /// <param name="pattern">The regular expression pattern to use.</param>
+        /// <returns>True if the input string matches the pattern; otherwise, false.</returns>
         public static bool IsMatch(string source, string pattern)
         {
             return IsMatch(source, pattern, RegexOptions.IgnoreCase);
         }
 
         /// <summary>
-        /// 匹配正则表达式
+        /// Checks if the input string matches the given regular expression pattern with the specified options.
         /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="pattern">正则表达式</param>
-        /// <param name="options">正则表达式属性</param>
-        /// <returns></returns>
+        /// <param name="source">The string to validate.</param>
+        /// <param name="pattern">The regular expression pattern to use.</param>
+        /// <param name="options">The regular expression options.</param>
+        /// <returns>True if the input string matches the pattern; otherwise, false.</returns>
         public static bool IsMatch(string source, string pattern, RegexOptions options)
         {
-            var regex = new Regex(pattern, options);
-            return NotNull(source) && regex.IsMatch(source);
-        }
-
-
-        /// <summary>
-        /// 判断是否为空
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <returns></returns>
-        private static bool NotNull(string source)
-        {
-            return !source.IsNullOrWhiteSpace();
-        }
-
-
-        /// <summary>
-        /// 验证是否为手机号码
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <returns></returns>
-        public static bool IsMobileNumber(string source)
-        {
-            const string pattern = @"^1+\d{10}$";
-            return IsMatch(source, pattern);
-        }
-
-        /// <summary>
-        /// 验证是否为Email地址
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <returns></returns>
-        public static bool IsEmailAddress(string source)
-        {
-            const string pattern =
-                @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
-            return IsMatch(source, pattern);
-        }
-
-        /// <summary>
-        /// 验证是否为Url地址
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <returns></returns>
-        public static bool IsUrl(string source)
-        {
-            const string pattern =
-                @"^(http|https)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|localhost|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{1,10}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&%\$#\=~_\-]+))*$";
-            return IsMatch(source, pattern);
-        }
-
-        /// <summary>
-        /// 是否包含中文
-        /// </summary>
-        public static bool IsChinese(string source)
-        {
-            const string pattern = "^[/u4e00-/u9fa5]$";
-            return IsMatch(source, pattern);
-        }
-
-        /// <summary>
-        /// 是否为IP地址
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <returns></returns>
-        public static bool IsIp(string source)
-        {
-            const string pattern =
-                @"^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$";
-            return IsMatch(source, pattern);
-        }
-
-        /// <summary>
-        /// 是否为1-9的正整数
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <returns></returns>
-        public static bool IsPositiveInteger(string source)
-        {
-            const string pattern = @"^[1-9]+\d*$";
-            return IsMatch(source, pattern);
-        }
-
-        /// <summary>
-        /// 是否为Int32类型
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <returns></returns>
-        public static bool IsInt32(string source)
-        {
-            const string pattern = @"^(\-|\+)?[0-9]*$";
-            return IsMatch(source, pattern);
-        }
-
-        /// <summary>
-        /// 是否为double类型
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="digit">数据位数</param>
-        /// <returns></returns>
-        public static bool IsDouble(string source, int digit = 3)
-        {
-            string pattern = $@"^\d{{1,9}}[.]?\d{{0,{digit}}}$";
-            return IsMatch(source, pattern);
-        }
-
-        /// <summary>
-        /// 判断是否为double类型
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="minValue">最小值</param>
-        /// <param name="maxValue">最大值</param>
-        /// <param name="digit">数据位数</param>
-        /// <returns></returns>
-        public static bool IsDouble(string source, double minValue, double maxValue, int digit = 3)
-        {
-            string patten = $@"^\d{{1,9}}[.]?\d{{0,{digit}}}$";
-            if (IsMatch(source, patten))
+            if (string.IsNullOrWhiteSpace(source))
             {
-                double val = Convert.ToDouble(source);
-                if (val >= minValue && val <= maxValue)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 判断是否为decimal类型
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="digit">数据位数</param>
-        /// <returns></returns>
-        public static bool IsDecimal(string source, int digit = 3)
-        {
-            string patten = $@"^\d{{1,9}}[.]?\d{{0,{digit}}}$";
-            return IsMatch(source, patten);
-        }
-
-        /// <summary>
-        /// 判断是否为decimal类型
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="minValue">最小值</param>
-        /// <param name="maxValue">最大值</param>
-        /// <param name="digit">数据位数</param>
-        /// <returns></returns>
-        public static bool IsDecimal(string source, decimal minValue, decimal maxValue, int digit = 3)
-        {
-            string patten = $@"^\d{{1,9}}[.]?\d{{0,{digit}}}$";
-            if (IsMatch(source, patten))
-            {
-                decimal val = Convert.ToDecimal(source);
-                if (val >= minValue && val <= maxValue)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 是否为有效的日期时间
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <returns></returns>
-        public static bool IsDataTime(string source)
-        {
-            return NotNull(source) && DateTime.TryParse(source, CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
-        }
-
-
-        /// <summary>
-        /// 是否为有效的版本号 1.3,1.1.5,1.25.256
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="len">长度</param>
-        /// <returns></returns>
-        public static bool IsVersion(string source, int len = 5)
-        {
-            string pattern = $@"^\d{{0,6}}\.(\d{{1,6}}\.){{0,{len}}}\d{{1,6}}$";
-            return IsMatch(source, pattern);
-        }
-
-
-        /// <summary>
-        /// 是否为新版本,后面的版本版是否大于前面的版本
-        /// </summary>
-        /// <param name="oldVersion">原版本</param>
-        /// <param name="newVersion">新版本</param>
-        /// <returns></returns>
-        public static bool IsVersionUpper(string oldVersion, string newVersion)
-        {
-            if (!IsVersion(oldVersion))
-            {
-                throw new ArgumentException($"旧版本 oldVersion:{oldVersion}不是一个有效的版本号.");
-            }
-            if (!IsVersion(newVersion))
-            {
-                throw new ArgumentException($"新版本 newVersion:{newVersion}不是一个有效的版本号.");
-            }
-
-            string[] strOld = oldVersion.Split('.');
-            string[] strNew = newVersion.Split('.');
-            int length = strOld.Length > strNew.Length ? strNew.Length : strOld.Length;
-            for (int i = 0; i < length; i++)
-            {
-                if (Convert.ToInt32(strOld[i]) == Convert.ToInt32(strNew[i]))
-                {
-                    continue;
-                }
-                //如果判断新版本比较高,则直接返回
-                if (Convert.ToInt32(strOld[i]) < Convert.ToInt32(strNew[i]))
-                {
-                    return true;
-                }
                 return false;
             }
-            //如果后面的版本长度大于前面的,那么就为true
-            if (strNew.Length > strOld.Length)
+            try
             {
-                return true;
+                return Regex.IsMatch(source, pattern, options, RegexTimeout);
             }
-
-            return false;
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
         }
 
+        /// <summary>
+        /// Validates if the string is a mobile phone number.
+        /// This pattern is a general one for Chinese mobile numbers.
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <returns>True if the string is a valid mobile number; otherwise, false.</returns>
+        public static bool IsMobileNumber(string source)
+        {
+            const string pattern = @"^1[3-9]\d{9}$";
+            return IsMatch(source, pattern);
+        }
+
+        /// <summary>
+        /// Validates if the string is a valid email address.
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <returns>True if the string is a valid email address; otherwise, false.</returns>
+        public static bool IsEmailAddress(string source)
+        {
+            // This regex is a widely used pattern for email validation.
+            const string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return IsMatch(source, pattern, RegexOptions.IgnoreCase);
+        }
+
+        /// <summary>
+        /// Validates if the string is a valid URL (http or https).
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <returns>True if the string is a valid URL; otherwise, false.</returns>
+        public static bool IsUrl(string source)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                return false;
+            }
+            return Uri.TryCreate(source, UriKind.Absolute, out var uriResult)
+                   && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
+
+        /// <summary>
+        /// Validates if the string contains only Chinese characters.
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <returns>True if the string consists only of Chinese characters; otherwise, false.</returns>
+        public static bool IsChinese(string source)
+        {
+            const string pattern = @"^[\u4e00-\u9fa5]+$";
+            return IsMatch(source, pattern);
+        }
+
+        /// <summary>
+        /// Validates if the string is a valid IP address (IPv4).
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <returns>True if the string is a valid IP address; otherwise, false.</returns>
+        public static bool IsIp(string source)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                return false;
+            }
+            return IPAddress.TryParse(source, out _);
+        }
+
+        /// <summary>
+        /// Validates if the string is a positive integer (greater than 0).
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <returns>True if the string is a positive integer; otherwise, false.</returns>
+        public static bool IsPositiveInteger(string source)
+        {
+            if (!IsInt32(source))
+            {
+                return false;
+            }
+            return int.Parse(source) > 0;
+        }
+
+        /// <summary>
+        /// Validates if the string can be converted to an Int32.
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <returns>True if the string represents a valid Int32; otherwise, false.</returns>
+        public static bool IsInt32(string source)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                return false;
+            }
+            return int.TryParse(source, out _);
+        }
+
+        /// <summary>
+        /// Validates if the string can be converted to a double.
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <returns>True if the string represents a valid double; otherwise, false.</returns>
+        public static bool IsDouble(string source)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                return false;
+            }
+            return double.TryParse(source, out _);
+        }
+
+        /// <summary>
+        /// Validates if the string can be converted to a double and is within a specified range.
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <param name="minValue">The minimum allowed value.</param>
+        /// <param name="maxValue">The maximum allowed value.</param>
+        /// <returns>True if the string is a valid double within the range; otherwise, false.</returns>
+        public static bool IsDouble(string source, double minValue, double maxValue)
+        {
+            if (!IsDouble(source))
+            {
+                return false;
+            }
+            var val = double.Parse(source);
+            return val >= minValue && val <= maxValue;
+        }
+
+        /// <summary>
+        /// Validates if the string can be converted to a decimal.
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <returns>True if the string represents a valid decimal; otherwise, false.</returns>
+        public static bool IsDecimal(string source)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                return false;
+            }
+            return decimal.TryParse(source, out _);
+        }
+
+        /// <summary>
+        /// Validates if the string can be converted to a decimal and is within a specified range.
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <param name="minValue">The minimum allowed value.</param>
+        /// <param name="maxValue">The maximum allowed value.</param>
+        /// <returns>True if the string is a valid decimal within the range; otherwise, false.</returns>
+        public static bool IsDecimal(string source, decimal minValue, decimal maxValue)
+        {
+            if (!IsDecimal(source))
+            {
+                return false;
+            }
+            var val = decimal.Parse(source);
+            return val >= minValue && val <= maxValue;
+        }
+
+        /// <summary>
+        /// Validates if the string is a valid DateTime.
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <returns>True if the string is a valid DateTime; otherwise, false.</returns>
+        public static bool IsDataTime(string source)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                return false;
+            }
+            return DateTime.TryParse(source, CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
+        }
+
+        /// <summary>
+        /// Validates if the string is a valid version string (e.g., "1.0.0").
+        /// </summary>
+        /// <param name="source">The string to validate.</param>
+        /// <returns>True if the string is a valid version; otherwise, false.</returns>
+        public static bool IsVersion(string source)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                return false;
+            }
+            return Version.TryParse(source, out _);
+        }
+
+        /// <summary>
+        /// Compares two version strings to determine if the new version is higher than the old version.
+        /// </summary>
+        /// <param name="oldVersion">The old version string.</param>
+        /// <param name="newVersion">The new version string.</param>
+        /// <returns>True if the new version is higher than the old version; otherwise, false.</returns>
+        /// <exception cref="ArgumentException">Thrown if either version string is not a valid version format.</exception>
+        public static bool IsVersionUpper(string oldVersion, string newVersion)
+        {
+            if (!Version.TryParse(oldVersion, out var oldVer))
+            {
+                throw new ArgumentException($"Invalid version format: {oldVersion}", nameof(oldVersion));
+            }
+            if (!Version.TryParse(newVersion, out var newVer))
+            {
+                throw new ArgumentException($"Invalid version format: {newVersion}", nameof(newVersion));
+            }
+
+            return newVer > oldVer;
+        }
     }
 }

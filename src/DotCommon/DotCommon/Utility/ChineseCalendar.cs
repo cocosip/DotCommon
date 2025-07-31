@@ -4,12 +4,15 @@ namespace DotCommon.Utility
 {
     #region ChineseCalendarException
 
-    /// <summary>中国日历异常处理
+    /// <summary>
+    /// Represents an exception specific to Chinese calendar operations.
     /// </summary>
     public class ChineseCalendarException : Exception
     {
-        /// <summary>ctor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChineseCalendarException"/> class with a specified error message.
         /// </summary>
+        /// <param name="msg">The message that describes the error.</param>
         public ChineseCalendarException(string msg)
             : base(msg)
         {
@@ -19,20 +22,33 @@ namespace DotCommon.Utility
     #endregion
 
     /// <summary>
-    /// 中国农历类 版本V1.0 支持 1900.1.31日起至 2049.12.31日止的数据。
-    /// 本程序使用数据来源于网上的万年历查询，并综合了一些其它数据
+    /// Represents the Chinese Lunar Calendar. Version V1.0 supports data from January 31, 1900, to December 31, 2049.
+    /// This program uses data sourced from online perpetual calendars and other combined data.
     /// </summary>
     public class ChineseCalendar
     {
-        #region 内部结构
+        #region Internal Structures
 
+        /// <summary>
+        /// Represents a solar holiday with its month, day, recess duration, and name.
+        /// </summary>
         private struct SolarHolidayStruct
         {
+            /// <summary>The month of the holiday.</summary>
             public readonly int Month;
+            /// <summary>The day of the holiday.</summary>
             public readonly int Day;
-            private int _recess; //假期长度
+            private readonly int _recess; // Duration of the holiday recess
+            /// <summary>The name of the holiday.</summary>
             public readonly string HolidayName;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="SolarHolidayStruct"/>.
+            /// </summary>
+            /// <param name="month">The month of the holiday.</param>
+            /// <param name="day">The day of the holiday.</param>
+            /// <param name="recess">The duration of the holiday recess.</param>
+            /// <param name="holidayName">The name of the holiday.</param>
             public SolarHolidayStruct(int month, int day, int recess, string holidayName)
             {
                 Month = month;
@@ -42,13 +58,26 @@ namespace DotCommon.Utility
             }
         }
 
+        /// <summary>
+        /// Represents a lunar holiday with its month, day, recess duration, and name.
+        /// </summary>
         private struct LunarHolidayStruct
         {
+            /// <summary>The month of the holiday.</summary>
             public readonly int Month;
+            /// <summary>The day of the holiday.</summary>
             public readonly int Day;
-            private int _recess;
+            private readonly int _recess;
+            /// <summary>The name of the holiday.</summary>
             public readonly string HolidayName;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="LunarHolidayStruct"/>.
+            /// </summary>
+            /// <param name="month">The month of the holiday.</param>
+            /// <param name="day">The day of the holiday.</param>
+            /// <param name="recess">The duration of the holiday recess.</param>
+            /// <param name="holidayName">The name of the holiday.</param>
             public LunarHolidayStruct(int month, int day, int recess, string holidayName)
             {
                 Month = month;
@@ -58,13 +87,27 @@ namespace DotCommon.Utility
             }
         }
 
+        /// <summary>
+        /// Represents a holiday defined by its month, week of the month, day of the week, and name.
+        /// </summary>
         private struct WeekHolidayStruct
         {
+            /// <summary>The month of the holiday.</summary>
             public readonly int Month;
+            /// <summary>The week number within the month (e.g., 2 for the second week).</summary>
             public readonly int WeekAtMonth;
+            /// <summary>The day of the week (e.g., 1 for Monday, 7 for Sunday).</summary>
             public readonly int WeekDay;
+            /// <summary>The name of the holiday.</summary>
             public readonly string HolidayName;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="WeekHolidayStruct"/>.
+            /// </summary>
+            /// <param name="month">The month of the holiday.</param>
+            /// <param name="weekAtMonth">The week number within the month.</param>
+            /// <param name="weekDay">The day of the week.</param>
+            /// <param name="name">The name of the holiday.</param>
             public WeekHolidayStruct(int month, int weekAtMonth, int weekDay, string name)
             {
                 Month = month;
@@ -76,16 +119,16 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 内部变量
+        #region Internal Variables
 
         private DateTime _date;
         private readonly DateTime _datetime;
 
         private readonly int _cYear;
-        private readonly int _cMonth; //农历月份
-        private readonly int _cDay; //农历当月第几天
-        private readonly bool _isLeapMonth; //当月是否闰月
-        private readonly bool _isLeapYear; //当年是否有闰月
+        private readonly int _cMonth; // Lunar month
+        private readonly int _cDay; // Day of the lunar month
+        private readonly bool _isLeapMonth; // Indicates if the current month is a leap month
+        private readonly bool _isLeapYear; // Indicates if the current lunar year has a leap month
 
         #endregion
 

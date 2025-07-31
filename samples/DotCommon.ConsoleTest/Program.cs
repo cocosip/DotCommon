@@ -27,10 +27,8 @@ namespace DotCommon.ConsoleTest
             var provider = services.BuildServiceProvider();
 
 
-            SnowflakeDistributeId snowflakeDistributeId = new SnowflakeDistributeId(1, 2);
-
-            Console.WriteLine(snowflakeDistributeId.NextId());
-            Console.WriteLine(snowflakeDistributeId.NextId());
+            Console.WriteLine(Snowflake.Default.NextId());
+            Console.WriteLine(Snowflake.Default.NextId());
 
 
             var sm2Service = provider.GetService<ISm2EncryptionService>();

@@ -1,8 +1,8 @@
-﻿using DotCommon.Utility;
+using DotCommon.Utility;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DotCommon.Test.Utility
@@ -10,58 +10,89 @@ namespace DotCommon.Test.Utility
     public class SnowflakeTest
     {
         [Fact]
-        public void Snowflake_Test()
+        public void Constructor_ValidWorkerAndDatacenterId_ShouldInitializeCorrectly()
         {
-            var snowflake = new SnowflakeDistributeId(1);
+            var snowflake = new Snowflake(1, 1);
+            Assert.NotNull(snowflake);
+        }
 
-            var v1 = snowflake.NextId();
-            var v2 = snowflake.NextId();
-            var v3 = new SnowflakeDistributeId().NextId();
+        [Fact]
+        public void Constructor_CustomParameters_ShouldInitializeCorrectly()
+        {
+            long customEpoch = 1500000000000L; // July 14, 2017
+            int workerIdBits = 3;
+            int datacenterIdBits = 2;
+            int sequenceBits = 10;
+            long workerId = 5; // Max for 3 bits is 7
+            long datacenterId = 2; // Max for 2 bits is 3
 
-            Assert.True(v1 > 0);
-            Assert.True(v2 > 0);
-            Assert.True(v3 > 0);
+            var snowflake = new Snowflake(customEpoch, workerIdBits, datacenterIdBits, sequenceBits, workerId, datacenterId);
+            Assert.NotNull(snowflake);
+        }
 
-            var snowflake2 = new SnowflakeDistributeId(0L, 0L);
-            var v2_1 = snowflake2.NextId();
-            var v2_2 = snowflake2.NextId();
+        [Fact]
+        public void Constructor_InvalidWorkerId_ShouldThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new Snowflake(32, 0)); // Default 5 bits for workerId
+            Assert.Throws<ArgumentException>(() => new Snowflake(0, 0, 0, 0, -1, 0)); // Custom bits, invalid workerId
+            Assert.Throws<ArgumentException>(() => new Snowflake(0, 3, 2, 10, 8, 0)); // Custom bits, workerId too large (max 7 for 3 bits)
+        }
 
-            Assert.True(v2_1 > 0);
-            Assert.True(v2_2 > 0);
+        [Fact]
+        public void Constructor_InvalidDatacenterId_ShouldThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new Snowflake(0, 32)); // Default 5 bits for datacenterId
+            Assert.Throws<ArgumentException>(() => new Snowflake(0, 0, 0, 0, 0, -1)); // Custom bits, invalid datacenterId
+            Assert.Throws<ArgumentException>(() => new Snowflake(0, 3, 2, 10, 0, 4)); // Custom bits, datacenterId too large (max 3 for 2 bits)
+        }
 
-            Assert.Throws<ArgumentException>(() =>
+        [Fact]
+        public void NextId_ShouldGenerateUniqueIds()
+        {
+            var snowflake = new Snowflake(1, 1);
+            var ids = new HashSet<long>();
+            for (int i = 0; i < 10000; i++)
             {
-                var snowflake3 = new SnowflakeDistributeId(1000);
-            });
-            Assert.Throws<ArgumentException>(() =>
+                ids.Add(snowflake.NextId());
+            }
+            Assert.Equal(10000, ids.Count);
+        }
+
+        [Fact]
+        public void NextId_ShouldGenerateMonotonicallyIncreasingIds()
+        {
+            var snowflake = new Snowflake(1, 1);
+            long lastId = 0;
+            for (int i = 0; i < 10000; i++)
             {
-                var snowflake3 = new SnowflakeDistributeId(1L, 300);
-            });
-
-            Assert.Throws<InvalidTimeZoneException>(() =>
-            {
-                var snowflake3 = new SnowflakeDistributeId(0L, 0L);
-                var lastTimestampValue = (long)(DateTime.Now.AddDays(10) - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
-
-                BindingFlags flag = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance;
-                FieldInfo f_lastTimestamp = typeof(SnowflakeDistributeId).GetField("lastTimestamp", flag);
-                f_lastTimestamp.SetValue(snowflake3, lastTimestampValue);
-                var r = snowflake3.NextId();
-
-            });
-
-            {
-                BindingFlags flag = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance;
-                FieldInfo f_lastTimestamp = typeof(SnowflakeDistributeId).GetField("lastTimestamp", flag);
-                var lastTimestamp = f_lastTimestamp.GetValue(snowflake);
-
-                MethodInfo method = snowflake.GetType().GetMethod("TilNextMillis", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Instance);
-                var next = Convert.ToInt64(method.Invoke(snowflake, new object[] { lastTimestamp }));
-                Assert.True(next > 0);
+                long currentId = snowflake.NextId();
+                Assert.True(currentId > lastId);
+                lastId = currentId;
             }
         }
 
+        [Fact]
+        public async Task NextId_ShouldHandleConcurrency()
+        {
+            var snowflake = new Snowflake(1, 1);
+            var ids = new System.Collections.Concurrent.ConcurrentBag<long>();
+            var tasks = new List<Task>();
 
+            for (int i = 0; i < 10; i++)
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    for (int j = 0; j < 1000; j++)
+                    {
+                        ids.Add(snowflake.NextId());
+                    }
+                }));
+            }
 
+            await Task.WhenAll(tasks.ToArray());
+            Assert.Equal(10000, ids.Distinct().Count());
+        }
+
+        
     }
 }

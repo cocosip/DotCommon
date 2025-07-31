@@ -13,7 +13,7 @@ namespace DotCommon.Test.IO
         [Fact]
         public void CreateIfNotExists_Test()
         {
-            var path = PathUtil.LocateServerPath();
+            var path = PathUtil.GetAbsolutePath();
             var createPath1 = Path.Combine(path, "test01\\");
 
             DirectoryHelper.CreateIfNotExists(createPath1);
@@ -34,7 +34,7 @@ namespace DotCommon.Test.IO
         public void DirectoryCopy_Test()
         {
 
-            var path = PathUtil.LocateServerPath();
+            var path = PathUtil.GetAbsolutePath();
             var sourcePath1 = Path.Combine(path, "source1\\");
             var sourcePath1_1 = Path.Combine(sourcePath1, "source1_1\\");
             DirectoryHelper.CreateIfNotExists(sourcePath1);

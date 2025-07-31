@@ -1,7 +1,6 @@
-﻿using DotCommon.Utility;
+using DotCommon.Utility;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace DotCommon.Test.Utility
@@ -9,138 +8,238 @@ namespace DotCommon.Test.Utility
     public class DateTimeUtilTest
     {
         [Fact]
-        public void ToInt32_FromInt32_Test()
+        public void ToInt32_FromDateTime_Test()
         {
-            var dateTime = DateTime.Now.ToLocalTime();
-            var int32DateTime = DateTimeUtil.ToInt32(dateTime);
-            Assert.True(int32DateTime > 0);
-            var dateTime2 = DateTimeUtil.ToDateTime(int32DateTime);
-
-            var dvalue = dateTime2 - dateTime;
-            Assert.True(dvalue.TotalSeconds < 1);
-
-            var int32DateTime2 = DateTimeUtil.ToInt32(dateTime.ToString("yyyy-MM-dd hh:mm:ss"), 0);
-            var dateTime3 = DateTimeUtil.ToDateTime(int32DateTime2);
-
-            //var dvalue2 = dateTime3 - dateTime;
-            //Assert.True(dvalue2.TotalSeconds < 2);
-
-            var int32DateTime4 = DateTimeUtil.ToInt32("2019-08-12 111111", 33);
-            Assert.Equal(33, int32DateTime4);
-        }
-
-
-        [Fact]
-        public void ToInt64_FromInt64_Test()
-        {
-            var dateTime = DateTime.Now;
-            var int64DateTime = DateTimeUtil.ToInt64(dateTime);
-            Assert.True(int64DateTime > 0);
-            var dateTime2 = DateTimeUtil.ToDateTime(int64DateTime);
-
-            var dvalue = dateTime2 - dateTime;
-            Assert.True(dvalue.TotalSeconds < 1);
-
-            var d2 = DateTime.UtcNow;
-            var i1 = DateTimeUtil.ToInt64(dateTime);
-            var d2_2 = DateTimeUtil.ToDateTime(i1);
-            Assert.Equal(d2.Hour, d2_2.Hour);
+            var dateTime = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var unixTimestamp = DateTimeUtil.ToInt32(dateTime);
+            Assert.Equal(1672531200, unixTimestamp); // Unix timestamp for 2023-01-01 00:00:00 UTC
         }
 
         [Fact]
-        public void GetPad_Test()
+        public void ToInt64_FromDateTime_Test()
         {
-            var dateTime = new DateTime(2019, 3, 5, 23, 0, 0);
-            var padDayExpected = "20190305";
-            Assert.Equal(padDayExpected, DateTimeUtil.GetPadDay(dateTime));
-
-            var padSecondExpected = "20190305230000";
-            Assert.Equal(padSecondExpected, DateTimeUtil.GetPadSecond(dateTime));
-
-            var padSecondWithoutPrefixExpected = "190305230000";
-            Assert.Equal(padSecondWithoutPrefixExpected, DateTimeUtil.GetPadSecondWithoutPrefix(dateTime));
-
-            var padMillSecondExpected = "20190305230000000";
-            Assert.Equal(padMillSecondExpected, DateTimeUtil.GetPadMillSecond(dateTime));
-
-            var padMillSecondWithoutPrefixExpected = "190305230000000";
-            Assert.Equal(padMillSecondWithoutPrefixExpected, DateTimeUtil.GetPadMillSecondWithoutPrefix(dateTime));
+            var dateTime = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var unixTimestampMs = DateTimeUtil.ToInt64(dateTime);
+            Assert.Equal(1672531200000, unixTimestampMs); // Unix timestamp in milliseconds for 2023-01-01 00:00:00 UTC
         }
 
         [Fact]
-        public void GetWeek_Test()
+        public void ToInt32_FromString_Valid_Test()
         {
-            var dt1 = new DateTime(2019, 8, 3);
-            var dt2 = new DateTime(2019, 8, 6);
-            var weekCrossExpected = "6,0,1,2";
-            Assert.Equal(weekCrossExpected, DateTimeUtil.GetWeekCross(dt1, dt2));
-            Assert.Empty(DateTimeUtil.GetWeekCross(dt2, dt1));
+            string dateTimeString = "2023-01-01 00:00:00";
+            // Convert the string to DateTime, then to UTC, then to Unix timestamp
+            DateTime parsedDateTime = DateTime.Parse(dateTimeString);
+            int expectedUnixTimestamp = DateTimeUtil.ToInt32(parsedDateTime);
 
-            var dt3= new DateTime(2019, 8, 18);
-            Assert.Equal("0,1,2,3,4,5,6", DateTimeUtil.GetWeekCross(dt1, dt3));
+            // Call the method under test
+            int actualUnixTimestamp = DateTimeUtil.ToInt32(dateTimeString, 0);
 
+            // Compare the Unix timestamps directly
+            Assert.Equal(expectedUnixTimestamp, actualUnixTimestamp);
+        }
 
-            var chineseWeekOfDayExpected = "星期日";
-            Assert.Equal(chineseWeekOfDayExpected, DateTimeUtil.GetChineseWeekOfDay(new DateTime(2019, 8, 4)));
+        [Fact]
+        public void ToInt32_FromString_Invalid_Test()
+        {
+            var unixTimestamp = DateTimeUtil.ToInt32("invalid-date", 99);
+            Assert.Equal(99, unixTimestamp);
+        }
 
+        [Fact]
+        public void ToDateTime_FromInt32_Test()
+        {
+            var unixTimestamp = 1672531200; // Unix timestamp for 2023-01-01 00:00:00 UTC
+            var dateTime = DateTimeUtil.ToDateTime(unixTimestamp);
+            // The result is converted to local time, so we compare year, month, day, hour, minute, second
+            Assert.Equal(2023, dateTime.Year);
+            Assert.Equal(1, dateTime.Month);
+            Assert.Equal(1, dateTime.Day);
+            // Hour will depend on local timezone, so we don't assert it directly
+        }
+
+        [Fact]
+        public void ToDateTime_FromInt64_Test()
+        {
+            var unixTimestampMs = 1672531200000; // Unix timestamp in milliseconds for 2023-01-01 00:00:00 UTC
+            var dateTime = DateTimeUtil.ToDateTime(unixTimestampMs);
+            // The result is converted to local time, so we compare year, month, day, hour, minute, second
+            Assert.Equal(2023, dateTime.Year);
+            Assert.Equal(1, dateTime.Month);
+            Assert.Equal(1, dateTime.Day);
+            // Hour will depend on local timezone, so we don't assert it directly
+        }
+
+        [Fact]
+        public void TruncateToMilliseconds_Test()
+        {
+            var originalDateTime = new DateTime(2023, 1, 1, 10, 30, 45, 123, 456);
+            var truncatedDateTime = originalDateTime.TruncateToMilliseconds();
+            Assert.Equal(new DateTime(2023, 1, 1, 10, 30, 45, 123), truncatedDateTime);
+        }
+
+        [Fact]
+        public void TruncateToSeconds_Test()
+        {
+            var originalDateTime = new DateTime(2023, 1, 1, 10, 30, 45, 123, 456);
+            var truncatedDateTime = originalDateTime.TruncateToSeconds();
+            Assert.Equal(new DateTime(2023, 1, 1, 10, 30, 45), truncatedDateTime);
+        }
+
+        [Fact]
+        public void GetPadDay_Test()
+        {
+            var dateTime = new DateTime(2023, 1, 15);
+            Assert.Equal("20230115", DateTimeUtil.GetPadDay(dateTime));
+        }
+
+        [Fact]
+        public void GetPadSecond_Test()
+        {
+            var dateTime = new DateTime(2023, 1, 15, 10, 30, 45);
+            Assert.Equal("20230115103045", DateTimeUtil.GetPadSecond(dateTime));
+        }
+
+        [Fact]
+        public void GetPadSecondWithoutPrefix_Test()
+        {
+            var dateTime = new DateTime(2023, 1, 15, 10, 30, 45);
+            Assert.Equal("230115103045", DateTimeUtil.GetPadSecondWithoutPrefix(dateTime));
+        }
+
+        [Fact]
+        public void GetPadMillSecond_Test()
+        {
+            var dateTime = new DateTime(2023, 1, 15, 10, 30, 45, 123);
+            Assert.Equal("20230115103045123", DateTimeUtil.GetPadMillSecond(dateTime));
+        }
+
+        [Fact]
+        public void GetPadMillSecondWithoutPrefix_Test()
+        {
+            var dateTime = new DateTime(2023, 1, 15, 10, 30, 45, 123);
+            Assert.Equal("230115103045123", DateTimeUtil.GetPadMillSecondWithoutPrefix(dateTime));
+        }
+
+        [Fact]
+        public void GetWeekCross_NormalRange_Test()
+        {
+            var begin = new DateTime(2023, 1, 1); // Sunday
+            var end = new DateTime(2023, 1, 3);   // Tuesday
+            Assert.Equal("0,1,2", DateTimeUtil.GetWeekCross(begin, end));
+        }
+
+        [Fact]
+        public void GetWeekCross_FullWeek_Test()
+        {
+            var begin = new DateTime(2023, 1, 1); // Sunday
+            var end = new DateTime(2023, 1, 7);   // Saturday
+            Assert.Equal("0,1,2,3,4,5,6", DateTimeUtil.GetWeekCross(begin, end));
+        }
+
+        [Fact]
+        public void GetWeekCross_BeginAfterEnd_Test()
+        {
+            var begin = new DateTime(2023, 1, 3);
+            var end = new DateTime(2023, 1, 1);
+            Assert.Empty(DateTimeUtil.GetWeekCross(begin, end));
+        }
+
+        [Fact]
+        public void GetChineseWeekOfDay_Test()
+        {
+            Assert.Equal("星期日", DateTimeUtil.GetChineseWeekOfDay(new DateTime(2023, 1, 1))); // Sunday
+            Assert.Equal("星期一", DateTimeUtil.GetChineseWeekOfDay(new DateTime(2023, 1, 2))); // Monday
+        }
+
+        [Fact]
+        public void GetWeekDays_Test()
+        {
             var weekDays = DateTimeUtil.GetWeekDays();
             Assert.Equal(7, weekDays.Count);
             Assert.Equal("星期日", weekDays[0]);
-
+            Assert.Equal("星期六", weekDays[6]);
         }
 
         [Fact]
-        public void GetDay_Test()
+        public void GetFirstDayOfMonth_Test()
         {
-            var date1 = new DateTime(2019, 8, 13);
-            var firstDayOfMonthExpected = new DateTime(2019, 8, 1);
-            Assert.Equal(firstDayOfMonthExpected, DateTimeUtil.GetFirstDayOfMonth(date1));
-
-            var lastDayOfMonthExpected = new DateTime(2019, 8, 31);
-            Assert.Equal(lastDayOfMonthExpected, DateTimeUtil.GetLastDayOfMonth(date1));
-
-            var firstDayOfYearExpected = new DateTime(2019, 1, 1);
-            Assert.Equal(firstDayOfYearExpected, DateTimeUtil.GetFirstDayOfYear(date1));
-
-            var lastDayOfYearExpected = new DateTime(2019, 12, 31);
-            Assert.Equal(lastDayOfYearExpected, DateTimeUtil.GetLastDayOfYear(date1));
-
-            Assert.False(DateTimeUtil.IsFirstDayOfYear(new DateTime(2019, 1, 2)));
-            Assert.False(DateTimeUtil.IsLastDayOfYear(new DateTime(2019, 12, 30)));
-            Assert.True(DateTimeUtil.IsFirstDayOfMonth(new DateTime(2019, 8, 1)));
-            Assert.True(DateTimeUtil.IsLastDayOfMonth(new DateTime(2019, 8, 31)));
-
+            var dateTime = new DateTime(2023, 5, 15);
+            Assert.Equal(new DateTime(2023, 5, 1), DateTimeUtil.GetFirstDayOfMonth(dateTime));
         }
 
         [Fact]
-        public void DayReplace_Test()
+        public void GetLastDayOfMonth_Test()
         {
-            var replaceDay = DateTimeUtil.ReplaceDay("02", new DateTime(2019, 8, 10));
-            var replaceDayExpected = new DateTime(2019, 8, 2);
-            Assert.Equal(replaceDayExpected, replaceDay);
-
-
-            var replaceTime = DateTimeUtil.ReplaceTime("19:30:20", new DateTime(2019, 8, 9, 10, 11, 12));
-            var replaceTimeExpected = new DateTime(2019, 8, 9, 19, 30, 20);
-            Assert.Equal(replaceTimeExpected, replaceTime);
+            var dateTime = new DateTime(2023, 2, 15); // February
+            Assert.Equal(new DateTime(2023, 2, 28), DateTimeUtil.GetLastDayOfMonth(dateTime));
+            dateTime = new DateTime(2024, 2, 15); // Leap year February
+            Assert.Equal(new DateTime(2024, 2, 29), DateTimeUtil.GetLastDayOfMonth(dateTime));
         }
 
-
+        [Fact]
+        public void GetFirstDayOfYear_Test()
+        {
+            var dateTime = new DateTime(2023, 5, 15);
+            Assert.Equal(new DateTime(2023, 1, 1), DateTimeUtil.GetFirstDayOfYear(dateTime));
+        }
 
         [Fact]
-        public void Time_Convert_Test()
+        public void GetLastDayOfYear_Test()
         {
-            var dateTime = DateTime.Now;
-            var timeSpan = dateTime - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var dateTime = new DateTime(2023, 5, 15);
+            Assert.Equal(new DateTime(2023, 12, 31), DateTimeUtil.GetLastDayOfYear(dateTime));
+        }
 
-            var begtime = timeSpan.TotalSeconds * 10000000; //100毫微秒为单位
-            var dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            var tricks1970 = dt1970.Ticks; //1970年1月1日刻度
-            var timeTricks = tricks1970 + begtime; //日志日期刻度
-            var dt2 = new DateTime(Convert.ToInt64(timeTricks)); //转化为DateTime
+        [Fact]
+        public void GetLastSecondOfDay_Test()
+        {
+            var dateTime = new DateTime(2023, 1, 1, 10, 30, 0);
+            Assert.Equal(new DateTime(2023, 1, 1, 23, 59, 59), DateTimeUtil.GetLastSecondOfDay(dateTime));
+        }
 
-            Assert.Equal(dateTime.Second, dt2.Second);
+        [Fact]
+        public void IsFirstDayOfMonth_Test()
+        {
+            Assert.True(DateTimeUtil.IsFirstDayOfMonth(new DateTime(2023, 1, 1)));
+            Assert.False(DateTimeUtil.IsFirstDayOfMonth(new DateTime(2023, 1, 2)));
+        }
 
+        [Fact]
+        public void IsLastDayOfMonth_Test()
+        {
+            Assert.True(DateTimeUtil.IsLastDayOfMonth(new DateTime(2023, 1, 31)));
+            Assert.False(DateTimeUtil.IsLastDayOfMonth(new DateTime(2023, 1, 30)));
+            Assert.True(DateTimeUtil.IsLastDayOfMonth(new DateTime(2024, 2, 29))); // Leap year
+        }
+
+        [Fact]
+        public void IsFirstDayOfYear_Test()
+        {
+            Assert.True(DateTimeUtil.IsFirstDayOfYear(new DateTime(2023, 1, 1)));
+            Assert.False(DateTimeUtil.IsFirstDayOfYear(new DateTime(2023, 1, 2)));
+        }
+
+        [Fact]
+        public void IsLastDayOfYear_Test()
+        {
+            Assert.True(DateTimeUtil.IsLastDayOfYear(new DateTime(2023, 12, 31)));
+            Assert.False(DateTimeUtil.IsLastDayOfYear(new DateTime(2023, 12, 30)));
+        }
+
+        [Fact]
+        public void ReplaceDay_Test()
+        {
+            var originalDateTime = new DateTime(2023, 1, 15, 10, 0, 0);
+            var newDateTime = DateTimeUtil.ReplaceDay("05", originalDateTime);
+            Assert.Equal(new DateTime(2023, 1, 5), newDateTime);
+        }
+
+        [Fact]
+        public void ReplaceTime_Test()
+        {
+            var originalDateTime = new DateTime(2023, 1, 15, 10, 0, 0);
+            var newDateTime = DateTimeUtil.ReplaceTime("14:30:00", originalDateTime);
+            Assert.Equal(new DateTime(2023, 1, 15, 14, 30, 0), newDateTime);
         }
     }
 }

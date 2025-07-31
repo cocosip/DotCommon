@@ -5,16 +5,19 @@ using System.Text;
 namespace DotCommon.Utility
 {
     /// <summary>
-    /// 字节相关帮助类
+    /// Utility class for byte array manipulations and conversions.
+    /// Provides methods for encoding/decoding strings, numbers, and dates to/from byte arrays,
+    /// as well as hexadecimal conversions and byte array combinations.
     /// </summary>
     public static class ByteBufferUtil
     {
         /// <summary>
-        /// 将字符串转换成Byte[] 并且附带长度
+        /// Encodes a string into a byte array, prefixed with its length (4 bytes).
+        /// The format is [length (4 bytes)][string content bytes].
         /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="encode">编码格式</param>
-        /// <returns></returns>
+        /// <param name="source">The string to encode.</param>
+        /// <param name="encode">The encoding to use (default is "utf-8").</param>
+        /// <returns>A byte array representing the encoded string with its length prefix.</returns>
         public static byte[] EncodeString(string source, string encode = "utf-8")
         {
             var stringBytes = Encoding.GetEncoding(encode).GetBytes(source);
@@ -22,14 +25,15 @@ namespace DotCommon.Utility
             return Combine(lengthBytes, stringBytes);
         }
 
-        /// <summary>>
-        /// 从byte数组中取出String字符串,消息的格式为[消息长度,int4字节][消息内容]
+        /// <summary>
+        /// Decodes a string from a byte array. The message format is assumed to be
+        /// [message length (4 bytes)][message content bytes].
         /// </summary>
-        /// <param name="sourceBuffer">源数组</param>
-        /// <param name="startOffset">开始偏移量</param>
-        /// <param name="nextStartOffset">下一个偏移量</param>
-        /// <param name="encode">编码格式</param>
-        /// <returns></returns>
+        /// <param name="sourceBuffer">The source byte array.</param>
+        /// <param name="startOffset">The starting offset in the source buffer to begin decoding.</param>
+        /// <param name="nextStartOffset">Output parameter: The offset in the source buffer where the next data block starts.</param>
+        /// <param name="encode">The encoding to use (default is "utf-8").</param>
+        /// <returns>The decoded string.</returns>
         public static string DecodeString(byte[] sourceBuffer, int startOffset, out int nextStartOffset,
             string encode = "utf-8")
         {
@@ -38,12 +42,12 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 从byte数组中取出short数字
+        /// Decodes a short (2-byte integer) from a byte array.
         /// </summary>
-        /// <param name="sourceBuffer">源数组</param>
-        /// <param name="startOffset">开始偏移量</param>
-        /// <param name="nextStartOffset">下一个偏移量</param>
-        /// <returns></returns>
+        /// <param name="sourceBuffer">The source byte array.</param>
+        /// <param name="startOffset">The starting offset in the source buffer.</param>
+        /// <param name="nextStartOffset">Output parameter: The offset in the source buffer where the next data block starts.</param>
+        /// <returns>The decoded short value.</returns>
         public static short DecodeShort(byte[] sourceBuffer, int startOffset, out int nextStartOffset)
         {
             var shortBytes = new byte[2];
@@ -53,12 +57,12 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 从byte数组中取出int数字
+        /// Decodes an int (4-byte integer) from a byte array.
         /// </summary>
-        /// <param name="sourceBuffer">源数组</param>
-        /// <param name="startOffset">开始偏移量</param>
-        /// <param name="nextStartOffset">下一个偏移量</param>
-        /// <returns></returns>
+        /// <param name="sourceBuffer">The source byte array.</param>
+        /// <param name="startOffset">The starting offset in the source buffer.</param>
+        /// <param name="nextStartOffset">Output parameter: The offset in the source buffer where the next data block starts.</param>
+        /// <returns>The decoded int value.</returns>
         public static int DecodeInt(byte[] sourceBuffer, int startOffset, out int nextStartOffset)
         {
             var intBytes = new byte[4];
@@ -68,12 +72,12 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 从byte数组中取出long数字
+        /// Decodes a long (8-byte integer) from a byte array.
         /// </summary>
-        /// <param name="sourceBuffer">源数组</param>
-        /// <param name="startOffset">开始偏移量</param>
-        /// <param name="nextStartOffset">下一个偏移量</param>
-        /// <returns></returns>
+        /// <param name="sourceBuffer">The source byte array.</param>
+        /// <param name="startOffset">The starting offset in the source buffer.</param>
+        /// <param name="nextStartOffset">Output parameter: The offset in the source buffer where the next data block starts.</param>
+        /// <returns>The decoded long value.</returns>
         public static long DecodeLong(byte[] sourceBuffer, int startOffset, out int nextStartOffset)
         {
             var longBytes = new byte[8];
@@ -83,22 +87,22 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 将时间转换成long类型,再转换成byte
+        /// Encodes a <see cref="DateTime"/> object into an 8-byte array representing its Ticks value.
         /// </summary>
-        /// <param name="dateTime">时间</param>
-        /// <returns></returns>
+        /// <param name="dateTime">The DateTime object to encode.</param>
+        /// <returns>A byte array representing the DateTime's Ticks.</returns>
         public static byte[] EncodeDateTime(DateTime dateTime)
         {
             return BitConverter.GetBytes(dateTime.Ticks);
         }
 
         /// <summary>
-        /// 从byte数组中取出时间
+        /// Decodes a <see cref="DateTime"/> object from an 8-byte array.
         /// </summary>
-        /// <param name="sourceBuffer">源数组</param>
-        /// <param name="startOffset">开始偏移量</param>
-        /// <param name="nextStartOffset">下一个偏移量</param>
-        /// <returns></returns>
+        /// <param name="sourceBuffer">The source byte array.</param>
+        /// <param name="startOffset">The starting offset in the source buffer.</param>
+        /// <param name="nextStartOffset">Output parameter: The offset in the source buffer where the next data block starts.</param>
+        /// <returns>The decoded DateTime object.</returns>
         public static DateTime DecodeDateTime(byte[] sourceBuffer, int startOffset, out int nextStartOffset)
         {
             var longBytes = new byte[8];
@@ -108,10 +112,11 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 转换Byte类型的消息,转换为[消息长度4byte][消息内容,消息内容为byte]
+        /// Encodes a byte array by prefixing it with its length (4 bytes).
+        /// The format is [length (4 bytes)][content bytes].
         /// </summary>
-        /// <param name="sourceBuffer">二进制数组</param>
-        /// <returns></returns>
+        /// <param name="sourceBuffer">The byte array to encode.</param>
+        /// <returns>A new byte array with the length prefix.</returns>
         public static byte[] EncodeBytes(byte[] sourceBuffer)
         {
             var lengthBytes = BitConverter.GetBytes(sourceBuffer.Length);
@@ -119,12 +124,12 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 从byte数组中取出byte[]
+        /// Decodes a byte array from a source buffer, assuming it's prefixed with its length (4 bytes).
         /// </summary>
-        /// <param name="sourceBuffer">源数组</param>
-        /// <param name="startOffset">开始偏移量</param>
-        /// <param name="nextStartOffset">下一个偏移量</param>
-        /// <returns></returns>
+        /// <param name="sourceBuffer">The source byte array.</param>
+        /// <param name="startOffset">The starting offset in the source buffer.</param>
+        /// <param name="nextStartOffset">Output parameter: The offset in the source buffer where the next data block starts.</param>
+        /// <returns>The decoded byte array.</returns>
         public static byte[] DecodeBytes(byte[] sourceBuffer, int startOffset, out int nextStartOffset)
         {
             var lengthBytes = new byte[4];
@@ -140,8 +145,10 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 合并byte数组
+        /// Combines multiple byte arrays into a single new byte array.
         /// </summary>
+        /// <param name="arrays">An array of byte arrays to combine.</param>
+        /// <returns>A new byte array containing all the combined bytes.</returns>
         public static byte[] Combine(params byte[][] arrays)
         {
             var destination = new byte[arrays.Sum(x => x.Length)];
@@ -155,16 +162,23 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// SwapLong
+        /// Swaps the byte order of a 64-bit integer (long).
+        /// This is typically used for endianness conversion.
         /// </summary>
+        /// <param name="value">The long value to swap.</param>
+        /// <returns>The long value with its byte order swapped.</returns>
         public static long SwapLong(long value)
         {
             return ((SwapInt((int)value) & 0xFFFFFFFF) << 32)
                    | (SwapInt((int)(value >> 32)) & 0xFFFFFFFF);
         }
 
-        /// <summary>SwapInt
+        /// <summary>
+        /// Swaps the byte order of a 32-bit integer (int).
+        /// This is typically used for endianness conversion.
         /// </summary>
+        /// <param name="value">The int value to swap.</param>
+        /// <returns>The int value with its byte order swapped.</returns>
         public static int SwapInt(int value)
         {
             return ((SwapShort((short)value) & 0xFFFF) << 16)
@@ -172,55 +186,62 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// SwapShort
+        /// Swaps the byte order of a 16-bit integer (short).
+        /// This is typically used for endianness conversion.
         /// </summary>
+        /// <param name="value">The short value to swap.</param>
+        /// <returns>The short value with its byte order swapped.</returns>
         public static short SwapShort(short value)
         {
             return (short)(((value & 0xFF) << 8) | (value >> 8) & 0xFF);
         }
 
         /// <summary>
-        /// 将byte[]数组转换为十六进制
+        /// Converts a byte array to its hexadecimal string representation.
+        /// Each byte is converted to two hexadecimal characters.
         /// </summary>
+        /// <param name="byteBuffer">The byte array to convert.</param>
+        /// <returns>A string representing the hexadecimal value of the byte array.</returns>
         public static string ByteBufferToHex16(byte[] byteBuffer)
         {
-            return byteBuffer.Aggregate("", (current, b) => current + b.ToString("X2"));
-
-            //var hex16String = new StringBuilder(byteBuffer.Length);
-            //for (var i = 0; i < byteBuffer.Length; i++)
-            //{
-            //    hex16String.Append(byteBuffer[i].ToString("X2"));
-            //}
-            //return hex16String.ToString();
+            // Using StringBuilder for better performance compared to string concatenation in a loop.
+            var hex16String = new StringBuilder(byteBuffer.Length * 2);
+            foreach (byte b in byteBuffer)
+            {
+                hex16String.Append(b.ToString("X2"));
+            }
+            return hex16String.ToString();
         }
 
         /// <summary>
-        /// 将十六进制字符串转换为byte[]数组
+        /// Converts a hexadecimal string to a byte array.
+        /// The input string must have an even number of characters.
         /// </summary>
-        /// <param name="hex16String">十六进制字符串</param>
-        /// <returns></returns>
+        /// <param name="hex16String">The hexadecimal string to convert.</param>
+        /// <returns>A byte array representing the decoded hexadecimal string.</returns>
+        /// <exception cref="ArgumentException">Thrown if the input string has an odd length.</exception>
         public static byte[] Hex16ToByteBuffer(string hex16String)
         {
             if (hex16String.Length % 2 != 0)
             {
-                throw new ArgumentException("不是有效的十六进制字符串");
+                throw new ArgumentException("Invalid hexadecimal string: length must be even.");
             }
-            //长度
             var len = hex16String.Length / 2;
             var byteArray = new byte[len];
-            var sourceSpan = hex16String.AsSpan();
             for (var i = 0; i < len; i++)
             {
-                var hexString = sourceSpan.Slice(i * 2, 2).ToString();
-                byteArray[i] = Convert.ToByte(hexString, 16);
+                // Directly convert substring to byte
+                byteArray[i] = Convert.ToByte(hex16String.Substring(i * 2, 2), 16);
             }
             return byteArray;
         }
 
 
         /// <summary>
-        /// long类型转十六进制字节有符号字节数组
+        /// Converts a long integer to an 8-byte array in big-endian order.
         /// </summary>
+        /// <param name="l">The long integer to convert.</param>
+        /// <returns>An 8-byte array representing the long integer.</returns>
         public static byte[] LongToBuffer(long l)
         {
             byte[] buffer = new byte[8];
@@ -236,11 +257,15 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 十六进制有符号字节数组转long类型
+        /// Converts an 8-byte array (assumed to be in big-endian order) to a long integer.
+        /// Handles signed bytes by converting them to unsigned before shifting.
         /// </summary>
+        /// <param name="buffer">The 8-byte array to convert.</param>
+        /// <param name="offset">The starting offset in the buffer (default is 0).</param>
+        /// <returns>The decoded long integer.</returns>
         public static long BufferToLong(byte[] buffer, int offset = 0)
         {
-#pragma warning disable CS0675 
+#pragma warning disable CS0675 // Bitwise-or operator used on a sign-extended operand; consider casting to a smaller unsigned type first
             return (((long)(buffer[offset] >= 0 ? buffer[offset] : 256 + buffer[offset])) << 56) |
                   (((long)(buffer[offset + 1] >= 0 ? buffer[offset + 1] : 256 + buffer[offset + 1])) << 48) |
                   (((long)(buffer[offset + 2] >= 0 ? buffer[offset + 2] : 256 + buffer[offset + 2])) << 40) |

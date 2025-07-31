@@ -1,122 +1,131 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
-
 
 namespace DotCommon.Utility
 {
     /// <summary>
-    /// 网络工具类
+    /// Provides utility methods for network-related operations.
     /// </summary>
     public static class NetUtil
     {
-
         /// <summary>
-        /// 检查设置的端口号是否正确，并返回正确的端口号,无效端口号返回-1。
+        /// Attempts to parse a string as a valid port number (0-65535).
         /// </summary>
-        /// <param name="port">端口号</param>
-        /// <returns></returns>
-        public static int GetValidPort(string port)
+        /// <param name="portString">The string representation of the port number.</param>
+        /// <param name="validPort">When this method returns, contains the parsed port number if the parsing succeeded, or 0 if the parsing failed.</param>
+        /// <returns><c>true</c> if the portString was successfully parsed and is within the valid range; otherwise, <c>false</c>.</returns>
+        public static bool TryGetValidPort(string portString, out int validPort)
         {
-            //声明返回的正确端口号
-            //最小有效端口号
-            const int minport = 0;
-            //最大有效端口号
-            const int maxport = 65535;
-
-            //检测端口号
-            //传入的端口号为空则抛出异常
-            if (port == "")
+            validPort = 0;
+            if (string.IsNullOrWhiteSpace(portString))
             {
-                throw new InvalidOperationException("port");
+                return false;
             }
 
-            //检测端口范围
-            if ((Convert.ToInt32(port) < minport) || (Convert.ToInt32(port) > maxport))
+            if (int.TryParse(portString, out int parsedPort))
             {
-                throw new ArgumentOutOfRangeException("port");
+                if (parsedPort >= IPEndPoint.MinPort && parsedPort <= IPEndPoint.MaxPort)
+                {
+                    validPort = parsedPort;
+                    return true;
+                }
             }
-
-            //为端口号赋值
-            var validPort = Convert.ToInt32(port);
-            return validPort;
+            return false;
         }
 
         /// <summary>
-        /// 将字符串形式的IP地址转换成IPAddress对象
+        /// Converts a string representation of an IP address to an <see cref="IPAddress"/> object.
         /// </summary>
-        /// <param name="ipString">string类型IP地址</param>
-        /// <returns></returns>
-        public static IPAddress ToIpAddress(string ipString)
+        /// <param name="ipString">The string representation of the IP address.</param>
+        /// <returns>An <see cref="IPAddress"/> object if the parsing succeeds; otherwise, <c>null</c>.</returns>
+        public static IPAddress? ToIpAddress(string ipString)
         {
-            return IPAddress.Parse(ipString);
+            if (IPAddress.TryParse(ipString, out IPAddress? ipAddress))
+            {
+                return ipAddress;
+            }
+            return null;
         }
 
         /// <summary>
-        /// 根据传入的IP地址详情,获取IP和端口号,IP地址的详情格式为 192.168.1.100:8080
+        /// Converts a string representation of an IP endpoint (e.g., "192.168.1.100:8080") to an <see cref="IPEndPoint"/> object.
         /// </summary>
-        /// <param name="ipString">string类型IP地址</param>
-        /// <returns></returns>
-        public static IPEndPoint GetEndPoint(string ipString)
+        /// <param name="ipEndPointString">The string representation of the IP endpoint.</param>
+        /// <returns>An <see cref="IPEndPoint"/> object if the parsing succeeds; otherwise, <c>null</c>.</returns>
+        public static IPEndPoint? ToIpEndPoint(string ipEndPointString)
         {
-            var value = ipString.Split(':');
-            return new IPEndPoint(IPAddress.Parse(value[0]), int.Parse(value[1]));
+            var parts = ipEndPointString.Split(':');
+            if (parts.Length == 2)
+            {
+                IPAddress? ipAddress = ToIpAddress(parts[0]);
+                if (ipAddress != null && TryGetValidPort(parts[1], out int port))
+                {
+                    return new IPEndPoint(ipAddress, port);
+                }
+            }
+            return null;
         }
 
         /// <summary>
-        /// 根据string类型ip集合获取IPEndPoint集合
+        /// Converts a comma-separated string of IP endpoints (e.g., "192.168.1.1:80,192.168.1.2:8080") to a list of <see cref="IPEndPoint"/> objects.
+        /// Invalid endpoints in the string will be skipped.
         /// </summary>
-        /// <param name="ips">string类型IP地址</param>
-        /// <returns></returns>
-        public static List<IPEndPoint> GetEndPoints(string ips)
+        /// <param name="ipEndPointsString">The comma-separated string of IP endpoints.</param>
+        /// <returns>A <see cref="List{IPEndPoint}"/> containing the parsed IP endpoints.</returns>
+        public static List<IPEndPoint> ToIpEndPoints(string ipEndPointsString)
         {
-            var values = ips.Split(',');
-            return values.Select(item => item.Split(':'))
-                .Select(value => new IPEndPoint(IPAddress.Parse(value[0]), int.Parse(value[1])))
-                .ToList();
+            var endPoints = new List<IPEndPoint>();
+            var parts = ipEndPointsString.Split(',');
+            foreach (var part in parts)
+            {
+                IPEndPoint? endPoint = ToIpEndPoint(part.Trim());
+                if (endPoint != null)
+                {
+                    endPoints.Add(endPoint);
+                }
+            }
+            return endPoints;
         }
 
         /// <summary>
-        /// 获取本机的计算机名
+        /// Gets the local machine's host name.
         /// </summary>
-        public static string LocalHostName()
+        /// <returns>The local machine's host name.</returns>
+        public static string GetLocalHostName()
         {
             return Dns.GetHostName();
         }
 
         /// <summary>
-        /// 获取本机的局域网IPV6
-        /// </summary>        
-        public static List<IPAddress> GetMatchineIpv6s()
+        /// Gets a list of IPv6 addresses for the local machine.
+        /// </summary>
+        /// <returns>A <see cref="List{IPAddress}"/> containing the IPv6 addresses.</returns>
+        public static List<IPAddress> GetLocalMachineIpv6Addresses()
         {
-            return Dns.GetHostEntry(LocalHostName()).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetworkV6).ToList();
+            return Dns.GetHostEntry(GetLocalHostName()).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetworkV6).ToList();
         }
 
         /// <summary>
-        /// 获取本机的局域网IPV4
+        /// Gets a list of IPv4 addresses for the local machine.
         /// </summary>
-        public static List<IPAddress> GetMachineIpv4s()
+        /// <returns>A <see cref="List{IPAddress}"/> containing the IPv4 addresses.</returns>
+        public static List<IPAddress> GetLocalMachineIpv4Addresses()
         {
-            return Dns.GetHostEntry(LocalHostName()).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToList();
+            return Dns.GetHostEntry(GetLocalHostName()).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToList();
         }
 
         /// <summary>
-        /// 获取本机在Internet网络的广域网IP
+        /// Attempts to get a non-loopback IPv4 address for the local machine.
+        /// This method does not guarantee a public IP address, as it only checks local network interfaces.
         /// </summary>
-        public static IPAddress GetWlan()
+        /// <returns>A non-loopback <see cref="IPAddress"/> if found; otherwise, <c>null</c>.</returns>
+        public static IPAddress? GetLocalNonLoopbackIpv4Address()
         {
-            //计算机名
-            var hostName = LocalHostName();
-            var addressList = Dns.GetHostEntry(hostName).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToList();
-            if (addressList.Count == 2)
-            {
-                return addressList[1];
-            }
-            return addressList.FirstOrDefault();
+            return Dns.GetHostEntry(GetLocalHostName()).AddressList
+                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(ip));
         }
-    
     }
 }

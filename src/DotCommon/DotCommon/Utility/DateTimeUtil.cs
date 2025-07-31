@@ -1,365 +1,301 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 
 namespace DotCommon.Utility
 {
     /// <summary>
-    /// 时间工具类
+    /// Provides utility methods for common DateTime operations, including conversions, formatting, and date calculations.
     /// </summary>
     public static class DateTimeUtil
     {
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
         /// <summary>
-        /// 将某个时间精确到毫秒级
+        /// Truncates a <see cref="DateTime"/> object to the millisecond level, discarding any higher precision (e.g., microseconds, nanoseconds).
         /// </summary>
-        /// <param name="datetime"></param>
-        /// <returns></returns>
+        /// <param name="datetime">The DateTime object to truncate.</param>
+        /// <returns>A new DateTime object truncated to milliseconds.</returns>
         public static DateTime TruncateToMilliseconds(this DateTime datetime)
         {
             return new DateTime(datetime.Year, datetime.Month, datetime.Day, datetime.Hour, datetime.Minute, datetime.Second, datetime.Millisecond);
         }
 
         /// <summary>
-        /// 将某个时间精确到秒级
+        /// Truncates a <see cref="DateTime"/> object to the second level, discarding any higher precision (e.g., milliseconds, microseconds, nanoseconds).
         /// </summary>
-        /// <param name="datetime"></param>
-        /// <returns></returns>
+        /// <param name="datetime">The DateTime object to truncate.</param>
+        /// <returns>A new DateTime object truncated to seconds.</returns>
         public static DateTime TruncateToSeconds(this DateTime datetime)
         {
             return new DateTime(datetime.Year, datetime.Month, datetime.Day, datetime.Hour, datetime.Minute, datetime.Second);
         }
 
         /// <summary>
-        /// 将时间转换成int32类型时间戳(从1970-01-01 00:00:00 开始计算)
+        /// Converts a <see cref="DateTime"/> object to a Unix timestamp (seconds since 1970-01-01 00:00:00 UTC).
         /// </summary>
-        /// <param name="datetime">时间</param>
-        /// <returns></returns>
+        /// <param name="datetime">The DateTime object to convert.</param>
+        /// <returns>An <see cref="int"/> representing the Unix timestamp in seconds.</returns>
         public static int ToInt32(DateTime datetime)
         {
-            //默认情况下以1970.01.01为开始时间计算
-            var timeSpan = datetime.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            return Convert.ToInt32(timeSpan.TotalSeconds);
+            return (int)(datetime.ToUniversalTime() - UnixEpoch).TotalSeconds;
         }
 
         /// <summary>
-        /// 将时间转换成long类型时间戳,以毫秒为单位(从1970-01-01 00:00:00 开始计算)
+        /// Converts a <see cref="DateTime"/> object to a Unix timestamp (milliseconds since 1970-01-01 00:00:00 UTC).
         /// </summary>
-        /// <param name="datetime">时间</param>
-        /// <returns></returns>
+        /// <param name="datetime">The DateTime object to convert.</param>
+        /// <returns>A <see cref="long"/> representing the Unix timestamp in milliseconds.</returns>
         public static long ToInt64(DateTime datetime)
         {
-            //默认情况下以1970.01.01为开始时间计算
-            var timeSpan = datetime.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            return Convert.ToInt64(timeSpan.TotalMilliseconds);
+            return (long)(datetime.ToUniversalTime() - UnixEpoch).TotalMilliseconds;
         }
 
         /// <summary>
-        /// 将string类型的时间转换成int32
+        /// Converts a string representation of a date and time to an <see cref="int"/> Unix timestamp (seconds).
+        /// If the string is not a valid date/time, the <paramref name="defaultValue"/> is returned.
         /// </summary>
-        /// <param name="datetime">string类型时间</param>
-        /// <param name="defaultValue">默认值</param>
-        /// <returns></returns>
+        /// <param name="datetime">The string containing the date and time.</param>
+        /// <param name="defaultValue">The default value to return if conversion fails (default is 0).</param>
+        /// <returns>An <see cref="int"/> Unix timestamp, or the default value if conversion fails.</returns>
         public static int ToInt32(string datetime, int defaultValue = 0)
         {
-            if (!RegexUtil.IsDataTime(datetime))
+            if (DateTime.TryParse(datetime, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDateTime))
             {
-                return defaultValue;
+                return ToInt32(parsedDateTime);
             }
-            var end = Convert.ToDateTime(datetime);
-            return ToInt32(end);
+            return defaultValue;
         }
 
         /// <summary>
-        /// 将int32类型的整数时间戳转换成时间
+        /// Converts an <see cref="int"/> Unix timestamp (seconds since 1970-01-01 00:00:00 UTC) to a <see cref="DateTime"/> object.
         /// </summary>
-        /// <param name="seconds">整数时间戳(从1970-01-01 00:00:00 开始计算的总秒数)</param>
-        /// <returns></returns>
+        /// <param name="seconds">The Unix timestamp in seconds.</param>
+        /// <returns>A <see cref="DateTime"/> object representing the given Unix timestamp.</returns>
         public static DateTime ToDateTime(int seconds)
         {
-
-            var begtime = Convert.ToInt64(seconds) * 10000000; //100毫微秒为单位
-            var dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            var tricks1970 = dt1970.Ticks; //1970年1月1日刻度
-            var timeTricks = tricks1970 + begtime; //日志日期刻度
-            var dt = new DateTime(timeTricks, DateTimeKind.Utc); //转化为DateTime
-            return dt;
+            return UnixEpoch.AddSeconds(seconds).ToLocalTime();
         }
 
         /// <summary>
-        /// 将long类型的整数时间(以毫秒为单位)转换成时间
+        /// Converts a <see cref="long"/> Unix timestamp (milliseconds since 1970-01-01 00:00:00 UTC) to a <see cref="DateTime"/> object.
         /// </summary>
-        /// <param name="millSeconds">long类型时间戳(从1970-01-01 00:00:00 开始计算的总毫秒数)</param>
-        /// <returns></returns>
+        /// <param name="millSeconds">The Unix timestamp in milliseconds.</param>
+        /// <returns>A <see cref="DateTime"/> object representing the given Unix timestamp.</returns>
         public static DateTime ToDateTime(long millSeconds)
         {
-            var begtime = millSeconds * 10000; //100毫微秒为单位
-            var dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            var tricks1970 = dt1970.Ticks; //1970年1月1日刻度
-            var timeTricks = tricks1970 + begtime; //日志日期刻度
-            var dt = new DateTime(timeTricks, DateTimeKind.Utc); //转化为DateTime
-            //DateTime enddt = dt.Date;//获取到日期整数
-            return dt;
+            return UnixEpoch.AddMilliseconds(millSeconds).ToLocalTime();
         }
 
         /// <summary>
-        /// 获取String类型的时间拼接,拼接到天
+        /// Gets a formatted string representation of a <see cref="DateTime"/> object, padded to include year, month, and day (e.g., "YYYYMMDD").
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object to format.</param>
+        /// <returns>A string in "YYYYMMDD" format.</returns>
         public static string GetPadDay(DateTime time)
         {
-            var month = time.Month.ToString().PadLeft(2, '0');
-            var day = time.Day.ToString().PadLeft(2, '0');
-            var pad = $"{time.Year}{month}{day}";
-            return pad;
+            return time.ToString("yyyyMMdd");
         }
 
         /// <summary>
-        /// 获取string类型拼接的时间 拼接到秒
+        /// Gets a formatted string representation of a <see cref="DateTime"/> object, padded to include year, month, day, hour, minute, and second (e.g., "YYYYMMDDhhmmss").
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object to format.</param>
+        /// <returns>A string in "YYYYMMDDhhmmss" format.</returns>
         public static string GetPadSecond(DateTime time)
         {
-            var month = time.Month.ToString().PadLeft(2, '0');
-            var day = time.Day.ToString().PadLeft(2, '0');
-            var hour = time.Hour.ToString().PadLeft(2, '0');
-            var minute = time.Minute.ToString().PadLeft(2, '0');
-            var second = time.Second.ToString().PadLeft(2, '0');
-            var pad = $"{time.Year}{month}{day}{hour}{minute}{second}";
-            return pad;
+            return time.ToString("yyyyMMddHHmmss");
         }
 
         /// <summary>
-        /// 获取string类型拼接的时间,拼接到秒,但是不包括最早的2位
+        /// Gets a formatted string representation of a <see cref="DateTime"/> object, padded to include year (last two digits), month, day, hour, minute, and second (e.g., "YYMMDDhhmmss").
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object to format.</param>
+        /// <returns>A string in "YYMMDDhhmmss" format.</returns>
         public static string GetPadSecondWithoutPrefix(DateTime time)
         {
-            var month = time.Month.ToString().PadLeft(2, '0');
-            var day = time.Day.ToString().PadLeft(2, '0');
-            var hour = time.Hour.ToString().PadLeft(2, '0');
-            var minute = time.Minute.ToString().PadLeft(2, '0');
-            var second = time.Second.ToString().PadLeft(2, '0');
-            var pad = $"{time.Year.ToString().Substring(2)}{month}{day}{hour}{minute}{second}";
-            return pad;
+            return time.ToString("yyMMddHHmmss");
         }
 
         /// <summary>
-        /// 获取string类型拼接的时间,拼接到毫秒
+        /// Gets a formatted string representation of a <see cref="DateTime"/> object, padded to include year, month, day, hour, minute, second, and millisecond (e.g., "YYYYMMDDhhmmssfff").
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object to format.</param>
+        /// <returns>A string in "YYYYMMDDhhmmssfff" format.</returns>
         public static string GetPadMillSecond(DateTime time)
         {
-            var month = time.Month.ToString().PadLeft(2, '0');
-            var day = time.Day.ToString().PadLeft(2, '0');
-            var hour = time.Hour.ToString().PadLeft(2, '0');
-            var minute = time.Minute.ToString().PadLeft(2, '0');
-            var second = time.Second.ToString().PadLeft(2, '0');
-            var minSecond = time.Millisecond.ToString().PadLeft(3, '0');
-            var pad = $"{time.Year}{month}{day}{hour}{minute}{second}{minSecond}";
-            return pad;
+            return time.ToString("yyyyMMddHHmmssfff");
         }
 
         /// <summary>
-        /// 获取string类型拼接的时间,拼接到秒,但是不包括最早的2位,精确到毫秒
+        /// Gets a formatted string representation of a <see cref="DateTime"/> object, padded to include year (last two digits), month, day, hour, minute, second, and millisecond (e.g., "YYMMDDhhmmssfff").
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object to format.</param>
+        /// <returns>A string in "YYMMDDhhmmssfff" format.</returns>
         public static string GetPadMillSecondWithoutPrefix(DateTime time)
         {
-            var month = time.Month.ToString().PadLeft(2, '0');
-            var day = time.Day.ToString().PadLeft(2, '0');
-            var hour = time.Hour.ToString().PadLeft(2, '0');
-            var minute = time.Minute.ToString().PadLeft(2, '0');
-            var second = time.Second.ToString().PadLeft(2, '0');
-            var minSecond = time.Millisecond.ToString().PadLeft(3, '0');
-            var pad = $"{time.Year.ToString().Substring(2)}{month}{day}{hour}{minute}{second}{minSecond}";
-            return pad;
+            return time.ToString("yyMMddHHmmssfff");
         }
 
         /// <summary>
-        /// 获取两个时间之间经历的星期几
+        /// Calculates the days of the week that occur between two <see cref="DateTime"/> objects.
         /// </summary>
-        /// <param name="begin">开始时间</param>
-        /// <param name="end">结束时间</param>
-        /// <returns></returns>
+        /// <param name="begin">The start date.</param>
+        /// <param name="end">The end date.</param>
+        /// <returns>A comma-separated string of integer representations of <see cref="DayOfWeek"/> (0 for Sunday, 6 for Saturday) that fall within the range. Returns an empty string if the begin date is after the end date.</returns>
         public static string GetWeekCross(DateTime begin, DateTime end)
         {
-            if (begin.Date > end)
+            if (begin.Date > end.Date)
             {
-                return "";
-            }
-            var weekArray = new[] { 0, 1, 2, 3, 4, 5, 6 };
-
-            var totalDays = (end.Date - begin.Date).TotalDays + 1;
-            if (totalDays >= 7)
-            {
-                return string.Join(",", weekArray);
+                return string.Empty;
             }
 
-            var target = new List<int>();
-            var indexDate = begin.Date;
-            for (var i = 0; i < totalDays; i++)
+            var daysInPeriod = new List<int>();
+            for (DateTime date = begin.Date; date <= end.Date; date = date.AddDays(1))
             {
-                target.Add((int)indexDate.DayOfWeek);
-                indexDate = indexDate.AddDays(1);
+                daysInPeriod.Add((int)date.DayOfWeek);
             }
-            return string.Join(",", target);
+
+            // If the period covers a full week or more, all days of the week are present.
+            if (daysInPeriod.Count >= 7)
+            {
+                return string.Join(",", Enumerable.Range(0, 7)); // Returns "0,1,2,3,4,5,6"
+            }
+            
+            return string.Join(",", daysInPeriod.Distinct().OrderBy(d => d));
         }
 
         /// <summary>
-        /// 获取某个时间的中文星期
+        /// Gets the Chinese name of the day of the week for a given <see cref="DateTime"/> object.
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
-        public static string GetChineseWeekOfDay(DateTime time)
+        /// <param name="dateTime">The DateTime object.</param>
+        /// <returns>The Chinese name of the day of the week (e.g., "星期日", "星期一").</returns>
+        public static string GetChineseWeekOfDay(DateTime dateTime)
         {
-            var dayOfWeek = (int)time.DayOfWeek;
-            return GetWeekDays().FirstOrDefault(x => x.Key == dayOfWeek).Value;
+            string[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
+            return weekDays[(int)dateTime.DayOfWeek];
         }
 
         /// <summary>
-        /// 获取星期中的所有天数
+        /// Gets a list of Chinese week day names.
         /// </summary>
-        public static Dictionary<int, string> GetWeekDays()
+        /// <returns>A <see cref="List{T}"/> containing the Chinese names of the days of the week.</returns>
+        public static List<string> GetWeekDays()
         {
-            var weekDict = new Dictionary<int, string>
-            {
-                {0, "星期日"},
-                {1, "星期一"},
-                {2, "星期二"},
-                {3, "星期三"},
-                {4, "星期四"},
-                {5, "星期五"},
-                {6, "星期六"}
-            };
-            return weekDict;
+            return new List<string> { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
         }
 
         /// <summary>
-        /// 获取某时间点当月的第一天
+        /// Gets the first day of the month for a given <see cref="DateTime"/> object.
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object.</param>
+        /// <returns>A DateTime object representing the first day of the month.</returns>
         public static DateTime GetFirstDayOfMonth(DateTime time)
         {
             return new DateTime(time.Year, time.Month, 1);
         }
 
         /// <summary>
-        /// 获取某个时间点当月的最后一天
+        /// Gets the last day of the month for a given <see cref="DateTime"/> object.
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object.</param>
+        /// <returns>A DateTime object representing the last day of the month.</returns>
         public static DateTime GetLastDayOfMonth(DateTime time)
         {
-            return new DateTime(time.Year, time.Month, 1).AddMonths(1).AddDays(-1);
+            return new DateTime(time.Year, time.Month, DateTime.DaysInMonth(time.Year, time.Month));
         }
 
         /// <summary>
-        /// 获取某个时间点当年的第一天
+        /// Gets the first day of the year for a given <see cref="DateTime"/> object.
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object.</param>
+        /// <returns>A DateTime object representing the first day of the year.</returns>
         public static DateTime GetFirstDayOfYear(DateTime time)
         {
             return new DateTime(time.Year, 1, 1);
         }
 
         /// <summary>
-        /// 获取某个时间点当年的最后一天
+        /// Gets the last day of the year for a given <see cref="DateTime"/> object.
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object.</param>
+        /// <returns>A DateTime object representing the last day of the year.</returns>
         public static DateTime GetLastDayOfYear(DateTime time)
         {
-            return new DateTime(time.Year + 1, 1, 1).AddDays(-1);
+            return new DateTime(time.Year, 12, 31);
         }
 
         /// <summary>
-        /// 获取当天的最后一秒23:59:59
+        /// Gets the last second of the day (23:59:59) for a given <see cref="DateTime"/> object.
         /// </summary>
-        /// <param name="time"></param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object.</param>
+        /// <returns>A DateTime object representing the last second of the day.</returns>
         public static DateTime GetLastSecondOfDay(DateTime time)
         {
-            return new DateTime(time.Year, time.Month, time.Day).AddDays(1).AddSeconds(-1);
+            return time.Date.AddDays(1).AddSeconds(-1);
         }
 
         /// <summary>
-        /// 判断某个时间是否为当月的第一天
+        /// Determines if a given <see cref="DateTime"/> object is the first day of its month.
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object to check.</param>
+        /// <returns><c>true</c> if it's the first day of the month; otherwise, <c>false</c>.</returns>
         public static bool IsFirstDayOfMonth(DateTime time)
         {
-            var firstDay = GetFirstDayOfMonth(time);
-            return firstDay.Date == time.Date;
+            return time.Day == 1;
         }
 
         /// <summary>
-        /// 判断某个时间是否为当月的最后一天
+        /// Determines if a given <see cref="DateTime"/> object is the last day of its month.
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object to check.</param>
+        /// <returns><c>true</c> if it's the last day of the month; otherwise, <c>false</c>.</returns>
         public static bool IsLastDayOfMonth(DateTime time)
         {
-            var lastDay = GetLastDayOfMonth(time);
-            return lastDay.Date == time.Date;
+            return time.Day == DateTime.DaysInMonth(time.Year, time.Month);
         }
 
         /// <summary>
-        /// 判断某个时间是否为当年的第一天
+        /// Determines if a given <see cref="DateTime"/> object is the first day of its year.
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object to check.</param>
+        /// <returns><c>true</c> if it's the first day of the year; otherwise, <c>false</c>.</returns>
         public static bool IsFirstDayOfYear(DateTime time)
         {
-            var firstDay = GetFirstDayOfYear(time);
-            return firstDay.Date == time.Date;
+            return time.Month == 1 && time.Day == 1;
         }
 
         /// <summary>
-        /// 判断某个时间是否为当年的最后一天
+        /// Determines if a given <see cref="DateTime"/> object is the last day of its year.
         /// </summary>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The DateTime object to check.</param>
+        /// <returns><c>true</c> if it's the last day of the year; otherwise, <c>false</c>.</returns>
         public static bool IsLastDayOfYear(DateTime time)
         {
-            var lastDay = GetLastDayOfYear(time);
-            return lastDay.Date == time.Date;
+            return time.Month == 12 && time.Day == 31;
         }
 
         /// <summary>
-        /// 将时间的某个日期进行修改
+        /// Replaces the day component of a <see cref="DateTime"/> object with a new day value from a string.
         /// </summary>
-        /// <param name="day">日期</param>
-        /// <param name="datetime">时间</param>
-        /// <returns></returns>
+        /// <param name="day">The new day value as a string.</param>
+        /// <param name="datetime">The original DateTime object.</param>
+        /// <returns>A new DateTime object with the updated day. Throws <see cref="FormatException"/> if the day string is invalid.</returns>
         public static DateTime ReplaceDay(string day, DateTime datetime)
         {
-            var fullTime = $"{datetime:yyyy-MM}-{day}";
-            var date = Convert.ToDateTime(fullTime);
-            return date;
+            return DateTime.ParseExact($"{datetime.Year}-{datetime.Month}-{day}", "yyyy-M-d", CultureInfo.InvariantCulture);
         }
 
         /// <summary>
-        /// 将时间的日期后面的时间进行替换
+        /// Replaces the time component of a <see cref="DateTime"/> object with a new time value from a string.
         /// </summary>
-        /// <param name="time">日期后面的时间</param>
-        /// <param name="datetime">时间</param>
-        /// <returns></returns>
+        /// <param name="time">The new time value as a string (e.g., "HH:mm:ss").</param>
+        /// <param name="datetime">The original DateTime object.</param>
+        /// <returns>A new DateTime object with the updated time. Throws <see cref="FormatException"/> if the time string is invalid.</returns>
         public static DateTime ReplaceTime(string time, DateTime datetime)
         {
-            var fullTime = $"{datetime:yyyy-MM-dd} {time}";
-            var date = Convert.ToDateTime(fullTime);
-            return date;
+            return DateTime.ParseExact($"{datetime.Date:yyyy-MM-dd} {time}", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
         }
-
     }
-
-
 }

@@ -5,147 +5,175 @@ using System.Text;
 namespace DotCommon.Utility
 {
     /// <summary>
-    /// HMAC算法工具类
+    /// Provides utility methods for HMAC (Hash-based Message Authentication Code) operations.
     /// </summary>
     public static class HMACUtil
     {
-
-        #region HMAC-Sha1算法
+        /// <summary>
+        /// Computes the HMAC hash for the given data and key using the specified HMAC algorithm.
+        /// </summary>
+        /// <param name="hmacAlgorithm">The HMAC algorithm instance (e.g., HMACSHA1, HMACSHA256, HMACMD5).</param>
+        /// <param name="data">The input data to hash.</param>
+        /// <param name="key">The secret key for the HMAC computation.</param>
+        /// <returns>The computed HMAC hash as a byte array.</returns>
+        private static byte[] ComputeHash(HMAC hmacAlgorithm, byte[] data, byte[] key)
+        {
+            hmacAlgorithm.Key = key;
+            return hmacAlgorithm.ComputeHash(data);
+        }
 
         /// <summary>
-        /// 获取HMAC-SHA1加密后的Base64值
+        /// Computes the HMAC-SHA1 hash for the given data and key.
         /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="key">密钥字符串</param>
-        /// <param name="sourceEncode">编码</param>
-        /// <param name="keyEncode">密钥编码</param>
-        /// <returns>Base64编码后的字符串</returns>
-        public static string GetBase64StringHMACSHA1(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
+        /// <param name="data">The input data as a byte array.</param>
+        /// <param name="key">The secret key as a byte array.</param>
+        /// <returns>The computed HMAC-SHA1 hash as a byte array.</returns>
+        private static byte[] ComputeHmacSha1(byte[] data, byte[] key)
         {
-            var hashBytes = GetHMACSHA1(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
+            using var hmac = new HMACSHA1();
+            return ComputeHash(hmac, data, key);
+        }
+
+        /// <summary>
+        /// Computes the HMAC-SHA256 hash for the given data and key.
+        /// </summary>
+        /// <param name="data">The input data as a byte array.</param>
+        /// <param name="key">The secret key as a byte array.</param>
+        /// <returns>The computed HMAC-SHA256 hash as a byte array.</returns>
+        private static byte[] ComputeHmacSha256(byte[] data, byte[] key)
+        {
+            using var hmac = new HMACSHA256();
+            return ComputeHash(hmac, data, key);
+        }
+
+        /// <summary>
+        /// Computes the HMAC-MD5 hash for the given data and key.
+        /// </summary>
+        /// <param name="data">The input data as a byte array.</param>
+        /// <param name="key">The secret key as a byte array.</param>
+        /// <returns>The computed HMAC-MD5 hash as a byte array.</returns>
+        private static byte[] ComputeHmacMd5(byte[] data, byte[] key)
+        {
+            using var hmac = new HMACMD5();
+            return ComputeHash(hmac, data, key);
+        }
+
+        /// <summary>
+        /// Computes the HMAC hash for the given string data and key, and returns the result as a Base64 string.
+        /// </summary>
+        /// <param name="data">The input string data.</param>
+        /// <param name="key">The secret key string.</param>
+        /// <param name="hmacAlgorithm">A function that computes the HMAC hash (e.g., ComputeHmacSha1, ComputeHmacSha256).</param>
+        /// <param name="dataEncoding">The encoding for the input data string. Defaults to UTF8.</param>
+        /// <param name="keyEncoding">The encoding for the secret key string. Defaults to UTF8.</param>
+        /// <returns>The Base64 encoded HMAC hash string.</returns>
+        private static string ComputeHmacToBase64(string data, string key, Func<byte[], byte[], byte[]> hmacAlgorithm, Encoding? dataEncoding = null, Encoding? keyEncoding = null)
+        {
+            dataEncoding ??= Encoding.UTF8;
+            keyEncoding ??= Encoding.UTF8;
+
+            byte[] dataBytes = dataEncoding.GetBytes(data);
+            byte[] keyBytes = keyEncoding.GetBytes(key);
+            byte[] hashBytes = hmacAlgorithm(dataBytes, keyBytes);
             return Convert.ToBase64String(hashBytes);
         }
 
-
         /// <summary>
-        /// 获取HMAC-SHA1加密后的十六进制值
+        /// Computes the HMAC hash for the given string data and key, and returns the result as a hexadecimal string.
         /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="key">密钥字符串</param>
-        /// <param name="sourceEncode">编码</param>
-        /// <param name="keyEncode">密钥编码</param>
-        /// <returns>转换成16进制后的字符串</returns>
-        public static string GetHex16StringHMACSHA1(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
+        /// <param name="data">The input string data.</param>
+        /// <param name="key">The secret key string.</param>
+        /// <param name="hmacAlgorithm">A function that computes the HMAC hash (e.g., ComputeHmacSha1, ComputeHmacSha256).</param>
+        /// <param name="dataEncoding">The encoding for the input data string. Defaults to UTF8.</param>
+        /// <param name="keyEncoding">The encoding for the secret key string. Defaults to UTF8.</param>
+        /// <returns>The hexadecimal encoded HMAC hash string.</returns>
+        private static string ComputeHmacToHex(string data, string key, Func<byte[], byte[], byte[]> hmacAlgorithm, Encoding? dataEncoding = null, Encoding? keyEncoding = null)
         {
-            var hashBytes = GetHMACSHA1(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
-            return ByteBufferUtil.ByteBufferToHex16(hashBytes);
-        }
+            dataEncoding ??= Encoding.UTF8;
+            keyEncoding ??= Encoding.UTF8;
 
-
-        /// <summary>
-        /// HMAC-SHA1加密
-        /// </summary>
-        /// <param name="sourceBytes">数据二进制</param>
-        /// <param name="keyBytes">密钥二进制</param>
-        /// <returns></returns>
-        public static byte[] GetHMACSHA1(byte[] sourceBytes, byte[] keyBytes)
-        {
-            using var hmacSha1 = new HMACSHA1(keyBytes);
-            var hashBytes = hmacSha1.ComputeHash(sourceBytes);
-            return hashBytes;
-        }
-
-        #endregion
-
-
-        #region  HMAC-SHA256算法
-
-        /// <summary>
-        /// 获取HMAC-SHA256加密后的Base64值
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="key">密钥字符串</param>
-        /// <param name="sourceEncode">编码</param>
-        /// <param name="keyEncode">密钥编码</param>
-        /// <returns>Base64编码后的字符串</returns>
-        public static string GetBase64StringHMACSHA256(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
-        {
-            var hashBytes = GetHMACSHA256(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
-            return Convert.ToBase64String(hashBytes);
-        }
-
-
-        /// <summary>获取HMAC-SHA256加密后的十六进制值
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="key">密钥字符串</param>
-        /// <param name="sourceEncode">编码</param>
-        /// <param name="keyEncode">密钥编码</param>
-        /// <returns>转换成16进制后的字符串</returns>
-        public static string GetHex16StringHMACSHA256(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
-        {
-            var hashBytes = GetHMACSHA256(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
-            return ByteBufferUtil.ByteBufferToHex16(hashBytes);
-        }
-
-        /// <summary>
-        /// HMAC-SHA256加密
-        /// </summary>
-        /// <param name="sourceBytes">数据二进制</param>
-        /// <param name="keyBytes">密钥二进制</param>
-        /// <returns></returns>
-        public static byte[] GetHMACSHA256(byte[] sourceBytes, byte[] keyBytes)
-        {
-            using var hmacSha256 = new HMACSHA256(keyBytes);
-            var hashBytes = hmacSha256.ComputeHash(sourceBytes);
-            return hashBytes;
-        }
-        #endregion
-
-
-        #region  HMAC-MD5算法
-
-        /// <summary>
-        /// 获取HMAC-MD5加密后的Base64值
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="key">密钥字符串</param>
-        /// <param name="sourceEncode">编码</param>
-        /// <param name="keyEncode">密钥编码</param>
-        /// <returns>Base64编码后的字符串</returns>
-        public static string GetBase64StringHMACMD5(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
-        {
-            var hashBytes = GetHMACMD5(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
-            return Convert.ToBase64String(hashBytes);
-        }
-
-
-        /// <summary>
-        /// 获取HMAC-MD5加密后的十六进制值
-        /// </summary>
-        /// <param name="source">字符串</param>
-        /// <param name="key">密钥字符串</param>
-        /// <param name="sourceEncode">编码</param>
-        /// <param name="keyEncode">密钥编码</param>
-        /// <returns>转换成16进制后的字符串</returns>
-        public static string GetHex16StringHMACMD5(string source, string key = "12345678", string sourceEncode = "utf-8", string keyEncode = "utf-8")
-        {
-            var hashBytes = GetHMACMD5(Encoding.GetEncoding(sourceEncode).GetBytes(source), Encoding.GetEncoding(keyEncode).GetBytes(key));
+            byte[] dataBytes = dataEncoding.GetBytes(data);
+            byte[] keyBytes = keyEncoding.GetBytes(key);
+            byte[] hashBytes = hmacAlgorithm(dataBytes, keyBytes);
             return ByteBufferUtil.ByteBufferToHex16(hashBytes);
         }
 
         /// <summary>
-        /// HMAC-MD5加密
+        /// Computes the HMAC-SHA1 hash for the given string data and key, and returns the result as a Base64 string.
         /// </summary>
-        /// <param name="sourceBytes">数据二进制</param>
-        /// <param name="keyBytes">密钥二进制</param>
-        /// <returns></returns>
-        public static byte[] GetHMACMD5(byte[] sourceBytes, byte[] keyBytes)
+        /// <param name="data">The input string data.</param>
+        /// <param name="key">The secret key string. Defaults to "12345678".</param>
+        /// <param name="dataEncoding">The encoding for the input data string. Defaults to UTF8.</param>
+        /// <param name="keyEncoding">The encoding for the secret key string. Defaults to UTF8.</param>
+        /// <returns>The Base64 encoded HMAC-SHA1 hash string.</returns>
+        public static string ComputeHmacSha1ToBase64(string data, string key = "12345678", Encoding? dataEncoding = null, Encoding? keyEncoding = null)
         {
-            using var hmacMd5 = new HMACMD5(keyBytes);
-            var hashBytes = hmacMd5.ComputeHash(sourceBytes);
-            return hashBytes;
+            return ComputeHmacToBase64(data, key, ComputeHmacSha1, (Encoding?)dataEncoding, (Encoding?)keyEncoding);
         }
-        #endregion
+
+        /// <summary>
+        /// Computes the HMAC-SHA1 hash for the given string data and key, and returns the result as a hexadecimal string.
+        /// </summary>
+        /// <param name="data">The input string data.</param>
+        /// <param name="key">The secret key string. Defaults to "12345678".</param>
+        /// <param name="dataEncoding">The encoding for the input data string. Defaults to UTF8.</param>
+        /// <param name="keyEncoding">The encoding for the secret key string. Defaults to UTF8.</param>
+        /// <returns>The hexadecimal encoded HMAC-SHA1 hash string.</returns>
+        public static string ComputeHmacSha1ToHex(string data, string key = "12345678", Encoding? dataEncoding = null, Encoding? keyEncoding = null)
+        {
+            return ComputeHmacToHex(data, key, ComputeHmacSha1, (Encoding?)dataEncoding, (Encoding?)keyEncoding);
+        }
+
+        /// <summary>
+        /// Computes the HMAC-SHA256 hash for the given string data and key, and returns the result as a Base64 string.
+        /// </summary>
+        /// <param name="data">The input string data.</param>
+        /// <param name="key">The secret key string. Defaults to "12345678".</param>
+        /// <param name="dataEncoding">The encoding for the input data string. Defaults to UTF8.</param>
+        /// <param name="keyEncoding">The encoding for the secret key string. Defaults to UTF8.</param>
+        /// <returns>The Base64 encoded HMAC-SHA256 hash string.</returns>
+        public static string ComputeHmacSha256ToBase64(string data, string key = "12345678", Encoding? dataEncoding = null, Encoding? keyEncoding = null)
+        {
+            return ComputeHmacToBase64(data, key, ComputeHmacSha256, (Encoding?)dataEncoding, (Encoding?)keyEncoding);
+        }
+
+        /// <summary>
+        /// Computes the HMAC-SHA256 hash for the given string data and key, and returns the result as a hexadecimal string.
+        /// </summary>
+        /// <param name="data">The input string data.</param>
+        /// <param name="key">The secret key string. Defaults to "12345678".</param>
+        /// <param name="dataEncoding">The encoding for the input data string. Defaults to UTF8.</param>
+        /// <param name="keyEncoding">The encoding for the secret key string. Defaults to UTF8.</param>
+        /// <returns>The hexadecimal encoded HMAC-SHA256 hash string.</returns>
+        public static string ComputeHmacSha256ToHex(string data, string key = "12345678", Encoding? dataEncoding = null, Encoding? keyEncoding = null)
+        {
+            return ComputeHmacToHex(data, key, ComputeHmacSha256, (Encoding?)dataEncoding, (Encoding?)keyEncoding);
+        }
+
+        /// <summary>
+        /// Computes the HMAC-MD5 hash for the given string data and key, and returns the result as a Base64 string.
+        /// </summary>
+        /// <param name="data">The input string data.</param>
+        /// <param name="key">The secret key string. Defaults to "12345678".</param>
+        /// <param name="dataEncoding">The encoding for the input data string. Defaults to UTF8.</param>
+        /// <param name="keyEncoding">The encoding for the secret key string. Defaults to UTF8.</param>
+        /// <returns>The Base64 encoded HMAC-MD5 hash string.</returns>
+        public static string ComputeHmacMd5ToBase64(string data, string key = "12345678", Encoding? dataEncoding = null, Encoding? keyEncoding = null)
+        {
+            return ComputeHmacToBase64(data, key, ComputeHmacMd5, (Encoding?)dataEncoding, (Encoding?)keyEncoding);
+        }
+
+        /// <summary>
+        /// Computes the HMAC-MD5 hash for the given string data and key, and returns the result as a hexadecimal string.
+        /// </summary>
+        /// <param name="data">The input string data.</param>
+        /// <param name="key">The secret key string. Defaults to "12345678".</param>
+        /// <param name="dataEncoding">The encoding for the input data string. Defaults to UTF8.</param>
+        /// <param name="keyEncoding">The encoding for the secret key string. Defaults to UTF8.</param>
+        /// <returns>The hexadecimal encoded HMAC-MD5 hash string.</returns>
+        public static string ComputeHmacMd5ToHex(string data, string key = "12345678", Encoding? dataEncoding = null, Encoding? keyEncoding = null)
+        {
+            return ComputeHmacToHex(data, key, ComputeHmacMd5, (Encoding?)dataEncoding, (Encoding?)keyEncoding);
+        }
     }
 }
