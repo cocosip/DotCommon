@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 
 namespace DotCommon.Scheduling
 {
     /// <summary>
-    /// Represent a background worker that will repeatedly execute a specific method.
+    /// 表示一个后台工作者，将重复执行特定方法
     /// </summary>
     public class Worker
     {
@@ -14,64 +14,83 @@ namespace DotCommon.Scheduling
         private readonly Action _action;
         private Status _status;
 
-        /// <summary>Returns the action name of the current worker.
+        /// <summary>
+        /// 获取当前工作者的操作名称
         /// </summary>
-        public string ActionName { get; private set; }
+        public string ActionName { get; }
 
         /// <summary>
-        /// Initialize a new worker with the specified action.
+        /// 使用指定操作初始化一个新的工作者
         /// </summary>
+        /// <param name="logger">日志记录器</param>
+        /// <param name="actionName">操作名称</param>
+        /// <param name="action">要执行的操作</param>
+        /// <exception cref="ArgumentNullException">当logger、actionName或action为null时抛出</exception>
         public Worker(ILogger<Worker> logger, string actionName, Action action)
         {
-            _logger = logger;
-            ActionName = actionName;
-            _action = action;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            ActionName = actionName ?? throw new ArgumentNullException(nameof(actionName));
+            _action = action ?? throw new ArgumentNullException(nameof(action));
             _status = Status.Initial;
         }
 
         /// <summary>
-        /// Start the worker if it is not running.
+        /// 如果工作者未运行则启动它
         /// </summary>
+        /// <returns>当前工作者实例</returns>
         public Worker Start()
         {
             lock (_lockObject)
             {
                 if (_status == Status.Running)
                 {
+                    _logger.LogInformation("Worker '{WorkerName}' is already running.", ActionName);
                     return this;
                 }
 
                 _status = Status.Running;
-                new Thread(Loop)
+
+                var thread = new Thread(Loop)
                 {
                     Name = $"{ActionName}.Worker",
                     IsBackground = true
-                }.Start(this);
+                };
 
+                thread.Start();
+
+                _logger.LogInformation("Worker '{WorkerName}' started.", ActionName);
                 return this;
             }
         }
-        /// <summary>Request to stop the worker.
+
+        /// <summary>
+        /// 请求停止工作者
         /// </summary>
+        /// <returns>当前工作者实例</returns>
         public Worker Stop()
         {
             lock (_lockObject)
             {
                 if (_status == Status.StopRequested)
                 {
+                    _logger.LogInformation("Stop already requested for worker '{WorkerName}'.", ActionName);
                     return this;
                 }
-                _status = Status.StopRequested;
 
+                _status = Status.StopRequested;
+                _logger.LogInformation("Stop requested for worker '{WorkerName}'.", ActionName);
                 return this;
             }
         }
 
-        private void Loop(object data)
+        /// <summary>
+        /// 工作者的主循环
+        /// </summary>
+        private void Loop()
         {
-            var worker = (Worker)data;
+            _logger.LogDebug("Worker '{WorkerName}' loop started.", ActionName);
 
-            while (worker._status == Status.Running)
+            while (_status == Status.Running)
             {
                 try
                 {
@@ -79,21 +98,46 @@ namespace DotCommon.Scheduling
                 }
                 catch (ThreadAbortException)
                 {
-                    _logger.LogInformation("Worker thread caught ThreadAbortException, try to resetting, actionName:{0}", ActionName);
+                    _logger.LogInformation(
+                        "Worker thread caught ThreadAbortException, trying to reset. Worker name: {WorkerName}",
+                        ActionName);
+
                     Thread.ResetAbort();
-                    _logger.LogInformation("Worker thread ThreadAbortException resetted, actionName:{0}", ActionName);
+
+                    _logger.LogInformation(
+                        "Worker thread ThreadAbortException resetted. Worker name: {WorkerName}",
+                        ActionName);
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"Worker thread has exception, actionName:{ActionName},error:{ex.Message}");
+                    _logger.LogError(
+                        ex,
+                        "Worker thread has exception. Worker name: {WorkerName}",
+                        ActionName);
                 }
             }
+
+            _logger.LogDebug("Worker '{WorkerName}' loop ended.", ActionName);
         }
 
-        enum Status
+        /// <summary>
+        /// 工作者状态枚举
+        /// </summary>
+        private enum Status
         {
+            /// <summary>
+            /// 初始状态
+            /// </summary>
             Initial,
+
+            /// <summary>
+            /// 运行中
+            /// </summary>
             Running,
+
+            /// <summary>
+            /// 已请求停止
+            /// </summary>
             StopRequested
         }
     }

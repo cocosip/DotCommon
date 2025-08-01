@@ -37,7 +37,7 @@ namespace DotCommon.Test.AutoMapper
                 PhoneNumber = "15868702111",
                 UserId = 10
             };
-            var user = objectMapper.Map<TestOrder,TestUser>(testOrder);
+            var user = objectMapper.Map<TestOrder, TestUser>(testOrder);
             Assert.Equal(10, user.UserId);
             Assert.Equal("15868702111", user.PhoneNumber);
             Assert.Equal("张三", user.UserName);

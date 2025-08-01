@@ -1,4 +1,3 @@
-﻿#if NETSTANDARD2_0
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,15 +7,16 @@ using System.Text;
 namespace DotCommon.Encrypt
 {
     /// <summary>
-    /// RSA密码,密钥相关操作
+    /// RSA encryption and key operations
     /// </summary>
     public static class RSAHelper
     {
-        /// <summary>固定内容 encoded OID sequence for PKCS #1 rsaEncryption szOID_RSA_RSA ="1.2.840.113549.1.1.1"
+#if NETSTANDARD2_0
+        /// <summary>Fixed content encoded OID sequence for PKCS #1 rsaEncryption szOID_RSA_RSA ="1.2.840.113549.1.1.1"
         /// </summary>
         private static readonly byte[] SeqOID = { 0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00 };
 
-        /// <summary>固定版本号
+        /// <summary>Fixed version number
         /// </summary>
         private static readonly byte[] Version = { 0x02, 0x01, 0x00 };
 
@@ -28,15 +28,18 @@ namespace DotCommon.Encrypt
             {"SHA384",HashAlgorithmName.SHA384 },
             {"SHA512",HashAlgorithmName.SHA512 },
         };
+#endif
 
         /// <summary>
-        /// 生成RSA密钥对(Pem密钥格式)
+        /// Generate RSA key pair (PEM key format)
         /// </summary>
-        /// <param name="format">格式,PKCS1或者PKCS8</param>
-        /// <param name="keySize">512,1024,1536,2048</param>
-        /// <returns>公钥,私钥</returns>
-        public static RSAKeyPair GenerateKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 1024)
+        /// <param name="format">Format, PKCS1 or PKCS8</param>
+        /// <param name="keySize">512, 1024, 1536, 2048</param>
+        /// <param name="subjectPublicKey">Whether to use SubjectPublicKey format (only valid in .NET Standard 2.1 and above)</param>
+        /// <returns>Public key, private key</returns>
+        public static RSAKeyPair GenerateKeyPair(RSAKeyFormat format = RSAKeyFormat.PKCS1, int keySize = 2048, bool subjectPublicKey = true)
         {
+#if NETSTANDARD2_0
             using var rsa = RSA.Create();
             rsa.KeySize = keySize;
 
@@ -45,12 +48,24 @@ namespace DotCommon.Encrypt
             string publicKey = ExportPublicKey(publicParameters);
             string privateKey = format == RSAKeyFormat.PKCS1 ? ExportPrivateKeyPKCS1(privateParameters) : ExportPrivateKeyPKCS8(privateParameters);
             return new RSAKeyPair(publicKey, privateKey);
+#else
+            using var rsa = RSA.Create();
+            rsa.KeySize = keySize;
+
+            var privateKeyBuffer = format == RSAKeyFormat.PKCS1 ? rsa.ExportRSAPrivateKey() : rsa.ExportPkcs8PrivateKey();
+            var privateKey = Convert.ToBase64String(privateKeyBuffer);
+
+            var publicKeyBuffer = subjectPublicKey ? rsa.ExportSubjectPublicKeyInfo() : rsa.ExportRSAPublicKey();
+            var publicKey = Convert.ToBase64String(publicKeyBuffer);
+            return new RSAKeyPair(publicKey, privateKey);
+#endif
         }
 
+#if NETSTANDARD2_0
         /// <summary>
-        /// 根据RSAParameters参数生成公钥
+        /// Generate public key from RSAParameters
         /// </summary>
-        /// <param name="rsaParameters">RSA参数</param>
+        /// <param name="rsaParameters">RSA parameters</param>
         /// <returns></returns>
         public static string ExportPublicKey(RSAParameters rsaParameters)
         {
@@ -64,25 +79,25 @@ namespace DotCommon.Encrypt
             contentBytes = TLVFormat(0x30, contentBytes.ToArray());
             contentBytes.Insert(0, 0x00);
 
-            //内容,Modulus+Exponent
+            //Content, Modulus+Exponent
             var bodyBytes = TLVFormat(0x03, contentBytes.ToArray());
             bodyBytes.InsertRange(0, SeqOID);
 
-            //密钥最终的二进制
+            //Final key binary
             var keyBytes = TLVFormat(0x30, bodyBytes.ToArray());
             return Convert.ToBase64String(keyBytes.ToArray());
         }
 
         /// <summary>
-        /// 根据RSAParameters参数生成PKCS1私钥
+        /// Generate PKCS1 private key from RSAParameters
         /// </summary>
-        /// <param name="rsaParameters">RSA参数</param>
+        /// <param name="rsaParameters">RSA parameters</param>
         /// <returns></returns>
         public static string ExportPrivateKeyPKCS1(RSAParameters rsaParameters)
         {
-            //密钥中,除了头部长度以外的数据
+            //Key data excluding header length
             var bodyBytes = new List<byte>();
-            //版本号
+            //Version number
             bodyBytes.AddRange(Version);
             //Modulus
             bodyBytes.AddRange(TLVFormat(0x02, rsaParameters.Modulus));
@@ -100,19 +115,19 @@ namespace DotCommon.Encrypt
             bodyBytes.AddRange(TLVFormat(0x02, rsaParameters.DQ));
             //InverseQ
             bodyBytes.AddRange(TLVFormat(0x02, rsaParameters.InverseQ));
-            //密钥二进制
+            //Key binary
             var keyBytes = TLVFormat(0x30, bodyBytes.ToArray());
             return Convert.ToBase64String(keyBytes.ToArray());
         }
 
         /// <summary>
-        /// 根据RSAParameters参数生成PKCS8私钥
+        /// Generate PKCS8 private key from RSAParameters
         /// </summary>
         public static string ExportPrivateKeyPKCS8(RSAParameters rsaParameters)
         {
-            //第二个Verison之后的数据
+            //Data after the second version
             var contentBytes = new List<byte>();
-            //版本号
+            //Version number
             contentBytes.AddRange(Version);
 
             //Modulus
@@ -132,75 +147,93 @@ namespace DotCommon.Encrypt
             //InverseQ
             contentBytes.AddRange(TLVFormat(0x02, rsaParameters.InverseQ));
 
-            //不包含第一个Version的tlv
+            //TLV without the first version
             var bodyTlvBytes = TLVFormat(0x30, contentBytes.ToArray());
-            //SeqOid之后的tlv
+            //TLV after SeqOid
             var bodyBytes = TLVFormat(0x04, bodyTlvBytes.ToArray());
             bodyBytes.InsertRange(0, SeqOID);
             bodyBytes.InsertRange(0, Version);
 
-            //密钥二进制
+            //Key binary
             var keyBytes = TLVFormat(0x30, bodyBytes.ToArray());
             return Convert.ToBase64String(keyBytes.ToArray());
         }
+#endif
 
         /// <summary>
-        /// 将PKCS8编码格式的私钥转换成PKCS1编码格式的私钥
+        /// Convert PKCS8 encoded private key to PKCS1 encoded private key
         /// </summary>
-        /// <param name="pkcs8Key">PKCS8格式密钥</param>
+        /// <param name="pkcs8Key">PKCS8 format key</param>
         /// <returns></returns>
         public static string PKCS8ToPKCS1(string pkcs8Key)
         {
+#if NETSTANDARD2_0
             var rsaParams = ReadPrivateKeyInfo(pkcs8Key);
             return ExportPrivateKeyPKCS1(rsaParams);
+#else
+            using var rsa = RSA.Create();
+            var pkcs8KeyBuffer = Convert.FromBase64String(pkcs8Key);
+            rsa.ImportPkcs8PrivateKey(pkcs8KeyBuffer, out int bytesRead);
+            var pkcs1KeyBuffer = rsa.ExportRSAPrivateKey();
+            return Convert.ToBase64String(pkcs1KeyBuffer);
+#endif
         }
 
         /// <summary>
-        /// 将PKCS1编码格式的私钥转换成PKCS8编码格式的私钥
+        /// Convert PKCS1 encoded private key to PKCS8 encoded private key
         /// </summary>
-        /// <param name="pkcs1Key">PKCS1格式密钥</param>
+        /// <param name="pkcs1Key">PKCS1 format key</param>
         /// <returns></returns>
         public static string PKCS1ToPKCS8(string pkcs1Key)
         {
+#if NETSTANDARD2_0
             var rsaParams = ReadPrivateKeyInfo(pkcs1Key);
             return ExportPrivateKeyPKCS8(rsaParams);
+#else
+            using var rsa = RSA.Create();
+            var pkcs1KeyBuffer = Convert.FromBase64String(pkcs1Key);
+            rsa.ImportRSAPrivateKey(pkcs1KeyBuffer, out int bytesRead);
+            var pkcs8KeyBuffer = rsa.ExportPkcs8PrivateKey();
+            return Convert.ToBase64String(pkcs8KeyBuffer);
+#endif
         }
 
+#if NETSTANDARD2_0
         /// <summary>
-        /// 从公钥中读取RSA参数
+        /// Read RSA parameters from public key
         /// </summary>
         public static RSAParameters ReadPublicKeyInfo(string publicKey)
         {
             var rsaKeyInfo = new RSAParameters();
-            //公钥二进制数据
+            //Public key binary data
             var keyBytes = Convert.FromBase64String(publicKey);
             var keySpan = new Span<byte>(keyBytes);
             if (keySpan[0] != 0x30)
             {
-                throw new ArgumentException("RSA公钥头部标志位不正确,应该为0x30.");
+                throw new ArgumentException("RSA public key header flag is incorrect, should be 0x30.");
             }
             var bodySpan = ReadContent(ReadTLV(keySpan));
             if (!SeqOID.SequenceEqual(bodySpan.Slice(0, 15).ToArray()))
             {
-                throw new ArgumentException("RSA公钥OID sequence不正确.");
+                throw new ArgumentException("RSA public key OID sequence is incorrect.");
             }
-            //内容
+            //Content
             var contentSpan = bodySpan.Slice(15);
             if (contentSpan[0] != 0x03)
             {
-                throw new ArgumentException("RSA公钥内容志位不正确,应该为0x03.");
+                throw new ArgumentException("RSA public key content flag is incorrect, should be 0x03.");
             }
-            //固定0x00
+            //Fixed 0x00
             var fixedSpan = ReadTLV(contentSpan);
             if (fixedSpan[0] != 0x00)
             {
-                throw new ArgumentException("RSA公钥固定内容不正确,应为0x00");
+                throw new ArgumentException("RSA public key fixed content is incorrect, should be 0x00");
             }
-            //内容
+            //Content
             var keyContentSpan = ReadTLV(fixedSpan.Slice(1));
             if (keyContentSpan[0] != 0x02)
             {
-                throw new ArgumentException("RSA公钥Modulus标志不正确,应为0x02.");
+                throw new ArgumentException("RSA public key Modulus flag is incorrect, should be 0x02.");
             }
 
             var tlvs = SplitTLVs(keyContentSpan);
@@ -212,7 +245,7 @@ namespace DotCommon.Encrypt
         }
 
         /// <summary>
-        /// 从私钥中读取RSA参数
+        /// Read RSA parameters from private key
         /// </summary>
         public static RSAParameters ReadPrivateKeyInfo(string privateKey)
         {
@@ -221,15 +254,15 @@ namespace DotCommon.Encrypt
             var keySpan = new Span<byte>(keyBytes);
             if (keySpan[0] != 0x30)
             {
-                throw new ArgumentException("RSA私钥头部标志位不正确,应该为0x30.");
+                throw new ArgumentException("RSA private key header flag is incorrect, should be 0x30.");
             }
             //Body
             var bodySpan = ReadTLV(keySpan);
             if (!Version.SequenceEqual(bodySpan.Slice(0, 3).ToArray()))
             {
-                throw new ArgumentException("RSA私钥第一个固定版本不正确.");
+                throw new ArgumentException("RSA private key first fixed version is incorrect.");
             }
-            //内容
+            //Content
             var contentSpan = bodySpan.Slice(3);
 
             if (contentSpan[0] == 0x30)
@@ -237,21 +270,21 @@ namespace DotCommon.Encrypt
                 //PKCS8
                 if (!SeqOID.SequenceEqual(contentSpan.Slice(0, 15).ToArray()))
                 {
-                    throw new ArgumentException("RSA私钥为PKCS8格式,OID sequence不正确");
+                    throw new ArgumentException("RSA private key is in PKCS8 format, OID sequence is incorrect");
                 }
-                //去除了OID之后的数据
+                //Data after removing OID
                 var itemSpan1 = contentSpan.Slice(15);
                 var itemSpan2 = ReadTLV(itemSpan1);
                 var secondVersionSpan = ReadTLV(itemSpan2);
-                //第二个版本读取
+                //Read second version
                 if (!Version.SequenceEqual(secondVersionSpan.Slice(0, 3).ToArray()))
                 {
-                    throw new ArgumentException("RSA私钥为PKCS8格式,第二个固定版本不正确.");
+                    throw new ArgumentException("RSA private key is in PKCS8 format, second fixed version is incorrect.");
                 }
-                //两种格式私钥的内容
+                //Content of both formats
                 contentSpan = secondVersionSpan.Slice(3);
             }
-            //多个并列tlv
+            //Multiple parallel TLVs
             var tlvs = SplitTLVs(contentSpan);
             //Modulus
             rsaKeyInfo.Modulus = ReadContent(tlvs[0]).ToArray();
@@ -273,7 +306,7 @@ namespace DotCommon.Encrypt
         }
 
         /// <summary>
-        /// 获取RSA私钥的格式
+        /// Get RSA private key format
         /// </summary>
         public static RSAKeyFormat GetKeyFormat(string privateKey)
         {
@@ -290,7 +323,7 @@ namespace DotCommon.Encrypt
             {
                 return RSAKeyFormat.Unknow;
             }
-            //内容
+            //Content
             var contentSpan = bodySpan.Slice(3);
             if (contentSpan[0] == 0x30)
             {
@@ -298,137 +331,215 @@ namespace DotCommon.Encrypt
             }
             return keyFormat;
         }
+#endif
 
-
-        #region RSA加密解密,签名解签
+        #region RSA encryption/decryption, signing/verification
 
         /// <summary>
-        /// 加密
+        /// Encrypt
         /// </summary>
-        /// <param name="data">原数据</param>
-        /// <param name="publicKey">公钥</param>
-        /// <param name="encryptionPadding">算法</param>
+        /// <param name="data">Original data</param>
+        /// <param name="publicKey">Public key</param>
+        /// <param name="encryptionPadding">Algorithm</param>
+        /// <param name="subjectPublicKey">Whether to use SubjectPublicKey format (only valid in .NET Standard 2.1 and above)</param>
         /// <returns></returns>
-        public static byte[] Encrypt(byte[] data, string publicKey, RSAEncryptionPadding? encryptionPadding = null)
+        public static byte[] Encrypt(byte[] data, string publicKey, RSAEncryptionPadding? encryptionPadding = null, bool subjectPublicKey = true)
         {
+#if NETSTANDARD2_0
             using var rsa = CreateRsaFromPublicKey(publicKey);
             encryptionPadding ??= RSAEncryptionPadding.Pkcs1;
             var encryptedData = rsa.Encrypt(data, encryptionPadding);
             return encryptedData;
+#else
+            using var rsa = RSA.Create();
+            var publicKeyBuffer = Convert.FromBase64String(publicKey);
+
+            if (subjectPublicKey)
+            {
+                rsa.ImportSubjectPublicKeyInfo(publicKeyBuffer, out int _);
+            }
+            else
+            {
+                rsa.ImportRSAPublicKey(publicKeyBuffer, out int _);
+            }
+
+            encryptionPadding ??= RSAEncryptionPadding.Pkcs1;
+            var encryptedData = rsa.Encrypt(data, encryptionPadding);
+            return encryptedData;
+#endif
         }
 
         /// <summary>
-        /// 加密
+        /// Encrypt
         /// </summary>
-        /// <param name="data">原数据</param>
-        /// <param name="publicKey">公钥</param>
-        /// <param name="encryptionPadding">算法</param>
-        /// <param name="encode">编码</param>
+        /// <param name="data">Original data</param>
+        /// <param name="publicKey">Public key</param>
+        /// <param name="encryptionPadding">Algorithm</param>
+        /// <param name="encode">Encoding</param>
+        /// <param name="subjectPublicKey">Whether to use SubjectPublicKey format (only valid in .NET Standard 2.1 and above)</param>
         /// <returns></returns>
-        public static string EncryptAsBase64(string data, string publicKey, RSAEncryptionPadding? encryptionPadding = null, string encode = "utf-8")
+        public static string EncryptAsBase64(string data, string publicKey, RSAEncryptionPadding? encryptionPadding = null, string encode = "utf-8", bool subjectPublicKey = true)
         {
-            var encryptedData = Encrypt(Encoding.GetEncoding(encode).GetBytes(data), publicKey, encryptionPadding);
+            var encryptedData = Encrypt(Encoding.GetEncoding(encode).GetBytes(data), publicKey, encryptionPadding, subjectPublicKey);
             return Convert.ToBase64String(encryptedData);
         }
 
-
         /// <summary>
-        /// 解密
+        /// Decrypt
         /// </summary>
-        /// <param name="data">待解密数据</param>
-        /// <param name="privateKey"></param>
-        /// <param name="encryptionPadding">算法</param>
+        /// <param name="data">Data to decrypt</param>
+        /// <param name="privateKey">Private key</param>
+        /// <param name="keyFormat">Key format</param>
+        /// <param name="encryptionPadding">Algorithm</param>
         /// <returns></returns>
-        public static byte[] Decrypt(byte[] data, string privateKey, RSAEncryptionPadding? encryptionPadding = null)
+        public static byte[] Decrypt(byte[] data, string privateKey, RSAKeyFormat keyFormat = RSAKeyFormat.PKCS1, RSAEncryptionPadding? encryptionPadding = null)
         {
+#if NETSTANDARD2_0
             using var rsa = CreateRsaFromPrivateKey(privateKey);
             encryptionPadding ??= RSAEncryptionPadding.Pkcs1;
             var decryptedData = rsa.Decrypt(data, encryptionPadding);
             return decryptedData;
+#else
+            using var rsa = RSA.Create();
+            var privateKeyBuffer = Convert.FromBase64String(privateKey);
+            if (keyFormat == RSAKeyFormat.PKCS1)
+            {
+                rsa.ImportRSAPrivateKey(privateKeyBuffer, out int _);
+            }
+            else
+            {
+                rsa.ImportPkcs8PrivateKey(privateKeyBuffer, out int _);
+            }
+            encryptionPadding ??= RSAEncryptionPadding.Pkcs1;
+            var decryptedData = rsa.Decrypt(data, encryptionPadding);
+            return decryptedData;
+#endif
         }
 
-
         /// <summary>
-        /// 解密
+        /// Decrypt
         /// </summary>
-        /// <param name="data">原数据</param>
-        /// <param name="privateKey">私钥</param>
-        /// <param name="encryptionPadding">算法</param>
-        /// <param name="encode">编码</param>
+        /// <param name="data">Original data</param>
+        /// <param name="privateKey">Private key</param>
+        /// <param name="keyFormat">Key format</param>
+        /// <param name="encryptionPadding">Algorithm</param>
+        /// <param name="encode">Encoding</param>
         /// <returns></returns>
-        public static string DecryptFromBase64(string data, string privateKey, RSAEncryptionPadding? encryptionPadding = null, string encode = "utf-8")
+        public static string DecryptFromBase64(string data, string privateKey, RSAKeyFormat keyFormat = RSAKeyFormat.PKCS1, RSAEncryptionPadding? encryptionPadding = null, string encode = "utf-8")
         {
-            var decryptedData = Decrypt(Convert.FromBase64String(data), privateKey, encryptionPadding);
+            var decryptedData = Decrypt(Convert.FromBase64String(data), privateKey, keyFormat, encryptionPadding);
             return Encoding.GetEncoding(encode).GetString(decryptedData);
         }
 
-
         /// <summary>
-        /// 数据签名
+        /// Data signing
         /// </summary>
-        /// <param name="data">待签名数据</param>
-        /// <param name="privateKey">私钥</param>
-        /// <param name="signaturePadding">签名类型</param>
-        /// <param name="hashAlgorithmName">哈希算法</param>
+        /// <param name="data">Data to sign</param>
+        /// <param name="privateKey">Private key</param>
+        /// <param name="keyFormat">Format, default PKCS1</param>
+        /// <param name="signaturePadding">Signature type</param>
+        /// <param name="hashAlgorithmName">Hash algorithm</param>
         /// <returns></returns>
-
-        public static byte[] SignData(byte[] data, string privateKey, RSASignaturePadding? signaturePadding = null, string hashAlgorithmName = "SHA256")
+        public static byte[] SignData(byte[] data, string privateKey, RSAKeyFormat keyFormat = RSAKeyFormat.PKCS1, RSASignaturePadding? signaturePadding = null, HashAlgorithmName? hashAlgorithmName = null)
         {
+#if NETSTANDARD2_0
             using var rsa = CreateRsaFromPrivateKey(privateKey);
             signaturePadding ??= RSASignaturePadding.Pkcs1;
-            var signedData = rsa.SignData(data, HashAlgorithmNameDict[hashAlgorithmName], signaturePadding);
+            var algorithmName = hashAlgorithmName ?? HashAlgorithmName.SHA256;
+            var signedData = rsa.SignData(data, algorithmName, signaturePadding);
             return signedData;
+#else
+            using var rsa = RSA.Create();
+            var privateKeyBuffer = Convert.FromBase64String(privateKey);
+            if (keyFormat == RSAKeyFormat.PKCS1)
+            {
+                rsa.ImportRSAPrivateKey(privateKeyBuffer, out int _);
+            }
+            else
+            {
+                rsa.ImportPkcs8PrivateKey(privateKeyBuffer, out int _);
+            }
+
+            signaturePadding ??= RSASignaturePadding.Pkcs1;
+            var algorithmName = hashAlgorithmName ?? HashAlgorithmName.SHA256;
+            var signedData = rsa.SignData(data, algorithmName, signaturePadding);
+            return signedData;
+#endif
         }
+
         /// <summary>
-        /// 数据签名
+        /// Data signing
         /// </summary>
-        /// <param name="data">待签名数据</param>
-        /// <param name="privateKey">私钥</param>
-        /// <param name="signaturePadding">签名类型</param>
-        /// <param name="hashAlgorithmName">哈希算法</param>
-        /// <param name="encode">编码</param>
+        /// <param name="data">Data to sign</param>
+        /// <param name="privateKey">Private key</param>
+        /// <param name="keyFormat">Format, default PKCS1</param>
+        /// <param name="signaturePadding">Signature type</param>
+        /// <param name="hashAlgorithmName">Hash algorithm</param>
+        /// <param name="encode">Encoding</param>
         /// <returns></returns>
-        public static string SignDataAsBase64(string data, string privateKey, RSASignaturePadding? signaturePadding = null, string hashAlgorithmName = "SHA256", string encode = "utf-8")
+        public static string SignDataAsBase64(string data, string privateKey, RSAKeyFormat keyFormat = RSAKeyFormat.PKCS1, RSASignaturePadding? signaturePadding = null, HashAlgorithmName? hashAlgorithmName = null, string encode = "utf-8")
         {
-            var signedData = SignData(Encoding.GetEncoding(encode).GetBytes(data), privateKey, signaturePadding, hashAlgorithmName);
+            var signedData = SignData(Encoding.GetEncoding(encode).GetBytes(data), privateKey, keyFormat, signaturePadding, hashAlgorithmName);
             return Convert.ToBase64String(signedData);
         }
 
         /// <summary>
-        /// 签名校验
+        /// Signature verification
         /// </summary>
-        /// <param name="data">原数据</param>
-        /// <param name="signature">签名后数据</param>
-        /// <param name="publicKey">公寓奥</param>
-        /// <param name="signaturePadding">签名算法</param>
-        /// <param name="hashAlgorithmName">哈希算法</param>
+        /// <param name="data">Original data</param>
+        /// <param name="signature">Signed data</param>
+        /// <param name="publicKey">Public key</param>
+        /// <param name="subjectPublicKey">Whether to use SubjectPublicKey format (only valid in .NET Standard 2.1 and above)</param>
+        /// <param name="signaturePadding">Signature algorithm</param>
+        /// <param name="hashAlgorithmName">Hash algorithm</param>
         /// <returns></returns>
-        public static bool VerifyData(byte[] data, byte[] signature, string publicKey, RSASignaturePadding? signaturePadding = null, string hashAlgorithmName = "SHA256")
+        public static bool VerifyData(byte[] data, byte[] signature, string publicKey, bool subjectPublicKey = true, RSASignaturePadding? signaturePadding = null, HashAlgorithmName? hashAlgorithmName = null)
         {
+#if NETSTANDARD2_0
             using var rsa = CreateRsaFromPublicKey(publicKey);
             signaturePadding ??= RSASignaturePadding.Pkcs1;
-            return rsa.VerifyData(data, signature, HashAlgorithmNameDict[hashAlgorithmName], signaturePadding);
+            var algorithmName = hashAlgorithmName ?? HashAlgorithmName.SHA256;
+            return rsa.VerifyData(data, signature, algorithmName, signaturePadding);
+#else
+            using var rsa = RSA.Create();
+            var publicKeyBuffer = Convert.FromBase64String(publicKey);
+
+            if (subjectPublicKey)
+            {
+                rsa.ImportSubjectPublicKeyInfo(publicKeyBuffer, out int _);
+            }
+            else
+            {
+                rsa.ImportRSAPublicKey(publicKeyBuffer, out int _);
+            }
+
+            var algorithmName = hashAlgorithmName ?? HashAlgorithmName.SHA256;
+            signaturePadding ??= RSASignaturePadding.Pkcs1;
+            return rsa.VerifyData(data, signature, algorithmName, signaturePadding);
+#endif
         }
 
         /// <summary>
-        /// 签名校验
+        /// Signature verification
         /// </summary>
-        /// <param name="data">源数据</param>
-        /// <param name="base64Signature">签名后数据Base64编码</param>
-        /// <param name="publicKey">公寓奥</param>
-        /// <param name="signaturePadding">签名算法</param>
-        /// <param name="hashAlgorithmName">哈希算法</param>
-        /// <param name="encode">编码</param>
+        /// <param name="data">Source data</param>
+        /// <param name="base64Signature">Signed data Base64 encoded</param>
+        /// <param name="publicKey">Public key</param>
+        /// <param name="subjectPublicKey">Whether to use SubjectPublicKey format (only valid in .NET Standard 2.1 and above)</param>
+        /// <param name="signaturePadding">Signature algorithm</param>
+        /// <param name="hashAlgorithmName">Hash algorithm</param>
+        /// <param name="encode">Encoding</param>
         /// <returns></returns>
-        public static bool VerifyBase64Data(string data, string base64Signature, string publicKey, RSASignaturePadding? signaturePadding = null, string hashAlgorithmName = "SHA256", string encode = "utf-8")
+        public static bool VerifyBase64Data(string data, string base64Signature, string publicKey, bool subjectPublicKey = true, RSASignaturePadding? signaturePadding = null, HashAlgorithmName? hashAlgorithmName = null, string encode = "utf-8")
         {
             var dataBytes = Encoding.GetEncoding(encode).GetBytes(data);
             var signature = Convert.FromBase64String(base64Signature);
-            return VerifyData(dataBytes, signature, publicKey, signaturePadding, hashAlgorithmName);
+            return VerifyData(dataBytes, signature, publicKey, subjectPublicKey, signaturePadding, hashAlgorithmName);
         }
 
+#if NETSTANDARD2_0
         /// <summary>
-        /// 根据RSA公钥生成RSA对象
+        /// Create RSA object from RSA public key
         /// </summary>
         private static RSA CreateRsaFromPublicKey(string publicKey)
         {
@@ -436,117 +547,10 @@ namespace DotCommon.Encrypt
             var rsa = RSA.Create();
             rsa.ImportParameters(rsaParams);
             return rsa;
-
-            #region 原方法
-            ////1.2.840.113549.1.1.1
-            //byte[] seqOid = { 0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00 };
-            //var x509Key = Convert.FromBase64String(publicKey);
-            //using (var mem = new MemoryStream(x509Key))
-            //{
-            //    using (var binr = new BinaryReader(mem))
-            //    {
-            //        byte bt = 0;
-            //        ushort twobytes = 0;
-
-            //        twobytes = binr.ReadUInt16();
-            //        if (twobytes == 0x8130)
-            //        {
-            //            binr.ReadByte();
-            //        }
-            //        else if (twobytes == 0x8230)
-            //        {
-            //            binr.ReadInt16();
-            //        }
-            //        else
-            //        {
-            //            return null;
-            //        }
-            //        var seq = binr.ReadBytes(15);
-            //        if (!CompareByteArray(seq, seqOid))
-            //        {
-            //            return null;
-            //        }
-
-            //        twobytes = binr.ReadUInt16();
-            //        if (twobytes == 0x8103)
-            //        {
-            //            binr.ReadByte();
-            //        }
-            //        else if (twobytes == 0x8203)
-            //        {
-            //            binr.ReadInt16();
-            //        }
-            //        else
-            //        {
-            //            return null;
-            //        }
-            //        bt = binr.ReadByte();
-            //        if (bt != 0x00)
-            //        {
-            //            return null;
-            //        }
-            //        twobytes = binr.ReadUInt16();
-            //        if (twobytes == 0x8130)
-            //        {
-            //            binr.ReadByte();
-            //        }
-            //        else if (twobytes == 0x8230)
-            //        {
-            //            binr.ReadInt16();
-            //        }
-            //        else
-            //        {
-            //            return null;
-            //        }
-            //        twobytes = binr.ReadUInt16();
-            //        byte lowbyte = 0x00;
-            //        byte highbyte = 0x00;
-
-            //        if (twobytes == 0x8102)
-            //        {
-            //            lowbyte = binr.ReadByte();
-            //        }
-            //        else if (twobytes == 0x8202)
-            //        {
-            //            highbyte = binr.ReadByte();
-            //            lowbyte = binr.ReadByte();
-            //        }
-            //        else
-            //        {
-            //            return null;
-            //        }
-            //        byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
-            //        int modsize = BitConverter.ToInt32(modint, 0);
-
-            //        int firstbyte = binr.PeekChar();
-            //        if (firstbyte == 0x00)
-            //        {
-            //            binr.ReadByte();
-            //            modsize -= 1;
-            //        }
-            //        byte[] modulus = binr.ReadBytes(modsize);
-            //        if (binr.ReadByte() != 0x02)
-            //        {
-            //            return null;
-            //        }
-            //        int expbytes = (int)binr.ReadByte();
-            //        byte[] exponent = binr.ReadBytes(expbytes);
-            //        var rsa = RSA.Create();
-            //        var rsaKeyInfo = new RSAParameters
-            //        {
-            //            Modulus = modulus,
-            //            Exponent = exponent
-            //        };
-            //        rsa.ImportParameters(rsaKeyInfo);
-            //        return rsa;
-            //    }
-
-            //} 
-            #endregion
         }
 
         /// <summary>
-        /// 根据私钥生成RSA对象
+        /// Create RSA object from private key
         /// </summary>
         private static RSA CreateRsaFromPrivateKey(string privateKey)
         {
@@ -554,59 +558,16 @@ namespace DotCommon.Encrypt
             var rsa = RSA.Create();
             rsa.ImportParameters(rsaParams);
             return rsa;
-
-            #region 原方法
-            //var privateKeyBits = Convert.FromBase64String(privateKey);
-            //var rsa = RSA.Create();
-            //var rsaParams = new RSAParameters();
-
-            //using (var binr = new BinaryReader(new MemoryStream(privateKeyBits)))
-            //{
-            //    byte bt = 0;
-            //    ushort twobytes = 0;
-            //    twobytes = binr.ReadUInt16();
-            //    if (twobytes == 0x8130)
-            //    {
-            //        binr.ReadByte();
-            //    }
-            //    else if (twobytes == 0x8230)
-            //    {
-            //        binr.ReadInt16();
-            //    }
-            //    else
-            //    {
-            //        throw new Exception("Unexpected value read binr.ReadUInt16()");
-            //    }
-            //    twobytes = binr.ReadUInt16();
-            //    if (twobytes != 0x0102)
-            //    {
-            //        throw new Exception("Unexpected version");
-            //    }
-            //    bt = binr.ReadByte();
-            //    if (bt != 0x00)
-            //    {
-            //        throw new Exception("Unexpected value read binr.ReadByte()");
-            //    }
-            //    rsaParams.Modulus = binr.ReadBytes(GetIntegerSize(binr));
-            //    rsaParams.Exponent = binr.ReadBytes(GetIntegerSize(binr));
-            //    rsaParams.D = binr.ReadBytes(GetIntegerSize(binr));
-            //    rsaParams.P = binr.ReadBytes(GetIntegerSize(binr));
-            //    rsaParams.Q = binr.ReadBytes(GetIntegerSize(binr));
-            //    rsaParams.DP = binr.ReadBytes(GetIntegerSize(binr));
-            //    rsaParams.DQ = binr.ReadBytes(GetIntegerSize(binr));
-            //    rsaParams.InverseQ = binr.ReadBytes(GetIntegerSize(binr));
-            //}
-            //rsa.ImportParameters(rsaParams);
-            //return rsa; 
-            #endregion
         }
+#endif
 
         #endregion
 
+#if NETSTANDARD2_0
         /// <summary>
-        /// TLV格式化(flag+长度数据占用位数+长度数值+数据)
+        /// TLV format (flag + length data occupancy bits + length value + data)
         /// </summary>
-        /// <param name="flag">标志</param>
+        /// <param name="flag">Flag</param>
         /// <param name="content"></param>
         /// <returns></returns>
         private static List<byte> TLVFormat(byte flag, byte[] content)
@@ -616,15 +577,15 @@ namespace DotCommon.Encrypt
                 flag
             };
             var contentLength = content.Length;
-            //判断是否需要添加0x00
+            //Check if 0x00 needs to be added
             if (content[0] >= 0x80)
             {
                 contentLength++;
             }
-            //长度小于0x80(128,因为byte最大表示0-127),数据长度占用位没有了
+            //If length is less than 0x80 (128, because byte max is 0-127), there's no length occupancy bit
             if (contentLength >= 0x80)
             {
-                //小于256,0xFF=255
+                //Less than 256, 0xFF=255
                 if (contentLength <= 0xFF)
                 {
                     tlvBytes.Add(0x81);
@@ -639,28 +600,28 @@ namespace DotCommon.Encrypt
             }
             else
             {
-                //长度小于128,直接添加1位的长度
+                //Length less than 128, directly add 1 bit for length
                 tlvBytes.Add((byte)contentLength);
             }
-            //判断是否需要添加0x00
+            //Check if 0x00 needs to be added
             if (content[0] >= 0x80)
             {
                 tlvBytes.Add(0x00);
             }
-            //添加内容
+            //Add content
             tlvBytes.AddRange(content);
             return tlvBytes;
         }
 
         /// <summary>
-        /// 读取TLV结构中的数据
+        /// Read data from TLV structure
         /// </summary>
         private static Span<byte> ReadTLV(Span<byte> tlvSpan)
         {
-            //长度
+            //Length
             int length;
             Span<byte> contentSpan;
-            //如果该值小于0x80,代表没有长度占用位
+            //If this value is less than 0x80, there's no length occupancy bit
             if (tlvSpan[1] < 0x80)
             {
                 length = tlvSpan[1];
@@ -680,13 +641,13 @@ namespace DotCommon.Encrypt
             }
             else
             {
-                throw new ArgumentException("TLV长度占用位不正确,应为0x81或者0x82");
+                throw new ArgumentException("TLV length occupancy bit is incorrect, should be 0x81 or 0x82");
             }
             return contentSpan;
         }
 
         /// <summary>
-        /// 分割多个TLV格式数据,返回数据列表
+        /// Split multiple TLV format data, return data list
         /// </summary>
         private static List<byte[]> SplitTLVs(Span<byte> tlvs)
         {
@@ -695,12 +656,12 @@ namespace DotCommon.Encrypt
             var readLength = 0;
             while (readLength < tlvs.Length)
             {
-                //长度
+                //Length
                 int length;
-                //当前Item的长度
+                //Current item length
                 int itemLength = 1;
                 Span<byte> contentSpan;
-                //如果该值小于0x80,代表没有长度占用位
+                //If this value is less than 0x80, there's no length occupancy bit
                 if (tlvSpan[1] < 0x80)
                 {
                     length = tlvSpan[1];
@@ -715,7 +676,7 @@ namespace DotCommon.Encrypt
                 }
                 else if (tlvSpan[1] == 0x82)
                 {
-                    //长度占用2个字节
+                    //Length occupies 2 bytes
                     var lengthSpan = tlvSpan.Slice(2, 2);
                     lengthSpan.Reverse();
                     length = BitConverter.ToUInt16(lengthSpan.ToArray(), 0);
@@ -724,7 +685,7 @@ namespace DotCommon.Encrypt
                 }
                 else
                 {
-                    throw new ArgumentException("TLV长度占用位不正确,应为0x81或者0x82");
+                    throw new ArgumentException("TLV length occupancy bit is incorrect, should be 0x81 or 0x82");
                 }
                 tlvList.Add(contentSpan.ToArray());
                 itemLength += length;
@@ -735,7 +696,7 @@ namespace DotCommon.Encrypt
         }
 
         /// <summary>
-        /// 读取内容数据
+        /// Read content data
         /// </summary>
         private static Span<byte> ReadContent(Span<byte> contentSpan)
         {
@@ -743,7 +704,7 @@ namespace DotCommon.Encrypt
             {
                 if (contentSpan[1] < 0x80)
                 {
-                    throw new ArgumentException("RSA读取内容数据首位小于0x80不需要补0x00");
+                    throw new ArgumentException("RSA content data first bit less than 0x80 does not need 0x00 padding");
                 }
                 return contentSpan.Slice(1);
             }
@@ -752,7 +713,6 @@ namespace DotCommon.Encrypt
                 return contentSpan.Slice(0);
             }
         }
-    }
-
-}
 #endif
+    }
+}

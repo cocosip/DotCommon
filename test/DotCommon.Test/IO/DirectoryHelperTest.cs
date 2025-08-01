@@ -44,7 +44,7 @@ namespace DotCommon.Test.IO
 
             var sourcePath2 = Path.Combine(path, "source2\\");
             var sourcePath2_1 = Path.Combine(sourcePath2, "source1_1\\");
-            var file2= Path.Combine(sourcePath2, "1.txt");
+            var file2 = Path.Combine(sourcePath2, "1.txt");
             DirectoryHelper.DirectoryCopy(sourcePath1, sourcePath2);
 
             Assert.True(Directory.Exists(sourcePath2));
@@ -52,8 +52,8 @@ namespace DotCommon.Test.IO
             Assert.True(Directory.Exists(sourcePath2));
             Assert.True(File.Exists(file2));
 
-            Directory.Delete(sourcePath1,true);
-            Directory.Delete(sourcePath2,true);
+            Directory.Delete(sourcePath1, true);
+            Directory.Delete(sourcePath2, true);
 
         }
     }

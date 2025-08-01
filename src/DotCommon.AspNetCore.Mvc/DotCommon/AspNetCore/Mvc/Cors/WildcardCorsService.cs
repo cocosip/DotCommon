@@ -1,64 +1,111 @@
-﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DotCommon.AspNetCore.Mvc.Cors
 {
-    /// <summary>通配符跨域
+    /// <summary>
+    /// A custom <see cref="CorsService"/> that supports wildcard origins (e.g., "*.example.com").
     /// </summary>
     public class WildcardCorsService : CorsService
     {
-        /// <summary>通配符跨域代理名
+        /// <summary>
+        /// The name of the wildcard CORS policy.
         /// </summary>
         public const string WildcardCorsPolicyName = "WildcardCors";
 
-        /// <summary>Ctor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WildcardCorsService"/> class.
         /// </summary>
+        /// <param name="options">The <see cref="IOptions{CorsOptions}"/>.</param>
+        /// <param name="loggerFactory">The <see cref="ILoggerFactory"/>.</param>
         public WildcardCorsService(IOptions<CorsOptions> options, ILoggerFactory loggerFactory) : base(options, loggerFactory)
         {
 
         }
 
-        /// <summary>EvaluateRequest
+        /// <summary>
+        /// Evaluates the CORS request for a simple cross-origin request.
         /// </summary>
+        /// <param name="context">The <see cref="HttpContext"/> for the current request.</param>
+        /// <param name="policy">The <see cref="CorsPolicy"/> to evaluate.</param>
+        /// <param name="result">The <see cref="CorsResult"/> to populate with the evaluation results.</param>
         public override void EvaluateRequest(HttpContext context, CorsPolicy policy, CorsResult result)
         {
-            var origin = context.Request.Headers[CorsConstants.Origin];
-            EvaluateOriginForWildcard(policy.Origins, origin.ToString());
+            var origin = context.Request.Headers[CorsConstants.Origin].ToString();
+            EvaluateOriginForWildcard(policy.Origins, origin);
             base.EvaluateRequest(context, policy, result);
         }
 
-        /// <summary>EvaluatePreflightRequest
+        /// <summary>
+        /// Evaluates the CORS request for a preflight cross-origin request.
         /// </summary>
+        /// <param name="context">The <see cref="HttpContext"/> for the current request.</param>
+        /// <param name="policy">The <see cref="CorsPolicy"/> to evaluate.</param>
+        /// <param name="result">The <see cref="CorsResult"/> to populate with the evaluation results.</param>
         public override void EvaluatePreflightRequest(HttpContext context, CorsPolicy policy, CorsResult result)
         {
-            var origin = context.Request.Headers[CorsConstants.Origin];
-            EvaluateOriginForWildcard(policy.Origins, origin.ToString());
+            var origin = context.Request.Headers[CorsConstants.Origin].ToString();
+            EvaluateOriginForWildcard(policy.Origins, origin);
             base.EvaluatePreflightRequest(context, policy, result);
         }
 
-        private void EvaluateOriginForWildcard(IList<string> origins, string origin)
+        /// <summary>
+        /// Evaluates if the incoming origin matches any wildcard origins defined in the policy.
+        /// If a match is found, the actual origin is added to the policy's allowed origins for the current request.
+        /// </summary>
+        /// <param name="allowedOrigins">The list of allowed origins from the CORS policy.</param>
+        /// <param name="requestOrigin">The origin from the current request's 'Origin' header.</param>
+        private void EvaluateOriginForWildcard(IList<string> allowedOrigins, string requestOrigin)
         {
-            //只在没有匹配的origin的情况下进行操作
-            if (!origins.Contains(origin))
+            // Only proceed if the exact request origin is not already explicitly allowed.
+            if (!allowedOrigins.Contains(requestOrigin, StringComparer.OrdinalIgnoreCase))
             {
-                //查询所有以星号开头的origin
-                var wildcardDomains = origins.Where(o => o.StartsWith("*"));
+                // Handle the special case of "*" origin
+                if (requestOrigin == "*")
+                {
+                    if (allowedOrigins.Contains("*"))
+                    {
+                        allowedOrigins.Add(requestOrigin);
+                    }
+                    return;
+                }
+
+                // Try to parse the request origin as a URI to get the host
+                string? requestHost = null;
+                if (Uri.TryCreate(requestOrigin, UriKind.Absolute, out var uri))
+                {
+                    requestHost = uri.Host;
+                }
+
+                if (string.IsNullOrEmpty(requestHost))
+                {
+                    return; // Cannot determine host, skip wildcard evaluation
+                }
+
+                // Find all configured wildcard domains (e.g., "*.example.com").
+                var wildcardDomains = allowedOrigins.Where(o => o.StartsWith("*"));
                 if (wildcardDomains.Any())
                 {
-                    //遍历以星号开头的origin
                     foreach (var wildcardDomain in wildcardDomains)
                     {
-                        //如果以.cnblogs.com结尾
-                        if (origin.EndsWith(wildcardDomain.Substring(1))
-                            //或者以//cnblogs.com结尾，针对http://cnblogs.com
-                            || origin.EndsWith("//" + wildcardDomain.Substring(2)) || origin == "*")
+                        // Extract the base domain part from the wildcard (e.g., ".example.com" from "*.example.com")
+                        var baseDomain = wildcardDomain.Substring(1);
+
+                        // Check if the incoming request host is the base domain itself (e.g., "example.com")
+                        // or a subdomain of the base domain (e.g., "sub.example.com" ends with ".example.com")
+                        // The StringComparison.OrdinalIgnoreCase is crucial for case-insensitive domain matching.
+                        if (requestHost.EndsWith(baseDomain, StringComparison.OrdinalIgnoreCase) ||
+                            requestHost.Equals(baseDomain.TrimStart('.'), StringComparison.OrdinalIgnoreCase))
                         {
-                            origins.Add(origin);
-                            break;
+                            // If a match is found, add the actual request origin to the allowed origins
+                            // so that the base CorsService can then successfully validate it.
+                            allowedOrigins.Add(requestOrigin);
+                            break; // Found a match, no need to check other wildcards
                         }
                     }
                 }

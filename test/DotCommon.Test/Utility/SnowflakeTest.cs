@@ -93,6 +93,6 @@ namespace DotCommon.Test.Utility
             Assert.Equal(10000, ids.Distinct().Count());
         }
 
-        
+
     }
 }

@@ -18,7 +18,7 @@ namespace DotCommon.Test.Reflecting
         }
 
         [MemberInfoExtensions2]
-        public class MemberInfoExtensionsClass2 
+        public class MemberInfoExtensionsClass2
         {
 
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
@@ -8,7 +8,7 @@ namespace DotCommon.Crypto.RSA
     public interface IRSAEncryptionService
     {
         /// <summary>
-        /// 生成RSA密钥对
+        /// Generates an RSA key pair.
         /// </summary>
         /// <param name="keySize"></param>
         /// <param name="rd"></param>
@@ -16,49 +16,28 @@ namespace DotCommon.Crypto.RSA
         AsymmetricCipherKeyPair GenerateRSAKeyPair(int keySize = 2048, SecureRandom? rd = null);
 
         /// <summary>
-        /// 导入RSA公钥 (原始RSA公钥为Asn1,DER格式)
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        AsymmetricKeyParameter ImportPublicKey(Stream stream);
-
-        /// <summary>
-        /// 从Pem中导入RSA公钥
+        /// Imports an RSA public key from a PEM formatted string.
         /// </summary>
         /// <param name="publicKeyPem"></param>
         /// <returns></returns>
         AsymmetricKeyParameter ImportPublicKeyPem(string publicKeyPem);
 
         /// <summary>
-        /// 从Stream中导入RSA私钥 (原始RSA公钥为Asn1,DER格式)
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        AsymmetricKeyParameter ImportPrivateKey(Stream stream);
-
-        /// <summary>
-        /// 从Stream中导入PKCS8格式RSA私钥
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        AsymmetricKeyParameter ImportPrivateKeyPkcs8(Stream stream);
-
-        /// <summary>
-        /// 从Pem中导入RSA私钥
+        /// Imports an RSA private key from a PEM formatted string.
         /// </summary>
         /// <param name="privateKeyPem"></param>
         /// <returns></returns>
         AsymmetricKeyParameter ImportPrivateKeyPem(string privateKeyPem);
 
         /// <summary>
-        /// 从Pem中导入PKCS8格式RSA私钥
+        /// Imports an RSA private key from a PEM formatted string (PKCS#8 format).
         /// </summary>
         /// <param name="privateKeyPem"></param>
         /// <returns></returns>
         AsymmetricKeyParameter ImportPrivateKeyPkcs8Pem(string privateKeyPem);
 
         /// <summary>
-        ///  RSA加密
+        ///  RSA encrypts data.
         /// </summary>
         /// <param name="publicKeyParam"></param>
         /// <param name="plainText"></param>
@@ -67,7 +46,7 @@ namespace DotCommon.Crypto.RSA
         byte[] Encrypt(AsymmetricKeyParameter publicKeyParam, byte[] plainText, string padding);
 
         /// <summary>
-        /// RSA解密
+        /// RSA decrypts data.
         /// </summary>
         /// <param name="privateKeyParam"></param>
         /// <param name="cipherText"></param>
@@ -76,7 +55,7 @@ namespace DotCommon.Crypto.RSA
         byte[] Decrypt(AsymmetricKeyParameter privateKeyParam, byte[] cipherText, string padding);
 
         /// <summary>
-        /// RSA加签
+        /// RSA signs data.
         /// </summary>
         /// <param name="privateKeyParam"></param>
         /// <param name="data"></param>
@@ -86,14 +65,14 @@ namespace DotCommon.Crypto.RSA
         byte[] Sign(AsymmetricKeyParameter privateKeyParam, byte[] data, string algorithm = "SHA256WITHRSA");
 
         /// <summary>
-        /// RSA验签
+        /// RSA verifies a signature.
         /// </summary>
-        /// <param name="privateKeyParam"></param>
+        /// <param name="publicKeyParam"></param>
         /// <param name="data"></param>
         /// <param name="signature"></param>
         /// <param name="algorithm"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        bool VerifySign(AsymmetricKeyParameter privateKeyParam, byte[] data, byte[] signature, string algorithm = "SHA256WITHRSA");
+        bool VerifySign(AsymmetricKeyParameter publicKeyParam, byte[] data, byte[] signature, string algorithm = "SHA256WITHRSA");
     }
 }

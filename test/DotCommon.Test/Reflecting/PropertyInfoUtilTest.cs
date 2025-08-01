@@ -28,7 +28,7 @@ namespace DotCommon.Test.Reflecting
 
         public static string Name { get; set; }
 
-     
+
 
         private string Number { get; set; }
     }

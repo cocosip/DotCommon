@@ -10,12 +10,12 @@ namespace DotCommon.Test.TextJson
 {
     public class TextJsonSerializerTest
     {
- 
+
         private readonly IServiceProvider _provider;
         public TextJsonSerializerTest()
         {
 
-           
+
 
             IServiceCollection services = new ServiceCollection();
             services

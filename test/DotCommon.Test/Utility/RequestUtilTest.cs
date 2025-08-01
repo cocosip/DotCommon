@@ -4,7 +4,7 @@ using DotCommon.Utility;
 namespace DotCommon.Test.Utility
 {
     public class RequestUtilTest
-    { 
+    {
         [Theory]
         [InlineData("chrome_windows", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36")]
         [InlineData("safari_iphone", "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5")]

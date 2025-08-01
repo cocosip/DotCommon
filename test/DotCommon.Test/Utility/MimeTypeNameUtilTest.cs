@@ -32,7 +32,7 @@ namespace DotCommon.Test.Utility
         [Theory]
         [InlineData("image/png", ".png")]
         [InlineData("application/json", ".json")]
-        [InlineData("TEXT/HTML", ".htm")] 
+        [InlineData("TEXT/HTML", ".htm")]
         [InlineData("application/x-unknown-type", null)]
         [InlineData(null, null)]
         [InlineData("", null)]

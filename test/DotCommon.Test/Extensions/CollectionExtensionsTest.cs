@@ -20,7 +20,7 @@ namespace DotCommon.Test.Extensions
             ICollection<int> collections = new List<int>();
 
             Assert.True(collections.AddIfNotContains(1));
-            Assert.False(collections.AddIfNotContains(1)); 
+            Assert.False(collections.AddIfNotContains(1));
             Assert.True(collections.AddIfNotContains(2));
 
             collections = null;

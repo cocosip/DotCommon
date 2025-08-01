@@ -115,27 +115,27 @@ namespace DotCommon.Utility
         /// </summary>
         public int Timestamp => _timestamp;
 
-	    /// <summary>
+        /// <summary>
         /// Gets the machine.
         /// </summary>
         public int Machine => _machine;
 
-	    /// <summary>
+        /// <summary>
         /// Gets the PID.
         /// </summary>
         public short Pid => _pid;
 
-	    /// <summary>
+        /// <summary>
         /// Gets the increment.
         /// </summary>
         public int Increment => _increment;
 
-	    /// <summary>
+        /// <summary>
         /// Gets the creation time (derived from the timestamp).
         /// </summary>
         public DateTime CreationTime => UnixEpoch.AddSeconds(_timestamp);
 
-	    // public operators
+        // public operators
         /// <summary>
         /// Compares two ObjectIds.
         /// </summary>
@@ -379,14 +379,14 @@ namespace DotCommon.Utility
         /// <returns>True if the other object is an ObjectId and equal to this one.</returns>
         public override bool Equals(object obj)
         {
-	        if (obj is ObjectId id)
+            if (obj is ObjectId id)
             {
                 return Equals(id);
             }
-	        return false;
+            return false;
         }
 
-	    /// <summary>
+        /// <summary>
         /// Gets the hash code.
         /// </summary>
         /// <returns>The hash code.</returns>

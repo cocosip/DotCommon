@@ -162,7 +162,7 @@ namespace DotCommon.Utility
             {
                 return string.Join(",", Enumerable.Range(0, 7)); // Returns "0,1,2,3,4,5,6"
             }
-            
+
             return string.Join(",", daysInPeriod.Distinct().OrderBy(d => d));
         }
 

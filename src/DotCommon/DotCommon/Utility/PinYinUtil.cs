@@ -311,6 +311,6 @@ namespace DotCommon.Utility
             }
             return result.ToString();
         }
- 
+
     }
 }

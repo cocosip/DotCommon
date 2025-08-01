@@ -16,7 +16,7 @@ namespace DotCommon.Test.Extensions
         public void GetMethod_Test()
         {
             var methodInfo = typeof(TypeExtensionsTest).GetMethod("Method1", 1, 0);
-            Assert.Equal("Method1",methodInfo.Name);
+            Assert.Equal("Method1", methodInfo.Name);
         }
 
 

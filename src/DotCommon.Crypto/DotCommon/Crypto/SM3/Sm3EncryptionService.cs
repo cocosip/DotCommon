@@ -1,22 +1,24 @@
-﻿using Org.BouncyCastle.Crypto.Digests;
+using Org.BouncyCastle.Crypto.Digests;
 
 namespace DotCommon.Crypto.SM3
 {
+    /// <summary>
+    /// Provides SM3 hashing services.
+    /// </summary>
     public class Sm3EncryptionService : ISm3EncryptionService
     {
         /// <summary>
-        /// 使用SM3获取Hash
+        /// Computes the SM3 hash of the given plain text.
         /// </summary>
-        /// <param name="plainText">明文</param>
-        /// <returns></returns>
+        /// <param name="plainText">The plain text data to hash.</param>
+        /// <returns>The SM3 hash as a byte array.</returns>
         public virtual byte[] GetHash(byte[] plainText)
         {
             var sm3 = new SM3Digest();
-            var v = new byte[sm3.GetDigestSize()];
+            var result = new byte[sm3.GetDigestSize()];
             sm3.BlockUpdate(plainText, 0, plainText.Length);
-            sm3.DoFinal(v, 0);
-            return v;
+            sm3.DoFinal(result, 0);
+            return result;
         }
-
     }
 }

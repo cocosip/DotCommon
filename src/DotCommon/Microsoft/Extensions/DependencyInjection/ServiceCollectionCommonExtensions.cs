@@ -18,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.Any(d => d.ServiceType == type);
         }
 
- 
+
 
         public static T? GetSingletonInstanceOrNull<T>(this IServiceCollection services)
         {

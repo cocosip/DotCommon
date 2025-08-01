@@ -118,7 +118,7 @@ namespace DotCommon.Test.Utility
             Assert.Equal("二零一零年", cons1.ChineseYearString);
             Assert.Equal("戊子月", cons1.GanZhiMonthString);
 
-          
+
 
             Assert.Equal("水瓶座", cons2.Constellation);
             Assert.Equal("二零一二年", cons2.ChineseYearString);
@@ -147,7 +147,7 @@ namespace DotCommon.Test.Utility
             Assert.Equal("狮子座", cons8.Constellation);
             Assert.Equal("二零一八年", cons8.ChineseYearString);
 
-           
+
 
             Assert.Equal("处女座", cons9.Constellation);
             Assert.Equal("二零一九年", cons9.ChineseYearString);

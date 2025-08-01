@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace DotCommon.Json.SystemTextJson
 {
-   public class DotCommonSystemTextJsonSerializer : IJsonSerializer
+    public class DotCommonSystemTextJsonSerializer : IJsonSerializer
     {
         protected DotCommonSystemTextJsonSerializerOptions Options { get; }
 

@@ -1,9 +1,10 @@
-﻿using DotCommon.Encrypt;
+using DotCommon.Encrypt;
+using System.Security.Cryptography;
 using Xunit;
 
 namespace DotCommon.Test.Encrypt
 {
-    public class RSAHelperTest
+    public class RSAHelper_Netstandard_21Test
     {
         /// <summary>
         /// 生成密钥对
@@ -35,9 +36,7 @@ namespace DotCommon.Test.Encrypt
 
             var decrypted2 = RSAHelper.DecryptFromBase64(encrypted, pkcs8, keyFormat: RSAKeyFormat.PKCS8);
             Assert.Equal("hello", decrypted2);
-
         }
-
 
         [Fact]
         public void Sign_Verify_Test()
@@ -46,7 +45,7 @@ namespace DotCommon.Test.Encrypt
             var signature = RSAHelper.SignDataAsBase64("csharpcode", keypair.PrivateKey);
             var verify = RSAHelper.VerifyBase64Data("csharpcode", signature, keypair.PublicKey);
             Assert.True(verify);
-            
+
             var pkcs8 = RSAHelper.PKCS1ToPKCS8(keypair.PrivateKey);
             var signature2 = RSAHelper.SignDataAsBase64("csharpcode", pkcs8, RSAKeyFormat.PKCS8);
             Assert.Equal(signature, signature2);
