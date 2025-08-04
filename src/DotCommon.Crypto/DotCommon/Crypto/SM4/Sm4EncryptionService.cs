@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Extensions.Options;
-using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 
@@ -54,10 +53,7 @@ namespace DotCommon.Crypto.SM4
             // For CBC mode, IV is required and must be 16 bytes
             if (mode.Equals(Sm4EncryptionNames.ModeCBC, StringComparison.OrdinalIgnoreCase))
             {
-                if (iv == null)
-                {
-                    iv = Options.DefaultIv!;
-                }
+                iv ??= Options.DefaultIv!;
                 if (iv.Length != 16)
                 {
                     throw new ArgumentException("Invalid SM4 CBC IV length. IV must be 16 bytes for CBC mode.", nameof(iv));

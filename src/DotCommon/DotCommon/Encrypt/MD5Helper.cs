@@ -5,20 +5,20 @@ using System.Text;
 namespace DotCommon.Encrypt
 {
     /// <summary>
-    /// MD5工具类，提供MD5哈希计算功能
+    /// MD5 utility class that provides MD5 hash computation functionality.
     /// </summary>
     /// <remarks>
-    /// 注意：MD5算法已被认为不安全，不应用于密码存储或安全敏感场景。
-    /// 建议在安全敏感场景中使用更安全的哈希算法，如SHA-256或更高版本。
+    /// Note: The MD5 algorithm is considered insecure and should not be used for password storage or security-sensitive scenarios.
+    /// It is recommended to use more secure hash algorithms such as SHA-256 or higher versions in security-sensitive scenarios.
     /// </remarks>
     public static class MD5Helper
     {
         /// <summary>
-        /// 计算字节数组的MD5哈希值
+        /// Computes the MD5 hash value of a byte array.
         /// </summary>
-        /// <param name="data">要计算哈希值的字节数组</param>
-        /// <returns>MD5哈希值的字节数组</returns>
-        /// <exception cref="ArgumentNullException">当data为null时抛出</exception>
+        /// <param name="data">The byte array to compute the hash value for.</param>
+        /// <returns>The MD5 hash value as a byte array.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when data is null.</exception>
         public static byte[] GetMD5Internal(byte[] data)
         {
             if (data == null)
@@ -31,11 +31,11 @@ namespace DotCommon.Encrypt
         }
 
         /// <summary>
-        /// 计算字节数组的MD5哈希值并返回十六进制字符串
+        /// Computes the MD5 hash value of a byte array and returns it as a hexadecimal string.
         /// </summary>
-        /// <param name="data">要计算哈希值的字节数组</param>
-        /// <returns>MD5哈希值的十六进制字符串（大写，无分隔符）</returns>
-        /// <exception cref="ArgumentNullException">当data为null时抛出</exception>
+        /// <param name="data">The byte array to compute the hash value for.</param>
+        /// <returns>The MD5 hash value as a hexadecimal string (uppercase, no separators).</returns>
+        /// <exception cref="ArgumentNullException">Thrown when data is null.</exception>
         public static string GetMD5(byte[] data)
         {
             if (data == null)
@@ -46,13 +46,13 @@ namespace DotCommon.Encrypt
         }
 
         /// <summary>
-        /// 计算字符串的MD5哈希值并返回十六进制字符串
+        /// Computes the MD5 hash value of a string and returns it as a hexadecimal string.
         /// </summary>
-        /// <param name="data">要计算哈希值的字符串</param>
-        /// <param name="encodingName">字符串编码方式，默认为UTF-8</param>
-        /// <returns>MD5哈希值的十六进制字符串（大写，无分隔符）</returns>
-        /// <exception cref="ArgumentNullException">当data为null时抛出</exception>
-        /// <exception cref="ArgumentException">当encodingName为空或无效时抛出</exception>
+        /// <param name="data">The string to compute the hash value for.</param>
+        /// <param name="encodingName">The string encoding method, defaults to UTF-8.</param>
+        /// <returns>The MD5 hash value as a hexadecimal string (uppercase, no separators).</returns>
+        /// <exception cref="ArgumentNullException">Thrown when data is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when encodingName is null or invalid.</exception>
         public static string GetMD5(string data, string encodingName = "UTF-8")
         {
             if (data == null)
