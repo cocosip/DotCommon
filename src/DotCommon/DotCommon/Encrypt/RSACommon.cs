@@ -3,45 +3,48 @@
 namespace DotCommon.Encrypt
 {
 
-    /// <summary>RSA私钥编码格式
+    /// <summary>
+    /// RSA private key encoding format
     /// </summary>
     public enum RSAKeyFormat
     {
         /// <summary>
-        /// PKCS1
+        /// PKCS1 format
         /// </summary>
         PKCS1 = 1,
 
         /// <summary>
-        /// PKCS8
+        /// PKCS8 format
         /// </summary>
         PKCS8 = 2,
 
         /// <summary>
-        /// 未知
+        /// Unknown format
         /// </summary>
         Unknow = 4
     }
 
     /// <summary>
-    /// RSA密钥对
+    /// RSA key pair
     /// </summary>
     public class RSAKeyPair : IEquatable<RSAKeyPair>
     {
         /// <summary>
-        /// 公钥
+        /// Public key
         /// </summary>
         public string PublicKey { get; set; }
 
         /// <summary>
-        /// 私钥
+        /// Private key
         /// </summary>
         public string PrivateKey { get; set; }
 
 
         /// <summary>
-        /// ctor
+        /// Initializes a new instance of the RSAKeyPair class
         /// </summary>
+        /// <param name="publicKey">Public key</param>
+        /// <param name="privateKey">Private key</param>
         public RSAKeyPair(string publicKey, string privateKey)
         {
             PublicKey = publicKey;
@@ -49,17 +52,19 @@ namespace DotCommon.Encrypt
         }
 
         /// <summary>
-        /// 是否相同
+        /// Indicates whether the current object is equal to another object of the same type
         /// </summary>
+        /// <param name="other">An object to compare with this object</param>
+        /// <returns>true if the current object is equal to the other parameter; otherwise, false</returns>
         public bool Equals(RSAKeyPair other)
         {
             return other.PrivateKey == PrivateKey && other.PublicKey == PublicKey;
         }
 
         /// <summary>
-        /// Hash code
+        /// Returns a hash code for the current RSA key pair
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A hash code for the current object</returns>
         public override int GetHashCode()
         {
             return StringComparer.InvariantCulture.GetHashCode(PublicKey) ^ StringComparer.InvariantCulture.GetHashCode(PrivateKey);
