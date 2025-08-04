@@ -6,33 +6,35 @@ using Microsoft.Extensions.Logging;
 namespace DotCommon.Scheduling
 {
     /// <summary>
-    /// 调度服务实现，用于管理定时任务
+    /// Schedule service implementation for managing timed tasks.
     /// </summary>
-    public class ScheduleService : IScheduleService
+    public class ScheduleService : IScheduleService, IDisposable
     {
         private readonly ILogger _logger;
         private readonly object _syncObject = new object();
         private readonly Dictionary<string, TimerBasedTask> _taskDict = new Dictionary<string, TimerBasedTask>();
+        private bool _disposed = false;
 
         /// <summary>
-        /// 构造函数
+        /// Initializes a new instance of the <see cref="ScheduleService"/> class.
         /// </summary>
-        /// <param name="logger">日志记录器</param>
+        /// <param name="logger">The logger instance.</param>
+        /// <exception cref="ArgumentNullException">Thrown when logger is null.</exception>
         public ScheduleService(ILogger<ScheduleService> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
-        /// 启动一个调度任务
+        /// Starts a scheduled task.
         /// </summary>
-        /// <param name="name">任务名称</param>
-        /// <param name="action">任务执行的操作</param>
-        /// <param name="dueTime">首次执行前的延迟时间（毫秒）</param>
-        /// <param name="period">执行间隔时间（毫秒）</param>
-        /// <exception cref="ArgumentNullException">当name或action为null时抛出</exception>
-        /// <exception cref="ArgumentException">当name为空字符串时抛出</exception>
-        /// <exception cref="ArgumentOutOfRangeException">当dueTime或period为负数时抛出</exception>
+        /// <param name="name">The task name.</param>
+        /// <param name="action">The action to execute.</param>
+        /// <param name="dueTime">The delay before the first execution in milliseconds.</param>
+        /// <param name="period">The interval between executions in milliseconds.</param>
+        /// <exception cref="ArgumentNullException">Thrown when name or action is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when name is empty.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when dueTime or period is negative.</exception>
         public void StartTask(string name, Action action, int dueTime, int period)
         {
             if (name == null)
@@ -52,7 +54,7 @@ namespace DotCommon.Scheduling
 
             lock (_syncObject)
             {
-                // 如果任务已存在，则直接返回
+                // If task already exists, log a warning and return
                 if (_taskDict.ContainsKey(name))
                 {
                     _logger.LogWarning("Task with name '{TaskName}' already exists and will not be started again.", name);
@@ -80,10 +82,10 @@ namespace DotCommon.Scheduling
         }
 
         /// <summary>
-        /// 停止并移除指定名称的调度任务
+        /// Stops and removes a scheduled task by name.
         /// </summary>
-        /// <param name="name">要停止的任务名称</param>
-        /// <exception cref="ArgumentNullException">当name为null时抛出</exception>
+        /// <param name="name">The name of the task to stop.</param>
+        /// <exception cref="ArgumentNullException">Thrown when name is null.</exception>
         public void StopTask(string name)
         {
             if (name == null)
@@ -107,9 +109,9 @@ namespace DotCommon.Scheduling
         }
 
         /// <summary>
-        /// 定时器回调方法
+        /// Timer callback method.
         /// </summary>
-        /// <param name="state">任务名称</param>
+        /// <param name="state">The task name.</param>
         private void TaskCallback(object state)
         {
             var taskName = (string)state;
@@ -124,16 +126,16 @@ namespace DotCommon.Scheduling
             {
                 if (!task.Stopped)
                 {
-                    // 暂停定时器以防止在执行任务时重复触发
+                    // Pause the timer to prevent reentrancy during task execution
                     task.Timer?.Change(Timeout.Infinite, Timeout.Infinite);
 
-                    // 执行任务
+                    // Execute the task
                     task.Action?.Invoke();
                 }
             }
             catch (ObjectDisposedException)
             {
-                // 忽略对象已释放的异常
+                // Ignore ObjectDisposedException
                 _logger.LogDebug("Timer for task '{TaskName}' was disposed during execution.", task.Name);
             }
             catch (Exception ex)
@@ -147,7 +149,7 @@ namespace DotCommon.Scheduling
             {
                 try
                 {
-                    // 如果任务未停止，则重新启动定时器
+                    // Restart the timer if the task is not stopped
                     if (!task.Stopped)
                     {
                         task.Timer?.Change(task.Period, task.Period);
@@ -168,37 +170,81 @@ namespace DotCommon.Scheduling
         }
 
         /// <summary>
-        /// 基于定时器的任务信息
+        /// Releases all resources used by the ScheduleService.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the ScheduleService and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    // Stop all timers first to prevent new callbacks
+                    lock (_syncObject)
+                    {
+                        foreach (var task in _taskDict.Values)
+                        {
+                            task.Timer?.Change(Timeout.Infinite, Timeout.Infinite);
+                        }
+                    }
+
+                    // Now dispose of timers and clear the dictionary
+                    lock (_syncObject)
+                    {
+                        foreach (var task in _taskDict.Values)
+                        {
+                            task.Stopped = true;
+                            task.Timer?.Dispose();
+                        }
+                        _taskDict.Clear();
+                    }
+                }
+
+                _disposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Timer-based task information.
         /// </summary>
         private class TimerBasedTask
         {
             /// <summary>
-            /// 任务名称
+            /// Gets or sets the task name.
             /// </summary>
             public string Name { get; set; } = string.Empty;
 
             /// <summary>
-            /// 任务操作
+            /// Gets or sets the task action.
             /// </summary>
             public Action? Action { get; set; }
 
             /// <summary>
-            /// 定时器
+            /// Gets or sets the timer.
             /// </summary>
             public Timer? Timer { get; set; }
 
             /// <summary>
-            /// 首次执行前的延迟时间（毫秒）
+            /// Gets or sets the delay before the first execution in milliseconds.
             /// </summary>
             public int DueTime { get; set; }
 
             /// <summary>
-            /// 执行间隔时间（毫秒）
+            /// Gets or sets the interval between executions in milliseconds.
             /// </summary>
             public int Period { get; set; }
 
             /// <summary>
-            /// 任务是否已停止
+            /// Gets or sets a value indicating whether the task is stopped.
             /// </summary>
             public bool Stopped { get; set; }
         }
