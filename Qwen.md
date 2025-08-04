@@ -1,60 +1,60 @@
-# Project Overview
+# 项目概述
 
-DotCommon is a generic class library built on .NET Core and .NET Standard. It provides common utilities and extensions in various areas such as cryptography, serialization, and dependency injection.
+DotCommon 是一个基于 .NET Core 和 .NET Standard 构建的通用类库。它在加密、序列化和依赖注入等多个领域提供常见的工具和扩展。
 
-# Tech Stack
+# 技术栈
 
-- **Framework**: .NET Core, .NET Standard
-- **Language**: C#
+- **框架**: .NET Core, .NET Standard
+- **语言**: C#
 
-# Project Structure
+# 项目结构
 
-- `src/`: Contains source code for all library projects (e.g., `DotCommon`, `DotCommon.AspNetCore.Mvc`, `DotCommon.Caching`).
-- `test/`: Contains unit tests and integration tests for library projects (e.g., `DotCommon.Test`).
-- `samples/`: Contains sample applications demonstrating library usage (e.g., `DotCommon.ConsoleTest`).
-- `build/`: Contains PowerShell scripts for building, testing, and packaging the solution.
-- `docs/`: Contains project documentation.
-- `.github/workflows/`: Contains GitHub Actions workflows for CI/CD (build, test, release).
-- `common.props`, `Directory.Build.props`, `Directory.Packages.props`: MSBuild property files for common configuration and centralized package management.
+- `src/`: 包含所有库项目的源代码 (例如 `DotCommon`, `DotCommon.AspNetCore.Mvc`, `DotCommon.Caching`)。
+- `test/`: 包含库项目的单元测试和集成测试 (例如 `DotCommon.Test`)。
+- `samples/`: 包含演示库使用方法的示例应用程序 (例如 `DotCommon.ConsoleTest`)。
+- `build/`: 包含用于构建、测试和打包解决方案的 PowerShell 脚本。
+- `docs/`: 包含项目文档。
+- `.github/workflows/`: 包含用于 CI/CD (构建、测试、发布) 的 GitHub Actions 工作流。
+- `common.props`, `Directory.Build.props`, `Directory.Packages.props`: 用于通用配置和集中包管理的 MSBuild 属性文件。
 
-# Build and Test Commands
+# 构建和测试命令
 
-## Build
+## 构建
 
-Build the entire solution:
+构建整个解决方案：
 ```bash
 dotnet build DotCommon.sln
 ```
-Or use the PowerShell script for a release build:
+或者使用 PowerShell 脚本进行发布构建：
 ```bash
 ./build/build-all-release.ps1
 ```
 
-## Test
+## 测试
 
-Run all tests:
+运行所有测试：
 ```bash
 dotnet test DotCommon.sln
 ```
-Or use the PowerShell script:
+或者使用 PowerShell 脚本：
 ```bash
 ./build/test-all.ps1
 ```
 
-## Packaging
+## 打包
 
-Package all projects into NuGet packages:
+将所有项目打包成 NuGet 包：
 ```bash
 ./build/pack-all.ps1
 ```
 
-# Coding Standards and Style
+# 编码标准和风格
 
-Please follow the existing C# coding standards and style in the `src/` directory. This includes naming conventions, formatting, and architectural patterns. The project uses centralized package management through `Directory.Packages.props`.
-- **Code Comments**: All code comments must be in English unless a specific method or class is explicitly designated to use Chinese comments.
+请遵循 `src/` 目录中现有的 C# 编码标准和风格。这包括命名约定、格式化和架构模式。项目通过 `Directory.Packages.props` 使用集中式包管理。
+- **代码注释**: 所有代码注释必须使用英文，除非特定方法或类明确指定使用中文注释。
 
-# Common Tasks
+# 常见任务
 
-- **Adding New Features**: Create new classes or modules in the appropriate `src/DotCommon.*` project, ensuring they follow existing patterns and conventions. Add corresponding unit tests in the `test/DotCommon.Test` project.
-- **Refactoring**: Analyze existing code, identify areas for improvement, and apply refactoring techniques while ensuring all tests pass.
-- **Dependency Management**: Centrally manage NuGet package versions in `Directory.Packages.props`.
+- **添加新功能**: 在适当的 `src/DotCommon.*` 项目中创建新类或模块，确保它们遵循现有的模式和约定。在 `test/DotCommon.Test` 项目中添加相应的单元测试。
+- **重构**: 分析现有代码，识别改进领域，并应用重构技术，同时确保所有测试通过。
+- **依赖管理**: 在 `Directory.Packages.props` 中集中管理 NuGet 包版本。
