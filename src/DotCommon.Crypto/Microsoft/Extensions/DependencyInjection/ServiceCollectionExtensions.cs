@@ -5,8 +5,17 @@ using DotCommon.Crypto.SM4;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// Extension methods for setting up cryptography services in an IServiceCollection.
+    /// </summary>
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Adds the DotCommon cryptography services to the service collection.
+        /// This includes SM2, SM3, and SM4 encryption services with their default options.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to add the services to.</param>
+        /// <returns>The IServiceCollection for chaining.</returns>
         public static IServiceCollection AddDotCommonCrypto(this IServiceCollection services)
         {
             services
