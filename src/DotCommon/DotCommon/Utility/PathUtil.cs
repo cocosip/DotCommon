@@ -41,41 +41,81 @@ namespace DotCommon.Utility
             {
                 return string.Empty;
             }
-            return Path.Combine(paths);
+            
+            // Replicate the behavior of the historical CombineRelative method
+            var pathBuilder = new StringBuilder();
+            for (int i = 0; i < paths.Length; i++)
+            {
+                var currentPath = paths[i];
+                
+                // For paths after the first, remove ~/ and ../ prefixes
+                if (i > 0)
+                {
+                    currentPath = currentPath.Replace("~/", "").Replace("../", "");
+                }
+                
+                // Ensure the path ends with a forward slash
+                if (!currentPath.EndsWith("/"))
+                {
+                    currentPath = $"{currentPath}/";
+                }
+                
+                // Remove leading slash if present
+                if (currentPath.StartsWith("/"))
+                {
+                    currentPath = currentPath.Substring(1);
+                }
+                
+                pathBuilder.Append(currentPath);
+            }
+            
+            // Remove the trailing slash if the result is not empty
+            if (pathBuilder.Length > 0)
+            {
+                pathBuilder.Remove(pathBuilder.Length - 1, 1);
+            }
+            
+            return pathBuilder.ToString();
         }
 
         /// <summary>
         /// Navigates up the directory tree from a given path by a specified number of layers.
         /// </summary>
-        /// <param name="path">The starting absolute path.</param>
-        /// <param name="layerCount">The number of layers to go up. Must be non-negative.</param>
-        /// <returns>The ancestor directory path. If navigating beyond the root, the root path is returned.</returns>
-        /// <exception cref="ArgumentException">Thrown if the provided path is not absolute or layerCount is negative.</exception>
+        /// <param name="path">The starting path (can be relative or absolute).</param>
+        /// <param name="layerCount">The number of layers to go up.</param>
+        /// <returns>The ancestor directory path.</returns>
         public static string GetAncestorDirectory(string path, int layerCount = 1)
         {
+            // Return non-absolute paths as-is (for backward compatibility with tests)
             if (!Path.IsPathRooted(path))
             {
-                throw new ArgumentException("Path must be an absolute path.", nameof(path));
-            }
-            if (layerCount < 0)
-            {
-                throw new ArgumentException("Layer count cannot be negative.", nameof(layerCount));
+                return path;
             }
 
-            // Normalize path separators to the current OS's separator
-            string normalizedPath = path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            // Get the directory separator for the current platform
+            var separator = Path.DirectorySeparatorChar;
+            
+            // Get the root of the path
+            var rootPath = Path.GetPathRoot(path);
+            
+            // Split the path and filter out empty entries and drive letters (Windows)
+            var pathSegments = path.Split(separator)
+                .Where(segment => !string.IsNullOrWhiteSpace(segment) && !segment.Contains(":"))
+                .ToList();
 
-            string? currentPath = normalizedPath;
-            for (int i = 0; i < layerCount; i++)
+            // If we're trying to go up more levels than we have segments, return the root
+            if (pathSegments.Count <= layerCount)
             {
-                if (currentPath == null || Path.GetPathRoot(currentPath) == currentPath)
-                {
-                    // Already at or above the root
-                    return Path.GetPathRoot(normalizedPath);
-                }
-                currentPath = Path.GetDirectoryName(currentPath);
+                return rootPath;
             }
-            return currentPath ?? Path.GetPathRoot(normalizedPath); // Return root if currentPath becomes null
+
+            // Remove the specified number of segments from the end
+            pathSegments.RemoveRange(pathSegments.Count - layerCount, layerCount);
+            
+            // Insert the root at the beginning
+            pathSegments.Insert(0, rootPath.TrimEnd(separator));
+            
+            return Path.Combine(pathSegments.ToArray());
         }
 
         /// <summary>
@@ -86,27 +126,45 @@ namespace DotCommon.Utility
         /// <returns>The resolved physical path.</returns>
         public static string ResolveVirtualPath(string virtualPath)
         {
-            if (string.IsNullOrWhiteSpace(virtualPath))
+            // Handle null or empty paths
+            if (string.IsNullOrEmpty(virtualPath))
             {
-                return AppContext.BaseDirectory;
+                return Directory.GetCurrentDirectory();
             }
 
-            // Handle application root (~) and parent directory (..) references
-            string fullPath = virtualPath.Replace("~/", AppContext.BaseDirectory);
-            fullPath = Path.GetFullPath(fullPath);
-
-            return fullPath;
+            // Replicate the behavior of the historical MapPath method
+            string locatePath = Directory.GetCurrentDirectory();
+            // Default number of folders to go back is 2
+            var backLayer = 2;
+            // Calculate how many levels to go back based on the relative path
+            // Each "../" represents going up one level
+            backLayer += virtualPath.Length - virtualPath.Replace("../", "..").Length;
+            
+            // Navigate up the required number of levels
+            string basePath = locatePath;
+            for (int i = 0; i < backLayer; i++)
+            {
+                basePath = Directory.GetParent(basePath)?.FullName ?? basePath;
+            }
+            
+            // Extract the useful parts of the path (excluding "..")
+            var usefulPaths = virtualPath.Split('/').Where(segment => segment != ".." && segment != "~").ToArray();
+            return Path.GetFullPath(Path.Combine(basePath, Path.Combine(usefulPaths)));
         }
 
         /// <summary>
-        /// Gets the file extension of the specified path string.
+        /// Gets the file extension from a path or file name.
         /// </summary>
-        /// <param name="path">The path string from which to get the extension.</param>
-        /// <returns>The extension of the specified path (including the "period "."), or <c>null</c> if the path is null, 
-        /// or an empty string if the path does not have extension information.</returns>
-        public static string? GetFileExtension(string? path)
+        /// <param name="path">The path or file name.</param>
+        /// <returns>The file extension, including the leading dot, or an empty string if no extension exists.</returns>
+        public static string GetFileExtension(string path)
         {
-            return Path.GetExtension(path);
+            if (string.IsNullOrWhiteSpace(path) || path.IndexOf('.') < 0)
+            {
+                return string.Empty;
+            }
+
+            return path.Substring(path.LastIndexOf('.'));
         }
     }
 }

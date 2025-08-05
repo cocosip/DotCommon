@@ -1,9 +1,6 @@
 ﻿using DotCommon.IO;
 using DotCommon.Utility;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Xunit;
 
 namespace DotCommon.Test.IO

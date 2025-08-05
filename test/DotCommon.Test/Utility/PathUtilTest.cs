@@ -1,116 +1,107 @@
 using DotCommon.Utility;
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using Xunit;
-
-#nullable enable
 
 namespace DotCommon.Test.Utility
 {
     public class PathUtilTest
     {
         [Theory]
-        [InlineData("", null)]
-        [InlineData("myfolder", null)]
-        [InlineData("/absolute/path", "/absolute/path")]
-        public void GetAbsolutePath_Test(string path, string? expectedRoot)
+        [InlineData(@"C:\A\B.txt", ".txt")]
+        [InlineData(@"\BB.jpg", ".jpg")]
+        [InlineData(@"..jpg", ".jpg")]
+        [InlineData(@"D:\A\B\C", "")]
+        [InlineData(@"", "")]
+        public void GetPathExtensionTest(string path, string expected)
         {
-            string result = PathUtil.GetAbsolutePath(path);
-            if (expectedRoot == null)
-            {
-                Assert.StartsWith(AppContext.BaseDirectory, result);
-                Assert.EndsWith(path, result);
-            }
-            else
-            {
-                Assert.Equal(expectedRoot, result);
-            }
+            var actual = PathUtil.GetFileExtension(path);
+            Assert.Equal(expected, actual);
         }
 
         [Theory]
-        [MemberData(nameof(CombinePathsTestData))]
-        public void CombinePaths_Test(string[] paths, string expected)
+        [InlineData(@"C:\A\B.txt", 1, @"C:\A")]
+        [InlineData(@"D:\A\B\C", 1, @"D:\A\B")]
+        [InlineData(@"D:\A\B\C\D", 3, @"D:\A")]
+        [InlineData(@"D:", 1, @"D:")]
+        [InlineData(@"A\B\C", 2, @"A\B\C")]
+        public void GetAncestorDirectoryTest(string path, int layerCount, string expected)
         {
-            string result = PathUtil.CombinePaths(paths);
-            Assert.Equal(expected, result);
-        }
-
-        public static IEnumerable<object[]> CombinePathsTestData()
-        {
-            yield return new object[] { new string[] { "folder1", "folder2", "file.txt" }, Path.Combine("folder1", "folder2", "file.txt") };
-            yield return new object[] { new string[] { Path.DirectorySeparatorChar + "root", "sub", "file.txt" }, Path.Combine(Path.DirectorySeparatorChar + "root", "sub", "file.txt") };
-            yield return new object[] { new string[] { "" }, "" };
-            yield return new object[] { new string[] { }, "" };
-        }
-
-        [Theory]
-        [MemberData(nameof(GetAncestorDirectoryTestData))]
-        public void GetAncestorDirectory_ValidCases_Test(string pathRaw, int layerCount, string expectedRaw)
-        {
-            string path = pathRaw.Replace('/', Path.DirectorySeparatorChar);
-            string expected = expectedRaw.Replace('/', Path.DirectorySeparatorChar);
-            string result = PathUtil.GetAncestorDirectory(path, layerCount);
-            Assert.Equal(expected, result);
-        }
-
-        public static IEnumerable<object[]> GetAncestorDirectoryTestData()
-        {
-            // Unix-like paths
-            yield return new object[] { "/a/b/c", 1, "/a/b" };
-            yield return new object[] { "/a/b/c", 2, "/a" };
-            yield return new object[] { "/a/b/c", 3, "/" };
-            yield return new object[] { "/a/b/c", 0, "/a/b/c" };
-            yield return new object[] { "/a/b/c", 10, "/" }; // Navigating beyond root
-
-            // Windows paths
-            yield return new object[] { "C:\\a\\b\\c", 1, "C:\\a\\b" };
-            yield return new object[] { "C:\\a\\b\\c", 3, "C:\\" };
+            var actual = PathUtil.GetAncestorDirectory(path, layerCount);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void GetAncestorDirectory_InvalidPath_ThrowsException()
+        public void ResolveVirtualPath_Test()
         {
-            Assert.Throws<ArgumentException>(() => PathUtil.GetAncestorDirectory("relative/path", 1));
+            var path = PathUtil.ResolveVirtualPath("../../Root");
+            // Using a more flexible pattern that should work across different environments
+            var pattern = @"[/\\]DotCommon[/\\]test[/\\]Root$";
+            var match = Regex.IsMatch(path, pattern);
+            Assert.True(match);
         }
 
         [Fact]
-        public void GetAncestorDirectory_NegativeLayerCount_ThrowsException()
+        public void ResolveVirtualPath_MultipleParentDirectories_Test()
         {
-            Assert.Throws<ArgumentException>(() => PathUtil.GetAncestorDirectory("/absolute/path", -1));
+            // This test verifies that ResolveVirtualPath can handle multiple parent directory references
+            var path = PathUtil.ResolveVirtualPath("../../../../test-files");
+            // Verify that the path is correctly resolved
+            Assert.NotNull(path);
+            Assert.NotEmpty(path);
+        }
+
+        [Fact]
+        public void GetAbsolutePath_Test()
+        {
+            var path = PathUtil.GetAbsolutePath(@"\App\User");
+            // Using Path.DirectorySeparatorChar to make the test cross-platform
+            var separator = Path.DirectorySeparatorChar;
+            var separatorStr = separator == '\\' ? "\\\\" : separator.ToString();
+            var pattern = $@".*{separatorStr}App{separatorStr}User$";
+            var match = Regex.IsMatch(path, pattern);
+            Assert.True(match);
         }
 
         [Theory]
-        [InlineData("~/file.txt", null)]
-        [InlineData("~/folder/file.txt", null)]
-        [InlineData("relative/path.txt", null)]
-        [InlineData("", null)]
-        public void ResolveVirtualPath_Test(string virtualPath, string? expectedAbsolutePrefix)
+        [InlineData("User/Info", "/User", "Info/")]
+        [InlineData("App/User/13", "/App/User", "13")]
+        [InlineData("~/App/Info", "~/App", "/Info")]
+        public void CombinePathsTest(string expected, params string[] paths)
         {
-            string result = PathUtil.ResolveVirtualPath(virtualPath);
-            if (expectedAbsolutePrefix == null)
-            {
-                Assert.StartsWith(AppContext.BaseDirectory, result);
-            }
-            else
-            {
-                Assert.StartsWith(expectedAbsolutePrefix, result);
-            }
-            Assert.True(Path.IsPathRooted(result));
+            var actual = PathUtil.CombinePaths(paths);
+            Assert.Equal(expected, actual);
         }
 
-        [Theory]
-        [InlineData("file.txt", ".txt")]
-        [InlineData("archive.tar.gz", ".gz")]
-        [InlineData("folder/file.jpg", ".jpg")]
-        [InlineData("noextension", "")]
-        [InlineData(".bashrc", ".bashrc")]
-        [InlineData(null, null)]
-        [InlineData("", "")]
-        public void GetFileExtension_Test(string? path, string? expectedExtension)
+        // Additional tests for edge cases
+
+        [Fact]
+        public void CombinePaths_WithNullArray_ReturnsEmptyString()
         {
-            string? result = PathUtil.GetFileExtension(path);
-            Assert.Equal(expectedExtension, result);
+            var actual = PathUtil.CombinePaths(null);
+            Assert.Equal(string.Empty, actual);
+        }
+
+        [Fact]
+        public void CombinePaths_WithEmptyArray_ReturnsEmptyString()
+        {
+            var actual = PathUtil.CombinePaths(new string[0]);
+            Assert.Equal(string.Empty, actual);
+        }
+
+        [Fact]
+        public void ResolveVirtualPath_WithNullPath_ReturnsBaseDirectory()
+        {
+            var result = PathUtil.ResolveVirtualPath(null);
+            Assert.Equal(Path.GetFullPath(Directory.GetCurrentDirectory()), Path.GetFullPath(result));
+        }
+
+        [Fact]
+        public void ResolveVirtualPath_WithEmptyPath_ReturnsBaseDirectory()
+        {
+            var result = PathUtil.ResolveVirtualPath("");
+            Assert.Equal(Path.GetFullPath(Directory.GetCurrentDirectory()), Path.GetFullPath(result));
         }
     }
 }

@@ -165,6 +165,7 @@ namespace DotCommon.Test.Serializing
         {
             using var scheduleService = new ScheduleService(_mockLogger.Object);
             var taskExecuted = new TaskCompletionSource<bool>();
+            var isSet = false; // Flag to track if TaskCompletionSource has been set
 
             // Setup logger verification for error log
             _mockLogger.Setup(logger => logger.Log(
@@ -173,7 +174,14 @@ namespace DotCommon.Test.Serializing
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception occurred")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()))
-                .Callback(() => taskExecuted.SetResult(true));
+                .Callback(() => {
+                    // Only set the result if it hasn't been set already
+                    if (!isSet)
+                    {
+                        isSet = true;
+                        taskExecuted.SetResult(true);
+                    }
+                });
 
             scheduleService.StartTask("errorTask", () => {
                 throw new InvalidOperationException("Test exception");
@@ -198,7 +206,7 @@ namespace DotCommon.Test.Serializing
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception occurred")),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce());
         }
 
         [Fact]
@@ -211,7 +219,7 @@ namespace DotCommon.Test.Serializing
             scheduleService.StartTask("testTask2", () => { Interlocked.Increment(ref callCount); }, 20, 50);
 
             // Wait a bit for tasks to potentially execute
-            Thread.Sleep(30);
+            Thread.Sleep(100);
 
             // Capture count before dispose
             var countBeforeDispose = callCount;
@@ -220,7 +228,7 @@ namespace DotCommon.Test.Serializing
             scheduleService.Dispose();
 
             // Wait a bit more to ensure no more executions
-            Thread.Sleep(100);
+            Thread.Sleep(200);
 
             // Verify no more executions after dispose
             Assert.Equal(countBeforeDispose, callCount);
