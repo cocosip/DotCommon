@@ -1,204 +1,204 @@
 trigger: always_on
 
-# C# Coding Rules
+# C# 编码规范
 
-## I. Project Structure Standards
+## 一、项目结构标准
 ```
 src/
-├── DotCommon/                     # Core class library
-│   ├── DotCommon/                 # Core namespace
-│   │   ├── Collections/           # Collection-related utilities
-│   │   ├── DependencyInjection/   # Dependency injection extensions
-│   │   ├── Encrypt/               # Encryption-related utilities
-│   │   ├── IO/                    # IO operation utilities
-│   │   ├── Json/                  # JSON processing utilities
-│   │   ├── ObjectMapping/         # Object mapping utilities
-│   │   ├── Reflecting/            # Reflection-related utilities
-│   │   ├── Reflection/            # Reflection-related utilities
-│   │   ├── Scheduling/            # Scheduling-related utilities
-│   │   ├── Serialization/         # Serialization-related utilities
-│   │   ├── Threading/             # Multi-threading utilities
-│   │   ├── Timing/                # Time-related utilities
-│   │   ├── Utility/               # General utility classes
-│   │   └── *.cs                   # Core class files
-│   └── *.csproj                   # Project files
-├── DotCommon.AspNetCore.Mvc/      # ASP.NET Core MVC extensions
-├── DotCommon.AutoMapper/          # AutoMapper extensions
-├── DotCommon.Caching/             # Caching extensions
-├── DotCommon.Crypto/              # Encryption extensions
-└── DotCommon.Serialization/       # Serialization extensions
+├── DotCommon/                     # 核心类库
+│   ├── DotCommon/                 # 核心命名空间
+│   │   ├── Collections/           # 集合相关工具
+│   │   ├── DependencyInjection/   # 依赖注入扩展
+│   │   ├── Encrypt/               # 加密相关工具
+│   │   ├── IO/                    # IO 操作工具
+│   │   ├── Json/                  # JSON 处理工具
+│   │   ├── ObjectMapping/         # 对象映射工具
+│   │   ├── Reflecting/            # 反射相关工具
+│   │   ├── Reflection/            # 反射相关工具
+│   │   ├── Scheduling/            # 调度相关工具
+│   │   ├── Serialization/         # 序列化相关工具
+│   │   ├── Threading/             # 多线程工具
+│   │   ├── Timing/                # 时间相关工具
+│   │   ├── Utility/               # 通用工具类
+│   │   └── *.cs                   # 核心类文件
+│   └── *.csproj                   # 项目文件
+├── DotCommon.AspNetCore.Mvc/      # ASP.NET Core MVC 扩展
+├── DotCommon.AutoMapper/          # AutoMapper 扩展
+├── DotCommon.Caching/             # 缓存扩展
+├── DotCommon.Crypto/              # 加密扩展
+└── DotCommon.Serialization/       # 序列化扩展
 ```
 
-## II. Naming Standards
-1. **Namespaces**:
-   - Align with folder structure
-   - Use `UpperCamelCase`
-   - Example: `DotCommon.Utility`, `DotCommon.Serialization.Json`
+## 二、命名规范
+1. **命名空间**:
+   - 与文件夹结构对齐
+   - 使用 `UpperCamelCase` 命名法
+   - 示例: `DotCommon.Utility`, `DotCommon.Serialization.Json`
 
-2. **Class Names**:
-   - Use `UpperCamelCase`
-   - Utility classes end with `Util` or `Helper`
-   - Exception classes end with `Exception`
-   - Example: `StringUtil`, `JsonHelper`, `DotCommonException`
+2. **类名**:
+   - 使用 `UpperCamelCase` 命名法
+   - 工具类以 `Util` 或 `Helper` 结尾
+   - 异常类以 `Exception` 结尾
+   - 示例: `StringUtil`, `JsonHelper`, `DotCommonException`
 
-3. **Interface Names**:
-   - Start with `I`, followed by `UpperCamelCase`
-   - Example: `IObjectMapper`, `ICacheManager`
+3. **接口名**:
+   - 以 `I` 开头，后跟 `UpperCamelCase` 命名法
+   - 示例: `IObjectMapper`, `ICacheManager`
 
-4. **Method Names**:
-   - Use `UpperCamelCase`
-   - Async methods end with `Async`
-   - Example: `GetString`, `SaveAsync`
+4. **方法名**:
+   - 使用 `UpperCamelCase` 命名法
+   - 异步方法以 `Async` 结尾
+   - 示例: `GetString`, `SaveAsync`
 
-5. **Variable Names**:
-   - Use `lowerCamelCase`
-   - Private fields start with `_`
-   - Example: `userName`, `_logger`
+5. **变量名**:
+   - 使用 `lowerCamelCase` 命名法
+   - 私有字段以下划线 `_` 开头
+   - 示例: `userName`, `_logger`
 
-6. **Constant Names**:
-   - Use `UpperCamelCase`
-   - Static readonly fields use `UpperCamelCase`
-   - Example: `MaxBufferSize`, `DefaultTimeout`
+6. **常量名**:
+   - 使用 `UpperCamelCase` 命名法
+   - 静态只读字段使用 `UpperCamelCase` 命名法
+   - 示例: `MaxBufferSize`, `DefaultTimeout`
 
-## III. Code Structure Standards
-### 1. File Organization
-- Code comments must be in English
-- One class per file (except for special cases)
-- File names should match class names
-- Use `#region` to group related code
+## 三、代码结构规范
+### 1. 文件组织
+- 代码注释必须使用英文
+- 一个文件一个类（特殊情况除外）
+- 文件名应与类名匹配
+- 使用 `#region` 对相关代码进行分组
 
-### 2. Class Organization
+### 2. 类组织
 ```
-// Class file structure example
+// 类文件结构示例
 namespace DotCommon.Utility
 {
     /// <summary>
-    /// String utility class
+    /// 字符串工具类
     /// </summary>
     public static class StringUtil
     {
-        #region Fields and Properties
+        #region 字段和属性
         
-        // Static readonly fields
+        // 静态只读字段
         private static readonly Regex UrlFilterRegex = new Regex(...);
         
         #endregion
         
-        #region Public Methods
+        #region 公共方法
         
         /// <summary>
-        /// Get the display width of a string
+        /// 获取字符串的显示宽度
         /// </summary>
         public static int GetEastAsianWidthCount(string source)
         {
-            // Implementation
+            // 实现
         }
         
         #endregion
         
-        #region Private Methods
+        #region 私有方法
         
-        // Private helper methods
+        // 私有辅助方法
         
         #endregion
     }
 }
 ```
 
-### 3. Method Organization
-- Methods should be concise with single responsibility
-- Parameter validation should be performed at the beginning of methods
-- Use early returns to reduce nesting levels
+### 3. 方法组织
+- 方法应简洁且职责单一
+- 参数验证应在方法开始时进行
+- 使用提前返回来减少嵌套层级
 
-## IV. Documentation Standards
-1. **XML Documentation Comments**:
-   - All public classes, methods, and properties must have XML documentation comments
-   - Comments must be in English
-   - Use standard XML documentation format
+## 四、文档规范
+1. **XML 文档注释**:
+   - 所有公共类、方法和属性必须有 XML 文档注释
+   - 注释必须使用英文
+   - 使用标准 XML 文档格式
 
-2. **In-code Comments**:
-   - Add comments only when necessary
-   - Comments should explain "why" rather than "what"
-   - Use `// TODO:` to mark incomplete features
-   - Use `// FIXME:` to mark issues that need fixing
+2. **代码内注释**:
+   - 仅在必要时添加注释
+   - 注释应解释"为什么"而不是"是什么"
+   - 使用 `// TODO:` 标记未完成的功能
+   - 使用 `// FIXME:` 标记需要修复的问题
 
-## V. Error Handling Standards
-1. **Parameter Validation**:
-   - Use the `Check` class for parameter validation
-   - Perform all parameter validation at the beginning of methods
+## 五、错误处理规范
+1. **参数验证**:
+   - 使用 `Check` 类进行参数验证
+   - 在方法开始时执行所有参数验证
 
-2. **Exception Handling**:
-   - Custom exceptions should inherit from appropriate base classes
-   - Provide all standard exception constructors
-   - Exception messages should clearly describe the problem
+2. **异常处理**:
+   - 自定义异常应继承自适当的基类
+   - 提供所有标准异常构造函数
+   - 异常消息应清楚地描述问题
 
-3. **Resource Management**:
-   - Implement the `IDisposable` interface to manage resources
-   - Use `using` statements to ensure proper resource disposal
+3. **资源管理**:
+   - 实现 `IDisposable` 接口来管理资源
+   - 使用 `using` 语句确保正确释放资源
 
-## VI. Code Style Standards
-1. **Formatting**:
-   - Use 4-space indentation (no tabs)
-   - Opening braces on new lines (Allman style)
-   - Always use braces for single-line statements
+## 六、代码风格规范
+1. **格式化**:
+   - 使用 4 个空格缩进（不使用制表符）
+   - 开括号另起一行（Allman 风格）
+   - 单行语句也应使用大括号
 
-2. **Line Length**:
-   - No more than 120 characters per line
-   - Overly long lines should be appropriately wrapped
+2. **行长度**:
+   - 每行不超过 120 个字符
+   - 过长的行应适当换行
 
-3. **Blank Lines and Spaces**:
-   - Separate methods with blank lines
-   - Add spaces around operators
-   - Don't add extra spaces at the end of lines
+3. **空行和空格**:
+   - 方法之间用空行分隔
+   - 运算符周围添加空格
+   - 行尾不添加额外空格
 
-## VII. Testing Standards
-1. **Test Coverage**:
-   - New code should have corresponding unit tests
-   - Test coverage should reach a high level
+## 七、测试规范
+1. **测试覆盖率**:
+   - 新代码应有相应的单元测试
+   - 测试覆盖率应达到较高水平
 
-2. **Test Naming**:
-   - Test method name format: `MethodName_State_ExpectedBehavior`
-   - Example: `TrimEnd_WithValidSuffix_ShouldRemoveSuffix`
+2. **测试命名**:
+   - 测试方法名格式: `方法名_状态_预期行为`
+   - 示例: `TrimEnd_WithValidSuffix_ShouldRemoveSuffix`
 
-3. **Test Organization**:
-   - Test classes should correspond to the classes being tested
-   - Use the Arrange-Act-Assert pattern
+3. **测试组织**:
+   - 测试类应与被测试的类对应
+   - 使用 Arrange-Act-Assert 模式
 
-## VIII. Dependency Management Standards
-1. **Package Version Management**:
-   - Centrally manage package versions in `Directory.Packages.props`
-   - Avoid version conflicts
+## 八、依赖管理规范
+1. **包版本管理**:
+   - 在 `Directory.Packages.props` 中集中管理包版本
+   - 避免版本冲突
 
-2. **Dependency Injection**:
-   - Provide extension methods to register services
-   - Follow ASP.NET Core's dependency injection pattern
+2. **依赖注入**:
+   - 提供扩展方法来注册服务
+   - 遵循 ASP.NET Core 的依赖注入模式
 
-## IX. Build and Deployment Standards
-1. **Build Commands**:
+## 九、构建和部署规范
+1. **构建命令**:
    ```bash
    dotnet build DotCommon.sln
    ```
 
-2. **Test Commands**:
+2. **测试命令**:
    ```bash
    dotnet test DotCommon.sln
    ```
 
-3. **Packaging Commands**:
+3. **打包命令**:
    ```bash
    ./build/pack-all.ps1
    ```
 
-## X. Common Task Guidelines
-1. **Adding New Features**:
-   - Create new classes in the appropriate `src/DotCommon.*` project
-   - Ensure compliance with existing patterns and conventions
-   - Add corresponding unit tests in the `test/DotCommon.Test` project
+## 十、常见任务指南
+1. **添加新功能**:
+   - 在适当的 `src/DotCommon.*` 项目中创建新类
+   - 确保符合现有模式和约定
+   - 在 `test/DotCommon.Test` 项目中添加相应的单元测试
 
-2. **Refactoring**:
-   - Analyze existing code to identify improvement points
-   - Apply refactoring techniques
-   - Ensure all tests pass
+2. **重构**:
+   - 分析现有代码以识别改进点
+   - 应用重构技术
+   - 确保所有测试通过
 
-3. **Dependency Management**:
-   - Centrally manage NuGet package versions in `Directory.Packages.props`
+3. **依赖管理**:
+   - 在 `Directory.Packages.props` 中集中管理 NuGet 包版本
