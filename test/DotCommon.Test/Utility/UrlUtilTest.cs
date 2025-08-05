@@ -1,4 +1,4 @@
-﻿using DotCommon.Utility;
+using DotCommon.Utility;
 using System.Collections.Generic;
 using Xunit;
 
@@ -32,9 +32,9 @@ namespace DotCommon.Test.Utility
         [InlineData("www.baidu.com", "http://", "http://www.baidu.com")]
         [InlineData("http://127.0.0.1", "", "http://127.0.0.1")]
         [InlineData("http://baidu.com", "https", "http://baidu.com")]
-        public void PadLeftUrlTest(string url, string http, string expected)
+        public void PadLeftUrlTest(string url, string schema, string expected)
         {
-            var actual = UrlUtil.PadLeftUrl(url, http);
+            var actual = UrlUtil.EnsureSchemePrefix(url, schema);
             Assert.Equal(expected, actual);
         }
 
@@ -45,7 +45,7 @@ namespace DotCommon.Test.Utility
         [InlineData("", "https://baidu.com", false)]
         public void SameDomainTest(string url, string url2, bool expected)
         {
-            var actual = UrlUtil.SameDomain(url, url2);
+            var actual = UrlUtil.HasSameDomain(url, url2);
             Assert.Equal(expected, actual);
         }
 
@@ -53,7 +53,7 @@ namespace DotCommon.Test.Utility
         public void GetUrlParametersTest()
         {
             var url1 = "http://www.baidu.com?id=1&name=zhangsan&key=&value=val";
-            var dict1 = UrlUtil.GetUrlParameters(url1);
+            var dict1 = UrlUtil.ExtractQueryParameters(url1);
             Assert.Equal("1", dict1["id"]);
             Assert.Equal("zhangsan", dict1["name"]);
             Assert.Equal("val", dict1["value"]);
@@ -64,7 +64,7 @@ namespace DotCommon.Test.Utility
         public void GetExpectUrlParametersTest()
         {
             var url1 = "http://127.0.0.1?id=3&name=n1&age=20";
-            var dict1 = UrlUtil.GetExpectUrlParameters(url1, new[] { "age" });
+            var dict1 = UrlUtil.GetExcludedUrlParameters(url1, new[] { "age" });
             Assert.Equal("3", dict1["id"]);
             Assert.Equal("n1", dict1["name"]);
             Assert.Throws<KeyNotFoundException>(() => { Assert.Equal("20", dict1["age"]); });
@@ -79,7 +79,7 @@ namespace DotCommon.Test.Utility
         [InlineData("http://127.0.0.1/", "name", "", false, "http://127.0.0.1/")]
         public void UrlAttachParameterTest(string url, string key, string value, bool replaceSame, string expected)
         {
-            var actual = UrlUtil.UrlAttachParameter(url, key, value, replaceSame);
+            var actual = UrlUtil.AddQueryParameter(url, key, value, replaceSame);
             Assert.Equal(expected, actual);
         }
 
@@ -116,7 +116,7 @@ namespace DotCommon.Test.Utility
         }
 
         [Theory]
-        [InlineData("http://www.baidu.com#aaa", "www.baidu.com")]
+        [InlineData("https://www.baidu.com#aaa", "www.baidu.com")]
         [InlineData("https://192.168.0.1:8081?id=20", "192.168.0.1:8081")]
         [InlineData("HTTPs://10.9.254.168:80?id=3&name=4", "10.9.254.168:80")]
         public void GetAuthority_Test(string url, string authority)
@@ -131,7 +131,7 @@ namespace DotCommon.Test.Utility
         [InlineData("http://192.168.0.100/group1/01/0A/file1.jpg", "http://192.168.0.100/", "group1", "01/0A/file1.jpg")]
         public void CombineUrl_Test(string expected, params string[] parameters)
         {
-            var actual = UrlUtil.CombineUrl(parameters);
+            var actual = UrlUtil.CombineUrlPaths(parameters);
             Assert.Equal(expected, actual);
         }
 
