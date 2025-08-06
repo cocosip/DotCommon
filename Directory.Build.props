@@ -7,5 +7,8 @@
 		<!--Net Core Framework-->
 		<NetCoreFx>net9.0</NetCoreFx>
 
+		<!--Microsoft-->
+		<MicrosoftPackageVersion>[9.0.8,)</MicrosoftPackageVersion>
+
 	</PropertyGroup>
 </Project>

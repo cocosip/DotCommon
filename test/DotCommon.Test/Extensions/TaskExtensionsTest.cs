@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Xunit;
-using Shouldly;
 
 namespace DotCommon.Test.Extensions
 {
@@ -12,7 +11,7 @@ namespace DotCommon.Test.Extensions
         {
             var task = Task.FromResult(42);
             var result = task.WaitResult(1000);
-            result.ShouldBe(42);
+            Assert.Equal(42, result);
         }
 
         [Fact]
@@ -20,14 +19,14 @@ namespace DotCommon.Test.Extensions
         {
             var task = Task.Delay(2000).ContinueWith(_ => 42);
             var result = task.WaitResult(100);
-            result.ShouldBe(default(int));
+            Assert.Equal(default(int), result);
         }
 
         [Fact]
         public void WaitResult_Should_Throw_Exception_When_Task_Faults()
         {
             var task = Task.FromException<int>(new InvalidOperationException("Test exception"));
-            Should.Throw<AggregateException>(() => task.WaitResult(1000));
+            Assert.Throws<AggregateException>(() => task.WaitResult(1000));
         }
 
         [Fact]
@@ -56,7 +55,7 @@ namespace DotCommon.Test.Extensions
         {
             var task = Task.Delay(100).ContinueWith(_ => 42);
             var result = await task.TimeoutAfter(1000);
-            result.ShouldBe(42);
+            Assert.Equal(42, result);
         }
 
         [Fact]
@@ -71,7 +70,7 @@ namespace DotCommon.Test.Extensions
         {
             var task = Task.FromResult(42);
             var result = await task.TimeoutAfter(1000);
-            result.ShouldBe(42);
+            Assert.Equal(42, result);
         }
 
         [Fact]
