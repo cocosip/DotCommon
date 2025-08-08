@@ -1,146 +1,142 @@
-﻿using DotCommon.Reflecting;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
+using DotCommon.Reflecting;
 using Xunit;
 
 namespace DotCommon.Test.Reflecting
 {
+    /// <summary>
+    /// Unit tests for TypeUtil. "TypeUtil 单元测试"
+    /// </summary>
     public class TypeUtilTest
     {
         [Fact]
-        public void IsFunc_Test()
+        public void IsFunc_ObjectIsFunc_ReturnsTrue()
         {
-            Func<int> func1 = () =>
-            {
-                return 1;
-            };
-            Func<string> func2 = null;
+            Func<int> func = () => 1;
+            Assert.True(TypeUtil.IsFunc(func));
+        }
 
-            Func<DateTime> func3 = () =>
-            {
-                return DateTime.Now;
-            };
-
-
-            Action<int> action1 = a => { };
-
-            Action action2 = () => { };
-
-            Assert.True(TypeUtil.IsFunc(func1));
-            Assert.True(TypeUtil.IsFunc<int>(func1));
-            Assert.False(TypeUtil.IsFunc<string>(func1));
-            Assert.False(TypeUtil.IsFunc(func2));
-            Assert.True(TypeUtil.IsFunc(func3));
-            Assert.False(TypeUtil.IsFunc(action1));
-            Assert.False(TypeUtil.IsFunc(action2));
+        [Fact]
+        public void IsFunc_ObjectIsNotFunc_ReturnsFalse()
+        {
+            Action act = () => { };
+            Assert.False(TypeUtil.IsFunc(act));
             Assert.False(TypeUtil.IsFunc(null));
         }
 
         [Fact]
-        public void IsAsync_Test()
+        public void IsFuncTReturn_ObjectIsFuncOfT_ReturnsTrue()
         {
-            var method1 = this.GetType().GetMethod("AsyncMethod1", BindingFlags.NonPublic | BindingFlags.Instance);
-            var method2 = this.GetType().GetMethod("SyncMethod1", BindingFlags.NonPublic | BindingFlags.Instance);
-
-            Assert.True(method1.IsAsync());
-            Assert.False(method2.IsAsync());
+            Func<string> func = () => "test";
+            Assert.True(TypeUtil.IsFunc<string>(func));
         }
 
         [Fact]
-        public void IsTaskOrTaskOfT_Test()
+        public void IsFuncTReturn_ObjectIsNotFuncOfT_ReturnsFalse()
         {
-            var o1 = new Action(() => { });
-            Assert.False(o1.GetType().IsTaskOrTaskOfT());
-
-            var o2 = Task.Run(() => { });
-            Assert.True(o2.GetType().IsTaskOrTaskOfT());
-
-            var o3 = Task.FromResult<int>(0);
-            Assert.True(o3.GetType().IsTaskOrTaskOfT());
-
-            var o4 = new Func<int>(() => { return 1; });
-            Assert.False(o4.GetType().IsTaskOrTaskOfT());
-
-
+            Func<int> func = () => 1;
+            Assert.False(TypeUtil.IsFunc<string>(func));
+            Assert.False(TypeUtil.IsFunc<string>(null));
         }
 
         [Fact]
-        public void GetFirstGenericArgumentIfNullable_Test()
+        public void IsPrimitiveExtended_PrimitiveTypes_ReturnsTrue()
         {
-            var t1 = TypeUtil.GetFirstGenericArgumentIfNullable(typeof(GenericTypeClass1));
-            Assert.Equal(typeof(GenericTypeClass1), t1);
-
-            var o2 = new GenericTypeClass2<int>();
-            var t2 = TypeUtil.GetFirstGenericArgumentIfNullable(o2.GetType());
-            Assert.Equal(typeof(GenericTypeClass2<int>), t2);
-
-            var t3 = TypeUtil.GetFirstGenericArgumentIfNullable(typeof(int?));
-            Assert.Equal(typeof(int), t3);
-
-            var t4 = TypeUtil.GetFirstGenericArgumentIfNullable(typeof(DateTime?));
-            Assert.Equal(typeof(DateTime), t4);
-
-            var t5 = TypeUtil.GetFirstGenericArgumentIfNullable(null);
-            Assert.Equal(default, t5);
+            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(int)));
+            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(string)));
+            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(decimal)));
+            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(DateTime)));
+            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(Guid)));
         }
 
         [Fact]
-        public void IsPrimitiveExtended_Test()
+        public void IsPrimitiveExtended_NullablePrimitive_ReturnsTrue()
         {
-            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(int), includeEnums: true));
-            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(Enum1), includeEnums: true));
-            Assert.False(TypeUtil.IsPrimitiveExtended(typeof(Enum1), includeEnums: false));
-            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(decimal), includeEnums: false));
-            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(double), includeEnums: false));
-            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(int?), true, includeEnums: false));
-            Assert.False(TypeUtil.IsPrimitiveExtended(typeof(int?), false, includeEnums: false));
+            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(int?)));
+            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(DateTime?)));
         }
 
-
-        enum Enum1
+        [Fact]
+        public void IsPrimitiveExtended_Enum_ReturnsTrueIfIncludeEnums()
         {
-            Test1,
-            Test2
+            Assert.True(TypeUtil.IsPrimitiveExtended(typeof(AttributeTargets), true, true));
+            Assert.False(TypeUtil.IsPrimitiveExtended(typeof(AttributeTargets), true, false));
         }
 
-        class GenericTypeClass1
+        [Fact]
+        public void IsPrimitiveExtended_NonPrimitive_ReturnsFalse()
         {
-
-        }
-        class GenericTypeClass2<T1>
-        {
-
+            Assert.False(TypeUtil.IsPrimitiveExtended(typeof(TypeUtilTest)));
         }
 
-
-        private void SyncMethod1()
+        [Fact]
+        public void IsPrimitiveExtended_TypeIsNull_ThrowsException()
         {
-
+            Assert.Throws<ArgumentNullException>(() => TypeUtil.IsPrimitiveExtended(null));
         }
 
-        private Task AsyncMethod1()
+        [Fact]
+        public void GetFirstGenericArgumentIfNullable_NullableType_ReturnsUnderlyingType()
         {
-            return Task.FromResult(1);
+            var result = TypeUtil.GetFirstGenericArgumentIfNullable(typeof(int?));
+            Assert.Equal(typeof(int), result);
         }
 
-
-
-
-    }
-
-    public class TypeUtilClass1
-    {
-
-    }
-
-    public static class TypeUtilClass1Extension
-    {
-        public static void Method1(this TypeUtilClass1 typeUtilClass1)
+        [Fact]
+        public void GetFirstGenericArgumentIfNullable_NonNullableType_ReturnsTypeItself()
         {
+            var result = TypeUtil.GetFirstGenericArgumentIfNullable(typeof(int));
+            Assert.Equal(typeof(int), result);
+        }
 
+        [Fact]
+        public void IsAsync_MethodInfo_ReturnsTrueForAsync()
+        {
+            var method = typeof(TypeUtilTest).GetMethod(nameof(AsyncMethod), BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.True(method.IsAsync());
+        }
+
+        [Fact]
+        public void IsAsync_MethodInfo_ReturnsFalseForSync()
+        {
+            var method = typeof(TypeUtilTest).GetMethod(nameof(SyncMethod), BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.False(method.IsAsync());
+        }
+
+        [Fact]
+        public void IsAsync_MethodIsNull_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() => TypeUtil.IsAsync(null));
+        }
+
+        [Fact]
+        public void IsTaskOrTaskOfT_TypeIsTask_ReturnsTrue()
+        {
+            Assert.True(TypeUtil.IsTaskOrTaskOfT(typeof(Task)));
+            Assert.True(TypeUtil.IsTaskOrTaskOfT(typeof(Task<int>)));
+        }
+
+        [Fact]
+        public void IsTaskOrTaskOfT_TypeIsNotTask_ReturnsFalse()
+        {
+            Assert.False(TypeUtil.IsTaskOrTaskOfT(typeof(int)));
+        }
+
+        [Fact]
+        public void IsTaskOrTaskOfT_TypeIsNull_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() => TypeUtil.IsTaskOrTaskOfT(null));
+        }
+
+        private async Task AsyncMethod()
+        {
+            await Task.Delay(1);
+        }
+
+        private void SyncMethod()
+        {
         }
     }
 }

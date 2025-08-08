@@ -1,317 +1,640 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using DotCommon.Reflecting;
 using Xunit;
 
 namespace DotCommon.Test.Reflecting
 {
+    /// <summary>
+    /// Unit tests for the ReflectionUtil class.
+    /// </summary>
     public class ReflectionUtilTest
     {
-        [Fact]
-        public void IsAssignableToGenericType_Test()
+        #region Test Classes and Attributes
+
+        /// <summary>
+        /// Sample attribute for testing purposes.
+        /// </summary>
+        [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
+        public class SampleAttribute : Attribute
         {
-            var t3Type = typeof(GenericClassTest3);
-            Assert.True(ReflectionUtil.IsAssignableToGenericType(t3Type, typeof(ITestGenericInterface<>)));
+            public string Value { get; set; }
 
-            var t4Type = typeof(GenericClassTest4);
-            Assert.True(ReflectionUtil.IsAssignableToGenericType(t4Type, typeof(TestGenericClass<>)));
-        }
-
-        [Fact]
-        public void IsPropertyGetterSetterMethod_Test()
-        {
-            var method1 = typeof(ReflectionUtilClass1).GetMethod("GetAge");
-            Assert.False(ReflectionUtil.IsPropertyGetterSetterMethod(method1, typeof(ReflectionUtilClass1)));
-
-            var method2 = typeof(ReflectionUtilClass1).GetMethod("Do");
-            Assert.False(ReflectionUtil.IsPropertyGetterSetterMethod(method2, typeof(ReflectionUtilClass1)));
-
-            var method3 = typeof(ReflectionUtilClass1).GetMethod("get_UserName");
-            Assert.True(ReflectionUtil.IsPropertyGetterSetterMethod(method3, typeof(ReflectionUtilClass1)));
-
-        }
-
-        [Fact]
-        public void GetValueByPath_Test()
-        {
-            var o1 = new ReflectionUtilClass2()
+            public SampleAttribute(string value)
             {
-                Id = "1000",
-                UserName = "zhangsan",
-                Age = 18
-            };
-
-            var v1 = ReflectionUtil.GetValueByPath(o1, typeof(ReflectionUtilClass2), "Age");
-            Assert.Equal(18, Convert.ToInt32(v1));
-            var v2 = ReflectionUtil.GetValueByPath(o1, typeof(ReflectionUtilClass2), "DotCommon.Test.Reflecting.ReflectionUtilClass2.Age");
-            Assert.Equal(18, Convert.ToInt32(v2));
-            var v3 = ReflectionUtil.GetValueByPath(o1, typeof(ReflectionUtilClass2), "Id");
-            Assert.Equal("1000", v3.ToString());
-
+                Value = value;
+            }
         }
 
-        [Fact]
-        public void SetValueByPath_Test()
+        /// <summary>
+        /// Sample class for testing reflection operations.
+        /// </summary>
+        [Sample("ClassAttribute")]
+        public class SampleClass
         {
-            var o1 = new ReflectionUtilClass2()
+            [Sample("PropertyAttribute")]
+            public string Name { get; set; }
+
+            public int Age { get; set; }
+
+            public SampleNestedClass Nested { get; set; }
+
+            [Sample("MethodAttribute")]
+            public void SampleMethod()
             {
-                Id = "1000",
-                UserName = "zhangsan",
-                Age = 18,
-                Class1 = new ReflectionUtilClass1()
-                {
-                    UserName = "Ku"
-                }
-            };
-            Assert.Equal("1000", o1.Id);
-            Assert.Equal("zhangsan", o1.UserName);
-            Assert.Equal(18, o1.Age);
-            ReflectionUtil.SetValueByPath(o1, typeof(ReflectionUtilClass2), "Id", "3");
-            Assert.Equal("3", o1.Id);
-            ReflectionUtil.SetValueByPath(o1, typeof(ReflectionUtilClass2), "DotCommon.Test.Reflecting.ReflectionUtilClass2.UserName", "lisi");
-            Assert.Equal("lisi", o1.UserName);
+            }
 
-
-            ReflectionUtil.SetValueByPath(o1, typeof(ReflectionUtilClass2), "Class1.UserName", "123");
-            Assert.Equal("123", o1.Class1.UserName);
-        }
-
-        [Fact]
-        public void GetPropertyByPath_Test()
-        {
-            var o1 = new ReflectionUtilClass2()
+            public string get_TestProperty()
             {
-                Id = "1000",
-                UserName = "zhangsan",
-                Age = 18
+                return "test";
+            }
+        }
+
+        /// <summary>
+        /// Nested class for testing property path operations.
+        /// </summary>
+        public class SampleNestedClass
+        {
+            public string NestedProperty { get; set; }
+        }
+
+        /// <summary>
+        /// Generic interface for testing generic type assignability.
+        /// </summary>
+        /// <typeparam name="T">The generic type parameter</typeparam>
+        public interface IGenericInterface<T>
+        {
+        }
+
+        /// <summary>
+        /// Class implementing generic interface for testing.
+        /// </summary>
+        public class GenericImplementation : IGenericInterface<string>
+        {
+        }
+
+        /// <summary>
+        /// Generic class for testing generic type assignability.
+        /// </summary>
+        /// <typeparam name="T">The generic type parameter</typeparam>
+        public class GenericClass<T>
+        {
+        }
+
+        #endregion
+
+        #region IsAssignableToGenericType Tests
+
+        /// <summary>
+        /// Tests that IsAssignableToGenericType returns true when a class implements a generic interface.
+        /// </summary>
+        [Fact]
+        public void IsAssignableToGenericType_ClassImplementsGenericInterface_ReturnsTrue()
+        {
+            // Arrange
+            var givenType = typeof(GenericImplementation);
+            var genericType = typeof(IGenericInterface<>);
+
+            // Act
+            var result = ReflectionUtil.IsAssignableToGenericType(givenType, genericType);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        /// <summary>
+        /// Tests that IsAssignableToGenericType returns true when a generic class is checked against its generic definition.
+        /// </summary>
+        [Fact]
+        public void IsAssignableToGenericType_GenericClassToGenericDefinition_ReturnsTrue()
+        {
+            // Arrange
+            var givenType = typeof(GenericClass<string>);
+            var genericType = typeof(GenericClass<>);
+
+            // Act
+            var result = ReflectionUtil.IsAssignableToGenericType(givenType, genericType);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        /// <summary>
+        /// Tests that IsAssignableToGenericType returns false when types are not related.
+        /// </summary>
+        [Fact]
+        public void IsAssignableToGenericType_UnrelatedTypes_ReturnsFalse()
+        {
+            // Arrange
+            var givenType = typeof(string);
+            var genericType = typeof(IGenericInterface<>);
+
+            // Act
+            var result = ReflectionUtil.IsAssignableToGenericType(givenType, genericType);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        /// <summary>
+        /// Tests that IsAssignableToGenericType throws ArgumentNullException when givenType is null.
+        /// </summary>
+        [Fact]
+        public void IsAssignableToGenericType_GivenTypeIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            Type givenType = null;
+            var genericType = typeof(IGenericInterface<>);
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.IsAssignableToGenericType(givenType, genericType));
+        }
+
+        /// <summary>
+        /// Tests that IsAssignableToGenericType throws ArgumentNullException when genericType is null.
+        /// </summary>
+        [Fact]
+        public void IsAssignableToGenericType_GenericTypeIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            var givenType = typeof(string);
+            Type genericType = null;
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.IsAssignableToGenericType(givenType, genericType));
+        }
+
+        #endregion
+
+        #region GetAttributesOfMemberAndDeclaringType Tests
+
+        /// <summary>
+        /// Tests that GetAttributesOfMemberAndDeclaringType returns attributes from both member and declaring type.
+        /// </summary>
+        [Fact]
+        public void GetAttributesOfMemberAndDeclaringType_MemberWithAttributes_ReturnsAllAttributes()
+        {
+            // Arrange
+            var memberInfo = typeof(SampleClass).GetProperty("Name");
+
+            // Act
+            var attributes = ReflectionUtil.GetAttributesOfMemberAndDeclaringType(memberInfo);
+
+            // Assert
+            Assert.NotEmpty(attributes);
+            Assert.Contains(attributes, attr => attr is SampleAttribute sampleAttr && sampleAttr.Value == "PropertyAttribute");
+            Assert.Contains(attributes, attr => attr is SampleAttribute sampleAttr && sampleAttr.Value == "ClassAttribute");
+        }
+
+        /// <summary>
+        /// Tests that GetAttributesOfMemberAndDeclaringType throws ArgumentNullException when memberInfo is null.
+        /// </summary>
+        [Fact]
+        public void GetAttributesOfMemberAndDeclaringType_MemberInfoIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            MemberInfo memberInfo = null;
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetAttributesOfMemberAndDeclaringType(memberInfo));
+        }
+
+        #endregion
+
+        #region GetAttributesOfMemberAndType Tests
+
+        /// <summary>
+        /// Tests that GetAttributesOfMemberAndType returns attributes from both member and specified type.
+        /// </summary>
+        [Fact]
+        public void GetAttributesOfMemberAndType_MemberWithAttributes_ReturnsAllAttributes()
+        {
+            // Arrange
+            var memberInfo = typeof(SampleClass).GetProperty("Name");
+            var type = typeof(SampleClass);
+
+            // Act
+            var attributes = ReflectionUtil.GetAttributesOfMemberAndType(memberInfo, type);
+
+            // Assert
+            Assert.NotEmpty(attributes);
+            Assert.Contains(attributes, attr => attr is SampleAttribute sampleAttr && sampleAttr.Value == "PropertyAttribute");
+            Assert.Contains(attributes, attr => attr is SampleAttribute sampleAttr && sampleAttr.Value == "ClassAttribute");
+        }
+
+        /// <summary>
+        /// Tests that GetAttributesOfMemberAndType throws ArgumentNullException when memberInfo is null.
+        /// </summary>
+        [Fact]
+        public void GetAttributesOfMemberAndType_MemberInfoIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            MemberInfo memberInfo = null;
+            var type = typeof(SampleClass);
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetAttributesOfMemberAndType(memberInfo, type));
+        }
+
+        /// <summary>
+        /// Tests that GetAttributesOfMemberAndType throws ArgumentNullException when type is null.
+        /// </summary>
+        [Fact]
+        public void GetAttributesOfMemberAndType_TypeIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            var memberInfo = typeof(SampleClass).GetProperty("Name");
+            Type type = null;
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetAttributesOfMemberAndType(memberInfo, type));
+        }
+
+        #endregion
+
+        #region GetSingleAttributeOfMemberOrDeclaringTypeOrDefault Tests
+
+        /// <summary>
+        /// Tests that GetSingleAttributeOfMemberOrDeclaringTypeOrDefault returns the attribute when found.
+        /// </summary>
+        [Fact]
+        public void GetSingleAttributeOfMemberOrDeclaringTypeOrDefault_AttributeExists_ReturnsAttribute()
+        {
+            // Arrange
+            var memberInfo = typeof(SampleClass).GetProperty("Name");
+
+            // Act
+            var attribute = ReflectionUtil.GetSingleAttributeOfMemberOrDeclaringTypeOrDefault<SampleAttribute>(memberInfo);
+
+            // Assert
+            Assert.NotNull(attribute);
+            Assert.Equal("PropertyAttribute", attribute.Value);
+        }
+
+        /// <summary>
+        /// Tests that GetSingleAttributeOfMemberOrDeclaringTypeOrDefault returns default value when attribute not found.
+        /// </summary>
+        [Fact]
+        public void GetSingleAttributeOfMemberOrDeclaringTypeOrDefault_AttributeNotFound_ReturnsDefault()
+        {
+            // Arrange
+            var memberInfo = typeof(SampleClass).GetProperty("Age");
+            var defaultValue = new SampleAttribute("Default");
+
+            // Act
+            var attribute = ReflectionUtil.GetSingleAttributeOfMemberOrDeclaringTypeOrDefault(memberInfo, defaultValue);
+
+            // Assert
+            Assert.NotNull(attribute);
+            Assert.Equal("ClassAttribute", attribute.Value); // Should find class attribute
+        }
+
+        /// <summary>
+        /// Tests that GetSingleAttributeOfMemberOrDeclaringTypeOrDefault throws ArgumentNullException when memberInfo is null.
+        /// </summary>
+        [Fact]
+        public void GetSingleAttributeOfMemberOrDeclaringTypeOrDefault_MemberInfoIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            MemberInfo memberInfo = null;
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetSingleAttributeOfMemberOrDeclaringTypeOrDefault<SampleAttribute>(memberInfo));
+        }
+
+        #endregion
+
+        #region GetSingleAttributeOrDefault Tests
+
+        /// <summary>
+        /// Tests that GetSingleAttributeOrDefault returns the attribute when found.
+        /// </summary>
+        [Fact]
+        public void GetSingleAttributeOrDefault_AttributeExists_ReturnsAttribute()
+        {
+            // Arrange
+            var memberInfo = typeof(SampleClass).GetProperty("Name");
+
+            // Act
+            var attribute = ReflectionUtil.GetSingleAttributeOrDefault<SampleAttribute>(memberInfo);
+
+            // Assert
+            Assert.NotNull(attribute);
+            Assert.Equal("PropertyAttribute", attribute.Value);
+        }
+
+        /// <summary>
+        /// Tests that GetSingleAttributeOrDefault returns default value when attribute not found.
+        /// </summary>
+        [Fact]
+        public void GetSingleAttributeOrDefault_AttributeNotFound_ReturnsDefault()
+        {
+            // Arrange
+            var memberInfo = typeof(SampleClass).GetProperty("Age");
+            var defaultValue = new SampleAttribute("Default");
+
+            // Act
+            var attribute = ReflectionUtil.GetSingleAttributeOrDefault(memberInfo, defaultValue);
+
+            // Assert
+            Assert.Equal(defaultValue, attribute);
+        }
+
+        /// <summary>
+        /// Tests that GetSingleAttributeOrDefault throws ArgumentNullException when memberInfo is null.
+        /// </summary>
+        [Fact]
+        public void GetSingleAttributeOrDefault_MemberInfoIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            MemberInfo memberInfo = null;
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetSingleAttributeOrDefault<SampleAttribute>(memberInfo));
+        }
+
+        #endregion
+
+        #region GetPropertyByPath Tests
+
+        /// <summary>
+        /// Tests that GetPropertyByPath returns the correct property for a simple path.
+        /// </summary>
+        [Fact]
+        public void GetPropertyByPath_SimplePath_ReturnsProperty()
+        {
+            // Arrange
+            var obj = new SampleClass { Name = "Test" };
+            var objectType = typeof(SampleClass);
+            var propertyPath = "Name";
+
+            // Act
+            var property = ReflectionUtil.GetPropertyByPath(obj, objectType, propertyPath);
+
+            // Assert
+            Assert.NotNull(property);
+            Assert.Equal("Name", property.Name);
+            Assert.Equal(typeof(string), property.PropertyType);
+        }
+
+        /// <summary>
+        /// Tests that GetPropertyByPath returns the correct property for a nested path.
+        /// </summary>
+        [Fact]
+        public void GetPropertyByPath_NestedPath_ReturnsProperty()
+        {
+            // Arrange
+            var obj = new SampleClass 
+            { 
+                Nested = new SampleNestedClass { NestedProperty = "NestedValue" } 
             };
+            var objectType = typeof(SampleClass);
+            var propertyPath = "Nested.NestedProperty";
 
-            var p1 = ReflectionUtil.GetPropertyByPath(o1, typeof(ReflectionUtilClass2), "Id");
-            Assert.Equal(typeof(ReflectionUtilClass2).GetProperty("Id"), p1);
-            var p2 = ReflectionUtil.GetPropertyByPath(o1, typeof(ReflectionUtilClass2), "DotCommon.Test.Reflecting.ReflectionUtilClass2.Id");
-            Assert.Equal(typeof(ReflectionUtilClass2).GetProperty("Id"), p2);
-            var p3 = ReflectionUtil.GetPropertyByPath(o1, typeof(ReflectionUtilClass2), "UserName");
-            Assert.Equal(typeof(ReflectionUtilClass2).GetProperty("UserName"), p3);
-            var p4 = ReflectionUtil.GetPropertyByPath(o1, typeof(ReflectionUtilClass2), "Age");
-            Assert.Equal(typeof(ReflectionUtilClass2).GetProperty("Age"), p4);
+            // Act
+            var property = ReflectionUtil.GetPropertyByPath(obj, objectType, propertyPath);
+
+            // Assert
+            Assert.NotNull(property);
+            Assert.Equal("NestedProperty", property.Name);
+            Assert.Equal(typeof(string), property.PropertyType);
         }
 
+        /// <summary>
+        /// Tests that GetPropertyByPath throws ArgumentException for invalid property path.
+        /// </summary>
         [Fact]
-        public void GetAttributesOfMemberAndDeclaringType_Test()
+        public void GetPropertyByPath_InvalidPath_ThrowsArgumentException()
         {
-            var objects1 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType(typeof(ReflectionUtilClass3).GetMember("Id").FirstOrDefault(), true);
-            Assert.Single(objects1);
+            // Arrange
+            var obj = new SampleClass();
+            var objectType = typeof(SampleClass);
+            var propertyPath = "InvalidProperty";
 
-            var objects2 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType(typeof(ReflectionUtilClass4).GetMember("Age").FirstOrDefault(), true);
-            Assert.Equal(2, objects2.Count);
-
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => ReflectionUtil.GetPropertyByPath(obj, objectType, propertyPath));
         }
 
+        /// <summary>
+        /// Tests that GetPropertyByPath throws ArgumentNullException when obj is null.
+        /// </summary>
         [Fact]
-        public void GetAttributesOfMemberAndType_Test()
+        public void GetPropertyByPath_ObjIsNull_ThrowsArgumentNullException()
         {
-            var objects1 = ReflectionUtil.GetAttributesOfMemberAndType(typeof(ReflectionUtilClass4).GetMember("Id").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
-            Assert.Equal(2, objects1.Count);
+            // Arrange
+            object obj = null;
+            var objectType = typeof(SampleClass);
+            var propertyPath = "Name";
 
-            var objects2 = ReflectionUtil.GetAttributesOfMemberAndType(typeof(ReflectionUtilClass4).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
-            Assert.Equal(2, objects2.Count);
-
-            var objects3 = ReflectionUtil.GetAttributesOfMemberAndType(typeof(ReflectionUtilClass4).GetMember("Number").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
-            Assert.Single(objects3);
-
-            var objects4 = ReflectionUtil.GetAttributesOfMemberAndType(typeof(ReflectionUtilClass4).GetMember("Age").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
-            Assert.Equal(2, objects4.Count);
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetPropertyByPath(obj, objectType, propertyPath));
         }
 
+        #endregion
+
+        #region GetValueByPath Tests
+
+        /// <summary>
+        /// Tests that GetValueByPath returns the correct value for a simple path.
+        /// </summary>
         [Fact]
-        public void GetAttributesOfMemberAndDeclaringType_Strong_Test()
+        public void GetValueByPath_SimplePath_ReturnsValue()
         {
-            var attributes1 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType<ReflectionUtil1Attribute>(typeof(ReflectionUtilClass3).GetMember("Id").FirstOrDefault(), true);
-            Assert.Single(attributes1);
+            // Arrange
+            var obj = new SampleClass { Name = "TestValue" };
+            var objectType = typeof(SampleClass);
+            var propertyPath = "Name";
 
-            var attributes2 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType<ReflectionUtil1Attribute>(typeof(ReflectionUtilClass3).GetMember("Name").FirstOrDefault(), true);
-            Assert.Empty(attributes2);
+            // Act
+            var value = ReflectionUtil.GetValueByPath(obj, objectType, propertyPath);
 
-            var attributes3 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType<ReflectionUtil2Attribute>(typeof(ReflectionUtilClass4).GetMember("Name").FirstOrDefault(), true);
-            Assert.Single(attributes3);
-
-            var attributes4 = ReflectionUtil.GetAttributesOfMemberAndDeclaringType<ReflectionUtil3Attribute>(typeof(ReflectionUtilClass4).GetMember("Age").FirstOrDefault(), true);
-            Assert.Single(attributes4);
-
+            // Assert
+            Assert.Equal("TestValue", value);
         }
 
+        /// <summary>
+        /// Tests that GetValueByPath returns the correct value for a nested path.
+        /// </summary>
         [Fact]
-        public void GetAttributesOfMemberAndType_Strong_Test()
+        public void GetValueByPath_NestedPath_ReturnsValue()
         {
-            var attributes1 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil1Attribute>(typeof(ReflectionUtilClass3).GetMember("Id").FirstOrDefault(), typeof(ReflectionUtilClass3), true);
-            Assert.Single(attributes1);
+            // Arrange
+            var obj = new SampleClass 
+            { 
+                Nested = new SampleNestedClass { NestedProperty = "NestedValue" } 
+            };
+            var objectType = typeof(SampleClass);
+            var propertyPath = "Nested.NestedProperty";
 
-            var attributes2 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil1Attribute>(typeof(ReflectionUtilClass3).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass3), true);
-            Assert.Empty(attributes2);
+            // Act
+            var value = ReflectionUtil.GetValueByPath(obj, objectType, propertyPath);
 
-            var attributes3 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil2Attribute>(typeof(ReflectionUtilClass3).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass3), true);
-            Assert.Single(attributes3);
-
-            var attributes4 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil2Attribute>(typeof(ReflectionUtilClass3).GetMember("Number").FirstOrDefault(), typeof(ReflectionUtilClass3), true);
-            Assert.Empty(attributes4);
-
-            var attributes5 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil2Attribute>(typeof(ReflectionUtilClass4).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
-            Assert.Single(attributes5);
-
-            var attributes6 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil3Attribute>(typeof(ReflectionUtilClass4).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass4), true);
-            Assert.Single(attributes6);
-
-            var attributes7 = ReflectionUtil.GetAttributesOfMemberAndType<ReflectionUtil3Attribute>(typeof(ReflectionUtilClass3).GetMember("Name").FirstOrDefault(), typeof(ReflectionUtilClass3), true);
-            Assert.Empty(attributes7);
+            // Assert
+            Assert.Equal("NestedValue", value);
         }
 
+        /// <summary>
+        /// Tests that GetValueByPath throws ArgumentException for invalid property path.
+        /// </summary>
         [Fact]
-        public void GetSingleAttributeOfMemberOrDeclaringTypeOrDefault_Test()
+        public void GetValueByPath_InvalidPath_ThrowsArgumentException()
         {
-            var attribute1 = ReflectionUtil.GetSingleAttributeOfMemberOrDeclaringTypeOrDefault<ReflectionUtil4Attribute>(typeof(ReflectionUtilClass5).GetMember("Id").FirstOrDefault(), new ReflectionUtil4Attribute() { Order = 10 }, true);
+            // Arrange
+            var obj = new SampleClass();
+            var objectType = typeof(SampleClass);
+            var propertyPath = "InvalidProperty";
 
-            Assert.Equal(100, attribute1.Order);
-
-            var attribute2 = ReflectionUtil.GetSingleAttributeOfMemberOrDeclaringTypeOrDefault<ReflectionUtil4Attribute>(typeof(ReflectionUtilClass5).GetMember("Name").FirstOrDefault(), new ReflectionUtil4Attribute() { Order = 10 }, true);
-
-            Assert.Equal(10, attribute2.Order);
-
-            var attribute3 = ReflectionUtil.GetSingleAttributeOfMemberOrDeclaringTypeOrDefault<ReflectionUtil4Attribute>(typeof(ReflectionUtilClass6).GetMember("Id").FirstOrDefault(), new ReflectionUtil4Attribute() { Order = 10 }, true);
-
-            Assert.Equal(50, attribute3.Order);
-
-            var attribute4 = ReflectionUtil.GetSingleAttributeOfMemberOrDeclaringTypeOrDefault<ReflectionUtil4Attribute>(typeof(ReflectionUtilClass6).GetMember("Name").FirstOrDefault(), new ReflectionUtil4Attribute() { Order = 10 }, true);
-
-            Assert.Equal(300, attribute4.Order);
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => ReflectionUtil.GetValueByPath(obj, objectType, propertyPath));
         }
 
+        #endregion
+
+        #region SetValueByPath Tests
+
+        /// <summary>
+        /// Tests that SetValueByPath sets the correct value for a simple path.
+        /// </summary>
         [Fact]
-        public void GetSingleAttributeOrDefault_Test()
+        public void SetValueByPath_SimplePath_SetsValue()
         {
-            var attribute1 = ReflectionUtil.GetSingleAttributeOrDefault<ReflectionUtil4Attribute>(typeof(ReflectionUtilClass5).GetMember("Id").FirstOrDefault(), new ReflectionUtil4Attribute() { Order = 10 }, true);
-            Assert.Equal(100, attribute1.Order);
+            // Arrange
+            var obj = new SampleClass();
+            var objectType = typeof(SampleClass);
+            var propertyPath = "Name";
+            var value = "NewValue";
+
+            // Act
+            ReflectionUtil.SetValueByPath(obj, objectType, propertyPath, value);
+
+            // Assert
+            Assert.Equal("NewValue", obj.Name);
         }
 
-
-    }
-
-
-    class ReflectionUtilClass1
-    {
-        public string UserName { get; set; }
-        public string GetAge()
+        /// <summary>
+        /// Tests that SetValueByPath sets the correct value for a nested path.
+        /// </summary>
+        [Fact]
+        public void SetValueByPath_NestedPath_SetsValue()
         {
-            return "Age";
+            // Arrange
+            var obj = new SampleClass 
+            { 
+                Nested = new SampleNestedClass() 
+            };
+            var objectType = typeof(SampleClass);
+            var propertyPath = "Nested.NestedProperty";
+            var value = "NewNestedValue";
+
+            // Act
+            ReflectionUtil.SetValueByPath(obj, objectType, propertyPath, value);
+
+            // Assert
+            Assert.Equal("NewNestedValue", obj.Nested.NestedProperty);
         }
 
-        public void Do()
+        /// <summary>
+        /// Tests that SetValueByPath throws ArgumentException for invalid property path.
+        /// </summary>
+        [Fact]
+        public void SetValueByPath_InvalidPath_ThrowsArgumentException()
         {
+            // Arrange
+            var obj = new SampleClass();
+            var objectType = typeof(SampleClass);
+            var propertyPath = "InvalidProperty";
+            var value = "SomeValue";
 
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => ReflectionUtil.SetValueByPath(obj, objectType, propertyPath, value));
         }
+
+        #endregion
+
+        #region IsPropertyGetterSetterMethod Tests
+
+        /// <summary>
+        /// Tests that IsPropertyGetterSetterMethod returns true for property getter methods.
+        /// </summary>
+        [Fact]
+        public void IsPropertyGetterSetterMethod_PropertyGetter_ReturnsTrue()
+        {
+            // Arrange
+            var type = typeof(SampleClass);
+            var method = type.GetMethod("get_Name", BindingFlags.Public | BindingFlags.Instance);
+
+            // Act
+            var result = ReflectionUtil.IsPropertyGetterSetterMethod(method, type);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        /// <summary>
+        /// Tests that IsPropertyGetterSetterMethod returns true for property setter methods.
+        /// </summary>
+        [Fact]
+        public void IsPropertyGetterSetterMethod_PropertySetter_ReturnsTrue()
+        {
+            // Arrange
+            var type = typeof(SampleClass);
+            var method = type.GetMethod("set_Name", BindingFlags.Public | BindingFlags.Instance);
+
+            // Act
+            var result = ReflectionUtil.IsPropertyGetterSetterMethod(method, type);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        /// <summary>
+        /// Tests that IsPropertyGetterSetterMethod returns false for regular methods.
+        /// </summary>
+        [Fact]
+        public void IsPropertyGetterSetterMethod_RegularMethod_ReturnsFalse()
+        {
+            // Arrange
+            var type = typeof(SampleClass);
+            var method = type.GetMethod("SampleMethod");
+
+            // Act
+            var result = ReflectionUtil.IsPropertyGetterSetterMethod(method, type);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        /// <summary>
+        /// Tests that IsPropertyGetterSetterMethod throws ArgumentNullException when method is null.
+        /// </summary>
+        [Fact]
+        public void IsPropertyGetterSetterMethod_MethodIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            MethodInfo method = null;
+            var type = typeof(SampleClass);
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.IsPropertyGetterSetterMethod(method, type));
+        }
+
+        /// <summary>
+        /// Tests that IsPropertyGetterSetterMethod throws ArgumentNullException when type is null.
+        /// </summary>
+        [Fact]
+        public void IsPropertyGetterSetterMethod_TypeIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            var type = typeof(SampleClass);
+            var method = type.GetMethod("get_Name", BindingFlags.Public | BindingFlags.Instance);
+            Type nullType = null;
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.IsPropertyGetterSetterMethod(method, nullType));
+        }
+
+        #endregion
     }
-
-    class ReflectionUtilClass2
-    {
-        public string Id { get; set; }
-        public string UserName { get; set; }
-
-        public int Age { get; set; }
-
-        public ReflectionUtilClass1 Class1 { get; set; }
-    }
-
-
-    class ReflectionUtilClass3
-    {
-        [ReflectionUtil1]
-        public int Id { get; set; }
-
-        [ReflectionUtil2]
-        public string Name { get; set; }
-
-
-        public string Number { get; set; }
-
-    }
-
-    [ReflectionUtil3Attribute]
-
-    class ReflectionUtilClass4 : ReflectionUtilClass3
-    {
-        public string NickName { get; set; }
-
-        [ReflectionUtil2Attribute]
-        public string Age { get; set; }
-    }
-
-    class ReflectionUtilClass5
-    {
-        [ReflectionUtil4(Order = 100)]
-        public string Id { get; set; }
-
-        public string Name { get; set; }
-    }
-
-    [ReflectionUtil4(Order = 300)]
-    class ReflectionUtilClass6
-    {
-        [ReflectionUtil4(Order = 50)]
-        public string Id { get; set; }
-
-        public string Name { get; set; }
-    }
-
-    class ReflectionUtil1Attribute : Attribute
-    {
-
-    }
-
-    class ReflectionUtil2Attribute : Attribute
-    {
-
-    }
-    class ReflectionUtil3Attribute : Attribute
-    {
-
-    }
-
-    class ReflectionUtil4Attribute : Attribute
-    {
-        public int Order { get; set; }
-
-    }
-
-    interface ITestGenericInterface<T>
-    {
-
-    }
-
-    class TestGenericClass<T>
-    {
-
-    }
-    class GenericClassT
-    {
-
-    }
-    class GenericClassTest1<T> : ITestGenericInterface<T>
-    {
-
-    }
-
-    class GenericClassTest2<T> : TestGenericClass<T>
-    {
-
-    }
-
-    class GenericClassTest3 : GenericClassTest1<GenericClassT>
-    {
-
-    }
-
-    class GenericClassTest4 : GenericClassTest2<GenericClassT>
-    {
-
-    }
-
 }
