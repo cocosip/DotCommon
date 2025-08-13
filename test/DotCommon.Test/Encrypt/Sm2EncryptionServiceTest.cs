@@ -1,22 +1,62 @@
 using DotCommon.Crypto.SM2;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Utilities.Encoders;
+using System;
 using System.Text;
 using Xunit;
 
 namespace DotCommon.Test.Encrypt
 {
-    public class Sm2EncryptionServiceTest
+    /// <summary>
+    /// Unit tests for SM2 encryption service using dependency injection
+    /// </summary>
+    public class Sm2EncryptionServiceTest : IDisposable
     {
-        private readonly Sm2EncryptionService _sm2EncryptionService;
-        private readonly IOptions<DotCommonSm2EncryptionOptions> _options;
+        private readonly ISm2EncryptionService _sm2EncryptionService;
+        private readonly ServiceProvider _serviceProvider;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Sm2EncryptionServiceTest"/> class.
+        /// Sets up dependency injection container and resolves ISm2EncryptionService.
+        /// </summary>
         public Sm2EncryptionServiceTest()
         {
-            _options = Options.Create(new DotCommonSm2EncryptionOptions { DefaultCurve = Sm2EncryptionNames.CurveSm2p256v1 });
-            _sm2EncryptionService = new Sm2EncryptionService(_options);
+            var services = new ServiceCollection();
+            
+            // Configure SM2 encryption options
+            services.Configure<DotCommonSm2EncryptionOptions>(options =>
+            {
+                options.DefaultCurve = Sm2EncryptionNames.CurveSm2p256v1;
+            });
+            
+            // Register SM2 encryption service
+            services.AddTransient<ISm2EncryptionService, Sm2EncryptionService>();
+            
+            _serviceProvider = services.BuildServiceProvider();
+            _sm2EncryptionService = _serviceProvider.GetRequiredService<ISm2EncryptionService>();
+        }
+
+        /// <summary>
+        /// Tests that ISm2EncryptionService can be resolved from dependency injection container
+        /// </summary>
+        [Fact]
+        public void DependencyInjection_ServiceResolution_Test()
+        {
+            // Assert that the service was resolved successfully
+            Assert.NotNull(_sm2EncryptionService);
+            Assert.IsAssignableFrom<ISm2EncryptionService>(_sm2EncryptionService);
+            Assert.IsType<Sm2EncryptionService>(_sm2EncryptionService);
+        }
+
+        /// <summary>
+        /// Disposes the service provider to release resources
+        /// </summary>
+        public void Dispose()
+        {
+            _serviceProvider?.Dispose();
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 using DotCommon.Crypto.SM4;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Org.BouncyCastle.Utilities.Encoders;
 using System;
@@ -7,24 +8,59 @@ using Xunit;
 
 namespace DotCommon.Test.Encrypt
 {
-    public class Sm4EncryptionServiceTest
+    /// <summary>
+    /// Unit tests for SM4 encryption service using dependency injection
+    /// </summary>
+    public class Sm4EncryptionServiceTest : IDisposable
     {
-        private readonly Sm4EncryptionService _sm4EncryptionService;
-        private readonly DotCommonSm4EncryptionOptions _options;
+        private readonly ISm4EncryptionService _sm4EncryptionService;
+        private readonly ServiceProvider _serviceProvider;
 
         // Default key and IV for testing (16 bytes each)
         private static readonly byte[] TestKey = Hex.DecodeStrict("0123456789abcdeffedcba9876543210");
         private static readonly byte[] TestIv = Hex.DecodeStrict("fedcba98765432100123456789abcdef");
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Sm4EncryptionServiceTest"/> class.
+        /// Sets up dependency injection container and resolves ISm4EncryptionService.
+        /// </summary>
         public Sm4EncryptionServiceTest()
         {
-            _options = new DotCommonSm4EncryptionOptions
+            var services = new ServiceCollection();
+            
+            // Configure SM4 encryption options
+            services.Configure<DotCommonSm4EncryptionOptions>(options =>
             {
-                DefaultIv = TestIv,
-                DefaultMode = Sm4EncryptionNames.ModeCBC,
-                DefaultPadding = Sm4EncryptionNames.PKCS7Padding
-            };
-            _sm4EncryptionService = new Sm4EncryptionService(Options.Create(_options));
+                options.DefaultIv = TestIv;
+                options.DefaultMode = Sm4EncryptionNames.ModeCBC;
+                options.DefaultPadding = Sm4EncryptionNames.PKCS7Padding;
+            });
+            
+            // Register SM4 encryption service
+            services.AddTransient<ISm4EncryptionService, Sm4EncryptionService>();
+            
+            _serviceProvider = services.BuildServiceProvider();
+            _sm4EncryptionService = _serviceProvider.GetRequiredService<ISm4EncryptionService>();
+        }
+
+        /// <summary>
+        /// Tests that ISm4EncryptionService can be resolved from dependency injection container
+        /// </summary>
+        [Fact]
+        public void DependencyInjection_ServiceResolution_Test()
+        {
+            // Assert that the service was resolved successfully
+            Assert.NotNull(_sm4EncryptionService);
+            Assert.IsAssignableFrom<ISm4EncryptionService>(_sm4EncryptionService);
+            Assert.IsType<Sm4EncryptionService>(_sm4EncryptionService);
+        }
+
+        /// <summary>
+        /// Disposes the service provider to release resources
+        /// </summary>
+        public void Dispose()
+        {
+            _serviceProvider?.Dispose();
         }
 
         [Theory]

@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Numerics;
+using System.Xml;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Asn1.X509;
@@ -9,8 +11,11 @@ using Org.BouncyCastle.Crypto.Encodings;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Math;
 using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Utilities.Encoders;
 
 
 namespace DotCommon.Crypto.RSA
@@ -169,6 +174,38 @@ namespace DotCommon.Crypto.RSA
             signer.Init(false, publicKeyParam);
             signer.BlockUpdate(data, 0, data.Length);
             return signer.VerifySignature(signature);
+        }
+
+        /// <summary>
+        /// Import public key from Base64 encoded string (SubjectPublicKeyInfo format)
+        /// </summary>
+        /// <param name="publicKeyBase64">Base64 encoded public key string</param>
+        /// <returns>RSA public key parameter</returns>
+        public virtual AsymmetricKeyParameter ImportPublicKey(string publicKeyBase64)
+        {
+            var publicKeyBytes = Base64.Decode(publicKeyBase64);
+            var publicKeyInfo = SubjectPublicKeyInfo.GetInstance(Asn1Object.FromByteArray(publicKeyBytes));
+            return PublicKeyFactory.CreateKey(publicKeyInfo);
+        }
+
+        /// <summary>
+        /// Import private key from Base64 encoded string (PKCS#1 raw format)
+        /// </summary>
+        /// <param name="privateKeyBase64">Base64 encoded private key string</param>
+        /// <returns>RSA private key parameter</returns>
+        public virtual AsymmetricKeyParameter ImportPrivateKey(string privateKeyBase64)
+        {
+            var privateKeyBytes = Base64.Decode(privateKeyBase64);
+            var rsaPrivateKeyStructure = RsaPrivateKeyStructure.GetInstance(Asn1Object.FromByteArray(privateKeyBytes));
+            return new RsaPrivateCrtKeyParameters(
+                rsaPrivateKeyStructure.Modulus,
+                rsaPrivateKeyStructure.PublicExponent,
+                rsaPrivateKeyStructure.PrivateExponent,
+                rsaPrivateKeyStructure.Prime1,
+                rsaPrivateKeyStructure.Prime2,
+                rsaPrivateKeyStructure.Exponent1,
+                rsaPrivateKeyStructure.Exponent2,
+                rsaPrivateKeyStructure.Coefficient);
         }
 
         /// <summary>

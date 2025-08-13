@@ -1,16 +1,52 @@
 using DotCommon.Crypto.SM3;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Text;
 using Xunit;
 
 namespace DotCommon.Test.Encrypt
 {
-    public class Sm3EncryptionServiceTest
+    /// <summary>
+    /// Unit tests for SM3 encryption service using dependency injection
+    /// </summary>
+    public class Sm3EncryptionServiceTest : IDisposable
     {
-        private readonly Sm3EncryptionService _sm3EncryptionService;
+        private readonly ISm3EncryptionService _sm3EncryptionService;
+        private readonly ServiceProvider _serviceProvider;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Sm3EncryptionServiceTest"/> class.
+        /// Sets up dependency injection container and resolves ISm3EncryptionService.
+        /// </summary>
         public Sm3EncryptionServiceTest()
         {
-            _sm3EncryptionService = new Sm3EncryptionService();
+            var services = new ServiceCollection();
+            
+            // Register SM3 encryption service
+            services.AddTransient<ISm3EncryptionService, Sm3EncryptionService>();
+            
+            _serviceProvider = services.BuildServiceProvider();
+            _sm3EncryptionService = _serviceProvider.GetRequiredService<ISm3EncryptionService>();
+        }
+
+        /// <summary>
+        /// Tests that ISm3EncryptionService can be resolved from dependency injection container
+        /// </summary>
+        [Fact]
+        public void DependencyInjection_ServiceResolution_Test()
+        {
+            // Assert that the service was resolved successfully
+            Assert.NotNull(_sm3EncryptionService);
+            Assert.IsAssignableFrom<ISm3EncryptionService>(_sm3EncryptionService);
+            Assert.IsType<Sm3EncryptionService>(_sm3EncryptionService);
+        }
+
+        /// <summary>
+        /// Disposes the service provider to release resources
+        /// </summary>
+        public void Dispose()
+        {
+            _serviceProvider?.Dispose();
         }
 
         [Fact]
