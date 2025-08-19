@@ -13,6 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDotCommonAutoMapper(this IServiceCollection services)
         {
+            services.AddAutoMapperObjectMapper();
             services.AddSingleton<IConfigurationProvider>(sp =>
             {
                 using (var scope = sp.CreateScope())
