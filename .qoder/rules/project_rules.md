@@ -1,3 +1,8 @@
+---
+trigger: always_on
+alwaysApply: true
+---
+
 trigger: always_on
 
 # C# 编码规范
@@ -172,7 +177,7 @@ namespace DotCommon.Utility
 2. **依赖注入**:
    - 提供扩展方法来注册服务
    - 遵循 ASP.NET Core 的依赖注入模式
-
+  
 3. **可空引用类型 (Nullable Reference Types)**:
     - 项目不强制要求启用可空引用类型功能
     - 在生成代码时，需要检查目标项目是否启用了可空引用类型（检查项目文件中的 `<Nullable>enable</Nullable>` 设置）
@@ -210,3 +215,4 @@ namespace DotCommon.Utility
 
 3. **依赖管理**:
    - 在 `Directory.Packages.props` 中集中管理 NuGet 包版本
+
