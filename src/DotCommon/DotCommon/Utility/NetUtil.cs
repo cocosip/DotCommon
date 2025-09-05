@@ -127,5 +127,119 @@ namespace DotCommon.Utility
             return Dns.GetHostEntry(GetLocalHostName()).AddressList
                 .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(ip));
         }
+
+        /// <summary>
+        /// Validates whether a string represents a valid IP network segment in CIDR notation (e.g., "192.168.1.0/24" or "2001:db8::/32").
+        /// Supports both IPv4 and IPv6 network segments.
+        /// </summary>
+        /// <param name="cidrString">The string representation of the IP network segment in CIDR notation.</param>
+        /// <returns><c>true</c> if the string represents a valid IP network segment; otherwise, <c>false</c>.</returns>
+        public static bool IsValidIpNetworkSegment(string cidrString)
+        {
+            if (string.IsNullOrWhiteSpace(cidrString))
+            {
+                return false;
+            }
+
+            var parts = cidrString.Split('/');
+            if (parts.Length != 2)
+            {
+                return false;
+            }
+
+            // Parse the IP address part
+            if (!IPAddress.TryParse(parts[0], out IPAddress? ipAddress))
+            {
+                return false;
+            }
+
+            // Parse the prefix length part
+            if (!int.TryParse(parts[1], out int prefixLength))
+            {
+                return false;
+            }
+
+            // Validate prefix length based on address family
+            if (ipAddress.AddressFamily == AddressFamily.InterNetwork)
+            {
+                // IPv4: prefix length should be between 0 and 32
+                return prefixLength >= 0 && prefixLength <= 32;
+            }
+            else if (ipAddress.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                // IPv6: prefix length should be between 0 and 128
+                return prefixLength >= 0 && prefixLength <= 128;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Validates whether a string represents a valid IPv4 network segment in CIDR notation (e.g., "192.168.1.0/24").
+        /// </summary>
+        /// <param name="cidrString">The string representation of the IPv4 network segment in CIDR notation.</param>
+        /// <returns><c>true</c> if the string represents a valid IPv4 network segment; otherwise, <c>false</c>.</returns>
+        public static bool IsValidIpv4NetworkSegment(string cidrString)
+        {
+            if (string.IsNullOrWhiteSpace(cidrString))
+            {
+                return false;
+            }
+
+            var parts = cidrString.Split('/');
+            if (parts.Length != 2)
+            {
+                return false;
+            }
+
+            // Parse the IP address part and ensure it's IPv4
+            if (!IPAddress.TryParse(parts[0], out IPAddress? ipAddress) || 
+                ipAddress.AddressFamily != AddressFamily.InterNetwork)
+            {
+                return false;
+            }
+
+            // Parse and validate the prefix length
+            if (!int.TryParse(parts[1], out int prefixLength))
+            {
+                return false;
+            }
+
+            return prefixLength >= 0 && prefixLength <= 32;
+        }
+
+        /// <summary>
+        /// Validates whether a string represents a valid IPv6 network segment in CIDR notation (e.g., "2001:db8::/32").
+        /// </summary>
+        /// <param name="cidrString">The string representation of the IPv6 network segment in CIDR notation.</param>
+        /// <returns><c>true</c> if the string represents a valid IPv6 network segment; otherwise, <c>false</c>.</returns>
+        public static bool IsValidIpv6NetworkSegment(string cidrString)
+        {
+            if (string.IsNullOrWhiteSpace(cidrString))
+            {
+                return false;
+            }
+
+            var parts = cidrString.Split('/');
+            if (parts.Length != 2)
+            {
+                return false;
+            }
+
+            // Parse the IP address part and ensure it's IPv6
+            if (!IPAddress.TryParse(parts[0], out IPAddress? ipAddress) || 
+                ipAddress.AddressFamily != AddressFamily.InterNetworkV6)
+            {
+                return false;
+            }
+
+            // Parse and validate the prefix length
+            if (!int.TryParse(parts[1], out int prefixLength))
+            {
+                return false;
+            }
+
+            return prefixLength >= 0 && prefixLength <= 128;
+        }
     }
 }

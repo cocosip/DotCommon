@@ -120,5 +120,68 @@ namespace DotCommon.Test.Utility
             Assert.Equal(AddressFamily.InterNetwork, nonLoopbackIp.AddressFamily);
             Assert.False(IPAddress.IsLoopback(nonLoopbackIp));
         }
+
+        [Theory]
+        [InlineData("192.168.1.0/24", true)]
+        [InlineData("10.0.0.0/8", true)]
+        [InlineData("172.16.0.0/12", true)]
+        [InlineData("127.0.0.1/32", true)]
+        [InlineData("0.0.0.0/0", true)]
+        [InlineData("2001:db8::/32", true)]
+        [InlineData("::/0", true)]
+        [InlineData("fe80::/64", true)]
+        [InlineData("192.168.1.0/33", false)] // Invalid IPv4 prefix length
+        [InlineData("192.168.1.0/-1", false)] // Negative prefix length
+        [InlineData("2001:db8::/129", false)] // Invalid IPv6 prefix length
+        [InlineData("192.168.1.0", false)] // Missing prefix length
+        [InlineData("192.168.1.0/24/extra", false)] // Too many parts
+        [InlineData("invalid-ip/24", false)] // Invalid IP address
+        [InlineData("192.168.1.0/abc", false)] // Invalid prefix length format
+        [InlineData("", false)] // Empty string
+        [InlineData(null, false)] // Null string
+        [InlineData("   ", false)] // Whitespace only
+        public void IsValidIpNetworkSegment_Test(string cidrString, bool expected)
+        {
+            var result = NetUtil.IsValidIpNetworkSegment(cidrString);
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [InlineData("192.168.1.0/24", true)]
+        [InlineData("10.0.0.0/8", true)]
+        [InlineData("172.16.0.0/12", true)]
+        [InlineData("127.0.0.1/32", true)]
+        [InlineData("0.0.0.0/0", true)]
+        [InlineData("192.168.1.0/33", false)] // Invalid prefix length
+        [InlineData("192.168.1.0/-1", false)] // Negative prefix length
+        [InlineData("2001:db8::/32", false)] // IPv6 address (should fail for IPv4-only method)
+        [InlineData("192.168.1.0", false)] // Missing prefix length
+        [InlineData("invalid-ip/24", false)] // Invalid IP address
+        [InlineData("", false)] // Empty string
+        [InlineData(null, false)] // Null string
+        public void IsValidIpv4NetworkSegment_Test(string cidrString, bool expected)
+        {
+            var result = NetUtil.IsValidIpv4NetworkSegment(cidrString);
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [InlineData("2001:db8::/32", true)]
+        [InlineData("::/0", true)]
+        [InlineData("fe80::/64", true)]
+        [InlineData("::1/128", true)]
+        [InlineData("2001:db8:85a3::8a2e:370:7334/128", true)]
+        [InlineData("2001:db8::/129", false)] // Invalid prefix length
+        [InlineData("2001:db8::/-1", false)] // Negative prefix length
+        [InlineData("192.168.1.0/24", false)] // IPv4 address (should fail for IPv6-only method)
+        [InlineData("2001:db8::", false)] // Missing prefix length
+        [InlineData("invalid-ipv6/64", false)] // Invalid IP address
+        [InlineData("", false)] // Empty string
+        [InlineData(null, false)] // Null string
+        public void IsValidIpv6NetworkSegment_Test(string cidrString, bool expected)
+        {
+            var result = NetUtil.IsValidIpv6NetworkSegment(cidrString);
+            Assert.Equal(expected, result);
+        }
     }
 }
