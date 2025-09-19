@@ -3,23 +3,28 @@ using System;
 namespace DotCommon.Scheduling
 {
     /// <summary>
-    /// 调度服务接口，用于管理定时任务
+    /// Schedule service implementation for managing timed tasks.
     /// </summary>
     public interface IScheduleService
     {
+
         /// <summary>
-        /// 启动一个调度任务
+        /// Starts a scheduled task.
         /// </summary>
-        /// <param name="name">任务名称</param>
-        /// <param name="action">任务执行的操作</param>
-        /// <param name="dueTime">首次执行前的延迟时间（毫秒）</param>
-        /// <param name="period">执行间隔时间（毫秒）</param>
+        /// <param name="name">The task name.</param>
+        /// <param name="action">The action to execute.</param>
+        /// <param name="dueTime">The delay before the first execution in milliseconds.</param>
+        /// <param name="period">The interval between executions in milliseconds.</param>
+        /// <exception cref="ArgumentNullException">Thrown when name or action is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when name is empty.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when dueTime or period is negative.</exception>
         void StartTask(string name, Action action, int dueTime, int period);
 
         /// <summary>
-        /// 停止并移除指定名称的调度任务
+        /// Stops and removes a scheduled task by name.
         /// </summary>
-        /// <param name="name">要停止的任务名称</param>
+        /// <param name="name">The name of the task to stop.</param>
+        /// <exception cref="ArgumentNullException">Thrown when name is null.</exception>
         void StopTask(string name);
     }
 }

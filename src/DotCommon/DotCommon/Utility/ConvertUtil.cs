@@ -3,16 +3,16 @@
 namespace DotCommon.Utility
 {
     /// <summary>
-    /// 转换工厂类
+    /// Conversion utility class.
     /// </summary>
     public static class ConvertUtil
     {
         /// <summary>
-        /// 转换成Int32类型
+        /// Converts to Int32 type.
         /// </summary>
-        /// <param name="source">源对象</param>
-        /// <param name="defaultValue">默认值</param>
-        /// <returns></returns>
+        /// <param name="source">The source object.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>The converted value.</returns>
         public static int ToInt32(object source, int defaultValue)
         {
             if (source != null)
@@ -26,11 +26,11 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 转换成Int64类型
+        /// Converts to Int64 type.
         /// </summary>
-        /// <param name="source">源对象</param>
-        /// <param name="defaultValue">默认值</param>
-        /// <returns></returns>
+        /// <param name="source">The source object.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>The converted value.</returns>
         public static long ToInt64(object source, long defaultValue)
         {
             if (source != null)
@@ -44,11 +44,11 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 转换成Double类型
+        /// Converts to Double type.
         /// </summary>
-        /// <param name="source">源对象</param>
-        /// <param name="defaultValue">默认值</param>
-        /// <returns></returns>
+        /// <param name="source">The source object.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>The converted value.</returns>
         public static double ToDouble(object source, double defaultValue)
         {
             if (source != null)
@@ -62,12 +62,12 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 转换成double类型,并保留有效的位数
+        /// Converts to double type and keeps the specified number of digits.
         /// </summary>
-        /// <param name="source">源对象</param>
-        /// <param name="defaultValue">默认值</param>
-        /// <param name="digit">有效位数</param>
-        /// <returns></returns>
+        /// <param name="source">The source object.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <param name="digit">The number of digits to keep.</param>
+        /// <returns>The converted value.</returns>
         public static double ToDouble(object source, double defaultValue, int digit)
         {
             if (source != null)
@@ -81,11 +81,11 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 转换成Datetime
+        /// Converts to DateTime.
         /// </summary>
-        /// <param name="source">源对象</param>
-        /// <param name="defaultValue">默认值</param>
-        /// <returns></returns>
+        /// <param name="source">The source object.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>The converted value.</returns>
         public static DateTime ToDateTime(object source, DateTime defaultValue)
         {
             if (source != null)
@@ -99,11 +99,11 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 转换成Bool类型
+        /// Converts to Bool type.
         /// </summary>
-        /// <param name="source">源对象</param>
-        /// <param name="defaultValue">默认值</param>
-        /// <returns></returns>
+        /// <param name="source">The source object.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>The converted value.</returns>
         public static bool ToBool(object source, bool defaultValue)
         {
             if (source != null)
@@ -117,10 +117,10 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 将string类型字符串转换成对应的guid
+        /// Converts a string to the corresponding Guid.
         /// </summary>
-        /// <param name="source">字符串</param>
-        /// <returns></returns>
+        /// <param name="source">The string to convert.</param>
+        /// <returns>The converted Guid.</returns>
         public static Guid ToGuid(string source)
         {
             return new Guid(source);

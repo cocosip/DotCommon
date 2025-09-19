@@ -79,9 +79,9 @@ namespace DotCommon.Test.Reflecting
             };
 
             // Act
-            var user = ExpressionMapper.DictionaryToObject<User>(userDict);
-            var product = ExpressionMapper.DictionaryToObject<Product>(productDict);
-            var order = ExpressionMapper.DictionaryToObject<Order>(orderDict);
+            var user = ExpressionMapper.DictionaryToObject<User>(userDict)!;
+            var product = ExpressionMapper.DictionaryToObject<Product>(productDict)!;
+            var order = ExpressionMapper.DictionaryToObject<Order>(orderDict)!;
 
             // Assert
             Assert.Equal(1, user.Id);
@@ -149,12 +149,12 @@ namespace DotCommon.Test.Reflecting
 
             // Act - First conversion (should generate converter)
             var stopwatch1 = Stopwatch.StartNew();
-            var user1 = ExpressionMapper.DictionaryToObject<User>(userDict);
+            var user1 = ExpressionMapper.DictionaryToObject<User>(userDict)!;
             stopwatch1.Stop();
 
             // Act - Second conversion (should reuse cached converter)
             var stopwatch2 = Stopwatch.StartNew();
-            var user2 = ExpressionMapper.DictionaryToObject<User>(userDict);
+            var user2 = ExpressionMapper.DictionaryToObject<User>(userDict)!;
             stopwatch2.Stop();
 
             // Assert
@@ -177,14 +177,14 @@ namespace DotCommon.Test.Reflecting
             var originalOrder = new Order { Id = 1001, UserId = 1, ProductId = 100, Quantity = 2, OrderDate = DateTime.Now };
 
             // Act - Convert to dictionary and back
-            var userDict = ExpressionMapper.ObjectToDictionary(originalUser);
-            var convertedUser = ExpressionMapper.DictionaryToObject<User>(userDict);
+            var userDict = ExpressionMapper.ObjectToDictionary(originalUser)!;
+            var convertedUser = ExpressionMapper.DictionaryToObject<User>(userDict)!;
 
-            var productDict = ExpressionMapper.ObjectToDictionary(originalProduct);
-            var convertedProduct = ExpressionMapper.DictionaryToObject<Product>(productDict);
+            var productDict = ExpressionMapper.ObjectToDictionary(originalProduct)!;
+            var convertedProduct = ExpressionMapper.DictionaryToObject<Product>(productDict)!;
 
-            var orderDict = ExpressionMapper.ObjectToDictionary(originalOrder);
-            var convertedOrder = ExpressionMapper.DictionaryToObject<Order>(orderDict);
+            var orderDict = ExpressionMapper.ObjectToDictionary(originalOrder)!;
+            var convertedOrder = ExpressionMapper.DictionaryToObject<Order>(orderDict)!;
 
             // Assert
             Assert.Equal(originalUser.Id, convertedUser.Id);
@@ -219,12 +219,12 @@ namespace DotCommon.Test.Reflecting
 
             // Act - First batch (includes converter generation time)
             var stopwatch1 = Stopwatch.StartNew();
-            var firstBatch = testData.Take(500).Select(dict => ExpressionMapper.DictionaryToObject<User>(dict)).ToList();
+            var firstBatch = testData.Take(500).Select(dict => ExpressionMapper.DictionaryToObject<User>(dict)!).ToList();
             stopwatch1.Stop();
 
             // Act - Second batch (uses cached converter)
             var stopwatch2 = Stopwatch.StartNew();
-            var secondBatch = testData.Skip(500).Select(dict => ExpressionMapper.DictionaryToObject<User>(dict)).ToList();
+            var secondBatch = testData.Skip(500).Select(dict => ExpressionMapper.DictionaryToObject<User>(dict)!).ToList();
             stopwatch2.Stop();
 
             // Assert

@@ -6,17 +6,16 @@ using System.Text;
 namespace DotCommon.Utility
 {
     /// <summary>
-    /// 随机数工具类
+    /// Utility class for generating random numbers and strings.
     /// </summary>
     public static class RandomUtil
     {
-
         private static readonly char[] RandomArray =
         {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c',
             'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
             'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-            'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+            'V', 'W', 'X', 'Y', 'Z'
         };
 
         private static readonly Dictionary<RandomStringType, Tuple<int, int>> RandomRanges = new Dictionary
@@ -27,17 +26,15 @@ namespace DotCommon.Utility
             [RandomStringType.UpperLetter] = new Tuple<int, int>(36, 61),
             [RandomStringType.Fix] = new Tuple<int, int>(0, 61),
             [RandomStringType.NumberLower] = new Tuple<int, int>(0, 35),
-            [RandomStringType.NumberUpper] = new Tuple<int, int>(36, 71),
+            [RandomStringType.NumberUpper] = new Tuple<int, int>(36, 61),
             [RandomStringType.Letter] = new Tuple<int, int>(10, 61)
         };
 
-
-
         /// <summary>
-        /// 生成随机数的种子
+        /// Generates a random seed.
         /// </summary>
-        /// <param name="len">种子长度</param>
-        /// <returns></returns>
+        /// <param name="len">The length of the seed in bytes.</param>
+        /// <returns>A random integer seed.</returns>
         public static int GetRandomSeed(int len = 8)
         {
             var bytes = new byte[len];
@@ -49,93 +46,102 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// 生成一个指定范围的随机整数
+        /// Generates a random integer within a specified range.
         /// </summary>
-        /// <param name="minNum">最小值</param>
-        /// <param name="maxNum">最大值</param>
-        /// <returns></returns>
+        /// <param name="minNum">The minimum value (inclusive).</param>
+        /// <param name="maxNum">The maximum value (exclusive).</param>
+        /// <returns>A random integer between minNum and maxNum.</returns>
         public static int GetRandomInt(int minNum, int maxNum)
         {
             var rd = new Random(GetRandomSeed());
             return rd.Next(minNum, maxNum);
         }
 
-        /// <summary>对一个数组进行随机排序
+        /// <summary>
+        /// Randomly shuffles an array using the Fisher-Yates shuffle algorithm.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="arr">数组</param>
+        /// <typeparam name="T">The type of elements in the array.</typeparam>
+        /// <param name="arr">The array to shuffle.</param>
         public static void GetRandomArray<T>(T[] arr)
         {
-            //对数组进行随机排序的算法:随机选择两个位置，将两个位置上的值交换
-            //交换的次数,这里使用数组的长度作为交换次数
-            var changeCount = arr.Length / 2;
+            if (arr == null || arr.Length <= 1)
+                return;
+
             var rd = new Random(GetRandomSeed());
-            //开始交换
-            for (int i = 0; i < changeCount; i++)
+            // Fisher-Yates shuffle algorithm
+            for (int i = arr.Length - 1; i > 0; i--)
             {
-                //生成两个随机数位置
-                var randomNum1 = rd.Next(0, arr.Length);
-                var randomNum2 = rd.Next(0, arr.Length);
-                //交换两个随机数位置的值
-                var temp = arr[randomNum1];
-                arr[randomNum1] = arr[randomNum2];
-                arr[randomNum2] = temp;
+                // Generate a random index between 0 and i (inclusive)
+                var randomIndex = rd.Next(0, i + 1);
+                // Swap elements at positions i and randomIndex
+                var temp = arr[i];
+                arr[i] = arr[randomIndex];
+                arr[randomIndex] = temp;
             }
         }
 
         /// <summary>
-        /// 生成随机字符串
+        /// Generates a random string of specified length and type.
         /// </summary>
-        /// <param name="len">随机字符串长度</param>
-        /// <param name="randomStringType">随机类型</param>
-        /// <returns></returns>
+        /// <param name="len">The length of the random string.</param>
+        /// <param name="randomStringType">The type of characters to include in the random string.</param>
+        /// <returns>A random string of the specified length and type.</returns>
         public static string GetRandomStr(int len, RandomStringType randomStringType = RandomStringType.Number)
         {
+            if (len <= 0)
+                return string.Empty;
+
             var rd = new Random(GetRandomSeed());
-            var sb = new StringBuilder();
+            var sb = new StringBuilder(len);
             var range = RandomRanges[randomStringType];
+            
             for (var i = 0; i < len; i++)
             {
-                //生成随机的当前索引
-                var index = rd.Next(range.Item1, range.Item2);
+                // Generate a random index within the specified range
+                var index = rd.Next(range.Item1, range.Item2 + 1);
                 sb.Append(RandomArray[index]);
             }
             return sb.ToString();
         }
-
-
     }
 
     /// <summary>
-    /// 随机字符串类型
+    /// Enumeration of random string types.
     /// </summary>
     public enum RandomStringType
     {
-        /// <summary>仅数字
+        /// <summary>
+        /// Numeric characters only (0-9).
         /// </summary>
         Number = 1,
 
-        /// <summary>仅小写字母
+        /// <summary>
+        /// Lowercase letters only (a-z).
         /// </summary>
         LowerLetter = 2,
 
-        /// <summary>仅大写字母
+        /// <summary>
+        /// Uppercase letters only (A-Z).
         /// </summary>
         UpperLetter = 4,
 
-        /// <summary>混合
+        /// <summary>
+        /// Mixed characters (0-9, a-z, A-Z).
         /// </summary>
         Fix = 8,
 
-        /// <summary>数字小写字母
+        /// <summary>
+        /// Numeric and lowercase letters (0-9, a-z).
         /// </summary>
         NumberLower = 16,
 
-        /// <summary>数字大写字母
+        /// <summary>
+        /// Numeric and uppercase letters (0-9, A-Z).
         /// </summary>
         NumberUpper = 32,
 
-        /// <summary>纯字母
+        /// <summary>
+        /// Letters only (a-z, A-Z).
         /// </summary>
         Letter = 64
     }

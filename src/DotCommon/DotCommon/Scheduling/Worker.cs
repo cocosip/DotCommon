@@ -5,7 +5,7 @@ using System.Threading;
 namespace DotCommon.Scheduling
 {
     /// <summary>
-    /// 表示一个后台工作者，将重复执行特定方法
+    /// Represents a background worker that repeatedly executes a specific method.
     /// </summary>
     public class Worker
     {
@@ -15,17 +15,17 @@ namespace DotCommon.Scheduling
         private Status _status;
 
         /// <summary>
-        /// 获取当前工作者的操作名称
+        /// Gets the name of the current worker's operation.
         /// </summary>
         public string ActionName { get; }
 
         /// <summary>
-        /// 使用指定操作初始化一个新的工作者
+        /// Initializes a new worker with the specified operation.
         /// </summary>
-        /// <param name="logger">日志记录器</param>
-        /// <param name="actionName">操作名称</param>
-        /// <param name="action">要执行的操作</param>
-        /// <exception cref="ArgumentNullException">当logger、actionName或action为null时抛出</exception>
+        /// <param name="logger">The logger.</param>
+        /// <param name="actionName">The name of the action.</param>
+        /// <param name="action">The action to execute.</param>
+        /// <exception cref="ArgumentNullException">Thrown when logger, actionName, or action is null.</exception>
         public Worker(ILogger<Worker> logger, string actionName, Action action)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -35,9 +35,9 @@ namespace DotCommon.Scheduling
         }
 
         /// <summary>
-        /// 如果工作者未运行则启动它
+        /// Starts the worker if it is not already running.
         /// </summary>
-        /// <returns>当前工作者实例</returns>
+        /// <returns>The current worker instance.</returns>
         public Worker Start()
         {
             lock (_lockObject)
@@ -64,9 +64,9 @@ namespace DotCommon.Scheduling
         }
 
         /// <summary>
-        /// 请求停止工作者
+        /// Requests the worker to stop.
         /// </summary>
-        /// <returns>当前工作者实例</returns>
+        /// <returns>The current worker instance.</returns>
         public Worker Stop()
         {
             lock (_lockObject)
@@ -84,7 +84,7 @@ namespace DotCommon.Scheduling
         }
 
         /// <summary>
-        /// 工作者的主循环
+        /// The main loop of the worker.
         /// </summary>
         private void Loop()
         {
@@ -121,22 +121,22 @@ namespace DotCommon.Scheduling
         }
 
         /// <summary>
-        /// 工作者状态枚举
+        /// Enum representing the worker status.
         /// </summary>
         private enum Status
         {
             /// <summary>
-            /// 初始状态
+            /// Initial state.
             /// </summary>
             Initial,
 
             /// <summary>
-            /// 运行中
+            /// Running state.
             /// </summary>
             Running,
 
             /// <summary>
-            /// 已请求停止
+            /// Stop requested state.
             /// </summary>
             StopRequested
         }
