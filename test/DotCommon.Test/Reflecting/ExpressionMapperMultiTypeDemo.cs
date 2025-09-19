@@ -187,6 +187,7 @@ namespace DotCommon.Test.Reflecting
             var convertedOrder = ExpressionMapper.DictionaryToObject<Order>(orderDict)!;
 
             // Assert
+            
             Assert.Equal(originalUser.Id, convertedUser.Id);
             Assert.Equal(originalUser.Name, convertedUser.Name);
             Assert.Equal(originalUser.Email, convertedUser.Email);
