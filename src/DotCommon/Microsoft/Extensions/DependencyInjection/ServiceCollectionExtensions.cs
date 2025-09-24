@@ -13,16 +13,16 @@ using Microsoft.Extensions.Options;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// 依赖注入扩展类
+    /// Service collection extensions for dependency injection
     /// </summary>
     public static class ServiceCollectionExtensions
     {
         /// <summary>
-        /// 注册DotCommon
+        /// Registers DotCommon services
         /// </summary>
         public static IServiceCollection AddDotCommon(this IServiceCollection services)
         {
-            //json序列化
+            // JSON serialization
             services
                 .AddDotCommonSchedule()
                 .AddDotCommonSerialization()
@@ -34,10 +34,10 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Add Schedule
+        /// Adds scheduling services
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
+        /// <param name="services">The service collection</param>
+        /// <returns>The service collection for chaining</returns>
         public static IServiceCollection AddDotCommonSchedule(this IServiceCollection services)
         {
             services.AddSingleton<IScheduleService, ScheduleService>();
@@ -45,10 +45,10 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Add Serialization
+        /// Adds serialization services
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
+        /// <param name="services">The service collection</param>
+        /// <returns>The service collection for chaining</returns>
         public static IServiceCollection AddDotCommonSerialization(this IServiceCollection services)
         {
             services.AddTransient<IObjectSerializer, DefaultObjectSerializer>();
@@ -56,10 +56,10 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Add ObjectMapper
+        /// Adds object mapping services
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
+        /// <param name="services">The service collection</param>
+        /// <returns>The service collection for chaining</returns>
         public static IServiceCollection AddDotCommonObjectMapper(this IServiceCollection services)
         {
             services
@@ -70,10 +70,10 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Add Threading
+        /// Adds threading services
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
+        /// <param name="services">The service collection</param>
+        /// <returns>The service collection for chaining</returns>
         public static IServiceCollection AddDotCommonThreading(this IServiceCollection services)
         {
             services
@@ -84,10 +84,10 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Add Timing
+        /// Adds timing services
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
+        /// <param name="services">The service collection</param>
+        /// <returns>The service collection for chaining</returns>
         public static IServiceCollection AddDotCommonTiming(this IServiceCollection services)
         {
             services
@@ -99,10 +99,10 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Add System.Text.Json
+        /// Adds System.Text.Json services with custom converters and configurations
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
+        /// <param name="services">The service collection</param>
+        /// <returns>The service collection for chaining</returns>
         public static IServiceCollection AddDotCommonSystemTextJson(this IServiceCollection services)
         {
             services

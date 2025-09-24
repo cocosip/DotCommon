@@ -7,37 +7,37 @@ using System.Threading.Tasks;
 namespace DotCommon.Scheduling
 {
     /// <summary>
-    /// 限制并发级别的任务调度器
-    /// 该调度器确保同时运行的任务数量不超过指定的最大并发级别
+    /// A task scheduler that limits the number of concurrent tasks
+    /// This scheduler ensures that the number of simultaneously running tasks does not exceed the specified maximum concurrency level
     /// </summary>
     public class LimitedConcurrencyLevelTaskScheduler : TaskScheduler
     {
         /// <summary>
-        /// 标识当前线程是否正在处理工作项
+        /// Indicates whether the current thread is processing work items
         /// </summary>
         [ThreadStatic]
         private static bool _currentThreadIsProcessingItems;
 
         /// <summary>
-        /// 待执行的任务队列
+        /// The queue of tasks to be executed
         /// </summary>
         private readonly LinkedList<Task> _tasks = new LinkedList<Task>();
 
         /// <summary>
-        /// 此调度器允许的最大并发级别
+        /// The maximum concurrency level allowed by this scheduler
         /// </summary>
         private readonly int _maxDegreeOfParallelism;
 
         /// <summary>
-        /// 当前已排队或正在运行的委托数
+        /// The number of delegates currently queued or running
         /// </summary>
         private int _delegatesQueuedOrRunning;
 
         /// <summary>
-        /// 初始化具有指定并发级别的LimitedConcurrencyLevelTaskScheduler实例
+        /// Initializes a new instance of the LimitedConcurrencyLevelTaskScheduler class with the specified concurrency level
         /// </summary>
-        /// <param name="maxDegreeOfParallelism">此调度器提供的最大并发级别</param>
-        /// <exception cref="ArgumentOutOfRangeException">当maxDegreeOfParallelism小于1时抛出</exception>
+        /// <param name="maxDegreeOfParallelism">The maximum concurrency level provided by this scheduler</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when maxDegreeOfParallelism is less than 1</exception>
         public LimitedConcurrencyLevelTaskScheduler(int maxDegreeOfParallelism)
         {
             if (maxDegreeOfParallelism < 1)
@@ -51,13 +51,13 @@ namespace DotCommon.Scheduling
         }
 
         /// <summary>
-        /// 将任务添加到调度器队列中
+        /// Queues a task to the scheduler
         /// </summary>
-        /// <param name="task">要排队的任务</param>
+        /// <param name="task">The task to be queued</param>
         protected sealed override void QueueTask(Task task)
         {
-            // 将任务添加到待处理队列中
-            // 如果当前运行或排队的委托数未达到最大并发级别，则调度新的工作线程
+            // Add the task to the pending queue
+            // If the number of currently running or queued delegates has not reached the maximum concurrency level, schedule a new worker thread
             lock (_tasks)
             {
                 _tasks.AddLast(task);
@@ -71,76 +71,76 @@ namespace DotCommon.Scheduling
         }
 
         /// <summary>
-        /// 通知线程池有待处理的工作
+        /// Notifies the thread pool of pending work
         /// </summary>
         private void NotifyThreadPoolOfPendingWork()
         {
             ThreadPool.UnsafeQueueUserWorkItem(_ =>
             {
-                // 标记当前线程正在处理工作项，这使得任务可以内联到此线程执行
+                // Mark that the current thread is processing work items, which allows tasks to be inlined to this thread for execution
                 _currentThreadIsProcessingItems = true;
 
                 try
                 {
-                    // 处理队列中的所有可用项
+                    // Process all available items in the queue
                     while (true)
                     {
                         Task item;
                         lock (_tasks)
                         {
-                            // 当没有更多项需要处理时，减少运行计数并退出
+                            // When there are no more items to process, decrease the running count and exit
                             if (_tasks.Count == 0)
                             {
                                 --_delegatesQueuedOrRunning;
                                 break;
                             }
 
-                            // 从队列中获取下一项
+                            // Get the next item from the queue
                             item = _tasks.First.Value;
                             _tasks.RemoveFirst();
                         }
 
-                        // 执行从队列中取出的任务
+                        // Execute the task retrieved from the queue
                         TryExecuteTask(item);
                     }
                 }
                 finally
                 {
-                    // 完成当前线程的工作项处理
+                    // Complete work item processing for the current thread
                     _currentThreadIsProcessingItems = false;
                 }
             }, null);
         }
 
         /// <summary>
-        /// 尝试在当前线程上执行指定任务
+        /// Attempts to execute the specified task on the current thread
         /// </summary>
-        /// <param name="task">要执行的任务</param>
-        /// <param name="taskWasPreviouslyQueued">任务是否之前已排队</param>
-        /// <returns>任务是否可以在当前线程上执行</returns>
+        /// <param name="task">The task to execute</param>
+        /// <param name="taskWasPreviouslyQueued">Whether the task was previously queued</param>
+        /// <returns>Whether the task can be executed on the current thread</returns>
         protected sealed override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
         {
-            // 如果当前线程未在处理工作项，则不支持内联执行
+            // If the current thread is not processing work items, inline execution is not supported
             if (!_currentThreadIsProcessingItems)
             {
                 return false;
             }
 
-            // 如果任务之前已排队，则从队列中移除
+            // If the task was previously queued, remove it from the queue
             if (taskWasPreviouslyQueued)
             {
                 TryDequeue(task);
             }
 
-            // 尝试执行任务
+            // Attempt to execute the task
             return TryExecuteTask(task);
         }
 
         /// <summary>
-        /// 尝试从调度器中移除先前计划的任务
+        /// Attempts to remove a previously scheduled task from the scheduler
         /// </summary>
-        /// <param name="task">要移除的任务</param>
-        /// <returns>任务是否被找到并移除</returns>
+        /// <param name="task">The task to remove</param>
+        /// <returns>Whether the task was found and removed</returns>
         protected sealed override bool TryDequeue(Task task)
         {
             lock (_tasks)
@@ -150,14 +150,14 @@ namespace DotCommon.Scheduling
         }
 
         /// <summary>
-        /// 获取此调度器支持的最大并发级别
+        /// Gets the maximum concurrency level supported by this scheduler
         /// </summary>
         public sealed override int MaximumConcurrencyLevel => _maxDegreeOfParallelism;
 
         /// <summary>
-        /// 获取当前在此调度器上计划的任务枚举
+        /// Gets an enumerable of the tasks currently scheduled on this scheduler
         /// </summary>
-        /// <returns>当前计划的任务枚举</returns>
+        /// <returns>An enumerable of the currently scheduled tasks</returns>
         protected sealed override IEnumerable<Task> GetScheduledTasks()
         {
             bool lockTaken = false;
