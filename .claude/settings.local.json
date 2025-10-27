@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet test:*)",
+      "Bash(for i in {1..5})",
+      "Bash(do echo \"Run #$i\")",
+      "Bash(done)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

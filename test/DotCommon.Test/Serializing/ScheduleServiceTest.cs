@@ -90,11 +90,12 @@ namespace DotCommon.Test.Serializing
 
             scheduleService.StartTask("testTask", () => {
                 Interlocked.Increment(ref callCount);
-                taskExecuted.SetResult(true);
-            }, 10, 0); // Execute once after 10ms
+                // Use TrySetResult to avoid exception if called multiple times
+                taskExecuted.TrySetResult(true);
+            }, 50, int.MaxValue); // Execute once after 50ms, then use very large period to effectively disable
 
-            // Wait for task to execute or timeout after 100ms
-            using var cts = new CancellationTokenSource(100);
+            // Wait for task to execute or timeout after 500ms (increased for CI environments)
+            using var cts = new CancellationTokenSource(500);
             try
             {
                 await taskExecuted.Task.WaitAsync(cts.Token);
@@ -104,10 +105,12 @@ namespace DotCommon.Test.Serializing
                 // Timeout - task didn't execute
             }
 
+            // Give a small delay before stopping to ensure callback completes
+            await Task.Delay(50);
             scheduleService.StopTask("testTask");
 
-            // Verify task executed
-            Assert.True(callCount > 0);
+            // Verify task executed at least once
+            Assert.True(callCount > 0, $"Task should have executed at least once, but callCount was {callCount}");
         }
 
         [Fact]
