@@ -5,11 +5,13 @@ on:
       - master
       - dev
       - develop
+      - net10
   push:
     branches: 
       - master
       - dev
       - develop
+      - net10
 jobs:
   build-test:
     runs-on: windows-latest
