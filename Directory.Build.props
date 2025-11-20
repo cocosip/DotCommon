@@ -5,10 +5,10 @@
 		<ProjectFrameworks>netstandard2.0;netstandard2.1;$(NetCoreFx)</ProjectFrameworks>
 
 		<!--Net Core Framework-->
-		<NetCoreFx>net9.0</NetCoreFx>
+		<NetCoreFx>net10.0</NetCoreFx>
 
 		<!--Microsoft-->
-		<MicrosoftPackageVersion>[9.0.10,)</MicrosoftPackageVersion>
+		<MicrosoftPackageVersion>[10.0.0,)</MicrosoftPackageVersion>
 
 	</PropertyGroup>
 </Project>
