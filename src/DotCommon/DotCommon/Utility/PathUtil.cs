@@ -80,26 +80,47 @@ namespace DotCommon.Utility
 
         /// <summary>
         /// Navigates up the directory tree from a given path by a specified number of layers.
+        /// Supports both Windows-style (C:\path\to\file) and Unix-style (/path/to/file) paths on any platform.
         /// </summary>
         /// <param name="path">The starting path (can be relative or absolute).</param>
         /// <param name="layerCount">The number of layers to go up.</param>
         /// <returns>The ancestor directory path.</returns>
         public static string GetAncestorDirectory(string path, int layerCount = 1)
         {
-            // Return non-absolute paths as-is (for backward compatibility with tests)
-            if (!Path.IsPathRooted(path))
+            if (string.IsNullOrWhiteSpace(path))
             {
                 return path;
             }
 
-            // Get the directory separator for the current platform
-            var separator = Path.DirectorySeparatorChar;
-            
-            // Get the root of the path
-            var rootPath = Path.GetPathRoot(path);
-            
-            // Split the path and filter out empty entries and drive letters (Windows)
-            var pathSegments = path.Split(separator)
+            // Detect path style: Windows (contains : like C:) or Unix (starts with /)
+            bool isWindowsPath = path.Length >= 2 && path[1] == ':' && char.IsLetter(path[0]);
+            bool isUnixPath = path.StartsWith("/");
+
+            // Return non-absolute paths as-is (for backward compatibility)
+            if (!isWindowsPath && !isUnixPath)
+            {
+                return path;
+            }
+
+            // Determine the separator used in this path
+            char pathSeparator;
+            string rootPath;
+
+            if (isWindowsPath)
+            {
+                // Windows path: extract drive letter (e.g., "C:")
+                pathSeparator = '\\';
+                rootPath = path.Substring(0, 2); // "C:", "D:", etc.
+            }
+            else
+            {
+                // Unix path: root is "/"
+                pathSeparator = '/';
+                rootPath = "/";
+            }
+
+            // Split by both separators to handle mixed paths (e.g., "C:/path/to/file")
+            var pathSegments = path.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries)
                 .Where(segment => !string.IsNullOrWhiteSpace(segment) && !segment.Contains(":"))
                 .ToList();
 
@@ -111,11 +132,18 @@ namespace DotCommon.Utility
 
             // Remove the specified number of segments from the end
             pathSegments.RemoveRange(pathSegments.Count - layerCount, layerCount);
-            
-            // Insert the root at the beginning
-            pathSegments.Insert(0, rootPath.TrimEnd(separator));
-            
-            return Path.Combine(pathSegments.ToArray());
+
+            // Rebuild the path maintaining the original style
+            if (isWindowsPath)
+            {
+                // Windows: "C:\path\to"
+                return rootPath + pathSeparator + string.Join(pathSeparator.ToString(), pathSegments);
+            }
+            else
+            {
+                // Unix: "/path/to"
+                return rootPath + string.Join(pathSeparator.ToString(), pathSegments);
+            }
         }
 
         /// <summary>
