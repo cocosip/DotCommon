@@ -33,7 +33,7 @@
     <PackageVersion Include="System.Text.Encodings.Web" Version="$(MicrosoftPackageVersion)" />
     <PackageVersion Include="System.Text.Encoding.CodePages" Version="$(MicrosoftPackageVersion)" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageVersion Include="AutoMapper" Version="15.1.0" />
+    <PackageVersion Include="AutoMapper" Version="16.0.0" />
     <PackageVersion Include="Nito.AsyncEx" Version="5.1.2" />
     <PackageVersion Include="Nito.AsyncEx.Context" Version="5.1.2" />
     <PackageVersion Include="TimeZoneConverter" Version="7.2.0" />
