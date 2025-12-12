@@ -93,9 +93,12 @@ namespace DotCommon.Test.Utility
         [Fact]
         public void GetAbsolutePath_Test()
         {
-            var path = PathUtil.GetAbsolutePath(@"\App\User");
-            // Using Path.DirectorySeparatorChar to make the test cross-platform
+            // Use the platform-specific directory separator for the test path
             var separator = Path.DirectorySeparatorChar;
+            var testPath = $"{separator}App{separator}User";
+            var path = PathUtil.GetAbsolutePath(testPath);
+
+            // Create pattern using escaped separator
             var separatorStr = separator == '\\' ? "\\\\" : separator.ToString();
             var pattern = $@".*{separatorStr}App{separatorStr}User$";
             var match = Regex.IsMatch(path, pattern);
