@@ -1,6 +1,7 @@
 using DotCommon.Utility;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -25,9 +26,40 @@ namespace DotCommon.Test.Utility
         [InlineData(@"D:\A\B\C", 1, @"D:\A\B")]
         [InlineData(@"D:\A\B\C\D", 3, @"D:\A")]
         [InlineData(@"D:", 1, @"D:")]
-        [InlineData(@"A\B\C", 2, @"A\B\C")]
-        public void GetAncestorDirectoryTest(string path, int layerCount, string expected)
+        public void GetAncestorDirectoryTest_Windows(string path, int layerCount, string expected)
         {
+            // Skip this test on non-Windows platforms
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
+            var actual = PathUtil.GetAncestorDirectory(path, layerCount);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(@"/home/user/documents/file.txt", 1, @"/home/user/documents")]
+        [InlineData(@"/var/log/app", 1, @"/var/log")]
+        [InlineData(@"/var/log/app/debug", 3, @"/")]
+        [InlineData(@"/", 1, @"/")]
+        public void GetAncestorDirectoryTest_Linux(string path, int layerCount, string expected)
+        {
+            // Skip this test on Windows
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
+            var actual = PathUtil.GetAncestorDirectory(path, layerCount);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(@"A\B\C", 2, @"A\B\C")]
+        public void GetAncestorDirectoryTest_NonRooted(string path, int layerCount, string expected)
+        {
+            // This test works on all platforms (non-rooted paths)
             var actual = PathUtil.GetAncestorDirectory(path, layerCount);
             Assert.Equal(expected, actual);
         }
