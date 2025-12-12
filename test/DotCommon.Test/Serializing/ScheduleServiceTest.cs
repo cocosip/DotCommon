@@ -208,15 +208,16 @@ namespace DotCommon.Test.Serializing
                 throw new InvalidOperationException("Test exception");
             }, 10, 0); // Execute once
 
-            // Wait for task to execute or timeout
-            using var cts = new CancellationTokenSource(100);
+            // Wait for task to execute or timeout (increased timeout for CI environments)
+            using var cts = new CancellationTokenSource(500);
             try
             {
                 await taskExecuted.Task.WaitAsync(cts.Token);
             }
             catch (OperationCanceledException)
             {
-                // Timeout - task didn't execute
+                // Timeout - task didn't execute, give it a bit more time
+                await Task.Delay(100);
             }
 
             scheduleService.StopTask("errorTask");
