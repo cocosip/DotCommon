@@ -111,8 +111,8 @@ jobs:
 
         echo "Generating release notes from $PREVIOUS_TAG to $CURRENT_TAG"
 
-        # Generate changelog
-        CHANGELOG=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h) by %an" --no-merges)
+        # Generate changelog and remove markdown special characters
+        CHANGELOG=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h) by %an" --no-merges | sed 's/```//g')
 
         # Count commits
         COMMIT_COUNT=$(git rev-list $PREVIOUS_TAG..HEAD --count)
