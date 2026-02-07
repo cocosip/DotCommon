@@ -5,11 +5,13 @@ on:
       - master
       - dev
       - develop
+      - Branch_v7.1.4
   push:
     branches: 
       - master
       - dev
       - develop
+      - Branch_v7.1.4
 jobs:
   build-test:
     runs-on: windows-latest
