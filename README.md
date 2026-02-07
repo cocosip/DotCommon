@@ -10,6 +10,7 @@
 | `DotCommon.AutoMapper` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AutoMapper.svg)](https://www.nuget.org/packages/DotCommon.AutoMapper) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AutoMapper.svg)|
 | `DotCommon.Caching` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Caching.svg)](https://www.nuget.org/packages/DotCommon.Caching) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Caching.svg)|
 | `DotCommon.Crypto` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Crypto.svg)](https://www.nuget.org/packages/DotCommon.Crypto) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Crypto.svg)|
+| `DotCommon.DistributedLocking` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.DistributedLocking.svg)](https://www.nuget.org/packages/DotCommon.DistributedLocking) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.DistributedLocking.svg)|
 | `DotCommon.AspNetCore.Mvc` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AspNetCore.Mvc.svg)](https://www.nuget.org/packages/DotCommon.AspNetCore.Mvc) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AspNetCore.Mvc.svg)|
 
 ## 项目简介
@@ -23,6 +24,7 @@ DotCommon 是一个 C# 工具类库，为 .NET 应用提供核心抽象和实用
 - **JSON 序列化** - 基于 System.Text.Json，支持自定义转换器和日期时间规范化
 - **对象映射** - 三级映射系统（类型特定映射器 → 通用映射器 → 自动映射提供者）
 - **多级缓存** - 支持分布式缓存和混合缓存（L1 内存 + L2 分布式）
+- **分布式锁** - 支持进程内锁和多种分布式后端（Redis、SQL Server、PostgreSQL、MySQL 等）
 - **后台调度** - 基于 TPL 的任务调度服务，支持限制并发级别
 - **时区支持** - 多时区抽象，支持时区转换和时间提供者
 - **加密工具** - 支持 MD5、RSA、AES、DES、SM2/SM3/SM4 等加密算法
@@ -97,6 +99,37 @@ dotnet add package DotCommon.Caching
 
 ```bash
 dotnet add package DotCommon.Crypto
+```
+
+### DotCommon.DistributedLocking
+分布式锁扩展包，基于 Medallion.Threading，支持多种后端（Redis、SQL Server、PostgreSQL、MySQL 等）。
+
+```bash
+dotnet add package DotCommon.DistributedLocking
+```
+
+**使用示例：**
+
+```csharp
+// 进程内锁（单实例应用）
+services.AddDotCommonDistributedLocking(options =>
+{
+    options.KeyPrefix = "MyApp:";
+});
+
+// Redis 分布式锁
+var redis = await ConnectionMultiplexer.ConnectAsync("localhost:6379");
+var lockProvider = new RedisDistributedSynchronizationProvider(redis.GetDatabase());
+services.AddDotCommonDistributedLocking(lockProvider);
+
+// 使用
+await using (var handle = await _lock.TryAcquireAsync("MyLock", TimeSpan.FromSeconds(5)))
+{
+    if (handle != null)
+    {
+        // 执行业务逻辑
+    }
+}
 ```
 
 ### DotCommon.AspNetCore.Mvc
