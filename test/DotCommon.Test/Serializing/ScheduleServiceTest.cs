@@ -189,11 +189,9 @@ namespace DotCommon.Test.Serializing
 
             // Wait for task to execute or timeout (increased to 500ms for CI environments)
             using var cts = new CancellationTokenSource(500);
-            bool taskCompleted = false;
             try
             {
                 await taskExecuted.Task.WaitAsync(cts.Token);
-                taskCompleted = true;
             }
             catch (OperationCanceledException)
             {
