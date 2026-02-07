@@ -594,7 +594,7 @@ namespace DotCommon.Encrypt
                 else
                 {
                     tlvBytes.Add(0x82);
-                    var lengthBytes = BitConverter.GetBytes((ushort)contentLength).Reverse();
+                    var lengthBytes = ((IEnumerable<byte>)BitConverter.GetBytes((ushort)contentLength)).Reverse().ToArray();
                     tlvBytes.AddRange(lengthBytes);
                 }
             }
