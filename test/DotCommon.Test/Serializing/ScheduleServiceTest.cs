@@ -66,37 +66,19 @@ namespace DotCommon.Test.Serializing
         }
 
         [Fact]
-        public async Task StartTask_DuplicateName_DoesNotAdd()
+        public void StartTask_DuplicateName_DoesNotAdd()
         {
             using var scheduleService = new ScheduleService(_mockLogger.Object);
             var callCount = 0;
-            var taskExecuted = new TaskCompletionSource<bool>();
 
-            scheduleService.StartTask("duplicate", () => {
-                Interlocked.Increment(ref callCount);
-                taskExecuted.TrySetResult(true);
-            }, 10, 10);
-            scheduleService.StartTask("duplicate", () => {
-                Interlocked.Add(ref callCount, 10);
-            }, 10, 10); // Should not be added
+            scheduleService.StartTask("duplicate", () => { callCount++; }, 10, 10);
+            scheduleService.StartTask("duplicate", () => { callCount += 10; }, 10, 10); // Should not be added
 
-            // Wait for task to execute or timeout after 500ms (increased for CI environments)
-            using var cts = new CancellationTokenSource(500);
-            try
-            {
-                await taskExecuted.Task.WaitAsync(cts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                // Timeout - task didn't execute
-            }
-
-            // Give a small delay before stopping to ensure callback completes
-            await Task.Delay(50);
+            Thread.Sleep(50);
             scheduleService.StopTask("duplicate");
 
-            // Only the first task should have executed (increments by 1, not by 10)
-            Assert.True(callCount > 0 && callCount % 10 != 0, $"Expected callCount > 0 and not divisible by 10, but got {callCount}");
+            // Only the first task should have executed
+            Assert.True(callCount > 0 && callCount % 10 != 0);
         }
 
         [Fact]
@@ -108,12 +90,11 @@ namespace DotCommon.Test.Serializing
 
             scheduleService.StartTask("testTask", () => {
                 Interlocked.Increment(ref callCount);
-                // Use TrySetResult to avoid exception if called multiple times
-                taskExecuted.TrySetResult(true);
-            }, 50, int.MaxValue); // Execute once after 50ms, then use very large period to effectively disable
+                taskExecuted.SetResult(true);
+            }, 10, 0); // Execute once after 10ms
 
-            // Wait for task to execute or timeout after 500ms (increased for CI environments)
-            using var cts = new CancellationTokenSource(500);
+            // Wait for task to execute or timeout after 100ms
+            using var cts = new CancellationTokenSource(100);
             try
             {
                 await taskExecuted.Task.WaitAsync(cts.Token);
@@ -123,12 +104,10 @@ namespace DotCommon.Test.Serializing
                 // Timeout - task didn't execute
             }
 
-            // Give a small delay before stopping to ensure callback completes
-            await Task.Delay(50);
             scheduleService.StopTask("testTask");
 
-            // Verify task executed at least once
-            Assert.True(callCount > 0, $"Task should have executed at least once, but callCount was {callCount}");
+            // Verify task executed
+            Assert.True(callCount > 0);
         }
 
         [Fact]
@@ -208,15 +187,18 @@ namespace DotCommon.Test.Serializing
                 throw new InvalidOperationException("Test exception");
             }, 10, 0); // Execute once
 
-            // Wait for task to execute or timeout (increased timeout for CI environments)
+            // Wait for task to execute or timeout (increased to 500ms for CI environments)
             using var cts = new CancellationTokenSource(500);
+            bool taskCompleted = false;
             try
             {
                 await taskExecuted.Task.WaitAsync(cts.Token);
+                taskCompleted = true;
             }
             catch (OperationCanceledException)
             {
-                // Timeout - task didn't execute, give it a bit more time
+                // Timeout - task didn't execute in time
+                // Give it a bit more time before stopping
                 await Task.Delay(100);
             }
 
