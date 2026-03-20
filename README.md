@@ -1,102 +1,202 @@
-# DotCommon使用说明
+# DotCommon
 
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu) [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/cocosip/DotCommon/blob/master/LICENSE) ![GitHub last commit](https://img.shields.io/github/last-commit/cocosip/DotCommon.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/cocosip/DotCommon.svg)
 
-[![build and publish](https://github.com/cocosip/DotCommon/actions/workflows/publish.yml/badge.svg)](https://github.com/cocosip/DotCommon/actions/workflows/publish.yml)
+[![CI/CD Pipeline](https://github.com/cocosip/DotCommon/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/cocosip/DotCommon/actions/workflows/ci-cd.yml)
 
 | Package  | Version | Downloads|
 | -------- | ------- | -------- |
 | `DotCommon` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.svg)](https://www.nuget.org/packages/DotCommon) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.svg)|
 | `DotCommon.AutoMapper` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AutoMapper.svg)](https://www.nuget.org/packages/DotCommon.AutoMapper) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AutoMapper.svg)|
 | `DotCommon.Caching` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Caching.svg)](https://www.nuget.org/packages/DotCommon.Caching) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Caching.svg)|
-| `DotCommon.Json4Net` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Json4Net.svg)](https://www.nuget.org/packages/DotCommon.Json4Net) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Json4Net.svg)|
-| `DotCommon.TextJson` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.TextJson.svg)](https://www.nuget.org/packages/DotCommon.TextJson) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.TextJson.svg)|
-| `DotCommon.Log4Net` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Log4Net.svg)](https://www.nuget.org/packages/DotCommon.Log4Net) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Log4Net.svg)|
-| `DotCommon.ProtoBuf` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ProtoBuf.svg)](https://www.nuget.org/packages/DotCommon.ProtoBuf) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ProtoBuf.svg)|
+| `DotCommon.Crypto` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Crypto.svg)](https://www.nuget.org/packages/DotCommon.Crypto) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Crypto.svg)|
+| `DotCommon.DistributedLocking` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.DistributedLocking.svg)](https://www.nuget.org/packages/DotCommon.DistributedLocking) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.DistributedLocking.svg)|
 | `DotCommon.AspNetCore.Mvc` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AspNetCore.Mvc.svg)](https://www.nuget.org/packages/DotCommon.AspNetCore.Mvc) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AspNetCore.Mvc.svg)|
-| `DotCommon.ImageUtility` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ImageUtility.svg)](https://www.nuget.org/packages/DotCommon.ImageUtility) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ImageUtility.svg)|
-| `DotCommon.ImageResizer.AspNetCore.Mvc` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.ImageResizer.AspNetCore.Mvc.svg)](https://www.nuget.org/packages/DotCommon.ImageResizer.AspNetCore.Mvc) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.ImageResizer.AspNetCore.Mvc.svg)|
 
-## DotCommon简介
+## 项目简介
 
-> DotCommon是一个 `C#` 开发的工具类库,封装了一些基本功能,能够使用该工具类库快速的进行开发项目。里面封装了很多基础的功能,如:`Json,Xml,Binary` 序列化, 依赖注入, 日志功能, 定时器, `MD5,Rsa,Base64,Aes,Des`加密解密, 拼音, 进制转换, 模拟请求, 路径转换 等功能。
+DotCommon 是一个 C# 工具类库，为 .NET 应用提供核心抽象和实用工具。它采用**可插拔的提供者模式**，支持序列化、对象映射、缓存和调度的可替换实现。
+
+### 主要特性
+
+- **高性能反射** - 使用 Expression Trees 编译为 IL，实现快速的对象与字典转换
+- **可插拔架构** - 基于接口的提供者模式，支持依赖注入
+- **JSON 序列化** - 基于 System.Text.Json，支持自定义转换器和日期时间规范化
+- **对象映射** - 三级映射系统（类型特定映射器 → 通用映射器 → 自动映射提供者）
+- **多级缓存** - 支持分布式缓存和混合缓存（L1 内存 + L2 分布式）
+- **分布式锁** - 支持进程内锁和多种分布式后端（Redis、SQL Server、PostgreSQL、MySQL 等）
+- **后台调度** - 基于 TPL 的任务调度服务，支持限制并发级别
+- **时区支持** - 多时区抽象，支持时区转换和时间提供者
+- **加密工具** - 支持 MD5、RSA、AES、DES、SM2/SM3/SM4 等加密算法
+
+### 目标框架
+
+- Core library: `netstandard2.0`, `netstandard2.1`
+- Extension packages: `net10.0`
 
 ## 安装
 
-> PM> `Install-Package DotCommon`
-
-## 初始化
-
-```c#
-services.AddLogging(c =>
-{
-     c.AddLog4Net(new Log4NetProviderOptions());
-})
-.AddCommonComponents()
-.AddGenericsMemoryCache()
-.AddProtoBuf()
-.AddJson4Net();
+```bash
+dotnet add package DotCommon
 ```
 
-## 扩展包
+## 快速开始
 
-- **Autofac依赖注入扩展包:** `DotCommon.Autofac`
-- **缓存扩展包** `DotCommon.Caching`
-- **AutoMapper自动映射扩展包** `DotCommon.AutoMapper`
-- **Json4Net序列化扩展包** `DotCommon.Json4Net`
-- **Log4Net日志扩展包** `DotCommon.Log4Net`
-- **ProtoBuf二进制序列化扩展包** `DotCommon.ProtoBuf`
-- **AspNetCore扩展** `DotCommon.AspNetCore.Mvc`
-- **ImageUtility图片扩展** `DotCommon.ImageUtility`
-- **ImageResizer图片缩放(Asp.Net Core)** `DotCommon.ImageResizer.AspNetCore.Mvc`
+### 基础配置
 
-### 扩展包使用说明
-
-- `缓存扩展`
-
-```c#
-IServiceCollection services = new ServiceCollection();
+```csharp
 services
-    .AddDotCommon()
-    .AddGenericsMemoryCache();
-var provider = services.BuildServiceProvider();
-//获取缓存管理器
-var personCache = provider.GetRequiredService<IDistributedCache<PersonCacheItem>>();
-//根据key值获取缓存
-var cacheItem = await personCache.GetAsync("key1");
-//设置缓存
-await personCache.SetAsync("key2", cacheItem);
+    .AddDotCommon()                           // 核心服务
+    .AddDotCommonSystemTextJsonSerializer()   // System.Text.Json 序列化
+    .AddDotCommonObjectMapper()               // 对象映射
+    .AddDotCommonSchedule();                  // 后台调度
 ```
 
-> 配置缓存是基于内存:
+### 使用 AutoMapper
 
-```c#
-services.AddGenericsMemoryCache();
+```csharp
+// 需要进行自动映射的程序集
+var assemblies = new List<Assembly> { typeof(Program).Assembly };
 
-```
-
-- `AutoMapper`对象映射扩展。`DotCommon.AutoMapper`扩展中定义了一些进行快速映射的属性,在类上面添加了这些自动映射属性,并且初始化后,就能直接进行映射使用。
-
-> 初始化自动映射:
-
-```c#
-//需要进行自动映射的程序集
-var assemblies=new List<Assembly>();
-
-IServiceCollection services = new ServiceCollection();
 services
     .AddDotCommon()
     .AddDotCommonAutoMapper()
     .AddAssemblyAutoMaps(assemblies.ToArray())
-    .AddAutoMapperConfigurator(c =>
-    {
-        //自定义的一些AutoMapper配置
-    })
     .BuildAutoMapper();
-var provider = services.BuildServiceProvider();
-
 ```
 
-## 数据库参数与字段说明
+### 使用缓存
 
-> 数据库参数与字段说明 [详见](/docs/database.md)
+```csharp
+services
+    .AddDotCommon()
+    .AddDotCommonCaching();
+
+// 使用缓存
+var personCache = provider.GetRequiredService<IDistributedCache<PersonCacheItem>>();
+var cacheItem = await personCache.GetAsync("key1");
+await personCache.SetAsync("key2", cacheItem);
+```
+
+## 扩展包
+
+### DotCommon.AutoMapper
+AutoMapper 集成扩展包，提供自动对象映射功能。
+
+```bash
+dotnet add package DotCommon.AutoMapper
+```
+
+### DotCommon.Caching
+多级缓存抽象，支持分布式缓存和混合缓存（L1 内存 + L2 分布式）。
+
+```bash
+dotnet add package DotCommon.Caching
+```
+
+### DotCommon.Crypto
+加密扩展包，提供额外的加密算法支持。
+
+```bash
+dotnet add package DotCommon.Crypto
+```
+
+### DotCommon.DistributedLocking
+分布式锁扩展包，基于 Medallion.Threading，支持多种后端（Redis、SQL Server、PostgreSQL、MySQL 等）。
+
+```bash
+dotnet add package DotCommon.DistributedLocking
+```
+
+**使用示例：**
+
+```csharp
+// 进程内锁（单实例应用）
+services.AddDotCommonDistributedLocking(options =>
+{
+    options.KeyPrefix = "MyApp:";
+});
+
+// Redis 分布式锁
+var redis = await ConnectionMultiplexer.ConnectAsync("localhost:6379");
+var lockProvider = new RedisDistributedSynchronizationProvider(redis.GetDatabase());
+services.AddDotCommonDistributedLocking(lockProvider);
+
+// 使用
+await using (var handle = await _lock.TryAcquireAsync("MyLock", TimeSpan.FromSeconds(5)))
+{
+    if (handle != null)
+    {
+        // 执行业务逻辑
+    }
+}
+```
+
+### DotCommon.AspNetCore.Mvc
+ASP.NET Core MVC 集成扩展。
+
+```bash
+dotnet add package DotCommon.AspNetCore.Mvc
+```
+
+## 构建和测试
+
+### 构建项目
+
+```bash
+# 克隆仓库
+git clone https://github.com/cocosip/DotCommon.git
+cd DotCommon
+
+# 恢复依赖
+dotnet restore DotCommon.sln
+
+# 构建（Release 模式）
+dotnet build DotCommon.sln -c Release
+```
+
+### 运行测试
+
+```bash
+dotnet test DotCommon.sln -c Release --verbosity normal
+```
+
+### 打包
+
+```bash
+dotnet pack DotCommon.sln -c Release --include-symbols -o dest/
+```
+
+## 核心架构
+
+### 对象映射架构
+
+对象映射系统有**三个优先级层次**（按顺序检查）：
+
+1. **类型特定映射器**: `IObjectMapper<TSource, TDestination>` - 最高优先级，用于自定义映射逻辑
+2. **通用映射器**: `IObjectMapper` - 处理集合并委托给自动映射器
+3. **自动映射提供者**: `IAutoObjectMappingProvider` - 可插拔（通过 `DotCommon.AutoMapper` 包集成 AutoMapper）
+
+### 高性能反射
+
+**ExpressionMapper** 使用 Expression Trees 编译为 IL，实现快速的对象与字典转换。使用并发字典缓存已编译的转换器。在处理对象到字典的场景时，这是首选的高性能方法。
+
+### 依赖注入设置
+
+服务注册遵循流式模式：
+
+```csharp
+services
+    .AddDotCommon()                    // 核心服务
+    .AddDotCommonSchedule()            // 调度
+    .AddDotCommonObjectMapper()        // 对象映射
+    .AddDotCommonSystemTextJsonSerializer(); // JSON
+```
+
+## 许可证
+
+本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request！

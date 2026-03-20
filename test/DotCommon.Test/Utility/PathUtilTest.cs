@@ -24,10 +24,48 @@ namespace DotCommon.Test.Utility
         [InlineData(@"C:\A\B.txt", 1, @"C:\A")]
         [InlineData(@"D:\A\B\C", 1, @"D:\A\B")]
         [InlineData(@"D:\A\B\C\D", 3, @"D:\A")]
-        [InlineData(@"D:", 1, @"D:")]
-        [InlineData(@"A\B\C", 2, @"A\B\C")]
-        public void GetAncestorDirectoryTest(string path, int layerCount, string expected)
+        [InlineData(@"D:\A", 1, @"D:")]
+        [InlineData(@"D:\", 1, @"D:")]
+        [InlineData(@"E:\Documents\Projects\Code", 2, @"E:\Documents")]
+        public void GetAncestorDirectoryTest_WindowsStyle(string path, int layerCount, string expected)
         {
+            // Tests Windows-style paths - should work on any platform now
+            var actual = PathUtil.GetAncestorDirectory(path, layerCount);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(@"/home/user/documents/file.txt", 1, @"/home/user/documents")]
+        [InlineData(@"/var/log/app", 1, @"/var/log")]
+        [InlineData(@"/var/log/app/debug", 3, @"/var")]
+        [InlineData(@"/var/log/app/debug/trace", 10, @"/")]
+        [InlineData(@"/home", 1, @"/")]
+        [InlineData(@"/", 1, @"/")]
+        [InlineData(@"/a/b/c", 2, @"/a")]
+        public void GetAncestorDirectoryTest_UnixStyle(string path, int layerCount, string expected)
+        {
+            // Tests Unix-style paths - should work on any platform now
+            var actual = PathUtil.GetAncestorDirectory(path, layerCount);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(@"C:/Users/Documents/file.txt", 1, @"C:\Users\Documents")]
+        [InlineData(@"D:/Projects/DotNet/App", 2, @"D:\Projects")]
+        public void GetAncestorDirectoryTest_MixedSeparators(string path, int layerCount, string expected)
+        {
+            // Tests paths with mixed separators (Windows path with forward slashes)
+            var actual = PathUtil.GetAncestorDirectory(path, layerCount);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(@"A\B\C", 2, @"A\B\C")]
+        [InlineData(@"relative/path", 1, @"relative/path")]
+        [InlineData(@"file.txt", 1, @"file.txt")]
+        public void GetAncestorDirectoryTest_NonRooted(string path, int layerCount, string expected)
+        {
+            // Non-rooted paths are returned as-is
             var actual = PathUtil.GetAncestorDirectory(path, layerCount);
             Assert.Equal(expected, actual);
         }
@@ -55,9 +93,12 @@ namespace DotCommon.Test.Utility
         [Fact]
         public void GetAbsolutePath_Test()
         {
-            var path = PathUtil.GetAbsolutePath(@"\App\User");
-            // Using Path.DirectorySeparatorChar to make the test cross-platform
+            // Use the platform-specific directory separator for the test path
             var separator = Path.DirectorySeparatorChar;
+            var testPath = $"{separator}App{separator}User";
+            var path = PathUtil.GetAbsolutePath(testPath);
+
+            // Create pattern using escaped separator
             var separatorStr = separator == '\\' ? "\\\\" : separator.ToString();
             var pattern = $@".*{separatorStr}App{separatorStr}User$";
             var match = Regex.IsMatch(path, pattern);

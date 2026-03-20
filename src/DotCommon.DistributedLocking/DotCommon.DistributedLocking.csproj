@@ -3,13 +3,13 @@
 	<Import Project="..\..\common.props" />
 
 	<PropertyGroup>
-	    <TargetFramework>$(NetCoreFx)</TargetFramework>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>Nullable</WarningsAsErrors>
-		<AssemblyName>DotCommon.AutoMapper</AssemblyName>
-		<PackageId>DotCommon.AutoMapper</PackageId>
+		<AssemblyName>DotCommon.DistributedLocking</AssemblyName>
+		<PackageId>DotCommon.DistributedLocking</PackageId>
 		<RootNamespace></RootNamespace>
-		<Description>DotCommon通用工具类库,基于AutoMapper的扩展</Description>
+		<Description>Distributed Locking Library for DotCommon</Description>
 		<AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
 		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
 		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
@@ -17,7 +17,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" />
+		<PackageReference Include="DistributedLock.Core" />
+		<PackageReference Include="Microsoft.Extensions.Options" />
 	</ItemGroup>
 
 	<ItemGroup>
