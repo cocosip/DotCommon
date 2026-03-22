@@ -27,7 +27,7 @@ namespace DotCommon.Test.AutoMapper
         [Fact]
         public void MapTest()
         {
-            var objectMapper = _provider.GetService<ObjectMapping.IObjectMapper>();
+            var objectMapper = _provider.GetService<IObjectMapper>();
 
             var testOrder = new TestOrder()
             {

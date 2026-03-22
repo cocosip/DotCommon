@@ -66,5 +66,34 @@ namespace DotCommon.Test.Serializing
             var result = worker.Stop();
             Assert.Same(worker, result);
         }
+
+        [Fact]
+        public void Worker_Stop_Twice_ShouldNotThrow()
+        {
+            var worker = new Worker(_mockLogger.Object, "test", () => { });
+            worker.Stop();
+            var result = worker.Stop();
+            Assert.Same(worker, result);
+        }
+
+        [Fact]
+        public void Worker_ActionThrowsException_ShouldContinue()
+        {
+            var callCount = 0;
+            var worker = new Worker(_mockLogger.Object, "test", () =>
+            {
+                Interlocked.Increment(ref callCount);
+                if (callCount == 1)
+                {
+                    throw new InvalidOperationException("Test exception");
+                }
+            });
+
+            worker.Start();
+            Thread.Sleep(50);
+            worker.Stop();
+
+            Assert.True(callCount > 1);
+        }
     }
 }

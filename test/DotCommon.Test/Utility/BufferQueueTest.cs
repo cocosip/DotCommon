@@ -1,27 +1,97 @@
-﻿using DotCommon.Utility;
-using System;
+using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
+using DotCommon.Utility;
 using Xunit;
 
 namespace DotCommon.Test.Utility
 {
     public class BufferQueueTest
     {
-        //[Fact]
-        //public void BufferQueue_Test()
-        //{
-        //    var r = 0;
-        //    var queue = new BufferQueue<int>("q1", 2, v =>
-        //    {
-        //        r = v;
-        //    });
-        //    queue.EnqueueMessage(1);
-        //    queue.EnqueueMessage(2);
-        //    queue.EnqueueMessage(3);
-        //    queue.EnqueueMessage(4);
-        //    queue.EnqueueMessage(5);
+        [Fact]
+        public void EnqueueMessage_ShouldHandleMessage()
+        {
+            var processedMessages = new ConcurrentBag<int>();
+            var queue = new BufferQueue<int>("TestQueue", 1, msg => processedMessages.Add(msg));
 
-        //    Assert.True(r > 0);
+            queue.EnqueueMessage(1);
 
-        //}
+            Thread.Sleep(200);
+
+            Assert.NotEmpty(processedMessages);
+        }
+
+        [Fact]
+        public void EnqueueMessage_MultipleMessages_ShouldHandleAll()
+        {
+            var processedMessages = new ConcurrentBag<int>();
+            var queue = new BufferQueue<int>("TestQueue", 1, msg => processedMessages.Add(msg));
+
+            for (var i = 0; i < 10; i++)
+            {
+                queue.EnqueueMessage(i);
+                Thread.Sleep(10);
+            }
+
+            Thread.Sleep(500);
+
+            Assert.True(processedMessages.Count >= 5);
+        }
+
+        [Fact]
+        public void EnqueueMessage_WithException_ShouldContinueProcessing()
+        {
+            var processedCount = 0;
+            var queue = new BufferQueue<int>("TestQueue", 1, msg =>
+            {
+                if (msg == 1) throw new System.Exception("Test exception");
+                processedCount++;
+            });
+
+            queue.EnqueueMessage(1);
+            Thread.Sleep(50);
+            queue.EnqueueMessage(2);
+            Thread.Sleep(50);
+            queue.EnqueueMessage(3);
+
+            Thread.Sleep(300);
+
+            Assert.True(processedCount >= 1);
+        }
+
+        [Fact]
+        public void EnqueueMessage_WithThreshold_ShouldTriggerProcessing()
+        {
+            var processedMessages = new ConcurrentBag<int>();
+            var queue = new BufferQueue<int>("TestQueue", 5, msg => processedMessages.Add(msg));
+
+            for (var i = 0; i < 10; i++)
+            {
+                queue.EnqueueMessage(i);
+            }
+
+            Thread.Sleep(500);
+
+            Assert.NotEmpty(processedMessages);
+        }
+
+        [Fact]
+        public async Task EnqueueMessage_Concurrent_ShouldHandleAll()
+        {
+            var processedMessages = new ConcurrentBag<int>();
+            var queue = new BufferQueue<int>("TestQueue", 1, msg => processedMessages.Add(msg));
+
+            var tasks = new Task[50];
+            for (var i = 0; i < 50; i++)
+            {
+                var value = i;
+                tasks[i] = Task.Run(() => queue.EnqueueMessage(value));
+            }
+
+            await Task.WhenAll(tasks);
+            await Task.Delay(1000);
+
+            Assert.True(processedMessages.Count >= 20);
+        }
     }
 }

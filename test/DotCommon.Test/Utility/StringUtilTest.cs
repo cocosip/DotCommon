@@ -77,5 +77,109 @@ namespace DotCommon.Test.Utility
         {
             Assert.Equal(expected, StringUtil.Anonymize(input, start, end));
         }
+
+        [Fact]
+        public void StripFontTags_ShouldRemoveFontTags()
+        {
+            var html = "<font size='2'>Text</font>";
+            Assert.Equal("", StringUtil.StripFontTags(html));
+        }
+
+        [Fact]
+        public void StripSpanTags_ShouldRemoveSpanTags()
+        {
+            var html = "<span class='test'>Content</span>";
+            Assert.Equal("", StringUtil.StripSpanTags(html));
+        }
+
+        [Fact]
+        public void StripTableTags_ShouldRemoveTableTags()
+        {
+            var html = "<table><tr><td>Cell</td></tr></table>";
+            Assert.Equal("", StringUtil.StripTableTags(html));
+        }
+
+        [Fact]
+        public void StripAllHtmlTags_ShouldRemoveAllTags()
+        {
+            var html = "<div><span>Text</span><a href='#'>Link</a></div>";
+            Assert.Equal("TextLink", StringUtil.StripAllHtmlTags(html));
+        }
+
+        [Fact]
+        public void StripImgTags_ShouldRemoveImgTags()
+        {
+            var html = "<img src='test.jpg' />Text";
+            Assert.Equal("Text", StringUtil.StripImgTags(html));
+        }
+
+        [Fact]
+        public void StripObjectTags_ShouldRemoveObjectTags()
+        {
+            var html = "<object data='test.swf'>Content</object>Text";
+            Assert.Equal("Text", StringUtil.StripObjectTags(html));
+        }
+
+        [Fact]
+        public void StripScriptTags_ShouldRemoveScriptTags()
+        {
+            var html = "<script>alert('xss')</script>Safe";
+            Assert.Equal("Safe", StringUtil.StripScriptTags(html));
+        }
+
+        [Fact]
+        public void StripIframeTags_ShouldRemoveIframeTags()
+        {
+            var html = "<iframe src='test.html'>Content</iframe>Text";
+            Assert.Equal("Text", StringUtil.StripIframeTags(html));
+        }
+
+        [Fact]
+        public void StripStyleTags_ShouldRemoveStyleTags()
+        {
+            var html = "<style>.class { color: red; }</style>Text";
+            Assert.Equal("Text", StringUtil.StripStyleTags(html));
+        }
+
+        [Fact]
+        public void StripHtmlByPattern_ShouldRemoveMatchingPattern()
+        {
+            var html = "<custom>Text</custom>";
+            Assert.Equal("", StringUtil.StripHtmlByPattern(html, "<custom[^>]*>.*?</custom>"));
+        }
+
+        [Fact]
+        public void SanitizeForUrl_ShouldRemoveSpecialChars()
+        {
+            var input = "Hello-World;Test<>《》";
+            Assert.Equal("HelloWorldTest", StringUtil.SanitizeForUrl(input));
+        }
+
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        public void StripMethods_WithNullOrEmpty_ShouldReturnInput(string input, string expected)
+        {
+            Assert.Equal(expected, StringUtil.StripATags(input));
+            Assert.Equal(expected, StringUtil.StripDivTags(input));
+            Assert.Equal(expected, StringUtil.StripFontTags(input));
+            Assert.Equal(expected, StringUtil.StripSpanTags(input));
+            Assert.Equal(expected, StringUtil.StripTableTags(input));
+            Assert.Equal(expected, StringUtil.StripAllHtmlTags(input));
+            Assert.Equal(expected, StringUtil.StripImgTags(input));
+            Assert.Equal(expected, StringUtil.StripObjectTags(input));
+            Assert.Equal(expected, StringUtil.StripScriptTags(input));
+            Assert.Equal(expected, StringUtil.StripIframeTags(input));
+            Assert.Equal(expected, StringUtil.StripStyleTags(input));
+            Assert.Equal(expected, StringUtil.SanitizeForUrl(input));
+            Assert.Equal(expected, StringUtil.SanitizeSql(input));
+            Assert.Equal(expected, StringUtil.EncodeForXml(input));
+        }
+
+        [Fact]
+        public void TrimEnd_WithNullSource_ShouldReturnNull()
+        {
+            Assert.Null(StringUtil.TrimEnd(null, "test"));
+        }
     }
 }

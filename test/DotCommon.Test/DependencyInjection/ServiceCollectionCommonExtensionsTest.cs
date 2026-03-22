@@ -44,7 +44,61 @@ namespace DotCommon.Test.DependencyInjection
             Assert.Equal("lisi", o2.Name);
         }
 
+        [Fact]
+        public void IsAdded_Generic_ShouldReturnTrue_WhenServiceAdded()
+        {
+            IServiceCollection services = new ServiceCollection();
+            services.AddSingleton<SingletonTestClass>();
 
+            Assert.True(services.IsAdded<SingletonTestClass>());
+        }
+
+        [Fact]
+        public void IsAdded_Generic_ShouldReturnFalse_WhenServiceNotAdded()
+        {
+            IServiceCollection services = new ServiceCollection();
+
+            Assert.False(services.IsAdded<SingletonTestClass>());
+        }
+
+        [Fact]
+        public void IsAdded_Type_ShouldReturnTrue_WhenServiceAdded()
+        {
+            IServiceCollection services = new ServiceCollection();
+            services.AddSingleton(typeof(SingletonTestClass));
+
+            Assert.True(services.IsAdded(typeof(SingletonTestClass)));
+        }
+
+        [Fact]
+        public void IsAdded_Type_ShouldReturnFalse_WhenServiceNotAdded()
+        {
+            IServiceCollection services = new ServiceCollection();
+
+            Assert.False(services.IsAdded(typeof(SingletonTestClass)));
+        }
+
+        [Fact]
+        public void BuildServiceProviderFromFactory_WithoutFactory_ShouldBuildDefaultProvider()
+        {
+            IServiceCollection services = new ServiceCollection();
+            services.AddSingleton<SingletonTestClass>();
+
+            var provider = services.BuildServiceProviderFromFactory();
+
+            Assert.NotNull(provider);
+            var service = provider.GetService<SingletonTestClass>();
+            Assert.NotNull(service);
+        }
+
+        [Fact]
+        public void BuildServiceProviderFromFactory_Generic_WithoutFactory_ShouldThrow()
+        {
+            IServiceCollection services = new ServiceCollection();
+
+            Assert.Throws<DotCommon.DotCommonException>(() =>
+                services.BuildServiceProviderFromFactory<TestContainerBuilder>());
+        }
     }
 
     public class SingletonTestClass
@@ -52,5 +106,10 @@ namespace DotCommon.Test.DependencyInjection
         public int Id { get; set; }
 
         public string Name { get; set; }
+    }
+
+    public class TestContainerBuilder
+    {
+        public bool Configured { get; set; }
     }
 }

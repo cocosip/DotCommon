@@ -635,6 +635,309 @@ namespace DotCommon.Test.Reflecting
             Assert.Throws<ArgumentNullException>(() => ReflectionUtil.IsPropertyGetterSetterMethod(method, nullType));
         }
 
+        /// <summary>
+        /// Tests that IsPropertyGetterSetterMethod returns false for method with short name.
+        /// </summary>
+        [Fact]
+        public void IsPropertyGetterSetterMethod_ShortMethodName_ReturnsFalse()
+        {
+            var type = typeof(SampleClass);
+            var method = type.GetMethod("get_TestProperty");
+
+            var result = ReflectionUtil.IsPropertyGetterSetterMethod(method, type);
+
+            Assert.False(result);
+        }
+
+        #endregion
+
+        #region Additional IsAssignableToGenericType Tests
+
+        /// <summary>
+        /// Tests that IsAssignableToGenericType returns true when type inherits from generic base class.
+        /// </summary>
+        [Fact]
+        public void IsAssignableToGenericType_InheritsFromGenericBase_ReturnsTrue()
+        {
+            var givenType = typeof(DerivedGenericClass);
+            var genericType = typeof(GenericClass<>);
+
+            var result = ReflectionUtil.IsAssignableToGenericType(givenType, genericType);
+
+            Assert.True(result);
+        }
+
+        public class DerivedGenericClass : GenericClass<string>
+        {
+        }
+
+        #endregion
+
+        #region Additional GetPropertyByPath Tests
+
+        /// <summary>
+        /// Tests that GetPropertyByPath handles full type name in path.
+        /// </summary>
+        [Fact]
+        public void GetPropertyByPath_WithFullTypeNamePath_ReturnsProperty()
+        {
+            var obj = new SampleClass { Name = "Test" };
+            var objectType = typeof(SampleClass);
+            var propertyPath = $"{typeof(SampleClass).FullName}.Name";
+
+            var property = ReflectionUtil.GetPropertyByPath(obj, objectType, propertyPath);
+
+            Assert.NotNull(property);
+            Assert.Equal("Name", property.Name);
+        }
+
+        /// <summary>
+        /// Tests that GetPropertyByPath throws ArgumentNullException when objectType is null.
+        /// </summary>
+        [Fact]
+        public void GetPropertyByPath_ObjectTypeIsNull_ThrowsArgumentNullException()
+        {
+            object obj = new SampleClass();
+            Type objectType = null;
+            var propertyPath = "Name";
+
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetPropertyByPath(obj, objectType, propertyPath));
+        }
+
+        /// <summary>
+        /// Tests that GetPropertyByPath throws ArgumentNullException when propertyPath is null.
+        /// </summary>
+        [Fact]
+        public void GetPropertyByPath_PropertyPathIsNull_ThrowsArgumentNullException()
+        {
+            object obj = new SampleClass();
+            var objectType = typeof(SampleClass);
+            string propertyPath = null;
+
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetPropertyByPath(obj, objectType, propertyPath));
+        }
+
+        #endregion
+
+        #region Additional GetValueByPath Tests
+
+        /// <summary>
+        /// Tests that GetValueByPath handles full type name in path.
+        /// </summary>
+        [Fact]
+        public void GetValueByPath_WithFullTypeNamePath_ReturnsValue()
+        {
+            var obj = new SampleClass { Name = "TestValue" };
+            var objectType = typeof(SampleClass);
+            var propertyPath = $"{typeof(SampleClass).FullName}.Name";
+
+            var value = ReflectionUtil.GetValueByPath(obj, objectType, propertyPath);
+
+            Assert.Equal("TestValue", value);
+        }
+
+        /// <summary>
+        /// Tests that GetValueByPath throws ArgumentNullException when obj is null.
+        /// </summary>
+        [Fact]
+        public void GetValueByPath_ObjIsNull_ThrowsArgumentNullException()
+        {
+            object obj = null;
+            var objectType = typeof(SampleClass);
+            var propertyPath = "Name";
+
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetValueByPath(obj, objectType, propertyPath));
+        }
+
+        /// <summary>
+        /// Tests that GetValueByPath throws ArgumentNullException when objectType is null.
+        /// </summary>
+        [Fact]
+        public void GetValueByPath_ObjectTypeIsNull_ThrowsArgumentNullException()
+        {
+            object obj = new SampleClass();
+            Type objectType = null;
+            var propertyPath = "Name";
+
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetValueByPath(obj, objectType, propertyPath));
+        }
+
+        /// <summary>
+        /// Tests that GetValueByPath throws ArgumentNullException when propertyPath is null.
+        /// </summary>
+        [Fact]
+        public void GetValueByPath_PropertyPathIsNull_ThrowsArgumentNullException()
+        {
+            object obj = new SampleClass();
+            var objectType = typeof(SampleClass);
+            string propertyPath = null;
+
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetValueByPath(obj, objectType, propertyPath));
+        }
+
+        /// <summary>
+        /// Tests that GetValueByPath throws ArgumentException for invalid nested property path.
+        /// </summary>
+        [Fact]
+        public void GetValueByPath_InvalidNestedPath_ThrowsArgumentException()
+        {
+            var obj = new SampleClass { Nested = new SampleNestedClass() };
+            var objectType = typeof(SampleClass);
+            var propertyPath = "Nested.InvalidProperty";
+
+            Assert.Throws<ArgumentException>(() => ReflectionUtil.GetValueByPath(obj, objectType, propertyPath));
+        }
+
+        #endregion
+
+        #region Additional SetValueByPath Tests
+
+        /// <summary>
+        /// Tests that SetValueByPath handles full type name in path.
+        /// </summary>
+        [Fact]
+        public void SetValueByPath_WithFullTypeNamePath_SetsValue()
+        {
+            var obj = new SampleClass();
+            var objectType = typeof(SampleClass);
+            var propertyPath = $"{typeof(SampleClass).FullName}.Name";
+            var value = "NewValue";
+
+            ReflectionUtil.SetValueByPath(obj, objectType, propertyPath, value);
+
+            Assert.Equal("NewValue", obj.Name);
+        }
+
+        /// <summary>
+        /// Tests that SetValueByPath throws ArgumentNullException when obj is null.
+        /// </summary>
+        [Fact]
+        public void SetValueByPath_ObjIsNull_ThrowsArgumentNullException()
+        {
+            object obj = null;
+            var objectType = typeof(SampleClass);
+            var propertyPath = "Name";
+            var value = "NewValue";
+
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.SetValueByPath(obj, objectType, propertyPath, value));
+        }
+
+        /// <summary>
+        /// Tests that SetValueByPath throws ArgumentNullException when objectType is null.
+        /// </summary>
+        [Fact]
+        public void SetValueByPath_ObjectTypeIsNull_ThrowsArgumentNullException()
+        {
+            object obj = new SampleClass();
+            Type objectType = null;
+            var propertyPath = "Name";
+            var value = "NewValue";
+
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.SetValueByPath(obj, objectType, propertyPath, value));
+        }
+
+        /// <summary>
+        /// Tests that SetValueByPath throws ArgumentNullException when propertyPath is null.
+        /// </summary>
+        [Fact]
+        public void SetValueByPath_PropertyPathIsNull_ThrowsArgumentNullException()
+        {
+            object obj = new SampleClass();
+            var objectType = typeof(SampleClass);
+            string propertyPath = null;
+            var value = "NewValue";
+
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.SetValueByPath(obj, objectType, propertyPath, value));
+        }
+
+        /// <summary>
+        /// Tests that SetValueByPath throws ArgumentException for invalid nested property path.
+        /// </summary>
+        [Fact]
+        public void SetValueByPath_InvalidNestedPath_ThrowsArgumentException()
+        {
+            var obj = new SampleClass { Nested = new SampleNestedClass() };
+            var objectType = typeof(SampleClass);
+            var propertyPath = "Nested.InvalidProperty";
+            var value = "SomeValue";
+
+            Assert.Throws<ArgumentException>(() => ReflectionUtil.SetValueByPath(obj, objectType, propertyPath, value));
+        }
+
+        #endregion
+
+        #region GetAttributesOfMemberAndDeclaringType<TAttribute> Tests
+
+        /// <summary>
+        /// Tests that GetAttributesOfMemberAndDeclaringType generic returns typed attributes.
+        /// </summary>
+        [Fact]
+        public void GetAttributesOfMemberAndDeclaringType_Generic_ReturnsTypedAttributes()
+        {
+            var memberInfo = typeof(SampleClass).GetProperty("Name");
+
+            var attributes = ReflectionUtil.GetAttributesOfMemberAndDeclaringType<SampleAttribute>(memberInfo);
+
+            Assert.NotEmpty(attributes);
+            Assert.Contains(attributes, attr => attr.Value == "PropertyAttribute");
+            Assert.Contains(attributes, attr => attr.Value == "ClassAttribute");
+        }
+
+        /// <summary>
+        /// Tests that GetAttributesOfMemberAndDeclaringType generic throws ArgumentNullException when memberInfo is null.
+        /// </summary>
+        [Fact]
+        public void GetAttributesOfMemberAndDeclaringType_Generic_MemberInfoIsNull_ThrowsArgumentNullException()
+        {
+            MemberInfo memberInfo = null;
+
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetAttributesOfMemberAndDeclaringType<SampleAttribute>(memberInfo));
+        }
+
+        #endregion
+
+        #region GetAttributesOfMemberAndType<TAttribute> Tests
+
+        /// <summary>
+        /// Tests that GetAttributesOfMemberAndType generic returns typed attributes.
+        /// </summary>
+        [Fact]
+        public void GetAttributesOfMemberAndType_Generic_ReturnsTypedAttributes()
+        {
+            var memberInfo = typeof(SampleClass).GetProperty("Name");
+            var type = typeof(SampleClass);
+
+            var attributes = ReflectionUtil.GetAttributesOfMemberAndType<SampleAttribute>(memberInfo, type);
+
+            Assert.NotEmpty(attributes);
+            Assert.Contains(attributes, attr => attr.Value == "PropertyAttribute");
+            Assert.Contains(attributes, attr => attr.Value == "ClassAttribute");
+        }
+
+        /// <summary>
+        /// Tests that GetAttributesOfMemberAndType generic throws ArgumentNullException when memberInfo is null.
+        /// </summary>
+        [Fact]
+        public void GetAttributesOfMemberAndType_Generic_MemberInfoIsNull_ThrowsArgumentNullException()
+        {
+            MemberInfo memberInfo = null;
+            var type = typeof(SampleClass);
+
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetAttributesOfMemberAndType<SampleAttribute>(memberInfo, type));
+        }
+
+        /// <summary>
+        /// Tests that GetAttributesOfMemberAndType generic throws ArgumentNullException when type is null.
+        /// </summary>
+        [Fact]
+        public void GetAttributesOfMemberAndType_Generic_TypeIsNull_ThrowsArgumentNullException()
+        {
+            var memberInfo = typeof(SampleClass).GetProperty("Name");
+            Type type = null;
+
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtil.GetAttributesOfMemberAndType<SampleAttribute>(memberInfo, type));
+        }
+
         #endregion
     }
 }
