@@ -74,7 +74,12 @@ namespace DotCommon.Test.Serializing
             scheduleService.StartTask("duplicate", () => { Interlocked.Increment(ref callCount); }, 10, 10);
             scheduleService.StartTask("duplicate", () => { Interlocked.Increment(ref callCount); }, 10, 10);
 
-            Thread.Sleep(150);
+            var deadline = DateTime.UtcNow.AddSeconds(3);
+            while (callCount < 1 && DateTime.UtcNow < deadline)
+            {
+                Thread.Sleep(20);
+            }
+
             scheduleService.StopTask("duplicate");
 
             Assert.True(callCount >= 1, $"Task should have executed at least once, but callCount was {callCount}");
