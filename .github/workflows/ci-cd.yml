@@ -94,10 +94,8 @@ jobs:
     - name: Get previous tag
       id: previoustag
       run: |
-        # Get all tags sorted by version
         PREVIOUS_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' | sed -n '2p')
         if [ -z "$PREVIOUS_TAG" ]; then
-          # If no previous tag found, use first commit
           PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
         fi
         echo "tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
@@ -108,35 +106,39 @@ jobs:
       run: |
         CURRENT_TAG=${GITHUB_REF#refs/tags/}
         PREVIOUS_TAG="${{ steps.previoustag.outputs.tag }}"
-
+        
         echo "Generating release notes from $PREVIOUS_TAG to $CURRENT_TAG"
-
-        # Generate changelog and remove markdown special characters
-        CHANGELOG=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h) by %an" --no-merges | sed 's/```//g')
-
-        # Count commits
+        
+        CHANGELOG=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges | sed 's/```//g')
         COMMIT_COUNT=$(git rev-list $PREVIOUS_TAG..HEAD --count)
-
-        # Get contributors
-        CONTRIBUTORS=$(git log $PREVIOUS_TAG..HEAD --format='%an' --no-merges | sort -u | sed 's/^/- @/' | tr '\n' ' ')
-
-        # Create release notes
+        
+        # Get unique author emails and resolve to GitHub usernames
+        AUTHOR_EMAILS=$(git log $PREVIOUS_TAG..HEAD --format='%ae' --no-merges | sort -u)
+        CONTRIBUTORS=""
+        for EMAIL in $AUTHOR_EMAILS; do
+          GITHUB_USER=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/search/users?q=$EMAIL+in:email" | jq -r '.items[0].login // empty')
+          if [ -n "$GITHUB_USER" ]; then
+            CONTRIBUTORS="$CONTRIBUTORS- @$GITHUB_USER\n"
+          fi
+        done
+        
         cat << EOF > release_notes.md
         ## What's Changed
-
+        
         This release includes $COMMIT_COUNT commits since $PREVIOUS_TAG.
-
+        
         ### Changes
-
+        
         $CHANGELOG
-
+        
         ### Contributors
-
-        $CONTRIBUTORS
-
+        
+        $(echo -e "$CONTRIBUTORS")
+        
         **Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...$CURRENT_TAG
         EOF
-
+        
         cat release_notes.md
 
     - name: Create GitHub Release
