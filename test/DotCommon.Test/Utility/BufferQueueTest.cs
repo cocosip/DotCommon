@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,12 +31,16 @@ namespace DotCommon.Test.Utility
             for (var i = 0; i < 10; i++)
             {
                 queue.EnqueueMessage(i);
-                Thread.Sleep(10);
+                Thread.Sleep(20);
             }
 
-            Thread.Sleep(500);
+            var deadline = DateTime.UtcNow.AddSeconds(5);
+            while (processedMessages.Count < 5 && DateTime.UtcNow < deadline)
+            {
+                Thread.Sleep(50);
+            }
 
-            Assert.True(processedMessages.Count >= 5);
+            Assert.True(processedMessages.Count >= 5, $"Expected at least 5 messages processed, but got {processedMessages.Count}");
         }
 
         [Fact]
@@ -44,19 +49,23 @@ namespace DotCommon.Test.Utility
             var processedCount = 0;
             var queue = new BufferQueue<int>("TestQueue", 1, msg =>
             {
-                if (msg == 1) throw new System.Exception("Test exception");
-                processedCount++;
+                if (msg == 1) throw new Exception("Test exception");
+                Interlocked.Increment(ref processedCount);
             });
 
             queue.EnqueueMessage(1);
-            Thread.Sleep(50);
+            Thread.Sleep(100);
             queue.EnqueueMessage(2);
-            Thread.Sleep(50);
+            Thread.Sleep(100);
             queue.EnqueueMessage(3);
 
-            Thread.Sleep(300);
+            var deadline = DateTime.UtcNow.AddSeconds(5);
+            while (processedCount < 1 && DateTime.UtcNow < deadline)
+            {
+                Thread.Sleep(50);
+            }
 
-            Assert.True(processedCount >= 1);
+            Assert.True(processedCount >= 1, $"Expected at least 1 message processed, but got {processedCount}");
         }
 
         [Fact]
