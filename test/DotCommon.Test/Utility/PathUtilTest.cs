@@ -21,41 +21,53 @@ namespace DotCommon.Test.Utility
         }
 
         [Theory]
-        [InlineData(@"C:\A\B.txt", 1, @"C:\A")]
-        [InlineData(@"D:\A\B\C", 1, @"D:\A\B")]
-        [InlineData(@"D:\A\B\C\D", 3, @"D:\A")]
-        [InlineData(@"D:\A", 1, @"D:")]
-        [InlineData(@"D:\", 1, @"D:")]
-        [InlineData(@"E:\Documents\Projects\Code", 2, @"E:\Documents")]
-        public void GetAncestorDirectoryTest_WindowsStyle(string path, int layerCount, string expected)
+        [InlineData(@"C:\A\B.txt", 1, "C:", "A")]
+        [InlineData(@"D:\A\B\C", 1, "D:", "A", "B")]
+        [InlineData(@"D:\A\B\C\D", 3, "D:", "A")]
+        [InlineData(@"D:\A", 1, "D:")]
+        [InlineData(@"D:\", 1, "D:")]
+        [InlineData(@"E:\Documents\Projects\Code", 2, "E:", "Documents")]
+        public void GetAncestorDirectoryTest_WindowsStyle(string path, int layerCount, string expectedRoot, params string[] expectedSegments)
         {
             // Tests Windows-style paths - should work on any platform now
             var actual = PathUtil.GetAncestorDirectory(path, layerCount);
+            // Windows paths always use backslash as separator
+            var expected = expectedSegments.Length > 0 
+                ? expectedRoot + "\\" + string.Join("\\", expectedSegments) 
+                : expectedRoot;
             Assert.Equal(expected, actual);
         }
 
         [Theory]
-        [InlineData(@"/home/user/documents/file.txt", 1, @"/home/user/documents")]
-        [InlineData(@"/var/log/app", 1, @"/var/log")]
-        [InlineData(@"/var/log/app/debug", 3, @"/var")]
-        [InlineData(@"/var/log/app/debug/trace", 10, @"/")]
-        [InlineData(@"/home", 1, @"/")]
-        [InlineData(@"/", 1, @"/")]
-        [InlineData(@"/a/b/c", 2, @"/a")]
-        public void GetAncestorDirectoryTest_UnixStyle(string path, int layerCount, string expected)
+        [InlineData(@"/home/user/documents/file.txt", 1, "/", "home", "user", "documents")]
+        [InlineData(@"/var/log/app", 1, "/", "var", "log")]
+        [InlineData(@"/var/log/app/debug", 3, "/", "var")]
+        [InlineData(@"/var/log/app/debug/trace", 10, "/")]
+        [InlineData(@"/home", 1, "/")]
+        [InlineData(@"/", 1, "/")]
+        [InlineData(@"/a/b/c", 2, "/", "a")]
+        public void GetAncestorDirectoryTest_UnixStyle(string path, int layerCount, string expectedRoot, params string[] expectedSegments)
         {
             // Tests Unix-style paths - should work on any platform now
             var actual = PathUtil.GetAncestorDirectory(path, layerCount);
+            // Unix paths always use forward slash as separator
+            var expected = expectedSegments.Length > 0 
+                ? expectedRoot + string.Join("/", expectedSegments) 
+                : expectedRoot;
             Assert.Equal(expected, actual);
         }
 
         [Theory]
-        [InlineData(@"C:/Users/Documents/file.txt", 1, @"C:\Users\Documents")]
-        [InlineData(@"D:/Projects/DotNet/App", 2, @"D:\Projects")]
-        public void GetAncestorDirectoryTest_MixedSeparators(string path, int layerCount, string expected)
+        [InlineData(@"C:/Users/Documents/file.txt", 1, "C:", "Users", "Documents")]
+        [InlineData(@"D:/Projects/DotNet/App", 2, "D:", "Projects")]
+        public void GetAncestorDirectoryTest_MixedSeparators(string path, int layerCount, string expectedRoot, params string[] expectedSegments)
         {
             // Tests paths with mixed separators (Windows path with forward slashes)
             var actual = PathUtil.GetAncestorDirectory(path, layerCount);
+            // Mixed separators on Windows path should normalize to backslash
+            var expected = expectedSegments.Length > 0 
+                ? expectedRoot + "\\" + string.Join("\\", expectedSegments) 
+                : expectedRoot;
             Assert.Equal(expected, actual);
         }
 

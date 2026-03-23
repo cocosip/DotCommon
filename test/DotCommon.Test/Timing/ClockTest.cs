@@ -215,7 +215,9 @@ namespace DotCommon.Test.Timing
         {
             var tzInfo = _provider.GetTimeZoneInfo("China Standard Time");
             Assert.NotNull(tzInfo);
-            Assert.Equal("China Standard Time", tzInfo.Id);
+            // On Linux, TimeZoneInfo.Id returns IANA timezone ID, not Windows timezone ID
+            // So we just verify the timezone is correctly resolved by checking the base UTC offset
+            Assert.Equal(TimeSpan.FromHours(8), tzInfo.BaseUtcOffset);
         }
 
         [Fact]
