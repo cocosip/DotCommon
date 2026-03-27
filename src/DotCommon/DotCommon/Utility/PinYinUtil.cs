@@ -4,12 +4,13 @@ using System.Text.RegularExpressions;
 namespace DotCommon.Utility
 {
     /// <summary>
-    /// 拼音工具类
+    /// Pinyin utility class for Chinese character to Pinyin conversion.
     /// </summary>
     public static class PinYinUtil
     {
-        #region 拼音相关数组
-        //定义拼音区编码数组
+        #region Pinyin Data Arrays
+
+        // Pinyin encoding range array
         private static readonly int[] GetValue =
         {
             -20319, -20317, -20304, -20295, -20292, -20283, -20265, -20257, -20242, -20230, -20051, -20036,
@@ -47,7 +48,7 @@ namespace DotCommon.Utility
             -10322, -10315, -10309, -10307, -10296, -10281, -10274, -10270, -10262, -10260, -10256, -10254
         };
 
-        //定义拼音数组
+        // Pinyin array
         private static readonly string[] GetName =
         {
             "A", "Ai", "An", "Ang", "Ao", "Ba", "Bai", "Ban", "Bang", "Bao", "Bei", "Ben",
@@ -86,7 +87,7 @@ namespace DotCommon.Utility
         };
 
         /// <summary>
-        /// 判断是否为汉字
+        /// Determines whether the input character is a Chinese character.
         /// </summary>
         private static bool IsChinese(string input)
         {
@@ -99,17 +100,17 @@ namespace DotCommon.Utility
 
 
         /// <summary>
-        /// 汉字转换成全拼的拼音
+        /// Converts Chinese characters to full Pinyin.
         /// </summary>
-        /// <param name="chStr">中文字符串</param>
-        /// <returns></returns>
+        /// <param name="chStr">Chinese character string.</param>
+        /// <returns>The Pinyin representation of the Chinese characters.</returns>
         public static string ConvertToPinYin(string chStr)
         {
             var pysb = new StringBuilder();
-            char[] mChar = chStr.ToCharArray(); //获取汉字对应的字符数组
+            char[] mChar = chStr.ToCharArray(); // Get character array from Chinese string
             foreach (char t in mChar)
             {
-                //如果输入的是汉字
+                // If the input is a Chinese character
                 if (IsChinese(t.ToString()))
                 {
                     var arr = Encoding.GetEncoding("GB2312").GetBytes(t.ToString());
@@ -160,9 +161,9 @@ namespace DotCommon.Utility
                             default:
                                 for (int i = (GetValue.Length - 1); i >= 0; i--)
                                 {
-                                    if (GetValue[i] <= asc) //判断汉字的拼音区编码是否在指定范围内
+                                    if (GetValue[i] <= asc) // Check if the Pinyin encoding is within the specified range
                                     {
-                                        //如果不超出范围则获取对应的拼音
+                                        // Get the corresponding Pinyin if within range
                                         pysb.Append(GetName[i]);
                                         break;
                                     }
@@ -173,19 +174,19 @@ namespace DotCommon.Utility
                 }
                 else
                 {
-                    //如果不是汉字则返回
+                    // If not a Chinese character, return the original character
                     pysb.Append(t.ToString());
 
                 }
             }
-            return pysb.ToString(); //返回获取到的汉字拼音
+            return pysb.ToString(); // Return the converted Pinyin string
         }
 
         /// <summary>
-        /// 取汉字拼音的首字母
+        /// Gets the first letter of the Pinyin for Chinese characters.
         /// </summary>
-        /// <param name="chStr">中文字符串</param>
-        /// <returns></returns>
+        /// <param name="chStr">Chinese character string.</param>
+        /// <returns>The first letter of the Pinyin for each Chinese character.</returns>
         public static string GetCodstring(string chStr)
         {
             var charArray = chStr.ToCharArray();
@@ -203,7 +204,7 @@ namespace DotCommon.Utility
                         resultSb.Append((char)gbkBytes[i]);
                         i++;
                     }
-                    #region 生成汉字拼音简码,取拼音首字母
+                    #region Generate Pinyin abbreviation, get first letter of Pinyin
                     else
                     {
                         var key = (ushort)(gbkBytes[i] * 256 + gbkBytes[i + 1]);

@@ -132,32 +132,32 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 基础数据
+        #region Basic Data
 
-        #region 基本常量
+        #region Basic Constants
 
         private const int MinYear = 1900;
         private const int MaxYear = 2050;
         private static DateTime _minDay = new DateTime(1900, 1, 30);
         private static readonly DateTime MaxDay = new DateTime(2049, 12, 31);
-        private const int GanZhiStartYear = 1864; //干支计算起始年
-        private static readonly DateTime GanZhiStartDay = new DateTime(1899, 12, 22); //起始日
+        private const int GanZhiStartYear = 1864; // Start year for GanZhi calculation
+        private static readonly DateTime GanZhiStartDay = new DateTime(1899, 12, 22); // Start day for GanZhi calculation
         private const string ChineseNum = "零一二三四五六七八九";
-        private const int AnimalStartYear = 1900; //1900年为鼠年
-        private static readonly DateTime ChineseConstellationReferDay = new DateTime(2007, 9, 13); //28星宿参考值,本日为角
+        private const int AnimalStartYear = 1900; // 1900 is the year of the Rat
+        private static readonly DateTime ChineseConstellationReferDay = new DateTime(2007, 9, 13); // Reference value for 28 constellations, this day is Jiao
 
         #endregion
 
-        #region 阴历数据
+        #region Lunar Calendar Data
 
         /// <summary>
-        /// 来源于网上的农历数据
+        /// Lunar calendar data sourced from the internet
         /// </summary>
         /// <remarks>
-        /// 数据结构如下，共使用17位数据
-        /// 第17位：表示闰月天数，0表示29天   1表示30天
-        /// 第16位-第5位（共12位）表示12个月，其中第16位表示第一月，如果该月为30天则为1，29天为0
-        /// 第4位-第1位（共4位）表示闰月是哪个月，如果当年没有闰月，则置0
+        /// Data structure: 17 bits total
+        /// Bit 17: Leap month days, 0 = 29 days, 1 = 30 days
+        /// Bits 16-5 (12 bits): Represent 12 months, bit 16 is the first month, 1 = 30 days, 0 = 29 days
+        /// Bits 4-1 (4 bits): Which month is the leap month, 0 if no leap month in that year
         ///</remarks>
         private static readonly int[] LunarDateArray = {
             0x04BD8, 0x04AE0, 0x0A570, 0x054D5, 0x0D260, 0x0D950, 0x16554, 0x056A0, 0x09AD0, 0x055D2,
@@ -180,7 +180,7 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 星座名称
+        #region Constellation Names
 
         private static readonly string[] ConstellationName =
         {
@@ -193,11 +193,11 @@ namespace DotCommon.Utility
         #endregion
 
 
-        #region 二十八星宿
+        #region Twenty-Eight Constellations
 
         private static readonly string[] ChineseConstellationName =
         {
-            //四        五      六         日        一      二      三  
+            // Thu      Fri     Sat        Sun       Mon     Tue     Wed
             "角木蛟", "亢金龙", "女土蝠", "房日兔", "心月狐", "尾火虎", "箕水豹",
             "斗木獬", "牛金牛", "氐土貉", "虚日鼠", "危月燕", "室火猪", "壁水獝",
             "奎木狼", "娄金狗", "胃土彘", "昴日鸡", "毕月乌", "觜火猴", "参水猿",
@@ -206,7 +206,7 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 节气数据
+        #region Solar Terms Data
 
         private static readonly string[] SolarTerm =
         {
@@ -223,7 +223,7 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 农历相关数据
+        #region Lunar Calendar Related Data
 
         private static readonly string GanStr = "甲乙丙丁戊己庚辛壬癸";
         private static readonly string ZhiStr = "子丑寅卯辰巳午未申酉戌亥";
@@ -238,7 +238,7 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 按公历计算的节日
+        #region Solar Calendar Holidays
 
         private static readonly SolarHolidayStruct[] SolaryHolidayInfo =
         {
@@ -297,7 +297,7 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 按农历计算的节日
+        #region Lunar Calendar Holidays
 
         private static readonly LunarHolidayStruct[] LunarHolidayInfo =
         {
@@ -311,12 +311,12 @@ namespace DotCommon.Utility
             new LunarHolidayStruct(12, 8, 0, "腊八节"),
             new LunarHolidayStruct(12, 23, 0, "北方小年(扫房)"),
             new LunarHolidayStruct(12, 24, 0, "南方小年(掸尘)"),
-            //new LunarHolidayStruct(12, 30, 0, "除夕")  //注意除夕需要其它方法进行计算
+            // Note: Chinese New Year's Eve needs to be calculated by other methods
         };
 
         #endregion
 
-        #region 按某月第几个星期几
+        #region Holidays by Week of Month
 
         private static readonly WeekHolidayStruct[] WeekHolidayInfo =
         {
@@ -334,11 +334,12 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 构造函数
+        #region Constructor
 
-        #region ChinaCalendar <公历日期初始化>
+        #region ChineseCalendar - Initialize with Solar Date
 
-        /// <summary> 用一个标准的公历日期来初使化
+        /// <summary>
+        /// Initialize with a standard solar calendar date
         /// </summary>
         public ChineseCalendar(DateTime date)
         {
@@ -346,13 +347,13 @@ namespace DotCommon.Utility
             CheckDateLimit(date);
             _date = date.Date;
             _datetime = date;
-            //农历日期计算部分
+            // Lunar date calculation part
             var temp = 0;
-            var ts = _date - _minDay; //计算两天的基本差距[即1900到当天的天差]
+            var ts = _date - _minDay; // Calculate the difference in days between 1900 and the current day
             var offset = ts.Days;
             for (i = MinYear; i <= MaxYear; i++)
             {
-                temp = GetChineseYearDays(i); //求当年农历年天数
+                temp = GetChineseYearDays(i); // Get the number of days in the lunar year
                 if (offset - temp < 1)
                 {
                     break;
@@ -362,22 +363,22 @@ namespace DotCommon.Utility
             _cYear = i;
 
             var leap = GetChineseLeapMonth(_cYear);
-            //设定当年是否有闰月
+            // Set whether the current year has a leap month
             _isLeapYear = leap > 0;
             _isLeapMonth = false;
             for (i = 1; i <= 12; i++)
             {
-                //闰月
+                // Leap month
                 if ((leap > 0) && (i == leap + 1) && (_isLeapMonth == false))
                 {
                     _isLeapMonth = true;
                     i = i - 1;
-                    temp = GetChineseLeapMonthDays(_cYear); //计算闰月天数
+                    temp = GetChineseLeapMonthDays(_cYear); // Calculate leap month days
                 }
                 else
                 {
                     _isLeapMonth = false;
-                    temp = GetChineseMonthDays(_cYear, i); //计算非闰月天数
+                    temp = GetChineseMonthDays(_cYear, i); // Calculate non-leap month days
                 }
 
                 offset = offset - temp;
@@ -391,15 +392,15 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region ChinaCalendar <农历日期初始化>
+        #region ChineseCalendar - Initialize with Lunar Date
 
         /// <summary>
-        /// 用农历的日期来初使化
+        /// Initialize with a lunar calendar date
         /// </summary>
-        /// <param name="cy">农历年</param>
-        /// <param name="cm">农历月</param>
-        /// <param name="cd">农历日</param>
-        /// <param name="leapMonthFlag">闰月标志</param>
+        /// <param name="cy">Lunar year</param>
+        /// <param name="cm">Lunar month</param>
+        /// <param name="cd">Lunar day</param>
+        /// <param name="leapMonthFlag">Leap month flag</param>
         public ChineseCalendar(int cy, int cm, int cd, bool leapMonthFlag)
         {
             int i, temp;
@@ -414,7 +415,7 @@ namespace DotCommon.Utility
 
             for (i = MinYear; i < cy; i++)
             {
-                temp = GetChineseYearDays(i); //求当年农历年天数
+                temp = GetChineseYearDays(i); // Get the number of days in the lunar year
                 offset = offset + temp;
             }
 
@@ -424,40 +425,40 @@ namespace DotCommon.Utility
             _isLeapMonth = cm == leap && leapMonthFlag;
 
 
-            if ((_isLeapYear == false) || //当年没有闰月
-                (cm < leap)) //计算月份小于闰月     
+            if ((_isLeapYear == false) || // No leap month in the current year
+                (cm < leap)) // Calculated month is less than the leap month
             {
                 #region ...
 
                 for (i = 1; i < cm; i++)
                 {
-                    temp = GetChineseMonthDays(cy, i); //计算非闰月天数
+                    temp = GetChineseMonthDays(cy, i); // Calculate non-leap month days
                     offset = offset + temp;
                 }
 
-                //检查日期是否大于最大天
+                // Check if date exceeds maximum days
                 if (cd > GetChineseMonthDays(cy, cm))
                 {
                     throw new ChineseCalendarException("不合法的农历日期");
                 }
-                offset = offset + cd; //加上当月的天数
+                offset = offset + cd; // Add days of the current month
 
                 #endregion
             }
-            else //是闰年，且计算月份大于或等于闰月
+            else // It's a leap year, and the calculated month is greater than or equal to the leap month
             {
                 #region ...
 
                 for (i = 1; i < cm; i++)
                 {
-                    temp = GetChineseMonthDays(cy, i); //计算非闰月天数
+                    temp = GetChineseMonthDays(cy, i); // Calculate non-leap month days
                     offset = offset + temp;
                 }
 
-                if (cm > leap) //计算月大于闰月
+                if (cm > leap) // Calculated month is greater than the leap month
                 {
-                    temp = GetChineseLeapMonthDays(cy); //计算闰月天数
-                    offset = offset + temp; //加上闰月天数
+                    temp = GetChineseLeapMonthDays(cy); // Calculate leap month days
+                    offset = offset + temp; // Add leap month days
 
                     if (cd > GetChineseMonthDays(cy, cm))
                     {
@@ -465,12 +466,12 @@ namespace DotCommon.Utility
                     }
                     offset = offset + cd;
                 }
-                else //计算月等于闰月
+                else // Calculated month equals the leap month
                 {
-                    //如果需要计算的是闰月，则应首先加上与闰月对应的普通月的天数
-                    if (_isLeapMonth) //计算月为闰月
+                    // If calculating for a leap month, first add the days of the corresponding normal month
+                    if (_isLeapMonth) // The calculated month is a leap month
                     {
-                        temp = GetChineseMonthDays(cy, cm); //计算非闰月天数
+                        temp = GetChineseMonthDays(cy, cm); // Calculate non-leap month days
                         offset = offset + temp;
                     }
 
@@ -492,11 +493,11 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 私有函数
+        #region Private Methods
 
         #region GetChineseMonthDays
 
-        //传回农历 y年m月的总天数
+        // Returns the total number of days in lunar year y, month m
         private int GetChineseMonthDays(int year, int month)
         {
             //0X0FFFF[0000 {1111 1111 1111} 1111]
@@ -511,10 +512,10 @@ namespace DotCommon.Utility
 
         #region GetChineseLeapMonth
 
-        //传回农历 y年闰哪个月 1-12 , 没闰传回 0
+        // Returns which month is the leap month in lunar year y (1-12), returns 0 if no leap month
         private int GetChineseLeapMonth(int year)
         {
-            //最后4位，即8，代表这一年的润月月份，为0则不润。首4位要与末4位搭配使用
+            // The last 4 bits represent the leap month of the year, 0 means no leap. The first 4 bits work with the last 4 bits
             return LunarDateArray[year - MinYear] & 0xF;
 
         }
@@ -523,20 +524,20 @@ namespace DotCommon.Utility
 
         #region GetChineseLeapMonthDays
 
-        //传回农历 y年闰月的天数
+        // Returns the number of days in the leap month of lunar year y
         private int GetChineseLeapMonthDays(int year)
         {
             if (GetChineseLeapMonth(year) != 0)
             {
-                //前4位，即0在这一年是润年时才有意义，它代表这年润月的大小月。
+                // The first 4 bits are meaningful only in a leap year, representing whether the leap month is a big or small month
                 if ((LunarDateArray[year - MinYear] & 0x10000) != 0)
                 {
-                    //为1则润大月
+                    // 1 means leap month is a big month (30 days)
                     return 30;
                 }
                 else
                 {
-                    //为0则润小月
+                    // 0 means leap month is a small month (29 days)
                     return 29;
                 }
             }
@@ -551,7 +552,7 @@ namespace DotCommon.Utility
         #region GetChineseYearDays
 
         /// <summary>
-        /// 取农历年一年的天数
+        /// Get the number of days in a lunar year
         /// </summary>
         /// <param name="year"></param>
         /// <returns></returns>
@@ -559,11 +560,11 @@ namespace DotCommon.Utility
         {
             int i, f, sumDay, info;
 
-            sumDay = 348; //29天 X 12个月
+            sumDay = 348; // 29 days X 12 months
             i = 0x8000;
             info = LunarDateArray[year - MinYear] & 0x0FFFF;
-            //0x04BD8  & 0x0FFFF 中间12位，即4BD，每位代表一个月，为1则为大月，为0则为小月
-            //计算12个月中有多少天为30天
+            // 0x04BD8 & 0x0FFFF: middle 12 bits, each bit represents a month, 1 = big month, 0 = small month
+            // Count how many months have 30 days
             for (int m = 0; m < 12; m++)
             {
                 f = info & i; // 0x04BD8  & 0x0FFFF  & 0x8000[1000 0000 0000 0000]
@@ -581,14 +582,14 @@ namespace DotCommon.Utility
         #region GetChineseHour
 
         /// <summary>
-        /// 获得当前时间的时辰
+        /// Get the Chinese hour (ShiChen) for the current time
         /// </summary>
         /// <returns></returns>
         private string GetChineseHour(DateTime dt)
         {
             //string ganHour, zhiHour;
 
-            //计算时辰的地支
+            // Calculate the earthly branch of the hour
             var hour = dt.Hour;
             var minute = dt.Minute;
             if (minute != 0)
@@ -599,7 +600,7 @@ namespace DotCommon.Utility
             if (offset >= 12) offset = 0;
             //zhiHour = ZhiStr[offset].ToString();
 
-            //计算天干
+            // Calculate the heavenly stem
             TimeSpan ts = _date - GanZhiStartDay;
             var i = ts.Days % 60;
 
@@ -615,7 +616,7 @@ namespace DotCommon.Utility
 
         #region CheckDateLimit
 
-        /// <summary> 检查公历日期是否符合要求
+        /// <summary> Checks if the solar date is valid
         /// </summary>
         private void CheckDateLimit(DateTime date)
         {
@@ -629,7 +630,7 @@ namespace DotCommon.Utility
 
         #region CheckChineseDateLimit
 
-        /// <summary> 检查农历日期是否合理
+        /// <summary> Checks if the lunar date is valid
         /// </summary>
         private void CheckChineseDateLimit(int year, int month, int day, bool leapMonth)
         {
@@ -637,12 +638,12 @@ namespace DotCommon.Utility
             {
                 throw new ChineseCalendarException("非法农历日期");
             }
-            if ((day < 1) || (day > 30)) //中国的月最多30天
+            if ((day < 1) || (day > 30)) // Chinese months have at most 30 days
             {
                 throw new ChineseCalendarException("非法农历日期");
             }
 
-            int leap = GetChineseLeapMonth(year); // 计算该年应该闰哪个月
+            int leap = GetChineseLeapMonth(year); // Calculate which month should be the leap month in that year
             if (leapMonth && (month != leap))
             {
                 throw new ChineseCalendarException("非法农历日期");
@@ -654,7 +655,7 @@ namespace DotCommon.Utility
         #region ConvertNumToChineseNum
 
         /// <summary>
-        /// 将0-9转成汉字形式
+        /// Convert 0-9 to Chinese numeral form
         /// </summary>
         /// <param name="n"></param>
         /// <returns></returns>
@@ -693,7 +694,7 @@ namespace DotCommon.Utility
         #region BitTest32
 
         /// <summary>
-        /// 测试某位是否为真
+        /// Test if a specific bit is set
         /// </summary>
         /// <param name="num"></param>
         /// <param name="bitpostion"></param>
@@ -721,7 +722,7 @@ namespace DotCommon.Utility
         #region ConvertDayOfWeek
 
         /// <summary>
-        /// 将星期几转成数字表示
+        /// Convert DayOfWeek to numeric representation
         /// </summary>
         /// <param name="dayOfWeek"></param>
         /// <returns></returns>
@@ -735,7 +736,7 @@ namespace DotCommon.Utility
         #region CompareWeekDayHoliday
 
         /// <summary>
-        /// 比较当天是不是指定的第周几
+        /// Compare if the date matches the specified week and day of week
         /// </summary>
         /// <param name="date"></param>
         /// <param name="month"></param>
@@ -746,13 +747,13 @@ namespace DotCommon.Utility
         {
             bool ret = false;
 
-            if (date.Month == month) //月份相同
+            if (date.Month == month) // Same month
             {
-                if (ConvertDayOfWeek(date.DayOfWeek) == day) //星期几相同
+                if (ConvertDayOfWeek(date.DayOfWeek) == day) // Same day of week
                 {
-                    DateTime firstDay = new DateTime(date.Year, date.Month, 1); //生成当月第一天
+                    DateTime firstDay = new DateTime(date.Year, date.Month, 1); // Generate the first day of the month
                     int i = ConvertDayOfWeek(firstDay.DayOfWeek);
-                    int firWeekDays = 7 - ConvertDayOfWeek(firstDay.DayOfWeek) + 1; //计算第一周剩余天数
+                    int firWeekDays = 7 - ConvertDayOfWeek(firstDay.DayOfWeek) + 1; // Calculate remaining days in the first week
 
                     if (i > day)
                     {
@@ -778,21 +779,21 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region  属性
+        #region Properties
 
-        #region 节日
+        #region Holidays
 
         #region ChineseCalendarHoliday
 
         /// <summary>
-        /// 计算中国农历节日
+        /// Calculate Chinese lunar calendar holidays
         /// </summary>
         public string ChineseCalendarHoliday
         {
             get
             {
                 string tempStr = "";
-                if (_isLeapMonth == false) //闰月不计算节日
+                if (_isLeapMonth == false) // Leap months don't have holidays
                 {
                     foreach (LunarHolidayStruct lh in LunarHolidayInfo)
                     {
@@ -805,11 +806,11 @@ namespace DotCommon.Utility
                         }
                     }
 
-                    //对除夕进行特别处理
+                    // Special handling for Chinese New Year's Eve
                     if (_cMonth == 12)
                     {
-                        int i = GetChineseMonthDays(_cYear, 12); //计算当年农历12月的总天数
-                        if (_cDay == i) //如果为最后一天
+                        int i = GetChineseMonthDays(_cYear, 12); // Calculate total days in lunar December of the year
+                        if (_cDay == i) // If it's the last day
                         {
                             tempStr = "除夕";
                         }
@@ -824,7 +825,7 @@ namespace DotCommon.Utility
         #region WeekDayHoliday
 
         /// <summary>
-        /// 按某月第几周第几日计算的节日
+        /// Holidays calculated by the nth week and day of week in a month
         /// </summary>
         public string WeekDayHoliday
         {
@@ -848,7 +849,7 @@ namespace DotCommon.Utility
         #region DateHoliday
 
         /// <summary>
-        /// 按公历日计算的节日
+        /// Holidays calculated by solar calendar date
         /// </summary>
         public string DateHoliday
         {
@@ -872,12 +873,12 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 公历日期
+        #region Solar Calendar Date
 
         #region Date
 
         /// <summary>
-        /// 取对应的公历日期
+        /// Get the corresponding solar calendar date
         /// </summary>
         public DateTime Date
         {
@@ -889,7 +890,7 @@ namespace DotCommon.Utility
         #region WeekDay
 
         /// <summary>
-        /// 取星期几
+        /// Get the day of week
         /// </summary>
         public DayOfWeek WeekDay
         {
@@ -901,7 +902,7 @@ namespace DotCommon.Utility
         #region WeekDayStr
 
         /// <summary>
-        /// 周几的字符
+        /// Get the day of week as a Chinese string
         /// </summary>
         public string WeekDayStr
         {
@@ -932,7 +933,7 @@ namespace DotCommon.Utility
         #region DateString
 
         /// <summary>
-        /// 公历日期中文表示法 如一九九七年七月一日
+        /// Solar calendar date in Chinese representation, e.g., 一九九七年七月一日
         /// </summary>
         public string DateString => "公元" + _date.ToString("yyyy-MM-dd HH:mm:ss");
 
@@ -941,7 +942,7 @@ namespace DotCommon.Utility
         #region IsLeapYear
 
         /// <summary>
-        /// 当前是否公历闰年
+        /// Whether the current year is a solar leap year
         /// </summary>
         public bool IsLeapYear
         {
@@ -953,7 +954,7 @@ namespace DotCommon.Utility
         #region ChineseConstellation
 
         /// <summary>
-        /// 28星宿计算
+        /// Twenty-eight constellations calculation
         /// </summary>
         public string ChineseConstellation
         {
@@ -973,7 +974,7 @@ namespace DotCommon.Utility
         #region ChineseHour
 
         /// <summary>
-        /// 时辰
+        /// Chinese hour (ShiChen)
         /// </summary>
         public string ChineseHour
         {
@@ -984,12 +985,12 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 农历日期
+        #region Lunar Calendar Date
 
         #region IsChineseLeapMonth
 
         /// <summary>
-        /// 是否闰月
+        /// Whether it is a leap month
         /// </summary>
         public bool IsChineseLeapMonth
         {
@@ -1001,7 +1002,7 @@ namespace DotCommon.Utility
         #region IsChineseLeapYear
 
         /// <summary>
-        /// 当年是否有闰月
+        /// Whether the current year has a leap month
         /// </summary>
         public bool IsChineseLeapYear
         {
@@ -1013,7 +1014,7 @@ namespace DotCommon.Utility
         #region ChineseDay
 
         /// <summary>
-        /// 农历日
+        /// Lunar calendar day
         /// </summary>
         public int ChineseDay
         {
@@ -1025,7 +1026,7 @@ namespace DotCommon.Utility
         #region ChineseDayString
 
         /// <summary>
-        /// 农历日中文表示
+        /// Lunar calendar day in Chinese representation
         /// </summary>
         public string ChineseDayString
         {
@@ -1053,7 +1054,7 @@ namespace DotCommon.Utility
         #region ChineseMonth
 
         /// <summary>
-        /// 农历的月份
+        /// Lunar calendar month
         /// </summary>
         public int ChineseMonth
         {
@@ -1065,7 +1066,7 @@ namespace DotCommon.Utility
         #region ChineseMonthString
 
         /// <summary>
-        /// 农历月份字符串
+        /// Lunar calendar month string
         /// </summary>
         public string ChineseMonthString
         {
@@ -1077,7 +1078,7 @@ namespace DotCommon.Utility
         #region ChineseYear
 
         /// <summary>
-        /// 取农历年份
+        /// Get the lunar calendar year
         /// </summary>
         public int ChineseYear
         {
@@ -1089,7 +1090,7 @@ namespace DotCommon.Utility
         #region ChineseYearString
 
         /// <summary>
-        /// 取农历年字符串如，一九九七年
+        /// Get the lunar calendar year string, e.g., 一九九七年
         /// </summary>
         public string ChineseYearString
         {
@@ -1110,7 +1111,7 @@ namespace DotCommon.Utility
         #region ChineseDateString
 
         /// <summary>
-        /// 取农历日期表示法：农历一九九七年正月初五
+        /// Get the lunar calendar date representation: 农历一九九七年正月初五
         /// </summary>
         public string ChineseDateString
         {
@@ -1129,15 +1130,17 @@ namespace DotCommon.Utility
         #region ChineseTwentyFourDay
 
         /// <summary>
-        /// 定气法计算二十四节气,二十四节气是按地球公转来计算的，并非是阴历计算的
+        /// Calculate the twenty-four solar terms using the fixed position method. Solar terms are calculated based on Earth's orbit, not the lunar calendar.
         /// </summary>
         /// <remarks>
-        /// 节气的定法有两种。古代历法采用的称为"恒气"，即按时间把一年等分为24份，
-        /// 每一节气平均得15天有余，所以又称"平气"。现代农历采用的称为"定气"，即
-        /// 按地球在轨道上的位置为标准，一周360°，两节气之间相隔15°。由于冬至时地
-        /// 球位于近日点附近，运动速度较快，因而太阳在黄道上移动15°的时间不到15天。
-        /// 夏至前后的情况正好相反，太阳在黄道上移动较慢，一个节气达16天之多。采用
-        /// 定气时可以保证春、秋两分必然在昼夜平分的那两天。
+        /// There are two methods for defining solar terms. The ancient calendar used "constant qi" (恒气), 
+        /// dividing the year into 24 equal parts by time, each solar term averaging slightly more than 15 days, 
+        /// also known as "flat qi" (平气). Modern lunar calendar uses "fixed qi" (定气), 
+        /// based on Earth's position in its orbit, 360° per cycle, with 15° between each solar term. 
+        /// Since Earth is near perihelion during winter solstice and moves faster, the sun moves 15° 
+        /// on the ecliptic in less than 15 days. The opposite occurs around summer solstice, where a solar term 
+        /// can last up to 16 days. Using fixed qi ensures spring and autumn equinoxes fall on the days 
+        /// with equal day and night lengths.
         /// </remarks>
         public string ChineseTwentyFourDay
         {
@@ -1163,7 +1166,7 @@ namespace DotCommon.Utility
             }
         }
 
-        /// <summary>当前日期前一个最近节气
+        /// <summary>The most recent solar term before the current date
         /// </summary>
         public string ChineseTwentyFourPrevDay
         {
@@ -1193,7 +1196,7 @@ namespace DotCommon.Utility
 
         }
 
-        /// <summary>当前日期后一个最近节气
+        /// <summary>The next solar term after the current date
         /// </summary>
         public string ChineseTwentyFourNextDay
         {
@@ -1211,7 +1214,7 @@ namespace DotCommon.Utility
                 {
                     num = 525948.76 * (y - 1900) + STermInfo[i - 1];
 
-                    newDate = baseDateAndTime.AddMinutes(num); //按分钟计算
+                    newDate = baseDateAndTime.AddMinutes(num); // Calculate by minutes
 
                     if (newDate.DayOfYear > _date.DayOfYear)
                     {
@@ -1228,12 +1231,12 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 星座
+        #region Constellation
 
         #region Constellation
 
         /// <summary>
-        /// 计算指定日期的星座序号 
+        /// Calculate the constellation index for a specified date
         /// </summary>
         /// <returns></returns>
         public string Constellation
@@ -1303,20 +1306,20 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 属相
+        #region Zodiac Animal
 
         #region Animal
 
         /// <summary>
-        /// 计算属相的索引，注意虽然属相是以农历年来区别的，但是目前在实际使用中是按公历来计算的
-        /// 鼠年为1,其它类推
+        /// Calculate the zodiac animal index. Note: Although zodiac animals are distinguished by lunar year, 
+        /// they are currently calculated by solar year in practical use. Rat year is 1, others follow.
         /// </summary>
         public int Animal
         {
             get
             {
-                //int offset = _date.Year - AnimalStartYear; //阳历计算
-                int offset = this._cYear - AnimalStartYear;　//农历计算
+                //int offset = _date.Year - AnimalStartYear; // Solar calendar calculation
+                int offset = this._cYear - AnimalStartYear; // Lunar calendar calculation
                 return (offset % 12) + 1;
             }
         }
@@ -1326,14 +1329,14 @@ namespace DotCommon.Utility
         #region AnimalString
 
         /// <summary>
-        /// 取属相字符串
+        /// Get the zodiac animal string
         /// </summary>
         public string AnimalString
         {
             get
             {
-                //int offset = _date.Year - AnimalStartYear; //阳历计算
-                int offset = this._cYear - AnimalStartYear;　//农历计算
+                //int offset = _date.Year - AnimalStartYear; // Solar calendar calculation
+                int offset = this._cYear - AnimalStartYear; // Lunar calendar calculation
                 return AnimalStr[offset % 12].ToString();
             }
         }
@@ -1342,18 +1345,18 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 天干地支
+        #region GanZhi (Heavenly Stems and Earthly Branches)
 
         #region GanZhiYearString
 
         /// <summary>
-        /// 取农历年的干支表示法如 乙丑年
+        /// Get the GanZhi representation of the lunar year, e.g., 乙丑年
         /// </summary>
         public string GanZhiYearString
         {
             get
             {
-                int i = (_cYear - GanZhiStartYear) % 60; //计算干支
+                int i = (_cYear - GanZhiStartYear) % 60; // Calculate GanZhi
                 var tempStr = GanStr[i % 10] + ZhiStr[i % 12].ToString() + "年";
                 return tempStr;
             }
@@ -1364,13 +1367,13 @@ namespace DotCommon.Utility
         #region GanZhiMonthString
 
         /// <summary>
-        /// 取干支的月表示字符串，注意农历的闰月不记干支
+        /// Get the GanZhi representation of the month. Note: Leap months in the lunar calendar do not have GanZhi.
         /// </summary>
         public string GanZhiMonthString
         {
             get
             {
-                //每个月的地支总是固定的,而且总是从寅月开始
+                // The earthly branch of each month is fixed, always starting from Yin month
                 int zhiIndex;
                 if (_cMonth > 10)
                 {
@@ -1382,42 +1385,42 @@ namespace DotCommon.Utility
                 }
                 var zhi = ZhiStr[zhiIndex - 1].ToString();
 
-                //根据当年的干支年的干来计算月干的第一个
+                // Calculate the first heavenly stem of the month based on the heavenly stem of the current GanZhi year
                 int ganIndex = 1;
                 string gan;
-                int i = (_cYear - GanZhiStartYear) % 60; //计算干支
+                int i = (_cYear - GanZhiStartYear) % 60; // Calculate GanZhi
                 switch (i % 10)
                 {
                     #region ...
 
-                    case 0: //甲
+                    case 0: // 甲 (Jia)
                         ganIndex = 3;
                         break;
-                    case 1: //乙
+                    case 1: // 乙 (Yi)
                         ganIndex = 5;
                         break;
-                    case 2: //丙
+                    case 2: // 丙 (Bing)
                         ganIndex = 7;
                         break;
-                    case 3: //丁
+                    case 3: // 丁 (Ding)
                         ganIndex = 9;
                         break;
-                    case 4: //戊
+                    case 4: // 戊 (Wu)
                         ganIndex = 1;
                         break;
-                    case 5: //己
+                    case 5: // 己 (Ji)
                         ganIndex = 3;
                         break;
-                    case 6: //庚
+                    case 6: // 庚 (Geng)
                         ganIndex = 5;
                         break;
-                    case 7: //辛
+                    case 7: // 辛 (Xin)
                         ganIndex = 7;
                         break;
-                    case 8: //壬
+                    case 8: // 壬 (Ren)
                         ganIndex = 9;
                         break;
-                    case 9: //癸
+                    case 9: // 癸 (Gui)
                         ganIndex = 1;
                         break;
 
@@ -1434,7 +1437,7 @@ namespace DotCommon.Utility
         #region GanZhiDayString
 
         /// <summary>
-        /// 取干支日表示法
+        /// Get the GanZhi representation of the day
         /// </summary>
         public string GanZhiDayString
         {
@@ -1452,7 +1455,7 @@ namespace DotCommon.Utility
         #region GanZhiDateString
 
         /// <summary>
-        /// 取当前日期的干支表示法如 甲子年乙丑月丙庚日
+        /// Get the GanZhi representation of the current date, e.g., 甲子年乙丑月丙庚日
         /// </summary>
         public string GanZhiDateString
         {
@@ -1465,12 +1468,12 @@ namespace DotCommon.Utility
 
         #endregion
 
-        #region 方法
+        #region Methods
 
         #region NextDay
 
         /// <summary>
-        /// 取下一天
+        /// Get the next day
         /// </summary>
         /// <returns></returns>
         public ChineseCalendar NextDay()
@@ -1484,7 +1487,7 @@ namespace DotCommon.Utility
         #region PervDay
 
         /// <summary>
-        /// 取前一天
+        /// Get the previous day
         /// </summary>
         /// <returns></returns>
         public ChineseCalendar PervDay()

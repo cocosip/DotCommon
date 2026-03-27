@@ -33,7 +33,7 @@ namespace DotCommon.Utility
                 return "零元整";
 
             long integral = (long)Math.Floor(amount);
-            int fraction = (int)((amount - integral) * 100 + 0.0001m); // 避免浮点误差
+            int fraction = (int)((amount - integral) * 100 + 0.0001m); // Avoid floating point errors
 
             var integralStr = ConvertIntegral(integral);
             var fractionStr = ConvertFraction(fraction, integral == 0);

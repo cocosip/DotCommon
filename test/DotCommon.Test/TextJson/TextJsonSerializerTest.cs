@@ -79,7 +79,7 @@ namespace DotCommon.Test.TextJson
         }
 
         /// <summary>
-        /// 依赖注入获取对象
+        /// Get object through dependency injection.
         /// </summary>
         [Fact]
         public void DependencyInjection_Serialize_Deserialize_Test()

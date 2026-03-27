@@ -7,7 +7,7 @@ using Xunit;
 namespace DotCommon.Test.Reflecting
 {
     /// <summary>
-    /// Unit tests for TypeUtil. "TypeUtil 单元测试"
+    /// Unit tests for TypeUtil.
     /// </summary>
     public class TypeUtilTest
     {
