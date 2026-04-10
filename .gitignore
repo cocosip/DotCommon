@@ -308,3 +308,4 @@ logs/
 
 .claude/
 coverage/
+*.csproj.lscache

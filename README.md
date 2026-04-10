@@ -1,270 +1,230 @@
 # DotCommon
 
-[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu) [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/cocosip/DotCommon/blob/master/LICENSE) ![GitHub last commit](https://img.shields.io/github/last-commit/cocosip/DotCommon.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/cocosip/DotCommon.svg)
-
 [![CI/CD Pipeline](https://github.com/cocosip/DotCommon/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/cocosip/DotCommon/actions/workflows/ci-cd.yml)
+[![GitHub license](https://img.shields.io/github/license/cocosip/DotCommon)](LICENSE)
 
-| Package  | Version | Downloads|
-| -------- | ------- | -------- |
-| `DotCommon` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.svg)](https://www.nuget.org/packages/DotCommon) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.svg)|
-| `DotCommon.AutoMapper` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AutoMapper.svg)](https://www.nuget.org/packages/DotCommon.AutoMapper) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AutoMapper.svg)|
-| `DotCommon.Caching` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Caching.svg)](https://www.nuget.org/packages/DotCommon.Caching) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Caching.svg)|
-| `DotCommon.Crypto` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.Crypto.svg)](https://www.nuget.org/packages/DotCommon.Crypto) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.Crypto.svg)|
-| `DotCommon.DistributedLocking` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.DistributedLocking.svg)](https://www.nuget.org/packages/DotCommon.DistributedLocking) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.DistributedLocking.svg)|
-| `DotCommon.AspNetCore.Mvc` | [![NuGet](https://img.shields.io/nuget/v/DotCommon.AspNetCore.Mvc.svg)](https://www.nuget.org/packages/DotCommon.AspNetCore.Mvc) |![NuGet](https://img.shields.io/nuget/dt/DotCommon.AspNetCore.Mvc.svg)|
+DotCommon 是一个面向 .NET 的通用基础类库，围绕序列化、对象映射、缓存、调度、时间、线程和常用工具能力提供统一抽象与默认实现。项目整体采用可插拔 Provider 模式，便于通过依赖注入替换具体实现。
 
-## 项目简介
+## 特性概览
 
-DotCommon 是一个 C# 工具类库，为 .NET 应用提供核心抽象和实用工具。它采用**可插拔的提供者模式**，支持序列化、对象映射、缓存和调度的可替换实现。
+- 提供统一的基础设施抽象，包括 `IJsonSerializer`、`IObjectMapper`、`IObjectSerializer`、`IScheduleService` 等
+- 基于 `System.Text.Json` 提供默认 JSON 实现，并内置多种转换器
+- 提供三级对象映射链路，支持类型专用映射器、通用映射器和 AutoMapper 扩展
+- 提供分布式缓存与混合缓存抽象，支持内存缓存和 Redis 接入
+- 提供分布式锁扩展，支持本地锁以及基于 `Medallion.Threading` 的外部提供者
+- 提供高性能反射工具，适合对象与字典之间的转换场景
+- 提供时钟、时区、线程上下文、加密和常用工具类能力
 
-### 主要特性
+## 包列表
 
-- **高性能反射** - 使用 Expression Trees 编译为 IL，实现快速的对象与字典转换
-- **可插拔架构** - 基于接口的提供者模式，支持依赖注入
-- **JSON 序列化** - 基于 System.Text.Json，支持自定义转换器和日期时间规范化
-- **对象映射** - 三级映射系统（类型特定映射器 → 通用映射器 → 自动映射提供者）
-- **多级缓存** - 支持分布式缓存和混合缓存（L1 内存 + L2 分布式）
-- **分布式锁** - 支持进程内锁和多种分布式后端（Redis、SQL Server、PostgreSQL、MySQL 等）
-- **后台调度** - 基于 TPL 的任务调度服务，支持限制并发级别
-- **时区支持** - 多时区抽象，支持时区转换和时间提供者
-- **加密工具** - 支持 MD5、RSA、AES、DES、SM2/SM3/SM4 等加密算法
+| 包名 | 说明 |
+| --- | --- |
+| `DotCommon` | 核心库，包含序列化、对象映射、调度、时间、线程、反射与通用工具 |
+| `DotCommon.AutoMapper` | AutoMapper 集成，用于接入自动对象映射 |
+| `DotCommon.Caching` | 泛型分布式缓存与混合缓存抽象 |
+| `DotCommon.Caching.StackExchangeRedis` | 基于 StackExchange.Redis 的缓存实现接入 |
+| `DotCommon.Crypto` | 加密扩展，包含 BouncyCastle 相关能力 |
+| `DotCommon.DistributedLocking` | 分布式锁抽象与注册扩展 |
+| `DotCommon.AspNetCore.Mvc` | ASP.NET Core MVC 相关扩展 |
 
-### 目标框架
+## 目标框架
 
-- Core library: `netstandard2.0`, `netstandard2.1`
-- Extension packages: `net10.0`
+- `DotCommon`: `netstandard2.0`, `netstandard2.1`
+- `DotCommon.Caching`: `netstandard2.0`, `netstandard2.1`
+- `DotCommon.Caching.StackExchangeRedis`: `netstandard2.0`, `netstandard2.1`
+- `DotCommon.Crypto`: `netstandard2.0`, `netstandard2.1`
+- `DotCommon.DistributedLocking`: `netstandard2.0`, `netstandard2.1`
+- `DotCommon.AutoMapper`: `$(NetCoreFx)`
+- `DotCommon.AspNetCore.Mvc`: `$(NetCoreFx)`
 
 ## 安装
+
+安装核心包：
 
 ```bash
 dotnet add package DotCommon
 ```
 
-## 快速开始
-
-### 基础配置
-
-```csharp
-services
-    .AddDotCommon()                           // 核心服务
-    .AddDotCommonSystemTextJsonSerializer()   // System.Text.Json 序列化
-    .AddDotCommonObjectMapper()               // 对象映射
-    .AddDotCommonSchedule();                  // 后台调度
-```
-
-### 使用 AutoMapper
-
-```csharp
-var assemblies = new List<Assembly> { typeof(Program).Assembly };
-
-services
-    .AddDotCommon()
-    .AddDotCommonAutoMapper()
-    .AddAssemblyAutoMaps(assemblies.ToArray())
-    .BuildAutoMapper();
-```
-
-### 使用缓存
-
-```csharp
-services
-    .AddDotCommon()
-    .AddDotCommonCaching();
-
-var personCache = provider.GetRequiredService<IDistributedCache<PersonCacheItem>>();
-var cacheItem = await personCache.GetAsync("key1");
-await personCache.SetAsync("key2", cacheItem);
-```
-
-### 使用分布式锁
-
-```csharp
-// 进程内锁（单实例应用）
-services.AddDotCommonDistributedLocking(options =>
-{
-    options.KeyPrefix = "MyApp:";
-});
-
-// Redis 分布式锁
-var redis = await ConnectionMultiplexer.ConnectAsync("localhost:6379");
-var lockProvider = new RedisDistributedSynchronizationProvider(redis.GetDatabase());
-services.AddDotCommonDistributedLocking(lockProvider);
-
-// 使用
-await using (var handle = await _lock.TryAcquireAsync("MyLock", TimeSpan.FromSeconds(5)))
-{
-    if (handle != null)
-    {
-        // 执行业务逻辑
-    }
-}
-```
-
-## 扩展包
-
-### DotCommon.AutoMapper
-
-AutoMapper 集成扩展包，提供自动对象映射功能。
+按需安装扩展包：
 
 ```bash
 dotnet add package DotCommon.AutoMapper
-```
-
-### DotCommon.Caching
-
-多级缓存抽象，支持分布式缓存和混合缓存（L1 内存 + L2 分布式）。
-
-```bash
 dotnet add package DotCommon.Caching
-```
-
-### DotCommon.Crypto
-
-加密扩展包，提供国密算法（SM2/SM3/SM4）和 RSA 加密服务。
-
-```bash
+dotnet add package DotCommon.Caching.StackExchangeRedis
 dotnet add package DotCommon.Crypto
-```
-
-**功能特性：**
-- **SM2** - 国密非对称加密算法
-- **SM3** - 国密哈希算法
-- **SM4** - 国密对称加密算法
-- **RSA** - RSA 加密服务扩展
-
-### DotCommon.DistributedLocking
-
-分布式锁扩展包，基于 Medallion.Threading，支持多种后端（Redis、SQL Server、PostgreSQL、MySQL 等）。
-
-```bash
 dotnet add package DotCommon.DistributedLocking
-```
-
-### DotCommon.AspNetCore.Mvc
-
-ASP.NET Core MVC 集成扩展，提供 CORS 配置、请求格式化器、HTTP 扩展等功能。
-
-```bash
 dotnet add package DotCommon.AspNetCore.Mvc
 ```
 
-## 项目结构
+## 快速开始
 
-```
-src/
-├── DotCommon/                           # 核心库 (netstandard2.0, netstandard2.1)
-│   ├── Collections/                     # 集合工具
-│   ├── DependencyInjection/             # 依赖注入扩展
-│   ├── Encrypt/                         # 加密工具 (MD5, RSA, AES, DES, TripleDES)
-│   ├── IO/                              # IO 操作
-│   ├── Json/SystemTextJson/             # JSON 序列化及自定义转换器
-│   ├── ObjectMapping/                   # 对象映射抽象
-│   ├── Reflecting/                      # 高性能反射 (ExpressionMapper, EmitMapper)
-│   ├── Scheduling/                     # 后台任务调度
-│   ├── Serialization/                  # 序列化抽象
-│   ├── Threading/                      # 线程工具
-│   ├── Timing/                          # 时钟和时区抽象
-│   └── Utility/                         # 工具类 (转换、加密、文本等)
-├── DotCommon.AutoMapper/                # AutoMapper 集成 (net10.0)
-├── DotCommon.Caching/                   # 缓存抽象 (netstandard2.0, netstandard2.1)
-├── DotCommon.Crypto/                    # 国密算法扩展 (netstandard2.0, netstandard2.1)
-│   ├── SM2/                             # SM2 非对称加密
-│   ├── SM3/                             # SM3 哈希算法
-│   └── SM4/                             # SM4 对称加密
-├── DotCommon.DistributedLocking/        # 分布式锁 (netstandard2.0, netstandard2.1)
-└── DotCommon.AspNetCore.Mvc/            # ASP.NET Core MVC 集成 (net10.0)
+### 基础注册
+
+`AddDotCommon()` 会统一注册调度、对象序列化、对象映射、线程、时间和默认 JSON 服务。
+
+```csharp
+services.AddDotCommon();
 ```
 
-## 核心架构
-
-### 对象映射架构
-
-对象映射系统有**三个优先级层次**（按顺序检查）：
-
-1. **类型特定映射器**: `IObjectMapper<TSource, TDestination>` - 最高优先级，用于自定义映射逻辑
-2. **通用映射器**: `IObjectMapper` - 处理集合并委托给自动映射器
-3. **自动映射提供者**: `IAutoObjectMappingProvider` - 可插拔（通过 `DotCommon.AutoMapper` 包集成 AutoMapper）
-
-### 高性能反射
-
-**ExpressionMapper** 使用 Expression Trees 编译为 IL，实现快速的对象与字典转换。使用并发字典缓存已编译的转换器。在处理对象到字典的场景时，这是首选的高性能方法。
-
-### 缓存架构
-
-- **IDistributedCache\<T\>** - 泛型分布式缓存
-- **IHybridCache\<T\>** - L1 (内存) + L2 (分布式) 混合缓存
-- **DotCommonHybridCache** - 基于 JSON 序列化的实现
-- **IDistributedCacheSerializer** - 可插拔序列化（默认: UTF8 JSON）
-- **DistributedCacheKeyNormalizer** - 支持前缀的键转换
-
-### 依赖注入设置
-
-服务注册遵循流式模式：
+如果只需要部分能力，也可以分别注册：
 
 ```csharp
 services
-    .AddDotCommon()                    // 核心服务
-    .AddDotCommonSchedule()            // 调度
-    .AddDotCommonObjectMapper()        // 对象映射
-    .AddDotCommonSystemTextJsonSerializer(); // JSON
+    .AddDotCommonSchedule()
+    .AddDotCommonSerialization()
+    .AddDotCommonObjectMapper()
+    .AddDotCommonThreading()
+    .AddDotCommonTiming()
+    .AddDotCommonSystemTextJson();
 ```
 
-扩展包注册方法：
+### 对象映射
+
+核心对象映射默认使用 `DefaultObjectMapper`，映射优先级如下：
+
+1. `IObjectMapper<TSource, TDestination>` 类型专用映射器
+2. `IObjectMapper` 通用映射器
+3. `IAutoObjectMappingProvider` 自动映射提供者
+
+启用 AutoMapper 扩展后，默认自动映射提供者会被替换为 AutoMapper 实现。
+
 ```csharp
-services.AddDotCommonAutoMapper()      // AutoMapper 集成
-    .AddAssemblyAutoMaps(assemblies)   // 扫描映射特性
-    .BuildAutoMapper();
-
-services.AddDotCommonCaching();         // 缓存
-services.AddDotCommonDistributedLocking(); // 分布式锁
+services
+    .AddDotCommon()
+    .AddDotCommonAutoMapper();
 ```
 
-## 构建和测试
+### 缓存
 
-### 构建项目
+`DotCommon.Caching` 提供：
+
+- `IDistributedCache<TCacheItem>`
+- `IDistributedCache<TCacheItem, TCacheKey>`
+- `IHybridCache<TCacheItem>`
+
+默认注册包括内存缓存、分布式内存缓存、缓存键标准化和 JSON 序列化器。
+
+```csharp
+services.AddDotCommonCaching();
+```
+
+如果需要 Redis：
+
+```csharp
+services.AddDotCommonCachingWithRedis(options =>
+{
+    options.Configuration = "localhost:6379";
+});
+```
+
+### 分布式锁
+
+`DotCommon.DistributedLocking` 支持两类接入方式：
+
+- 单实例场景下的本地锁
+- 基于 `IDistributedLockProvider` 的外部锁提供者
+
+```csharp
+services.AddDotCommonDistributedLocking();
+```
+
+或传入外部分布式锁提供者：
+
+```csharp
+services.AddDotCommonDistributedLocking(lockProvider);
+```
+
+## 核心设计
+
+### Provider 模式
+
+项目中大量能力通过接口抽象和默认实现解耦，便于替换具体实现。
+
+- `IJsonSerializer` -> `DotCommonSystemTextJsonSerializer`
+- `IObjectSerializer` -> `DefaultObjectSerializer`
+- `IObjectMapper` -> `DefaultObjectMapper`
+- `IAutoObjectMappingProvider` -> `NotImplementedAutoObjectMappingProvider`
+
+### JSON 序列化
+
+默认 JSON 实现位于 `DotCommon.Json.SystemTextJson` 命名空间，内置：
+
+- 日期时间转换器
+- 字符串到枚举转换器
+- 字符串到布尔值转换器
+- `object` 类型推断转换器
+
+同时集成了基于 `TypeInfoResolver` 的扩展点，支持日期时间规范化处理。
+
+### 高性能反射
+
+`ExpressionMapper` 使用表达式树构建和缓存转换逻辑，适合对性能敏感的对象转换场景。
+
+### 调度与时间
+
+- `IScheduleService` 提供后台任务调度能力
+- `IClock`、`ICurrentTimezoneProvider`、`ITimezoneProvider` 提供时间与时区抽象
+- `ICancellationTokenProvider`、Ambient Scope 相关类型提供线程上下文能力
+
+## 项目结构
+
+```text
+src/
+  DotCommon/
+  DotCommon.AutoMapper/
+  DotCommon.AspNetCore.Mvc/
+  DotCommon.Caching/
+  DotCommon.Caching.StackExchangeRedis/
+  DotCommon.Crypto/
+  DotCommon.DistributedLocking/
+
+test/
+  DotCommon.Test/
+  DotCommon.AspNetCore.Mvc.Test/
+```
+
+## 构建与测试
+
+构建整个解决方案：
 
 ```bash
-# 克隆仓库
-git clone https://github.com/cocosip/DotCommon.git
-cd DotCommon
+dotnet build DotCommon.sln
+```
 
-# 恢复依赖
-dotnet restore DotCommon.sln
+Release 构建：
 
-# 构建（Release 模式）
+```bash
 dotnet build DotCommon.sln -c Release
 ```
 
-### 运行测试
+运行全部测试：
 
 ```bash
-dotnet test DotCommon.sln -c Release --verbosity normal
+dotnet test DotCommon.sln
 ```
 
-### 打包
+也可以使用仓库内脚本：
 
 ```bash
-dotnet pack DotCommon.sln -c Release --include-symbols -o dest/
+./build/build-all-release.ps1
+./build/test-all.ps1
+./build/pack-all.ps1
 ```
 
-## 依赖项
+## 依赖管理
 
-主要依赖项（版本通过 Directory.Packages.props 集中管理）：
+项目通过 `Directory.Packages.props` 集中管理依赖版本，不在单个 `.csproj` 中重复指定版本。
 
-| 包 | 版本 | 用途 |
-|---|---|---|
-| Microsoft.Extensions.* | 10.0.5+ | DI、Options、Configuration、Caching |
-| System.Text.Json | 10.0.5+ | JSON 序列化 |
-| AutoMapper | 16.1.1 | 对象映射 (DotCommon.AutoMapper) |
-| TimeZoneConverter | 7.2.0 | 时区处理 |
-| BouncyCastle.Cryptography | 2.6.2 | SM2/SM3/SM4 加密 |
-| DistributedLock.Core | 1.0.9 | 分布式锁 |
-| xUnit | 2.9.3 | 测试框架 |
+主要依赖包括：
+
+- `Microsoft.Extensions.*`
+- `System.Text.Json`
+- `AutoMapper`
+- `TimeZoneConverter`
+- `BouncyCastle.Cryptography`
+- `DistributedLock.Core`
+- `xUnit`
 
 ## 许可证
 
-本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
-
-## 贡献
-
-欢迎提交 Issue 和 Pull Request！
+本项目采用 MIT 许可证，详见 `LICENSE`。
