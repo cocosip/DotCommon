@@ -93,7 +93,7 @@ namespace DotCommon.Scheduling
 
             lock (_syncObject)
             {
-                if (_taskDict.TryGetValue(name, out TimerBasedTask task))
+                if (_taskDict.TryGetValue(name, out var task) && task != null)
                 {
                     task.Stopped = true;
                     task.Timer?.Dispose();
@@ -112,26 +112,46 @@ namespace DotCommon.Scheduling
         /// Timer callback method.
         /// </summary>
         /// <param name="state">The task name.</param>
-        private void TaskCallback(object state)
+        private void TaskCallback(object? state)
         {
-            var taskName = (string)state;
-
-            if (!_taskDict.TryGetValue(taskName, out TimerBasedTask task))
+            if (state is not string taskName)
             {
-                _logger.LogWarning("Task '{TaskName}' not found in dictionary during callback execution.", taskName);
                 return;
+            }
+
+            TimerBasedTask task = null!;
+
+            lock (_syncObject)
+            {
+                if (!_taskDict.TryGetValue(taskName, out var foundTask) || foundTask == null)
+                {
+                    _logger.LogWarning("Task '{TaskName}' not found in dictionary during callback execution.", taskName);
+                    return;
+                }
+
+                task = foundTask;
+
+                if (task.Stopped)
+                {
+                    return;
+                }
+
+                try
+                {
+                    // Pause the timer to prevent reentrancy during task execution
+                    task.Timer?.Change(Timeout.Infinite, Timeout.Infinite);
+                }
+                catch (ObjectDisposedException)
+                {
+                    _logger.LogDebug("Timer for task '{TaskName}' was disposed before execution.", task.Name);
+                    return;
+                }
             }
 
             try
             {
-                if (!task.Stopped)
-                {
-                    // Pause the timer to prevent reentrancy during task execution
-                    task.Timer?.Change(Timeout.Infinite, Timeout.Infinite);
-
-                    // Execute the task
-                    task.Action?.Invoke();
-                }
+                // Execute the task
+                task.Action?.Invoke();
             }
             catch (ObjectDisposedException)
             {
@@ -149,10 +169,15 @@ namespace DotCommon.Scheduling
             {
                 try
                 {
-                    // Restart the timer if the task is not stopped
-                    if (!task.Stopped)
+                    lock (_syncObject)
                     {
-                        task.Timer?.Change(task.Period, task.Period);
+                        // Restart the timer if task still exists and is not stopped
+                        if (_taskDict.TryGetValue(taskName, out var currentTask) && currentTask != null &&
+                            ReferenceEquals(currentTask, task) &&
+                            !task.Stopped)
+                        {
+                            task.Timer?.Change(task.Period, task.Period);
+                        }
                     }
                 }
                 catch (ObjectDisposedException)

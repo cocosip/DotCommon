@@ -37,29 +37,29 @@ namespace DotCommon.Caching.StackExchangeRedis
         {
             var type = typeof(RedisCache);
 
-            RedisDatabaseField = type.GetField("_cache", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            RedisDatabaseField = GetRequiredField(type, "_cache", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            ConnectMethod = type.GetMethod("Connect", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            ConnectMethod = GetRequiredMethod(type, "Connect", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            ConnectAsyncMethod = type.GetMethod("ConnectAsync", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            ConnectAsyncMethod = GetRequiredMethod(type, "ConnectAsync", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            MapMetadataMethod = type.GetMethod("MapMetadata", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static)!;
+            MapMetadataMethod = GetRequiredMethod(type, "MapMetadata", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
 
-            GetAbsoluteExpirationMethod = type.GetMethod("GetAbsoluteExpiration", BindingFlags.Static | BindingFlags.NonPublic)!;
+            GetAbsoluteExpirationMethod = GetRequiredMethod(type, "GetAbsoluteExpiration", BindingFlags.Static | BindingFlags.NonPublic);
 
-            GetExpirationInSecondsMethod = type.GetMethod("GetExpirationInSeconds", BindingFlags.Static | BindingFlags.NonPublic)!;
+            GetExpirationInSecondsMethod = GetRequiredMethod(type, "GetExpirationInSeconds", BindingFlags.Static | BindingFlags.NonPublic);
 
-            OnRedisErrorMethod = type.GetMethod("OnRedisError", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            OnRedisErrorMethod = GetRequiredMethod(type, "OnRedisError", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            RecycleMethodInfo = type.GetMethod("Recycle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static)!;
+            RecycleMethodInfo = GetRequiredMethod(type, "Recycle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
 
-            AbsoluteExpirationKey = type.GetField("AbsoluteExpirationKey", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!.ToString()!;
+            AbsoluteExpirationKey = GetRequiredFieldValue(type, "AbsoluteExpirationKey", BindingFlags.Static | BindingFlags.NonPublic);
 
-            SlidingExpirationKey = type.GetField("SlidingExpirationKey", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!.ToString()!;
+            SlidingExpirationKey = GetRequiredFieldValue(type, "SlidingExpirationKey", BindingFlags.Static | BindingFlags.NonPublic);
 
-            DataKey = type.GetField("DataKey", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!.ToString()!;
+            DataKey = GetRequiredFieldValue(type, "DataKey", BindingFlags.Static | BindingFlags.NonPublic);
 
-            NotPresent = (long)type.GetField("NotPresent", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
+            NotPresent = (long)GetRequiredField(type, "NotPresent", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null)!;
 
             HashMembersAbsoluteExpirationSlidingExpirationData = new RedisValue[] { AbsoluteExpirationKey, SlidingExpirationKey, DataKey };
 
@@ -117,7 +117,7 @@ namespace DotCommon.Caching.StackExchangeRedis
 
             try
             {
-                Task.WaitAll(PipelineSetMany(cache, items, options, out var leases));
+                Task.WhenAll(PipelineSetMany(cache, items, options, out var leases)).GetAwaiter().GetResult();
                 foreach (var lease in leases)
                 {
                     Recycle(lease);
@@ -182,7 +182,7 @@ namespace DotCommon.Caching.StackExchangeRedis
 
             try
             {
-                Task.WaitAll(PipelineRemoveManyAsync(cache, keys));
+                Task.WhenAll(PipelineRemoveManyAsync(cache, keys)).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -228,7 +228,7 @@ namespace DotCommon.Caching.StackExchangeRedis
             {
                 var results = HashMemberGetMany(cache, keyArray, GetHashFields(getData));
 
-                Task.WaitAll(PipelineRefreshManyAndOutData(cache, keyArray, results, out bytes));
+                Task.WhenAll(PipelineRefreshManyAndOutData(cache, keyArray, results, out bytes)).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -272,11 +272,11 @@ namespace DotCommon.Caching.StackExchangeRedis
                 tasks.Add(cache.HashGetAsync(keys[i], hashFields));
             }
 
-            Task.WaitAll(tasks.ToArray());
+            Task.WhenAll(tasks).GetAwaiter().GetResult();
 
             for (var i = 0; i < keys.Length; i++)
             {
-                results[i] = tasks[i].Result;
+                results[i] = tasks[i].GetAwaiter().GetResult();
             }
 
             return results;
@@ -433,6 +433,24 @@ namespace DotCommon.Caching.StackExchangeRedis
                 new HashEntry(SlidingExpirationKey, slidingExpiration?.Ticks ?? NotPresent),
                 new HashEntry(DataKey, value)
             };
+        }
+
+        private static MethodInfo GetRequiredMethod(Type type, string name, BindingFlags flags)
+        {
+            return type.GetMethod(name, flags) ??
+                   throw new MissingMethodException(type.FullName, name);
+        }
+
+        private static FieldInfo GetRequiredField(Type type, string name, BindingFlags flags)
+        {
+            return type.GetField(name, flags) ??
+                   throw new MissingFieldException(type.FullName, name);
+        }
+
+        private static string GetRequiredFieldValue(Type type, string name, BindingFlags flags)
+        {
+            return GetRequiredField(type, name, flags).GetValue(null)?.ToString() ??
+                   throw new InvalidOperationException($"Field '{name}' on '{type.FullName}' is null.");
         }
     }
 }

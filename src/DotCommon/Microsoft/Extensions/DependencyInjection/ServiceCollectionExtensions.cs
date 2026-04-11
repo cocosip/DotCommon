@@ -114,8 +114,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddOptions<DotCommonSystemTextJsonSerializerOptions>()
                  .Configure<IServiceProvider>((options, rootServiceProvider) =>
                  {
-                     // If the user hasn't explicitly configured the encoder, use the less strict encoder that does not encode all non-ASCII characters.
-                     options.JsonSerializerOptions.Encoder ??= JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+                     options.JsonSerializerOptions.Encoder ??= JavaScriptEncoder.Default;
 
                      options.JsonSerializerOptions.Converters.Add(new DotCommonStringToEnumFactory());
                      options.JsonSerializerOptions.Converters.Add(new DotCommonStringToBooleanConverter());

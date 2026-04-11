@@ -78,6 +78,19 @@ namespace DotCommon.Test.Reflecting
             public string Name { get; set; } = string.Empty;
         }
 
+        public class ConversionModel
+        {
+            public int Id { get; set; }
+
+            public decimal Amount { get; set; }
+
+            public DayOfWeek Day { get; set; }
+
+            public Guid CorrelationId { get; set; }
+
+            public DateTime CreatedAt { get; set; }
+        }
+
         #endregion
 
         #region Dictionary to Object Tests
@@ -188,6 +201,53 @@ namespace DotCommon.Test.Reflecting
             // Act & Assert
             Assert.Throws<NotSupportedException>(() =>
                 ExpressionMapper.DictionaryToObject<CollectionModel>(dictionary));
+        }
+
+        [Fact]
+        public void DictionaryToObject_WithInferredNumberTypes_ShouldConvertCorrectly()
+        {
+            // Arrange
+            var dictionary = new Dictionary<string, object>
+            {
+                { "Id", 123L },
+                { "Amount", 56.78d },
+                { "Day", 5L },
+                { "CorrelationId", Guid.NewGuid().ToString() },
+                { "CreatedAt", "2024-01-01T10:30:00Z" }
+            };
+
+            // Act
+            var result = ExpressionMapper.DictionaryToObject<ConversionModel>(dictionary);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(123, result.Id);
+            Assert.Equal(56.78m, result.Amount);
+            Assert.Equal(DayOfWeek.Friday, result.Day);
+            Assert.NotEqual(Guid.Empty, result.CorrelationId);
+            Assert.Equal(DateTime.Parse("2024-01-01T10:30:00Z"), result.CreatedAt);
+        }
+
+        [Fact]
+        public void DictionaryToObject_WithEnumString_ShouldConvertCorrectly()
+        {
+            // Arrange
+            var dictionary = new Dictionary<string, object>
+            {
+                { "Id", 1L },
+                { "Amount", 10L },
+                { "Day", "Monday" },
+                { "CorrelationId", Guid.NewGuid().ToString() },
+                { "CreatedAt", "2024-01-02T00:00:00" }
+            };
+
+            // Act
+            var result = ExpressionMapper.DictionaryToObject<ConversionModel>(dictionary);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(DayOfWeek.Monday, result.Day);
+            Assert.Equal(10m, result.Amount);
         }
 
         #endregion

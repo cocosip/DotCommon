@@ -20,7 +20,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddDistributedMemoryCache()
                 .AddSingleton(typeof(IDistributedCache<>), typeof(DistributedCache<>))
                 .AddSingleton(typeof(IDistributedCache<,>), typeof(DistributedCache<,>))
-                .AddSingleton(typeof(IHybridCache<>), typeof(DotCommonHybridCache<>));
+                .AddSingleton(typeof(IHybridCache<>), typeof(DotCommonHybridCache<>))
+                .AddSingleton(typeof(IHybridCache<,>), typeof(DotCommonHybridCache<,>));
 
 
             services

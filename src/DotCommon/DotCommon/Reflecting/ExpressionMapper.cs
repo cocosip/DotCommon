@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Globalization;
 using System.Reflection;
 using System.Security;
 
@@ -230,17 +231,56 @@ namespace DotCommon.Reflecting
         /// <returns>A conversion expression</returns>
         private static Expression CreateValueConversionExpression(Expression valueExpr, Type targetType)
         {
-            // Handle nullable types
-            var underlyingType = Nullable.GetUnderlyingType(targetType);
-            if (underlyingType != null)
+            var convertMethod = ReflectionInfo.ConvertValueMethod.MakeGenericMethod(targetType);
+            return Expression.Call(convertMethod, valueExpr);
+        }
+
+        private static TTarget ConvertValue<TTarget>(object value)
+        {
+            if (value is TTarget typedValue)
             {
-                // For nullable types, convert to underlying type first, then to nullable
-                var convertToUnderlyingExpr = Expression.Convert(valueExpr, underlyingType);
-                return Expression.Convert(convertToUnderlyingExpr, targetType);
+                return typedValue;
             }
 
-            // Direct conversion for non-nullable types
-            return Expression.Convert(valueExpr, targetType);
+            var targetType = typeof(TTarget);
+            var nonNullableType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+            if (nonNullableType.IsEnum)
+            {
+                if (value is string enumString)
+                {
+                    return (TTarget)Enum.Parse(nonNullableType, enumString, true);
+                }
+
+                var enumUnderlyingType = Enum.GetUnderlyingType(nonNullableType);
+                var enumNumericValue = Convert.ChangeType(value, enumUnderlyingType, CultureInfo.InvariantCulture);
+                return (TTarget)Enum.ToObject(nonNullableType, enumNumericValue!);
+            }
+
+            if (nonNullableType == typeof(Guid))
+            {
+                if (value is string guidString)
+                {
+                    return (TTarget)(object)Guid.Parse(guidString);
+                }
+            }
+
+            if (nonNullableType == typeof(DateTime))
+            {
+                if (value is string dateTimeString)
+                {
+                    return (TTarget)(object)DateTime.Parse(dateTimeString, CultureInfo.InvariantCulture);
+                }
+            }
+
+            var converted = Convert.ChangeType(value, nonNullableType, CultureInfo.InvariantCulture);
+
+            if (Nullable.GetUnderlyingType(targetType) != null)
+            {
+                return (TTarget)Activator.CreateInstance(targetType, converted)!;
+            }
+
+            return (TTarget)converted!;
         }
 
         #endregion
@@ -340,6 +380,7 @@ namespace DotCommon.Reflecting
             public readonly MethodInfo DictionaryContainsKey;
             public readonly PropertyInfo DictionaryIndexer;
             public readonly MethodInfo DictionaryAdd;
+            public readonly MethodInfo ConvertValueMethod;
 
             public ReflectionCache()
             {
@@ -347,6 +388,7 @@ namespace DotCommon.Reflecting
                 DictionaryContainsKey = dictionaryType.GetMethod("ContainsKey", new[] { typeof(string) })!;
                 DictionaryIndexer = dictionaryType.GetProperty("Item", new[] { typeof(string) })!;
                 DictionaryAdd = dictionaryType.GetMethod("Add", new[] { typeof(string), typeof(object) })!;
+                ConvertValueMethod = typeof(ExpressionMapper).GetMethod(nameof(ConvertValue), BindingFlags.Static | BindingFlags.NonPublic)!;
             }
         }
 

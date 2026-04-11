@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -157,7 +158,7 @@ namespace DotCommon.Caching
 
         protected IServiceScopeFactory ServiceScopeFactory { get; }
 
-        protected SemaphoreSlim SyncSemaphore { get; }
+        protected ConcurrentDictionary<string, SemaphoreSlim> KeySyncSemaphores { get; }
 
         protected DistributedCacheEntryOptions DefaultCacheOptions = default!;
 
@@ -179,7 +180,7 @@ namespace DotCommon.Caching
             KeyNormalizer = keyNormalizer;
             ServiceScopeFactory = serviceScopeFactory;
 
-            SyncSemaphore = new SemaphoreSlim(1, 1);
+            KeySyncSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
             SetDefaultOptions();
         }
@@ -220,6 +221,11 @@ namespace DotCommon.Caching
 
             //Configure default cache entry options
             DefaultCacheOptions = GetDefaultCacheEntryOptions();
+        }
+
+        protected virtual SemaphoreSlim GetSyncSemaphore(TCacheKey key)
+        {
+            return KeySyncSemaphores.GetOrAdd(NormalizeKey(key), static _ => new SemaphoreSlim(1, 1));
         }
 
         /// <summary>
@@ -475,7 +481,8 @@ namespace DotCommon.Caching
                 return value;
             }
 
-            using (SyncSemaphore.Lock())
+            var keySemaphore = GetSyncSemaphore(key);
+            using (keySemaphore.Lock())
             {
                 value = Get(key, hideErrors, considerUow);
                 if (value != null)
@@ -516,7 +523,8 @@ namespace DotCommon.Caching
                 return value;
             }
 
-            using (await SyncSemaphore.LockAsync(token))
+            var keySemaphore = GetSyncSemaphore(key);
+            using (await keySemaphore.LockAsync(token))
             {
                 value = await GetAsync(key, hideErrors, considerUow, token);
                 if (value != null)
@@ -597,14 +605,45 @@ namespace DotCommon.Caching
                 missingValuesIndex.Add(i);
             }
 
-            var missingValues = factory.Invoke(missingKeys).ToArray();
-            var valueQueue = new Queue<KeyValuePair<TCacheKey, TCacheItem>>(missingValues);
+            var missingValues = factory.Invoke(missingKeys);
+            if (missingValues == null)
+            {
+                throw new DotCommonException("Factory result can not be null.");
+            }
 
-            SetMany(missingValues, optionsFactory?.Invoke(), hideErrors, considerUow);
+            var missingValuesArray = missingValues.ToArray();
+            var missingKeySet = new HashSet<TCacheKey>(missingKeys);
+            var missingValueMap = new Dictionary<TCacheKey, TCacheItem>();
+
+            foreach (var item in missingValuesArray)
+            {
+                if (!missingKeySet.Contains(item.Key))
+                {
+                    throw new DotCommonException($"Factory returned an unexpected key: {item.Key}.");
+                }
+
+                if (missingValueMap.ContainsKey(item.Key))
+                {
+                    throw new DotCommonException($"Factory returned duplicate key: {item.Key}.");
+                }
+
+                missingValueMap[item.Key] = item.Value;
+            }
+
+            foreach (var missingKey in missingKeys)
+            {
+                if (!missingValueMap.ContainsKey(missingKey))
+                {
+                    throw new DotCommonException($"Factory did not return value for key: {missingKey}.");
+                }
+            }
+
+            SetMany(missingValuesArray, optionsFactory?.Invoke(), hideErrors, considerUow);
 
             foreach (var index in missingValuesIndex)
             {
-                result[index] = valueQueue.Dequeue()!;
+                var key = keyArray[index];
+                result[index] = new KeyValuePair<TCacheKey, TCacheItem?>(key, missingValueMap[key]);
             }
 
             return result;
@@ -675,14 +714,45 @@ namespace DotCommon.Caching
                 missingValuesIndex.Add(i);
             }
 
-            var missingValues = (await factory.Invoke(missingKeys)).ToArray();
-            var valueQueue = new Queue<KeyValuePair<TCacheKey, TCacheItem>>(missingValues);
+            var missingValues = await factory.Invoke(missingKeys);
+            if (missingValues == null)
+            {
+                throw new DotCommonException("Factory result can not be null.");
+            }
 
-            await SetManyAsync(missingValues, optionsFactory?.Invoke(), hideErrors, considerUow, token);
+            var missingValuesArray = missingValues.ToArray();
+            var missingKeySet = new HashSet<TCacheKey>(missingKeys);
+            var missingValueMap = new Dictionary<TCacheKey, TCacheItem>();
+
+            foreach (var item in missingValuesArray)
+            {
+                if (!missingKeySet.Contains(item.Key))
+                {
+                    throw new DotCommonException($"Factory returned an unexpected key: {item.Key}.");
+                }
+
+                if (missingValueMap.ContainsKey(item.Key))
+                {
+                    throw new DotCommonException($"Factory returned duplicate key: {item.Key}.");
+                }
+
+                missingValueMap[item.Key] = item.Value;
+            }
+
+            foreach (var missingKey in missingKeys)
+            {
+                if (!missingValueMap.ContainsKey(missingKey))
+                {
+                    throw new DotCommonException($"Factory did not return value for key: {missingKey}.");
+                }
+            }
+
+            await SetManyAsync(missingValuesArray, optionsFactory?.Invoke(), hideErrors, considerUow, token);
 
             foreach (var index in missingValuesIndex)
             {
-                result[index] = valueQueue.Dequeue()!;
+                var key = keyArray[index];
+                result[index] = new KeyValuePair<TCacheKey, TCacheItem?>(key, missingValueMap[key]);
             }
 
             return result;

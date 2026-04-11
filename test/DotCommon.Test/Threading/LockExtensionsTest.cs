@@ -96,7 +96,6 @@ namespace DotCommon.Test.Threading
                 obj.Locking(x =>
                 {
                     throw new InvalidOperationException("Test");
-                    return 0;
                 });
             });
         }

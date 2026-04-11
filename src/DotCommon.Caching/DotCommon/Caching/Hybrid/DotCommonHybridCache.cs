@@ -80,7 +80,7 @@ namespace DotCommon.Caching.Hybrid
 
         protected IServiceScopeFactory ServiceScopeFactory { get; }
 
-        protected SemaphoreSlim SyncSemaphore { get; }
+        protected ConcurrentDictionary<string, SemaphoreSlim> KeySyncSemaphores { get; }
 
         protected HybridCacheEntryOptions DefaultCacheOptions = default!;
 
@@ -92,7 +92,6 @@ namespace DotCommon.Caching.Hybrid
             HybridCache hybridCache,
             IDistributedCache distributedCache,
             ICancellationTokenProvider cancellationTokenProvider,
-            IDistributedCacheSerializer serializer,
             IDistributedCacheKeyNormalizer keyNormalizer,
             IServiceScopeFactory serviceScopeFactory)
         {
@@ -105,7 +104,7 @@ namespace DotCommon.Caching.Hybrid
             KeyNormalizer = keyNormalizer;
             ServiceScopeFactory = serviceScopeFactory;
 
-            SyncSemaphore = new SemaphoreSlim(1, 1);
+            KeySyncSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
             SetDefaultOptions();
         }
@@ -144,6 +143,11 @@ namespace DotCommon.Caching.Hybrid
 
             //Configure default cache entry options
             DefaultCacheOptions = GetDefaultCacheEntryOptions();
+        }
+
+        protected virtual SemaphoreSlim GetSyncSemaphore(TCacheKey key)
+        {
+            return KeySyncSemaphores.GetOrAdd(NormalizeKey(key), static _ => new SemaphoreSlim(1, 1));
         }
 
         /// <summary>
@@ -197,7 +201,8 @@ namespace DotCommon.Caching.Hybrid
 
             try
             {
-                using (await SyncSemaphore.LockAsync(token))
+                var keySemaphore = GetSyncSemaphore(key);
+                using (await keySemaphore.LockAsync(token))
                 {
 
                     var bytes = await DistributedCacheCache.GetAsync(NormalizeKey(key), token);
@@ -374,7 +379,10 @@ namespace DotCommon.Caching.Hybrid
                 throw new InvalidOperationException($"No {nameof(IHybridCacheSerializer<TCacheItem>)} configured for type '{typeof(TCacheItem).Name}'");
             }
 
-            return serializer.As<IHybridCacheSerializer<TCacheItem>>();
+            var resolvedSerializer = serializer.As<IHybridCacheSerializer<TCacheItem>>();
+            _serializersCache.TryAdd(typeof(TCacheItem), resolvedSerializer);
+
+            return resolvedSerializer;
         }
     }
 }
