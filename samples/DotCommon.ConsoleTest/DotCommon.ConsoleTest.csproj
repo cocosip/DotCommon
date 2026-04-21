@@ -8,22 +8,16 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration" />
-		<PackageReference Include="NLog.Extensions.Logging" />
+		<PackageReference Include="Serilog" />
+		<PackageReference Include="Serilog.Extensions.Logging" />
+		<PackageReference Include="Serilog.Sinks.Console" />
+		<PackageReference Include="Serilog.Sinks.File" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\DotCommon.AutoMapper\DotCommon.AutoMapper.csproj" />
 		<ProjectReference Include="..\..\src\DotCommon.Crypto\DotCommon.Crypto.csproj" />
 		<ProjectReference Include="..\..\src\DotCommon\DotCommon.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="log4net.config">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="nlog.config">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 
 </Project>
