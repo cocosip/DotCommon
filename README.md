@@ -188,19 +188,19 @@ test/
 构建整个解决方案：
 
 ```bash
-dotnet build DotCommon.sln
+dotnet build DotCommon.slnx
 ```
 
 Release 构建：
 
 ```bash
-dotnet build DotCommon.sln -c Release
+dotnet build DotCommon.slnx -c Release
 ```
 
 运行全部测试：
 
 ```bash
-dotnet test DotCommon.sln
+dotnet test DotCommon.slnx
 ```
 
 也可以使用仓库内脚本：

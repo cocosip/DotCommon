@@ -8,9 +8,9 @@ DotCommon is a C# utility library for .NET applications. It provides common abst
 
 ## Build And Test
 
-- Build solution: `dotnet build DotCommon.sln`
-- Build release: `dotnet build DotCommon.sln -c:Release`
-- Run all tests: `dotnet test DotCommon.sln`
+- Build solution: `dotnet build DotCommon.slnx`
+- Build release: `dotnet build DotCommon.slnx -c:Release`
+- Run all tests: `dotnet test DotCommon.slnx`
 - Run core tests: `dotnet test test/DotCommon.Test/DotCommon.Test.csproj`
 - Build script: `./build/build-all-release.ps1`
 - Test script: `./build/test-all.ps1`

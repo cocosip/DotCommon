@@ -1,0 +1,30 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/doc/">
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/DotCommon.ConsoleTest/DotCommon.ConsoleTest.csproj" />
+  </Folder>
+  <Folder Name="/solutions/">
+    <File Path="common.props" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/DotCommon.AspNetCore.Mvc/DotCommon.AspNetCore.Mvc.csproj" />
+    <Project Path="src/DotCommon.AutoMapper/DotCommon.AutoMapper.csproj" />
+    <Project Path="src/DotCommon.Caching/DotCommon.Caching.csproj" />
+    <Project Path="src/DotCommon.Crypto/DotCommon.Crypto.csproj" />
+    <Project Path="src/DotCommon.DistributedLocking/DotCommon.DistributedLocking.csproj" />
+    <Project Path="src/DotCommon/DotCommon.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/DotCommon.AspNetCore.Mvc.Test/DotCommon.AspNetCore.Mvc.Test.csproj" />
+    <Project Path="test/DotCommon.Test/DotCommon.Test.csproj" />
+  </Folder>
+</Solution>
