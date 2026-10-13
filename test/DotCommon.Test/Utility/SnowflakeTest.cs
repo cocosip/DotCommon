@@ -86,7 +86,7 @@ namespace DotCommon.Test.Utility
                     {
                         ids.Add(snowflake.NextId());
                     }
-                }));
+                }, TestContext.Current.CancellationToken));
             }
 
             await Task.WhenAll(tasks.ToArray());

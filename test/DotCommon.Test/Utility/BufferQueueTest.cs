@@ -94,11 +94,11 @@ namespace DotCommon.Test.Utility
             for (var i = 0; i < 50; i++)
             {
                 var value = i;
-                tasks[i] = Task.Run(() => queue.EnqueueMessage(value));
+                tasks[i] = Task.Run(() => queue.EnqueueMessage(value), TestContext.Current.CancellationToken);
             }
 
             await Task.WhenAll(tasks);
-            await Task.Delay(1000);
+            await Task.Delay(1000, TestContext.Current.CancellationToken);
 
             Assert.True(processedMessages.Count >= 20);
         }

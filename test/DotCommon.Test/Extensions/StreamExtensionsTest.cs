@@ -31,7 +31,7 @@ namespace System.IO.Tests
         {
             var expected = Encoding.UTF8.GetBytes("Hello World");
             using var stream = new MemoryStream(expected);
-            var result = await stream.GetAllBytesAsync();
+            var result = await stream.GetAllBytesAsync(TestContext.Current.CancellationToken);
             Assert.Equal(expected, result);
         }
 
@@ -40,7 +40,7 @@ namespace System.IO.Tests
         {
             var expected = Encoding.UTF8.GetBytes("Hello World");
             using var stream = new NonSeekableStream(expected);
-            var result = await stream.GetAllBytesAsync();
+            var result = await stream.GetAllBytesAsync(TestContext.Current.CancellationToken);
             Assert.Equal(expected, result);
         }
 
@@ -72,7 +72,7 @@ namespace System.IO.Tests
             using var source = new MemoryStream(data);
             source.Position = 5;
 
-            using var result = await source.CreateMemoryStreamAsync();
+            using var result = await source.CreateMemoryStreamAsync(TestContext.Current.CancellationToken);
 
             Assert.Equal(0, result.Position);
             Assert.Equal(data, result.ToArray());

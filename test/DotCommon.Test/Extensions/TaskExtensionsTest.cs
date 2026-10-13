@@ -17,7 +17,7 @@ namespace DotCommon.Test.Extensions
         [Fact]
         public void WaitResult_Should_Return_Default_When_Task_Times_Out()
         {
-            var task = Task.Delay(2000).ContinueWith(_ => 42);
+            var task = Task.Delay(2000, TestContext.Current.CancellationToken).ContinueWith(_ => 42);
             var result = task.WaitResult(100);
             Assert.Equal(default(int), result);
         }
@@ -32,14 +32,14 @@ namespace DotCommon.Test.Extensions
         [Fact]
         public async Task TimeoutAfter_Should_Complete_When_Task_Finishes_In_Time()
         {
-            var task = Task.Delay(100);
+            var task = Task.Delay(100, TestContext.Current.CancellationToken);
             await task.TimeoutAfter(1000);
         }
 
         [Fact]
         public async Task TimeoutAfter_Should_Throw_TimeoutException_When_Task_Times_Out()
         {
-            var task = Task.Delay(2000);
+            var task = Task.Delay(2000, TestContext.Current.CancellationToken);
             await Assert.ThrowsAsync<TimeoutException>(() => task.TimeoutAfter(100));
         }
 
@@ -53,7 +53,7 @@ namespace DotCommon.Test.Extensions
         [Fact]
         public async Task TimeoutAfter_With_Result_Should_Return_Result_When_Task_Finishes_In_Time()
         {
-            var task = Task.Delay(100).ContinueWith(_ => 42);
+            var task = Task.Delay(100, TestContext.Current.CancellationToken).ContinueWith(_ => 42);
             var result = await task.TimeoutAfter(1000);
             Assert.Equal(42, result);
         }
@@ -61,7 +61,7 @@ namespace DotCommon.Test.Extensions
         [Fact]
         public async Task TimeoutAfter_With_Result_Should_Throw_TimeoutException_When_Task_Times_Out()
         {
-            var task = Task.Delay(2000).ContinueWith(_ => 42);
+            var task = Task.Delay(2000, TestContext.Current.CancellationToken).ContinueWith(_ => 42);
             await Assert.ThrowsAsync<TimeoutException>(() => task.TimeoutAfter(100));
         }
 

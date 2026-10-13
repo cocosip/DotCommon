@@ -113,7 +113,7 @@ namespace DotCommon.Test.Threading
         {
             var semaphore = new SemaphoreSlim(1, 1);
 
-            using (await semaphore.LockAsync())
+            using (await semaphore.LockAsync(TestContext.Current.CancellationToken))
             {
                 Assert.Equal(0, semaphore.CurrentCount);
             }
@@ -140,7 +140,7 @@ namespace DotCommon.Test.Threading
         {
             var semaphore = new SemaphoreSlim(1, 1);
 
-            using (await semaphore.LockAsync(1000))
+            using (await semaphore.LockAsync(1000, TestContext.Current.CancellationToken))
             {
                 Assert.Equal(0, semaphore.CurrentCount);
             }
@@ -167,7 +167,7 @@ namespace DotCommon.Test.Threading
         {
             var semaphore = new SemaphoreSlim(1, 1);
 
-            using (await semaphore.LockAsync(TimeSpan.FromSeconds(1)))
+            using (await semaphore.LockAsync(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken))
             {
                 Assert.Equal(0, semaphore.CurrentCount);
             }
@@ -196,7 +196,7 @@ namespace DotCommon.Test.Threading
 
             await Assert.ThrowsAsync<TimeoutException>(async () =>
             {
-                using (await semaphore.LockAsync(1)) { }
+                using (await semaphore.LockAsync(1, TestContext.Current.CancellationToken)) { }
             });
         }
 
@@ -205,7 +205,7 @@ namespace DotCommon.Test.Threading
         {
             var semaphore = new SemaphoreSlim(1, 1);
 
-            using (semaphore.Lock())
+            using (semaphore.Lock(TestContext.Current.CancellationToken))
             {
                 Assert.Equal(0, semaphore.CurrentCount);
             }
@@ -232,7 +232,7 @@ namespace DotCommon.Test.Threading
         {
             var semaphore = new SemaphoreSlim(1, 1);
 
-            using (semaphore.Lock(1000))
+            using (semaphore.Lock(1000, TestContext.Current.CancellationToken))
             {
                 Assert.Equal(0, semaphore.CurrentCount);
             }
@@ -245,7 +245,7 @@ namespace DotCommon.Test.Threading
         {
             var semaphore = new SemaphoreSlim(1, 1);
 
-            using (semaphore.Lock(TimeSpan.FromSeconds(1)))
+            using (semaphore.Lock(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken))
             {
                 Assert.Equal(0, semaphore.CurrentCount);
             }
@@ -260,7 +260,7 @@ namespace DotCommon.Test.Threading
 
             Assert.Throws<TimeoutException>(() =>
             {
-                using (semaphore.Lock(1)) { }
+                using (semaphore.Lock(1, TestContext.Current.CancellationToken)) { }
             });
         }
 

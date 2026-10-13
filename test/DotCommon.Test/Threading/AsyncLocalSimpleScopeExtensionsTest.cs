@@ -83,10 +83,10 @@ namespace DotCommon.Test.Threading
             {
                 using (asyncLocal.SetScoped("async"))
                 {
-                    await Task.Delay(10);
+                    await Task.Delay(10, TestContext.Current.CancellationToken);
                     Assert.Equal("async", asyncLocal.Value);
                 }
-            });
+            }, TestContext.Current.CancellationToken);
 
             Assert.Equal("original", asyncLocal.Value);
         }

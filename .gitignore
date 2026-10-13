@@ -309,3 +309,7 @@ logs/
 .claude/
 coverage/
 *.csproj.lscache
+
+
+.superpowers/
+docs/superpowers/

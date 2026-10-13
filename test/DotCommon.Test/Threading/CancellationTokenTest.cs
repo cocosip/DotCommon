@@ -54,7 +54,10 @@ namespace DotCommon.Test.Threading
             var mockProvider = new Mock<ICancellationTokenProvider>();
             mockProvider.Setup(x => x.Token).Returns(cts.Token);
 
+            // Intentionally passes the default token to verify the fallback behavior
+#pragma warning disable xUnit1051
             var result = mockProvider.Object.FallbackToProvider(default);
+#pragma warning restore xUnit1051
 
             Assert.Equal(cts.Token, result);
         }

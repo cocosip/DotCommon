@@ -47,7 +47,7 @@ namespace DotCommon.Test.Threading
             var executionOrder = new System.Collections.Generic.List<string>();
 
             await InternalAsyncHelper.AwaitTaskWithPostActionAndFinally(
-                Task.Run(() => executionOrder.Add("main")),
+                Task.Run(() => executionOrder.Add("main"), TestContext.Current.CancellationToken),
                 () => { executionOrder.Add("post"); return Task.CompletedTask; },
                 ex => executionOrder.Add("finally")
             );

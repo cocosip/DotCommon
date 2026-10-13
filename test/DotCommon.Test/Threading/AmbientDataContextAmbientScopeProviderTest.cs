@@ -82,7 +82,7 @@ namespace DotCommon.Test.Threading
 
             using (provider.BeginScope("testKey", "asyncValue"))
             {
-                await Task.Delay(10);
+                await Task.Delay(10, TestContext.Current.CancellationToken);
                 Assert.Equal("asyncValue", provider.GetValue("testKey"));
             }
         }

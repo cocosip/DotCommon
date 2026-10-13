@@ -125,7 +125,7 @@ namespace DotCommon.Test.Serializing
             }, 10, 50); // Execute every 50ms after 10ms delay
 
             // Wait a bit for the task to potentially execute
-            await Task.Delay(30);
+            await Task.Delay(30, TestContext.Current.CancellationToken);
 
             // Stop the task
             scheduleService.StopTask("testTask");
@@ -134,7 +134,7 @@ namespace DotCommon.Test.Serializing
             var countAfterStop = callCount;
 
             // Wait a bit more to ensure no more executions
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             // Verify no more executions after stop
             Assert.Equal(countAfterStop, callCount);
@@ -201,7 +201,7 @@ namespace DotCommon.Test.Serializing
             {
                 // Timeout - task didn't execute in time
                 // Give it a bit more time before stopping
-                await Task.Delay(100);
+                await Task.Delay(100, TestContext.Current.CancellationToken);
             }
 
             scheduleService.StopTask("errorTask");
