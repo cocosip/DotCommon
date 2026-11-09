@@ -1,0 +1,171 @@
+name: CI/CD Pipeline
+
+# Shared build/test/publish pipeline for the net9 (7.x, .NET 9) and dev (8.x, .NET 10) branches.
+# Keep both branch copies identical except for the dotnet-version value below.
+on:
+  push:
+    branches:
+      - master
+      - main
+      - dev
+      - develop
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - master
+      - main
+      - dev
+      - develop
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history for all tags and branches
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    # The repository root holds exactly one solution file (DotCommon.sln on net9,
+    # DotCommon.slnx on dev), so no solution path is needed here.
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build solution
+      run: dotnet build -c Release --no-restore
+
+    - name: Run tests
+      run: dotnet test -c Release --no-build --verbosity normal
+
+    - name: Create NuGet packages
+      run: dotnet pack -c Release --no-build --include-symbols -o dest/
+
+    - name: Upload NuGet packages as artifacts
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-packages
+        path: dest/*.nupkg
+        retention-days: 7
+
+  publish-nuget:
+    name: Publish to NuGet
+    needs: build-and-test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    permissions:
+      id-token: write # required by NuGet trusted publishing (GitHub OIDC token)
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: nuget-packages
+        path: packages
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    # Exchange the GitHub OIDC token for a short-lived (1h) nuget.org API key.
+    # Requires a trusted publishing policy on nuget.org: cocosip / DotCommon / ci-cd.yml
+    - name: NuGet login (OIDC -> temp API key)
+      id: login
+      uses: NuGet/login@v1
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
+    - name: Publish to NuGet.org
+      run: dotnet nuget push packages/*.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+  create-release:
+    name: Create GitHub Release
+    needs: publish-nuget
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: nuget-packages
+        path: packages
+
+    - name: Get previous tag
+      id: previoustag
+      run: |
+        PREVIOUS_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' | sed -n '2p')
+        if [ -z "$PREVIOUS_TAG" ]; then
+          PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
+        fi
+        echo "tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+        echo "Previous tag: $PREVIOUS_TAG"
+
+    - name: Generate release notes
+      id: generate_notes
+      run: |
+        CURRENT_TAG=${GITHUB_REF#refs/tags/}
+        PREVIOUS_TAG="${{ steps.previoustag.outputs.tag }}"
+        
+        echo "Generating release notes from $PREVIOUS_TAG to $CURRENT_TAG"
+        
+        CHANGELOG=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges | sed 's/```//g')
+        COMMIT_COUNT=$(git rev-list $PREVIOUS_TAG..HEAD --count)
+        
+        # Get unique author emails and resolve to GitHub usernames
+        AUTHOR_EMAILS=$(git log $PREVIOUS_TAG..HEAD --format='%ae' --no-merges | sort -u)
+        CONTRIBUTORS=""
+        for EMAIL in $AUTHOR_EMAILS; do
+          GITHUB_USER=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/search/users?q=$EMAIL+in:email" | jq -r '.items[0].login // empty')
+          if [ -n "$GITHUB_USER" ]; then
+            CONTRIBUTORS="$CONTRIBUTORS- @$GITHUB_USER\n"
+          fi
+        done
+        
+        cat << EOF > release_notes.md
+        ## What's Changed
+        
+        This release includes $COMMIT_COUNT commits since $PREVIOUS_TAG.
+        
+        ### Changes
+        
+        $CHANGELOG
+        
+        ### Contributors
+        
+        $(echo -e "$CONTRIBUTORS")
+        
+        **Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...$CURRENT_TAG
+        EOF
+        
+        cat release_notes.md
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        body_path: release_notes.md
+        files: packages/*.nupkg
+        draft: false
+        prerelease: false
+        generate_release_notes: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
