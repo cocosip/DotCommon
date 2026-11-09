@@ -1,16 +1,22 @@
 name: CI/CD Pipeline
 
+# Shared build/test/publish pipeline for the net9 (7.x, .NET 9) and dev (8.x, .NET 10) branches.
+# Keep both branch copies identical except for the dotnet-version value below.
 on:
   push:
     branches:
       - master
       - main
+      - dev
+      - develop
     tags:
       - 'v*'
   pull_request:
     branches:
       - master
       - main
+      - dev
+      - develop
 
 permissions:
   contents: write
@@ -19,7 +25,7 @@ permissions:
 jobs:
   build-and-test:
     name: Build and Test
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout code
@@ -32,17 +38,19 @@ jobs:
       with:
         dotnet-version: 10.0.x
 
+    # The repository root holds exactly one solution file (DotCommon.sln on net9,
+    # DotCommon.slnx on dev), so no solution path is needed here.
     - name: Restore dependencies
-      run: dotnet restore DotCommon.slnx
+      run: dotnet restore
 
     - name: Build solution
-      run: dotnet build DotCommon.slnx -c Release --no-restore
+      run: dotnet build -c Release --no-restore
 
     - name: Run tests
-      run: dotnet test DotCommon.slnx -c Release --no-build --verbosity normal
+      run: dotnet test -c Release --no-build --verbosity normal
 
     - name: Create NuGet packages
-      run: dotnet pack DotCommon.slnx -c Release --no-build --include-symbols -o dest/
+      run: dotnet pack -c Release --no-build --include-symbols -o dest/
 
     - name: Upload NuGet packages as artifacts
       if: startsWith(github.ref, 'refs/tags/v')
@@ -56,7 +64,7 @@ jobs:
     name: Publish to NuGet
     needs: build-and-test
     if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
       id-token: write # required by NuGet trusted publishing (GitHub OIDC token)
 
@@ -73,7 +81,7 @@ jobs:
         dotnet-version: 10.0.x
 
     # Exchange the GitHub OIDC token for a short-lived (1h) nuget.org API key.
-    # Needs a "Trusted Publishing" policy on nuget.org: cocosip / DotCommon / ci-cd.yml
+    # Requires a trusted publishing policy on nuget.org: cocosip / DotCommon / ci-cd.yml
     - name: NuGet login (OIDC -> temp API key)
       id: login
       uses: NuGet/login@v1
