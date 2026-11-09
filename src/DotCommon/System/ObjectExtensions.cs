@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -28,7 +28,7 @@ namespace System
         {
             if (typeof(T) == typeof(Guid))
             {
-                return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(o.ToString());
+                return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(o.ToString() ?? string.Empty)!;
             }
 
             return (T)Convert.ChangeType(o, typeof(T), CultureInfo.InvariantCulture);

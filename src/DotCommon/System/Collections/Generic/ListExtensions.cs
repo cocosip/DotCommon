@@ -1,4 +1,4 @@
-﻿﻿﻿﻿using System.Linq;
+﻿﻿﻿using System.Linq;
 using DotCommon;
 using JetBrains.Annotations;
 
@@ -18,7 +18,14 @@ namespace System.Collections.Generic
         /// <returns>True if an item was removed; otherwise, false</returns>
         public static bool Remove<T>(this List<T> collection, Func<T, bool> predicate)
         {
-            return collection.Remove(collection.FirstOrDefault(predicate));
+            var index = collection.FindIndex(new Predicate<T>(predicate));
+            if (index < 0)
+            {
+                return false;
+            }
+
+            collection.RemoveAt(index);
+            return true;
         }
 
         /// <summary>

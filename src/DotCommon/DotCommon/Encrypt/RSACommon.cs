@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace DotCommon.Encrypt
 {
@@ -56,9 +56,9 @@ namespace DotCommon.Encrypt
         /// </summary>
         /// <param name="other">An object to compare with this object</param>
         /// <returns>true if the current object is equal to the other parameter; otherwise, false</returns>
-        public bool Equals(RSAKeyPair other)
+        public bool Equals(RSAKeyPair? other)
         {
-            return other.PrivateKey == PrivateKey && other.PublicKey == PublicKey;
+            return other != null && other.PrivateKey == PrivateKey && other.PublicKey == PublicKey;
         }
 
         /// <summary>

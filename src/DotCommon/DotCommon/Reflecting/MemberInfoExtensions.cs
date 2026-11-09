@@ -82,10 +82,11 @@ namespace DotCommon.Reflecting
             if (attr != null)
                 return attr;
 
-            if (type.GetTypeInfo().BaseType == null)
+            var baseType = type.GetTypeInfo().BaseType;
+            if (baseType == null)
                 return null;
 
-            return type.GetTypeInfo().BaseType.GetSingleAttributeOfTypeOrBaseTypesOrNull<TAttribute>(inherit);
+            return baseType.GetSingleAttributeOfTypeOrBaseTypesOrNull<TAttribute>(inherit);
         }
 
         #endregion

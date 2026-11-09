@@ -1,171 +1,276 @@
 name: CI/CD Pipeline
 
-# Shared build/test/publish pipeline for the net9 (7.x, .NET 9) and dev (8.x, .NET 10) branches.
-# Keep both branch copies identical except for the dotnet-version value below.
+# 与 Locus / obconnector-dotnet 共享同一套约定：
+#   push master / PR -> master : 编译 + 测试
+#   push 版本 tag（v8.1.0 或 8.1.0）: 编译 + 测试 + 打包 + 发布 NuGet
+# 只有 master 与版本 tag 会触发；dev 等其它分支的 push 不跑任何任务，指向其它分支的 PR 也不跑。
+# 版本号唯一来源是 common.props 的 <Version>，tag 必须与之一致，
+# 且必须指向 HEAD，否则在编译前就失败，包版本与 tag 不会漂移。
 on:
   push:
     branches:
       - master
-      - main
-      - dev
-      - develop
     tags:
-      - 'v*'
+      - 'v*.*.*'
+      - '*.*.*'
   pull_request:
     branches:
       - master
-      - main
-      - dev
-      - develop
+  workflow_dispatch:
 
 permissions:
-  contents: write
-  packages: write
+  contents: read
+
+env:
+  CI: true
+  DOTNET_VERSIONS: |
+    9.0.x
+    10.0.x
+  CONFIGURATION: Release
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
 
 jobs:
+  # 只编译一次：restore -> build -> test(--no-build) -> pack(--no-build) 复用同一份 Release 输出。
   build-and-test:
     name: Build and Test
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      release: ${{ steps.version.outputs.release }}
+    env:
+      # 默认分支或版本 tag 的 push 才产出可发布包；PR 与手动运行只编译、测试。
+      PACKAGE_BUILD: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')) }}
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
-        fetch-depth: 0  # Fetch all history for all tags and branches
+        fetch-depth: 0
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: ${{ env.DOTNET_VERSIONS }}
 
-    # The repository root holds exactly one solution file (DotCommon.sln on net9,
-    # DotCommon.slnx on dev), so no solution path is needed here.
+    - name: Cache NuGet packages
+      uses: actions/cache@v6
+      with:
+        path: ${{ env.NUGET_PACKAGES }}
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Packages.props') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Resolve version
+      id: version
+      run: |
+        VERSION=$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' common.props | head -n 1)
+        if [ -z "$VERSION" ]; then
+          echo "common.props does not define <Version>."
+          exit 1
+        fi
+        if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$TAG_VERSION" != "$VERSION" ]; then
+            echo "Tag '$GITHUB_REF_NAME' must match common.props Version '$VERSION'."
+            exit 1
+          fi
+          if [ "$(git rev-parse "refs/tags/${GITHUB_REF_NAME}^{commit}")" != "$(git rev-parse HEAD)" ]; then
+            echo "Tag '$GITHUB_REF_NAME' must point to HEAD."
+            exit 1
+          fi
+          RELEASE=true
+        else
+          RELEASE=false
+        fi
+        echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+        echo "release=${RELEASE}" >> "$GITHUB_OUTPUT"
+        echo "Version: ${VERSION} (release: ${RELEASE})"
+
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore DotCommon.slnx --verbosity minimal
 
     - name: Build solution
-      run: dotnet build -c Release --no-restore
+      run: dotnet build DotCommon.slnx --configuration ${{ env.CONFIGURATION }} --no-restore --verbosity minimal
 
+    # 测试覆盖 net9.0 与 net10.0 两个目标。netstandard2.0/2.1 资产只编译、不执行，
+    # 与 Locus 的 NetStandardSmoke 不同——这里不打内嵌子程序集，CI 的 build 已真实编译它们。
+    #
+    # 不收集覆盖率：本仓库是 xunit.v3 + Microsoft.Testing.Platform，
+    # VSTest 的 --collect:"XPlat Code Coverage" 会以 exit code 5（handshake）失败；
+    # 需要覆盖率时改为 Microsoft.Testing.Extensions.CodeCoverage + --coverage --coverage-output-format cobertura。
     - name: Run tests
-      run: dotnet test -c Release --no-build --verbosity normal
+      run: dotnet test DotCommon.slnx --configuration ${{ env.CONFIGURATION }} --no-build --verbosity minimal
 
-    - name: Create NuGet packages
-      run: dotnet pack -c Release --no-build --include-symbols -o dest/
+    - name: Pack NuGet packages
+      if: env.PACKAGE_BUILD == 'true'
+      shell: bash
+      run: |
+        mkdir -p ./packages
+        dotnet pack DotCommon.slnx \
+          --configuration ${{ env.CONFIGURATION }} \
+          --no-build \
+          --no-restore \
+          --output ./packages \
+          --verbosity minimal
 
-    - name: Upload NuGet packages as artifacts
-      if: startsWith(github.ref, 'refs/tags/v')
-      uses: actions/upload-artifact@v4
+    - name: Verify NuGet packages
+      if: env.PACKAGE_BUILD == 'true'
+      shell: bash
+      run: |
+        set -euo pipefail
+        VERSION="${{ steps.version.outputs.version }}"
+        GROUPS=(.NETStandard2.0 .NETStandard2.1 net9.0 net10.0)
+        LIBS=(netstandard2.0 netstandard2.1 net9.0 net10.0)
+
+        for pkg in DotCommon DotCommon.Caching DotCommon.Caching.StackExchangeRedis \
+                   DotCommon.Crypto DotCommon.DistributedLocking DotCommon.AutoMapper; do
+          file="./packages/$pkg.$VERSION.nupkg"
+          test -f "$file" || { echo "missing $file"; exit 1; }
+          test -f "./packages/$pkg.$VERSION.snupkg" || { echo "missing $pkg snupkg"; exit 1; }
+          nuspec=$(unzip -p "$file" '*.nuspec')
+          listing=$(unzip -l "$file")
+          for tfm in "${GROUPS[@]}"; do
+            grep -q "targetFramework=\"$tfm\"" <<< "$nuspec" || { echo "$pkg: missing dependency group $tfm"; exit 1; }
+          done
+          for tfm in "${LIBS[@]}"; do
+            grep -q "lib/$tfm/$pkg.dll" <<< "$listing" || { echo "$pkg: missing lib/$tfm/$pkg.dll"; exit 1; }
+          done
+        done
+
+        # ASP.NET Core has no netstandard target.
+        file="./packages/DotCommon.AspNetCore.Mvc.$VERSION.nupkg"
+        test -f "$file" || { echo "missing $file"; exit 1; }
+        nuspec=$(unzip -p "$file" '*.nuspec')
+        listing=$(unzip -l "$file")
+        for tfm in net9.0 net10.0; do
+          grep -q "targetFramework=\"$tfm\"" <<< "$nuspec" || { echo "Mvc: missing $tfm"; exit 1; }
+          grep -q "lib/$tfm/DotCommon.AspNetCore.Mvc.dll" <<< "$listing" || { echo "Mvc: missing lib/$tfm"; exit 1; }
+        done
+
+        # Dependency lines: netstandard2.0/2.1 and net9.0 stay on 9.x, net10.0 moves to 10.x.
+        nuspec=$(unzip -p "./packages/DotCommon.$VERSION.nupkg" '*.nuspec')
+        [ "$(grep -cF 'id="Microsoft.Extensions.Logging" version="[9.0.0, 10.0.0)"' <<< "$nuspec")" = "3" ] \
+          || { echo "DotCommon: Microsoft.Extensions.Logging must be [9.0.0, 10.0.0) for ns2.0/ns2.1/net9.0"; exit 1; }
+        [ "$(grep -cF 'id="Microsoft.Extensions.Logging" version="[10.0.0, 11.0.0)"' <<< "$nuspec")" = "1" ] \
+          || { echo "DotCommon: Microsoft.Extensions.Logging must be [10.0.0, 11.0.0) for net10.0"; exit 1; }
+        # System.Text.Json is in-box on net9.0/net10.0, so only the two netstandard groups carry it.
+        [ "$(grep -c 'id="System.Text.Json"' <<< "$nuspec")" = "2" ] \
+          || { echo "DotCommon: System.Text.Json must only be a dependency for netstandard groups"; exit 1; }
+
+        nuspec=$(unzip -p "./packages/DotCommon.AutoMapper.$VERSION.nupkg" '*.nuspec')
+        [ "$(grep -cF 'id="AutoMapper" version="[15.1.4, 16.0.0)"' <<< "$nuspec")" = "3" ] \
+          || { echo "DotCommon.AutoMapper: AutoMapper must be [15.1.4, 16.0.0) for ns2.0/ns2.1/net9.0"; exit 1; }
+        [ "$(grep -cF 'id="AutoMapper" version="[16.3.0, 17.0.0)"' <<< "$nuspec")" = "1" ] \
+          || { echo "DotCommon.AutoMapper: AutoMapper must be [16.3.0, 17.0.0) for net10.0"; exit 1; }
+
+        if grep -Eiq '(^|/)(coverage|test-results)(/|$)|\.trx$|coverage\.cobertura\.xml$' <<< "$(unzip -l ./packages/*.nupkg)"; then
+          echo "NuGet package contains test or coverage artifacts"
+          exit 1
+        fi
+        ls -la ./packages/
+
+    - name: Generate release notes
+      if: startsWith(github.ref, 'refs/tags/')
+      shell: bash
+      run: |
+        URL="https://github.com/${GITHUB_REPOSITORY}"
+        PREVIOUS=$(git describe --tags --abbrev=0 --match 'v[0-9]*' --match '[0-9]*' HEAD^ 2>/dev/null || true)
+        if [ -n "$PREVIOUS" ]; then
+          COMPARISON="Changes since [${PREVIOUS}](${URL}/releases/tag/${PREVIOUS}). [Full changelog](${URL}/compare/${PREVIOUS}...${GITHUB_REF_NAME})."
+        else
+          COMPARISON="First release. [Commit history](${URL}/commits/${GITHUB_REF_NAME})."
+        fi
+        COMMIT_COUNT=$(git log --no-merges --oneline "${PREVIOUS:+${PREVIOUS}..}HEAD" | wc -l | tr -d ' ')
+        {
+          echo "# DotCommon ${{ steps.version.outputs.version }}"
+          echo
+          echo "## Packages"
+          echo
+          echo '```shell'
+          echo "dotnet add package DotCommon --version ${{ steps.version.outputs.version }}"
+          echo '```'
+          echo
+          echo "Target frameworks: netstandard2.0, netstandard2.1, net9.0, net10.0."
+          echo "Dependency lines: netstandard2.0/2.1 and net9.0 use the 9.x line, net10.0 uses 10.x."
+          echo
+          echo "## Changes"
+          echo
+          echo "$COMPARISON"
+          echo
+          echo "${COMMIT_COUNT} commits (excluding merges)."
+          echo
+          git log --no-merges --format='- %h %s (%an)' "${PREVIOUS:+${PREVIOUS}..}HEAD"
+          echo
+          echo "See the [repository](${URL})."
+        } > ./packages/RELEASE_NOTES.md
+
+    - name: Upload verified packages and release notes
+      if: env.PACKAGE_BUILD == 'true'
+      uses: actions/upload-artifact@v7
       with:
         name: nuget-packages
-        path: dest/*.nupkg
-        retention-days: 7
+        path: ./packages/
+        if-no-files-found: error
+        retention-days: 30
 
-  publish-nuget:
-    name: Publish to NuGet
+  # 发布只消费构建产物：不 checkout 源码、不 restore、不编译。
+  publish:
+    name: Publish NuGet
+    runs-on: ubuntu-latest
     needs: build-and-test
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: windows-latest
+    if: needs.build-and-test.outputs.release == 'true'
     permissions:
+      contents: write
       id-token: write # required by NuGet trusted publishing (GitHub OIDC token)
 
     steps:
-    - name: Download artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: nuget-packages
-        path: packages
-
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: 10.0.x
 
-    # Exchange the GitHub OIDC token for a short-lived (1h) nuget.org API key.
-    # Requires a trusted publishing policy on nuget.org: cocosip / DotCommon / ci-cd.yml
-    - name: NuGet login (OIDC -> temp API key)
+    - name: Download verified packages and release notes
+      uses: actions/download-artifact@v8
+      with:
+        name: nuget-packages
+        path: ./packages
+
+    # Trusted publishing: exchange this workflow's GitHub OIDC token for a
+    # one-hour nuget.org API key. Requires a nuget.org trusted publishing
+    # policy for cocosip/DotCommon / ci-cd.yml.
+    - name: NuGet login (OIDC -> temporary API key)
       id: login
       uses: NuGet/login@v1
       with:
         user: virtual # nuget.org profile name (not email); public, so no secret is needed
 
-    - name: Publish to NuGet.org
-      run: dotnet nuget push packages\*.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
-
-  create-release:
-    name: Create GitHub Release
-    needs: publish-nuget
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Download artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: nuget-packages
-        path: packages
-
-    - name: Get previous tag
-      id: previoustag
+    # 不传 --no-symbols：同目录的 .snupkg 会随 .nupkg 一起推送。
+    - name: Publish packages to NuGet.org
+      shell: bash
+      env:
+        NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
       run: |
-        PREVIOUS_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' | sed -n '2p')
-        if [ -z "$PREVIOUS_TAG" ]; then
-          PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
-        fi
-        echo "tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
-        echo "Previous tag: $PREVIOUS_TAG"
-
-    - name: Generate release notes
-      id: generate_notes
-      run: |
-        CURRENT_TAG=${GITHUB_REF#refs/tags/}
-        PREVIOUS_TAG="${{ steps.previoustag.outputs.tag }}"
-        
-        echo "Generating release notes from $PREVIOUS_TAG to $CURRENT_TAG"
-        
-        CHANGELOG=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges | sed 's/```//g')
-        COMMIT_COUNT=$(git rev-list $PREVIOUS_TAG..HEAD --count)
-        
-        # Get unique author emails and resolve to GitHub usernames
-        AUTHOR_EMAILS=$(git log $PREVIOUS_TAG..HEAD --format='%ae' --no-merges | sort -u)
-        CONTRIBUTORS=""
-        for EMAIL in $AUTHOR_EMAILS; do
-          GITHUB_USER=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/search/users?q=$EMAIL+in:email" | jq -r '.items[0].login // empty')
-          if [ -n "$GITHUB_USER" ]; then
-            CONTRIBUTORS="$CONTRIBUTORS- @$GITHUB_USER\n"
-          fi
+        test -s ./packages/RELEASE_NOTES.md
+        for package in ./packages/*.nupkg; do
+          test -s "$package"
+          dotnet nuget push "$package" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
         done
-        
-        cat << EOF > release_notes.md
-        ## What's Changed
-        
-        This release includes $COMMIT_COUNT commits since $PREVIOUS_TAG.
-        
-        ### Changes
-        
-        $CHANGELOG
-        
-        ### Contributors
-        
-        $(echo -e "$CONTRIBUTORS")
-        
-        **Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...$CURRENT_TAG
-        EOF
-        
-        cat release_notes.md
 
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
-      with:
-        body_path: release_notes.md
-        files: packages/*.nupkg
-        draft: false
-        prerelease: false
-        generate_release_notes: false
+      shell: bash
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_REPO: ${{ github.repository }}
+        VERSION: ${{ needs.build-and-test.outputs.version }}
+      run: |
+        flags=()
+        if [[ "$VERSION" == *-* ]]; then
+          flags+=(--prerelease --latest=false)
+        fi
+        gh release create "$GITHUB_REF_NAME" --verify-tag \
+          --title "DotCommon $VERSION" \
+          --notes-file ./packages/RELEASE_NOTES.md \
+          "${flags[@]}" ./packages/*.nupkg ./packages/*.snupkg ./packages/RELEASE_NOTES.md

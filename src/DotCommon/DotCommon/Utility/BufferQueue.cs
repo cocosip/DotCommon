@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
@@ -74,8 +74,7 @@ namespace DotCommon.Utility
                         // If there are messages in the processing queue, process them one by one.
                         if (_processQueue.Count > 0)
                         {
-                            TMessage message;
-                            while (_processQueue.TryDequeue(out message))
+                            while (_processQueue.TryDequeue(out TMessage? message))
                             {
                                 try
                                 {

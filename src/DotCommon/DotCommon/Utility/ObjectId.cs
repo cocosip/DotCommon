@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -377,7 +377,7 @@ namespace DotCommon.Utility
         /// </summary>
         /// <param name="obj">The other object.</param>
         /// <returns>True if the other object is an ObjectId and equal to this one.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is ObjectId id)
             {

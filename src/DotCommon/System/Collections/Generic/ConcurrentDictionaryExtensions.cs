@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 
 namespace System.Collections.Generic
 {
@@ -16,6 +16,7 @@ namespace System.Collections.Generic
         /// <param name="key"></param>
         /// <returns></returns>
         public static bool Remove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict, TKey key)
+            where TKey : notnull
         {
             return dict.TryRemove(key, out _);
         }

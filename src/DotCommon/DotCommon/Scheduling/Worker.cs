@@ -102,7 +102,12 @@ namespace DotCommon.Scheduling
                         "Worker thread caught ThreadAbortException, trying to reset. Worker name: {WorkerName}",
                         ActionName);
 
+                    // Thread.ResetAbort only exists in the .NET Framework runtime, which is
+                    // reached through the netstandard2.0 asset. On .NET Core and later the
+                    // abort is not supported and ThreadAbortException is never thrown.
+#if NETSTANDARD2_0
                     Thread.ResetAbort();
+#endif
 
                     _logger.LogInformation(
                         "Worker thread ThreadAbortException resetted. Worker name: {WorkerName}",

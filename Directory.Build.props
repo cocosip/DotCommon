@@ -1,14 +1,19 @@
 <Project>
 	<PropertyGroup>
 
-		<!--Project Frameworks-->
-		<ProjectFrameworks>netstandard2.0;netstandard2.1;$(NetCoreFx)</ProjectFrameworks>
+		<!--
+		  Target framework matrix.
+		  netstandard2.0 / netstandard2.1 / net9.0 share the 9.x dependency line,
+		  only net10.0 moves to the 10.x line. Package versions live in
+		  Directory.Packages.props and are switched per TFM.
+		-->
+		<AllFrameworks>netstandard2.0;netstandard2.1;net9.0;net10.0</AllFrameworks>
 
-		<!--Net Core Framework-->
-		<NetCoreFx>net10.0</NetCoreFx>
+		<!-- Frameworks that can host ASP.NET Core / run tests. -->
+		<CoreFrameworks>net9.0;net10.0</CoreFrameworks>
 
-		<!--Microsoft-->
-		<MicrosoftPackageVersion>10.0.12</MicrosoftPackageVersion>
+		<!-- Newest framework, used by samples. -->
+		<LatestFramework>net10.0</LatestFramework>
 
 	</PropertyGroup>
 </Project>

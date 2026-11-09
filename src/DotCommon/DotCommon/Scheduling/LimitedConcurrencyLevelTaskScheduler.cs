@@ -96,7 +96,7 @@ namespace DotCommon.Scheduling
                             }
 
                             // Get the next item from the queue
-                            item = _tasks.First.Value;
+                            item = _tasks.First!.Value;
                             _tasks.RemoveFirst();
                         }
 

@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>$(NetCoreFx)</TargetFramework>
+		<TargetFrameworks>$(CoreFrameworks)</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>

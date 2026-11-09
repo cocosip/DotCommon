@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Project="..\..\common.props" />
 
 	<PropertyGroup>
-	    <TargetFramework>$(NetCoreFx)</TargetFramework>
+	    <TargetFrameworks>$(AllFrameworks)</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>Nullable</WarningsAsErrors>
 		<AssemblyName>DotCommon.AutoMapper</AssemblyName>

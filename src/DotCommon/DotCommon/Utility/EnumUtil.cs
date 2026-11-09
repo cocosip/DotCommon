@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
@@ -17,7 +17,7 @@ namespace DotCommon.Utility
         /// <returns>The string name of the enumeration value.</returns>
         public static string GetName(Enum e)
         {
-            return Enum.GetName(e.GetType(), e);
+            return Enum.GetName(e.GetType(), e) ?? string.Empty;
         }
 
         /// <summary>
@@ -79,10 +79,11 @@ namespace DotCommon.Utility
             var descriptions = new SortedList<string, string>();
             foreach (T item in Enum.GetValues(typeof(T)))
             {
-                string key = useInt32Key ? Convert.ToInt32(item).ToString() : item.ToString();
-                string value = item.ToString();
+                string name = item.ToString()!;
+                string key = useInt32Key ? Convert.ToInt32(item).ToString() : name;
+                string value = name;
 
-                FieldInfo field = typeof(T).GetField(item.ToString());
+                FieldInfo? field = typeof(T).GetField(name);
                 if (field != null)
                 {
                     string? description = field.GetCustomAttribute<DescriptionAttribute>(false)?.Description;
@@ -104,8 +105,8 @@ namespace DotCommon.Utility
         /// <returns>The description of the enumeration value.</returns>
         public static string GetEnumDescription(Enum e)
         {
-            string value = e.ToString();
-            FieldInfo field = e.GetType().GetField(value);
+            string value = e.ToString()!;
+            FieldInfo? field = e.GetType().GetField(value);
             if (field != null)
             {
                 string? description = field.GetCustomAttribute<DescriptionAttribute>(false)?.Description;

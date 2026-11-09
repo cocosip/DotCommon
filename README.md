@@ -29,13 +29,26 @@ DotCommon 是一个面向 .NET 的通用基础类库，围绕序列化、对象�
 
 ## 目标框架
 
-- `DotCommon`: `netstandard2.0`, `netstandard2.1`
-- `DotCommon.Caching`: `netstandard2.0`, `netstandard2.1`
-- `DotCommon.Caching.StackExchangeRedis`: `netstandard2.0`, `netstandard2.1`
-- `DotCommon.Crypto`: `netstandard2.0`, `netstandard2.1`
-- `DotCommon.DistributedLocking`: `netstandard2.0`, `netstandard2.1`
-- `DotCommon.AutoMapper`: `$(NetCoreFx)`
-- `DotCommon.AspNetCore.Mvc`: `$(NetCoreFx)`
+所有包在同一个包内同时提供多个目标框架，消费方按自己的目标框架自动取用对应资产：
+`netstandard2.0`、`netstandard2.1`、`net9.0`、`net10.0`。
+
+- `DotCommon`: `netstandard2.0`, `netstandard2.1`, `net9.0`, `net10.0`
+- `DotCommon.Caching`: `netstandard2.0`, `netstandard2.1`, `net9.0`, `net10.0`
+- `DotCommon.Caching.StackExchangeRedis`: `netstandard2.0`, `netstandard2.1`, `net9.0`, `net10.0`
+- `DotCommon.Crypto`: `netstandard2.0`, `netstandard2.1`, `net9.0`, `net10.0`
+- `DotCommon.DistributedLocking`: `netstandard2.0`, `netstandard2.1`, `net9.0`, `net10.0`
+- `DotCommon.AutoMapper`: `netstandard2.0`, `netstandard2.1`, `net9.0`, `net10.0`
+- `DotCommon.AspNetCore.Mvc`: `net9.0`, `net10.0`
+
+依赖版本按目标框架分线，且都是版本范围，不钉死具体补丁：
+
+| 目标框架 | `Microsoft.Extensions.*` / `System.Text.Json` | `AutoMapper` |
+| --- | --- | --- |
+| `netstandard2.0` / `netstandard2.1` | `[9.0.0,10.0.0)` | `[15.1.4,16.0.0)` |
+| `net9.0` | `[9.0.0,10.0.0)` | `[15.1.4,16.0.0)` |
+| `net10.0` | `[10.0.0,11.0.0)` | `[16.3.0,17.0.0)` |
+
+> .NET 9 已结束官方支持，保留 `net9.0` 目标仅为兼容性。
 
 ## 安装
 
@@ -197,23 +210,23 @@ Release 构建：
 dotnet build DotCommon.slnx -c Release
 ```
 
-运行全部测试：
+运行全部测试（`net9.0` 与 `net10.0` 两个目标都会跑）：
 
 ```bash
 dotnet test DotCommon.slnx
 ```
 
-也可以使用仓库内脚本：
+打包：
 
 ```bash
-./build/build-all-release.ps1
-./build/test-all.ps1
-./build/pack-all.ps1
+dotnet pack DotCommon.slnx -c Release -o dest
 ```
 
 ## 依赖管理
 
 项目通过 `Directory.Packages.props` 集中管理依赖版本，不在单个 `.csproj` 中重复指定版本。
+微软系包的版本线统一用变量（如 `DotCommonMSExtensionsRange`）定义一次，再按目标框架覆盖：
+`netstandard2.0` / `netstandard2.1` / `net9.0` 共用 9.x，只有 `net10.0` 走 10.x。
 
 主要依赖包括：
 
