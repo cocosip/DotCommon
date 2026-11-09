@@ -17,9 +17,9 @@ namespace DotCommon.Test.Utility
 
             queue.EnqueueMessage(1);
 
-            Thread.Sleep(200);
-
-            Assert.NotEmpty(processedMessages);
+            Assert.True(
+                WaitUntil(() => !processedMessages.IsEmpty),
+                "The message was not processed before the timeout.");
         }
 
         [Fact]
@@ -34,13 +34,9 @@ namespace DotCommon.Test.Utility
                 Thread.Sleep(20);
             }
 
-            var deadline = DateTime.UtcNow.AddSeconds(5);
-            while (processedMessages.Count < 5 && DateTime.UtcNow < deadline)
-            {
-                Thread.Sleep(50);
-            }
-
-            Assert.True(processedMessages.Count >= 5, $"Expected at least 5 messages processed, but got {processedMessages.Count}");
+            Assert.True(
+                WaitUntil(() => processedMessages.Count >= 5),
+                $"Expected at least 5 messages processed, but got {processedMessages.Count}");
         }
 
         [Fact]
@@ -59,13 +55,9 @@ namespace DotCommon.Test.Utility
             Thread.Sleep(100);
             queue.EnqueueMessage(3);
 
-            var deadline = DateTime.UtcNow.AddSeconds(5);
-            while (processedCount < 1 && DateTime.UtcNow < deadline)
-            {
-                Thread.Sleep(50);
-            }
-
-            Assert.True(processedCount >= 1, $"Expected at least 1 message processed, but got {processedCount}");
+            Assert.True(
+                WaitUntil(() => processedCount >= 1),
+                $"Expected at least 1 message processed, but got {processedCount}");
         }
 
         [Fact]
@@ -79,9 +71,9 @@ namespace DotCommon.Test.Utility
                 queue.EnqueueMessage(i);
             }
 
-            Thread.Sleep(500);
-
-            Assert.NotEmpty(processedMessages);
+            Assert.True(
+                WaitUntil(() => !processedMessages.IsEmpty),
+                "No message was processed before the timeout.");
         }
 
         [Fact]
@@ -98,9 +90,37 @@ namespace DotCommon.Test.Utility
             }
 
             await Task.WhenAll(tasks);
-            await Task.Delay(1000, TestContext.Current.CancellationToken);
 
-            Assert.True(processedMessages.Count >= 20);
+            var deadline = DateTime.UtcNow.AddSeconds(10);
+            while (processedMessages.Count < 20 && DateTime.UtcNow < deadline)
+            {
+                await Task.Delay(20, TestContext.Current.CancellationToken);
+            }
+
+            Assert.True(
+                processedMessages.Count >= 20,
+                $"Expected at least 20 messages processed, but got {processedMessages.Count}");
+        }
+
+        /// <summary>
+        /// Message processing runs on the thread pool, so the tests poll instead of
+        /// sleeping for a fixed amount of time; a slow CI runner would otherwise
+        /// fail despite correct behaviour.
+        /// </summary>
+        private static bool WaitUntil(Func<bool> condition, int timeoutMilliseconds = 10000)
+        {
+            var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMilliseconds);
+            while (!condition())
+            {
+                if (DateTime.UtcNow >= deadline)
+                {
+                    return false;
+                }
+
+                Thread.Sleep(20);
+            }
+
+            return true;
         }
     }
 }
