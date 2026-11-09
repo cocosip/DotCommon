@@ -119,8 +119,10 @@ jobs:
       run: |
         set -euo pipefail
         VERSION="${{ steps.version.outputs.version }}"
-        GROUPS=(.NETStandard2.0 .NETStandard2.1 net9.0 net10.0)
-        LIBS=(netstandard2.0 netstandard2.1 net9.0 net10.0)
+        # Do not name these GROUPS: bash treats GROUPS as the current user's group list and
+        # silently ignores assignments to it, which made the loop check group id "1001".
+        TFM_GROUPS=(.NETStandard2.0 .NETStandard2.1 net9.0 net10.0)
+        TFM_LIBS=(netstandard2.0 netstandard2.1 net9.0 net10.0)
 
         for pkg in DotCommon DotCommon.Caching DotCommon.Caching.StackExchangeRedis \
                    DotCommon.Crypto DotCommon.DistributedLocking DotCommon.AutoMapper; do
@@ -129,10 +131,10 @@ jobs:
           test -f "./packages/$pkg.$VERSION.snupkg" || { echo "missing $pkg snupkg"; exit 1; }
           nuspec=$(unzip -p "$file" '*.nuspec')
           listing=$(unzip -l "$file")
-          for tfm in "${GROUPS[@]}"; do
+          for tfm in "${TFM_GROUPS[@]}"; do
             grep -q "targetFramework=\"$tfm\"" <<< "$nuspec" || { echo "$pkg: missing dependency group $tfm"; exit 1; }
           done
-          for tfm in "${LIBS[@]}"; do
+          for tfm in "${TFM_LIBS[@]}"; do
             grep -q "lib/$tfm/$pkg.dll" <<< "$listing" || { echo "$pkg: missing lib/$tfm/$pkg.dll"; exit 1; }
           done
         done
