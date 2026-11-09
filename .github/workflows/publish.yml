@@ -3,12 +3,15 @@ on:
   push:
     tags:
       - v*
+permissions:
+  contents: read
+  id-token: write # required by NuGet trusted publishing (GitHub OIDC token)
 jobs:
   build-test:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-dotnet@v1
+    - uses: actions/checkout@v4
+    - uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
 
@@ -27,7 +30,14 @@ jobs:
       working-directory: .\build
       shell: powershell
 
+    # Exchange the GitHub OIDC token for a short-lived (1h) nuget.org API key.
+    # Needs a "Trusted Publishing" policy on nuget.org: cocosip / DotCommon / publish.yml
+    - name: NuGet login (OIDC -> temp API key)
+      id: login
+      uses: NuGet/login@v1
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
     - name: Publish nuget
       working-directory: .\build
-      run: dotnet nuget push ..\dest\*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://www.nuget.org --skip-duplicate
-
+      run: dotnet nuget push ..\dest\*.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
