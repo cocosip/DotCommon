@@ -14,7 +14,7 @@ DotCommon is a C# utility library for .NET applications. It provides common abst
 - Run core tests: `dotnet test test/DotCommon.Test/DotCommon.Test.csproj`
 - Pack: `dotnet pack DotCommon.slnx -c Release -o dest`
 - Target frameworks come from `Directory.Build.props`: libraries `$(AllFrameworks)` (netstandard2.0, netstandard2.1, net9.0, net10.0), ASP.NET Core and tests `$(CoreFrameworks)`, samples `$(LatestFramework)`.
-- Package versions live in `Directory.Packages.props` as per-TFM version-line variables (`DotCommonMSExtensionsRange`, `DotCommonCachingMemoryRange`, `DotCommonCachingHybridRange`, `DotCommonAutoMapperRange`). netstandard2.0/2.1 and net9.0 use the 9.x line; only net10.0 overrides to 10.x. Edit the variables, never duplicate a `PackageVersion` per TFM.
+- Package versions live in `Directory.Packages.props` as per-TFM version-line variables (`DotCommonMSExtensionsRange`, `DotCommonCachingMemoryRange`, `DotCommonCachingHybridRange`, `DotCommonAutoMapperRange`). The 10.x line is the default; only net9.0 overrides back to 9.x, and AutoMapper 16 is net10.0 only. Edit the variables, never duplicate a `PackageVersion` per TFM.
 - Release is tag driven: the tag must equal `<Version>` in `common.props` and point to HEAD, enforced by `.github/workflows/ci-cd.yml`.
 
 ## Architecture

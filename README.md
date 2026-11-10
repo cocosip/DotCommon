@@ -226,7 +226,7 @@ dotnet pack DotCommon.slnx -c Release -o dest
 
 项目通过 `Directory.Packages.props` 集中管理依赖版本，不在单个 `.csproj` 中重复指定版本。
 微软系包的版本线统一用变量（如 `DotCommonMSExtensionsRange`）定义一次，再按目标框架覆盖：
-`netstandard2.0` / `netstandard2.1` / `net9.0` 共用 9.x，只有 `net10.0` 走 10.x。
+所有目标框架默认走 10.x，只有 `net9.0` 覆盖回 9.x。
 
 主要依赖包括：
 

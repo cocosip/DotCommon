@@ -3,8 +3,8 @@
 
 		<!--
 		  Target framework matrix.
-		  netstandard2.0 / netstandard2.1 / net9.0 share the 9.x dependency line,
-		  only net10.0 moves to the 10.x line. Package versions live in
+		  Dependency line defaults to 10.x for every framework; only net9.0
+		  overrides back to 9.x. Package versions live in
 		  Directory.Packages.props and are switched per TFM.
 		-->
 		<AllFrameworks>netstandard2.0;netstandard2.1;net9.0;net10.0</AllFrameworks>

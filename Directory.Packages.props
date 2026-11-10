@@ -9,21 +9,26 @@
   </PropertyGroup>
 
   <!--
-    Version lines. netstandard2.0 / netstandard2.1 / net9.0 use the 9.x line,
-    net10.0 overrides them below. Bump the property, never the PackageVersion.
+    Version lines. The 10.x line is the default for every target framework,
+    net9.0 overrides it back to 9.x below. Bump the property, never the PackageVersion.
   -->
   <PropertyGroup>
+    <DotCommonMSExtensionsRange>[10.0.0,11.0.0)</DotCommonMSExtensionsRange>
+    <DotCommonCachingMemoryRange>[10.0.0,11.0.0)</DotCommonCachingMemoryRange>
+    <DotCommonCachingHybridRange>[10.0.0,11.0.0)</DotCommonCachingHybridRange>
+    <DotCommonAutoMapperRange>[15.1.4,16.0.0)</DotCommonAutoMapperRange>
+  </PropertyGroup>
+
+  <!-- net9.0 stays on the 9.x line. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
     <DotCommonMSExtensionsRange>[9.0.0,10.0.0)</DotCommonMSExtensionsRange>
     <!-- Caching.Memory needs the 9.0.3 floor: HybridCache 9.3.0 depends on it, a lower floor restores as NU1605. -->
     <DotCommonCachingMemoryRange>[9.0.3,10.0.0)</DotCommonCachingMemoryRange>
     <DotCommonCachingHybridRange>[9.3.0,10.0.0)</DotCommonCachingHybridRange>
-    <DotCommonAutoMapperRange>[15.1.4,16.0.0)</DotCommonAutoMapperRange>
   </PropertyGroup>
 
+  <!-- AutoMapper 16 is net10.0 only. -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <DotCommonMSExtensionsRange>[10.0.0,11.0.0)</DotCommonMSExtensionsRange>
-    <DotCommonCachingMemoryRange>[10.0.0,11.0.0)</DotCommonCachingMemoryRange>
-    <DotCommonCachingHybridRange>[10.0.0,11.0.0)</DotCommonCachingHybridRange>
     <DotCommonAutoMapperRange>[16.3.0,17.0.0)</DotCommonAutoMapperRange>
   </PropertyGroup>
 
