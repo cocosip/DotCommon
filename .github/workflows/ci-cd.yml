@@ -149,12 +149,12 @@ jobs:
           grep -q "lib/$tfm/DotCommon.AspNetCore.Mvc.dll" <<< "$listing" || { echo "Mvc: missing lib/$tfm"; exit 1; }
         done
 
-        # Dependency lines: netstandard2.0/2.1 and net9.0 stay on 9.x, net10.0 moves to 10.x.
+        # Dependency lines: 10.x is the default for ns2.0/ns2.1/net10.0, net9.0 overrides to 9.x.
         nuspec=$(unzip -p "./packages/DotCommon.$VERSION.nupkg" '*.nuspec')
-        [ "$(grep -cF 'id="Microsoft.Extensions.Logging" version="[9.0.0, 10.0.0)"' <<< "$nuspec")" = "3" ] \
-          || { echo "DotCommon: Microsoft.Extensions.Logging must be [9.0.0, 10.0.0) for ns2.0/ns2.1/net9.0"; exit 1; }
-        [ "$(grep -cF 'id="Microsoft.Extensions.Logging" version="[10.0.0, 11.0.0)"' <<< "$nuspec")" = "1" ] \
-          || { echo "DotCommon: Microsoft.Extensions.Logging must be [10.0.0, 11.0.0) for net10.0"; exit 1; }
+        [ "$(grep -cF 'id="Microsoft.Extensions.Logging" version="[10.0.0, 11.0.0)"' <<< "$nuspec")" = "3" ] \
+          || { echo "DotCommon: Microsoft.Extensions.Logging must be [10.0.0, 11.0.0) for ns2.0/ns2.1/net10.0"; exit 1; }
+        [ "$(grep -cF 'id="Microsoft.Extensions.Logging" version="[9.0.0, 10.0.0)"' <<< "$nuspec")" = "1" ] \
+          || { echo "DotCommon: Microsoft.Extensions.Logging must be [9.0.0, 10.0.0) for net9.0"; exit 1; }
         # System.Text.Json is in-box on net9.0/net10.0, so only the two netstandard groups carry it.
         [ "$(grep -c 'id="System.Text.Json"' <<< "$nuspec")" = "2" ] \
           || { echo "DotCommon: System.Text.Json must only be a dependency for netstandard groups"; exit 1; }
@@ -193,7 +193,7 @@ jobs:
           echo '```'
           echo
           echo "Target frameworks: netstandard2.0, netstandard2.1, net9.0, net10.0."
-          echo "Dependency lines: netstandard2.0/2.1 and net9.0 use the 9.x line, net10.0 uses 10.x."
+          echo "Dependency lines: netstandard2.0/2.1 and net10.0 use the 10.x line, net9.0 uses 9.x."
           echo
           echo "## Changes"
           echo
