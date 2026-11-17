@@ -9,12 +9,22 @@ namespace DotCommon.Utility
     /// A double-buffered queue. This queue uses two <see cref="ConcurrentQueue{TMessage}"/> instances
     /// to implement a double-buffering mechanism. One queue (`_inputQueue`) is used for receiving new messages,
     /// and the other (`_processQueue`) is used for processing messages.
-    /// Message processing is triggered when the `_inputQueue` reaches a certain threshold.
+    /// Message processing is attempted on each enqueue.
     /// </summary>
     /// <typeparam name="TMessage">The type of messages in the queue.</typeparam>
     public class BufferQueue<TMessage>
     {
-        private readonly int _requestsWriteThreshold;
+        /// <summary>
+        /// The most recent exception thrown by <c>handleMessageAction</c>, or null. Kept so a failed
+        /// message stays observable even when no <see cref="MessageProcessingFailed"/> subscriber exists.
+        /// </summary>
+        public Exception? LastError { get; private set; }
+
+        /// <summary>
+        /// Raised when <c>handleMessageAction</c> throws.
+        /// </summary>
+        public event Action<Exception>? MessageProcessingFailed;
+
         private ConcurrentQueue<TMessage> _inputQueue;
         private ConcurrentQueue<TMessage> _processQueue;
         private readonly Action<TMessage> _handleMessageAction;
@@ -25,13 +35,10 @@ namespace DotCommon.Utility
         /// Initializes a new instance of the <see cref="BufferQueue{TMessage}"/> class.
         /// </summary>
         /// <param name="name">The name of the queue, used for logging or error messages.</param>
-        /// <param name="requestsWriteThreshold">The threshold for triggering message processing.
-        /// When the number of messages in the input queue reaches or exceeds this value, message processing will be attempted.</param>
         /// <param name="handleMessageAction">The delegate used to process a single message.</param>
-        public BufferQueue(string name, int requestsWriteThreshold, Action<TMessage> handleMessageAction)
+        public BufferQueue(string name, Action<TMessage> handleMessageAction)
         {
             _name = name;
-            _requestsWriteThreshold = requestsWriteThreshold;
             _handleMessageAction = handleMessageAction;
             _inputQueue = new ConcurrentQueue<TMessage>();
             _processQueue = new ConcurrentQueue<TMessage>();
@@ -82,11 +89,8 @@ namespace DotCommon.Utility
                                 }
                                 catch (Exception ex)
                                 {
-                                    // Log the exception here. For example, using a logging framework:
-                                    // Logger.LogError(ex, $"Error processing message in {_name}: {ex.Message}");
-                                    // For demonstration, write to console:
-                                    Console.WriteLine($"Error processing message in {_name}: {ex.Message}");
-                                    // Avoid re-throwing generic exceptions to preserve original stack trace and prevent disrupting the entire processing flow.
+                                    LastError = ex;
+                                    MessageProcessingFailed?.Invoke(ex);
                                 }
                             }
                         }

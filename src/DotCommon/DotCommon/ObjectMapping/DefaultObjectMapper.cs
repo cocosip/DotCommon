@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -74,9 +74,9 @@ namespace DotCommon.ObjectMapping
 
                     return (TDestination)Activator.CreateInstance(typeof(TDestination), source)!;
                 }
-                catch
+                catch (MissingMethodException)
                 {
-                    //TODO: Remove catch when TODOs are implemented above
+                    // No suitable (TSource) constructor; fall through to auto mapping.
                 }
             }
 
@@ -87,7 +87,8 @@ namespace DotCommon.ObjectMapping
         {
             if (source == null)
             {
-                return default!;
+                // Nothing to map from; return the destination unchanged (matches IObjectMapper contract).
+                return destination;
             }
 
             using (var scope = ServiceProvider.CreateScope())
@@ -196,8 +197,14 @@ namespace DotCommon.ObjectMapping
 
                 if (definitionGenericType.IsGenericType)
                 {
-                    result.Add(invokeResult);
-                    destination?.As<IList>().Add(invokeResult);
+                    if (destination != null)
+                    {
+                        destination.As<IList>().Add(invokeResult);
+                    }
+                    else
+                    {
+                        result.Add(invokeResult);
+                    }
                 }
                 else
                 {

@@ -12,6 +12,10 @@ namespace DotCommon.Utility
     /// </summary>
     public static class UrlUtil
     {
+        private static readonly Regex MainDomainRegex = new Regex(
+            @"^http(s)?\://((www\.)?[a-zA-Z0-9\-]+\.((com|edu|gov|int|mil|net|cn|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{1,10})))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?'\\+&%\$#\-]+))*$",
+            RegexOptions.Compiled);
+
         /// <summary>
         /// Determines whether the specified URL uses the HTTPS protocol.
         /// </summary>
@@ -77,9 +81,7 @@ namespace DotCommon.Utility
                 return false;
 
             url = url.ToLowerInvariant();
-            var reg = new Regex(
-                @"^http(s)?\://((www\.)?[a-zA-Z0-9\-]+\.((com|edu|gov|int|mil|net|cn|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{1,10})))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?'\\+&%\$#\-]+))*$");
-            return reg.IsMatch(url);
+            return MainDomainRegex.IsMatch(url);
         }
 
         /// <summary>
@@ -92,8 +94,7 @@ namespace DotCommon.Utility
         {
             if (url == null)
                 return string.Empty;
-                
-            url = url.ToLowerInvariant();
+
             if (!url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) && 
                 !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             {
@@ -252,44 +253,38 @@ namespace DotCommon.Utility
 
             var existingParameters = ExtractQueryParameters(url);
             var uri = new Uri(url);
-            
-            // Merge parameters
+
+            // Merge parameters (raw values; values are encoded once when the query is built)
             foreach (var kv in parameters)
             {
                 if (string.IsNullOrWhiteSpace(kv.Key) || string.IsNullOrWhiteSpace(kv.Value))
                     continue;
-                    
-                var key = kv.Key;
-                var encodedValue = WebUtility.UrlEncode(kv.Value);
-                
-                if (existingParameters.ContainsKey(key))
+
+                if (existingParameters.ContainsKey(kv.Key))
                 {
                     if (replaceExisting)
                     {
-                        existingParameters[key] = encodedValue;
+                        existingParameters[kv.Key] = kv.Value;
                     }
                 }
                 else
                 {
-                    existingParameters.Add(key, encodedValue);
+                    existingParameters.Add(kv.Key, kv.Value);
                 }
             }
-            
-            // Build the new query string
-            var query = existingParameters.Any() ? 
-                "?" + string.Join("&", existingParameters.Select(x => $"{x.Key}={x.Value}")) : 
+
+            // Build the new query string, encoding values so reserved characters round-trip.
+            var query = existingParameters.Any() ?
+                "?" + string.Join("&", existingParameters.Select(x => $"{x.Key}={WebUtility.UrlEncode(x.Value)}")) :
                 string.Empty;
-                
-            var uriBuilder = new UriBuilder()
+
+            // Start from the original URI so port, user info, scheme and fragment are preserved.
+            var uriBuilder = new UriBuilder(uri)
             {
-                Host = uri.Host,
-                Scheme = uri.Scheme,
-                Fragment = uri.Fragment,
-                Path = uri.LocalPath,
                 Query = query
             };
 
-            return uriBuilder.Uri.ToString();
+            return uriBuilder.Uri.AbsoluteUri;
         }
     }
 }

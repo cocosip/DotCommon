@@ -149,5 +149,16 @@ namespace DotCommon.Test.Encrypt
             // Assert - This value should match the expected result from the previous implementation
             Assert.Equal("5vpVXOvT+drFQQSH3KXi6Q==", encryptedBase64);
         }
+
+        [Fact]
+        public void Encrypt_And_Decrypt_WithDefaultKeyAndIv_ShouldRoundTrip()
+        {
+            var data = Encoding.UTF8.GetBytes("no key or iv supplied");
+
+            var encrypted = AESHelper.Encrypt(data);
+            var decrypted = AESHelper.Decrypt(encrypted);
+
+            Assert.Equal(data, decrypted);
+        }
     }
 }

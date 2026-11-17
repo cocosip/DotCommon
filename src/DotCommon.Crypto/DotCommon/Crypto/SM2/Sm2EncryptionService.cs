@@ -93,7 +93,7 @@ namespace DotCommon.Crypto.SM2
 
             var engine = new SM2Engine(mode);
             var x9Ec = GMNamedCurves.GetByName(curve);
-            var p = new ECPrivateKeyParameters(new BigInteger(privateKey), new ECDomainParameters(x9Ec));
+            var p = new ECPrivateKeyParameters(new BigInteger(1, privateKey), new ECDomainParameters(x9Ec));
             engine.Init(false, p);
 
             var v = engine.ProcessBlock(cipherText, 0, cipherText.Length);
@@ -120,7 +120,7 @@ namespace DotCommon.Crypto.SM2
             }
 
             var x9Ec = GMNamedCurves.GetByName(curve);
-            var p = new ECPrivateKeyParameters(new BigInteger(privateKey), new ECDomainParameters(x9Ec));
+            var p = new ECPrivateKeyParameters(new BigInteger(1, privateKey), new ECDomainParameters(x9Ec));
 
             var signer = new SM2Signer();
             ICipherParameters cp = id != null

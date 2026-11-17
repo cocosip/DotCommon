@@ -29,6 +29,20 @@ namespace DotCommon.Encrypt
         /// </summary>
         public const PaddingMode DefaultPaddingMode = PaddingMode.PKCS7;
 
+        // Fixed defaults so that Encrypt/Decrypt round-trip when no key/iv is supplied.
+        // Callers may still pass their own key/iv.
+        // NOTE: these are convenience defaults only; production code must supply a unique key and a per-message IV.
+        private static readonly byte[] DefaultKey = Encoding.UTF8.GetBytes("DotCommonAESDefaultKey1234567890");
+        private static readonly byte[] DefaultIV = Encoding.UTF8.GetBytes("DotCommonAESIV12");
+
+        private static byte[] GetDefaultKey(int keySize)
+        {
+            var keyLength = keySize / 8;
+            var key = new byte[keyLength];
+            Array.Copy(DefaultKey, key, keyLength);
+            return key;
+        }
+
         /// <summary>
         /// Generates a random key for AES encryption.
         /// </summary>
@@ -90,8 +104,8 @@ namespace DotCommon.Encrypt
                 aes.KeySize = keySize;
                 aes.Mode = mode;
                 aes.Padding = padding;
-                aes.Key = key ?? GenerateKey(keySize);
-                aes.IV = iv ?? GenerateIV();
+                aes.Key = key ?? GetDefaultKey(keySize);
+                aes.IV = iv ?? (byte[])DefaultIV.Clone();
 
                 using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
                 return encryptor.TransformFinalBlock(data, 0, data.Length);
@@ -164,8 +178,8 @@ namespace DotCommon.Encrypt
                 aes.KeySize = keySize;
                 aes.Mode = mode;
                 aes.Padding = padding;
-                aes.Key = key ?? GenerateKey(keySize);
-                aes.IV = iv ?? GenerateIV();
+                aes.Key = key ?? GetDefaultKey(keySize);
+                aes.IV = iv ?? (byte[])DefaultIV.Clone();
 
                 using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
                 return decryptor.TransformFinalBlock(data, 0, data.Length);

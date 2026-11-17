@@ -332,7 +332,7 @@ namespace DotCommon.Utility
         private static int GetMachineHash()
         {
             var hostName = Environment.MachineName; // use instead of Dns.HostName so it will work offline
-            var md5 = MD5.Create();
+            using var md5 = MD5.Create();
             var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(hostName));
             return (hash[0] << 16) + (hash[1] << 8) + hash[2]; // use first 3 bytes of hash
         }

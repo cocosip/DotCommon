@@ -81,6 +81,16 @@ namespace DotCommon.Test.ObjectMapping
         }
 
         [Fact]
+        public void Map_WithNullSource_ShouldReturnDestination()
+        {
+            var destination = new DestinationClass { Name = "Original", Age = 7 };
+
+            var result = _objectMapper.Map<SourceClass, DestinationClass>(null!, destination);
+
+            Assert.Same(destination, result);
+        }
+
+        [Fact]
         public void Map_WithMapToDestination_ShouldUpdateDestination()
         {
             var source = new SourceWithMapTo { Value = "NewValue" };

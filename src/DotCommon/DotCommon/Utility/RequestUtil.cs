@@ -68,7 +68,7 @@ namespace DotCommon.Utility
             if (string.IsNullOrEmpty(agentKey))
                 return null;
 
-            return UserAgents.TryGetValue(agentKey.ToLower(), out var agent) ? agent : null;
+            return UserAgents.TryGetValue(agentKey.ToLowerInvariant(), out var agent) ? agent : null;
         }
 
         /// <summary>

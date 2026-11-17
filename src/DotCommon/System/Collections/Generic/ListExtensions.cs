@@ -1,4 +1,4 @@
-﻿﻿﻿using System.Linq;
+﻿﻿using System.Linq;
 using DotCommon;
 using JetBrains.Annotations;
 
@@ -321,14 +321,17 @@ namespace System.Collections.Generic
         {
             Check.NotNull(source, nameof(source));
 
-            var item = source.FirstOrDefault(selector);
-
-            if (item == null)
+            // A null check on the first match is wrong for value types, so search explicitly.
+            foreach (var candidate in source)
             {
-                item = factory();
-                source.Add(item);
+                if (selector(candidate))
+                {
+                    return candidate;
+                }
             }
 
+            var item = factory();
+            source.Add(item);
             return item;
         }
 

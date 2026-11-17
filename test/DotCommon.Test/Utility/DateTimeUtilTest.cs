@@ -86,6 +86,19 @@ namespace DotCommon.Test.Utility
         }
 
         [Fact]
+        public void TruncateAndDateHelpers_ShouldPreserveKind()
+        {
+            var utc = new DateTime(2023, 1, 15, 10, 30, 45, 123, DateTimeKind.Utc);
+
+            Assert.Equal(DateTimeKind.Utc, utc.TruncateToMilliseconds().Kind);
+            Assert.Equal(DateTimeKind.Utc, utc.TruncateToSeconds().Kind);
+            Assert.Equal(DateTimeKind.Utc, DateTimeUtil.GetFirstDayOfMonth(utc).Kind);
+            Assert.Equal(DateTimeKind.Utc, DateTimeUtil.GetLastDayOfMonth(utc).Kind);
+            Assert.Equal(DateTimeKind.Utc, DateTimeUtil.GetFirstDayOfYear(utc).Kind);
+            Assert.Equal(DateTimeKind.Utc, DateTimeUtil.GetLastDayOfYear(utc).Kind);
+        }
+
+        [Fact]
         public void GetPadDay_Test()
         {
             var dateTime = new DateTime(2023, 1, 15);

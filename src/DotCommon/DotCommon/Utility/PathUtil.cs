@@ -30,8 +30,8 @@ namespace DotCommon.Utility
         }
 
         /// <summary>
-        /// Combines an array of paths into a single path.
-        /// This method correctly handles path separators for the current operating system.
+        /// Combines an array of paths into a single forward-slash separated path.
+        /// This method always uses '/' as the separator.
         /// </summary>
         /// <param name="paths">An array of paths to combine.</param>
         /// <returns>The combined path.</returns>
@@ -187,12 +187,19 @@ namespace DotCommon.Utility
         /// <returns>The file extension, including the leading dot, or an empty string if no extension exists.</returns>
         public static string GetFileExtension(string path)
         {
-            if (string.IsNullOrWhiteSpace(path) || path.IndexOf('.') < 0)
+            if (string.IsNullOrWhiteSpace(path))
             {
                 return string.Empty;
             }
 
-            return path.Substring(path.LastIndexOf('.'));
+            var lastSeparator = path.LastIndexOfAny(new[] { '\\', '/' });
+            var lastDot = path.LastIndexOf('.');
+            if (lastDot < 0 || lastDot < lastSeparator)
+            {
+                return string.Empty;
+            }
+
+            return path.Substring(lastDot);
         }
     }
 }

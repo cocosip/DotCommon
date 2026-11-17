@@ -699,5 +699,31 @@ namespace DotCommon.Test.Reflecting
         }
 
         #endregion
+
+        #region EmitMapper Enum Support
+
+        public enum SampleStatus
+        {
+            Active,
+            Disabled
+        }
+
+        public class EnumPropertyClass
+        {
+            public SampleStatus Status { get; set; }
+        }
+
+        [Fact]
+        public void DictionaryToObject_WithEnumProperty_ShouldParseEnum()
+        {
+            var dictionary = new Dictionary<string, string> { { nameof(EnumPropertyClass.Status), "Disabled" } };
+
+            var result = EmitMapper.DictionaryToObject<EnumPropertyClass>(dictionary);
+
+            Assert.NotNull(result);
+            Assert.Equal(SampleStatus.Disabled, result!.Status);
+        }
+
+        #endregion
     }
 }

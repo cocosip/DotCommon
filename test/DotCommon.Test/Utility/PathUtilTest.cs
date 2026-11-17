@@ -13,6 +13,7 @@ namespace DotCommon.Test.Utility
         [InlineData(@"\BB.jpg", ".jpg")]
         [InlineData(@"..jpg", ".jpg")]
         [InlineData(@"D:\A\B\C", "")]
+        [InlineData(@"C:\A.B\file", "")]
         [InlineData(@"", "")]
         public void GetPathExtensionTest(string path, string expected)
         {

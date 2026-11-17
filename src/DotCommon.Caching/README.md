@@ -125,8 +125,8 @@ public class UserService
 public interface IDistributedCache<TCacheItem> where TCacheItem : class
 {
     // 获取缓存
-    TCacheItem? Get(string key, bool? hideErrors = null, bool considerUow = false);
-    Task<TCacheItem?> GetAsync(string key, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default);
+    TCacheItem? Get(string key, bool? hideErrors = null);
+    Task<TCacheItem?> GetAsync(string key, bool? hideErrors = null, CancellationToken token = default);
 
     // 获取或添加缓存
     TCacheItem? GetOrAdd(string key, Func<TCacheItem> factory, Func<DistributedCacheEntryOptions>? optionsFactory = null, ...);
@@ -137,8 +137,8 @@ public interface IDistributedCache<TCacheItem> where TCacheItem : class
     Task SetAsync(string key, TCacheItem value, DistributedCacheEntryOptions? options = null, ...);
 
     // 删除缓存
-    void Remove(string key, bool? hideErrors = null, bool considerUow = false);
-    Task RemoveAsync(string key, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default);
+    void Remove(string key, bool? hideErrors = null);
+    Task RemoveAsync(string key, bool? hideErrors = null, CancellationToken token = default);
 
     // 批量操作
     KeyValuePair<string, TCacheItem?>[] GetMany(IEnumerable<string> keys, ...);
@@ -408,7 +408,6 @@ public interface IHybridCache<TCacheItem> where TCacheItem : class
         Func<Task<TCacheItem>> factory,
         Func<HybridCacheEntryOptions>? optionsFactory = null,
         bool? hideErrors = null,
-        bool considerUow = false,
         CancellationToken token = default);
 
     // 设置缓存
@@ -417,12 +416,11 @@ public interface IHybridCache<TCacheItem> where TCacheItem : class
         TCacheItem value,
         HybridCacheEntryOptions? options = null,
         bool? hideErrors = null,
-        bool considerUow = false,
         CancellationToken token = default);
 
     // 删除缓存
-    Task RemoveAsync(string key, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default);
-    Task RemoveManyAsync(IEnumerable<string> keys, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default);
+    Task RemoveAsync(string key, bool? hideErrors = null, CancellationToken token = default);
+    Task RemoveManyAsync(IEnumerable<string> keys, bool? hideErrors = null, CancellationToken token = default);
 }
 ```
 
@@ -571,24 +569,9 @@ services.Configure<DotCommonDistributedCacheOptions>(options =>
 });
 ```
 
-### 与工作单元集成
+### 与工作单元的关系
 
-```csharp
-public async Task<UserCacheItem> UpdateUserAsync(int userId, UserCacheItem user)
-{
-    using (var uow = _unitOfWorkManager.Begin())
-    {
-        await _userRepository.UpdateAsync(user);
-
-        // considerUow: true 时，缓存在工作单元提交后才真正更新
-        await _cache.SetAsync($"User:{userId}", user, considerUow: true);
-
-        await uow.CompleteAsync();
-    }
-
-    return user;
-}
-```
+缓存的写入/删除会立即生效，**不参与工作单元（Unit of Work）事务**。如果业务要求"事务提交成功后再更新缓存"，请在 `uow.CompleteAsync()` 成功之后自行调用缓存方法；失败时不要写入缓存，避免缓存与数据库不一致。
 
 ## 架构设计
 

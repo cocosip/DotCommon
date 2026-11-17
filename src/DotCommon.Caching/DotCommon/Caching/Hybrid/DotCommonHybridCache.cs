@@ -1,14 +1,10 @@
-﻿using System;
-using System.Buffers;
-using System.Collections.Concurrent;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DotCommon.Threading;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Hybrid;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -29,24 +25,24 @@ namespace DotCommon.Caching.Hybrid
             InternalCache = internalCache;
         }
 
-        public virtual async Task<TCacheItem?> GetOrCreateAsync(string key, Func<Task<TCacheItem>> factory, Func<HybridCacheEntryOptions>? optionsFactory = null, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default)
+        public virtual async Task<TCacheItem?> GetOrCreateAsync(string key, Func<Task<TCacheItem>> factory, Func<HybridCacheEntryOptions>? optionsFactory = null, bool? hideErrors = null, CancellationToken token = default)
         {
-            return await InternalCache.GetOrCreateAsync(key, factory, optionsFactory, hideErrors, considerUow, token);
+            return await InternalCache.GetOrCreateAsync(key, factory, optionsFactory, hideErrors, token);
         }
 
-        public virtual async Task SetAsync(string key, TCacheItem value, HybridCacheEntryOptions? options = null, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default)
+        public virtual async Task SetAsync(string key, TCacheItem value, HybridCacheEntryOptions? options = null, bool? hideErrors = null, CancellationToken token = default)
         {
-            await InternalCache.SetAsync(key, value, options, hideErrors, considerUow, token);
+            await InternalCache.SetAsync(key, value, options, hideErrors, token);
         }
 
-        public virtual async Task RemoveAsync(string key, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default)
+        public virtual async Task RemoveAsync(string key, bool? hideErrors = null, CancellationToken token = default)
         {
-            await InternalCache.RemoveAsync(key, hideErrors, considerUow, token);
+            await InternalCache.RemoveAsync(key, hideErrors, token);
         }
 
-        public virtual async Task RemoveManyAsync(IEnumerable<string> keys, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default)
+        public virtual async Task RemoveManyAsync(IEnumerable<string> keys, bool? hideErrors = null, CancellationToken token = default)
         {
-            await InternalCache.RemoveManyAsync(keys, hideErrors, considerUow, token);
+            await InternalCache.RemoveManyAsync(keys, hideErrors, token);
         }
     }
 
@@ -60,51 +56,33 @@ namespace DotCommon.Caching.Hybrid
         where TCacheItem : class
         where TCacheKey : notnull
     {
-        public const string UowCacheName = "AbpHybridCache";
-
         public ILogger<DotCommonHybridCache<TCacheItem, TCacheKey>> Logger { get; set; }
 
         protected string CacheName { get; set; } = default!;
 
         protected bool IgnoreMultiTenancy { get; set; }
 
-        protected IServiceProvider ServiceProvider { get; }
-
         protected HybridCache HybridCache { get; }
-
-        protected IDistributedCache DistributedCacheCache { get; }
 
         protected ICancellationTokenProvider CancellationTokenProvider { get; }
 
         protected IDistributedCacheKeyNormalizer KeyNormalizer { get; }
-
-        protected IServiceScopeFactory ServiceScopeFactory { get; }
-
-        protected ConcurrentDictionary<string, SemaphoreSlim> KeySyncSemaphores { get; }
 
         protected HybridCacheEntryOptions DefaultCacheOptions = default!;
 
         protected DotCommonHybridCacheOptions DistributedCacheOption { get; }
 
         public DotCommonHybridCache(
-            IServiceProvider serviceProvider,
             IOptions<DotCommonHybridCacheOptions> distributedCacheOption,
             HybridCache hybridCache,
-            IDistributedCache distributedCache,
             ICancellationTokenProvider cancellationTokenProvider,
-            IDistributedCacheKeyNormalizer keyNormalizer,
-            IServiceScopeFactory serviceScopeFactory)
+            IDistributedCacheKeyNormalizer keyNormalizer)
         {
-            ServiceProvider = serviceProvider;
             DistributedCacheOption = distributedCacheOption.Value;
             HybridCache = hybridCache;
-            DistributedCacheCache = distributedCache;
             CancellationTokenProvider = cancellationTokenProvider;
             Logger = NullLogger<DotCommonHybridCache<TCacheItem, TCacheKey>>.Instance;
             KeyNormalizer = keyNormalizer;
-            ServiceScopeFactory = serviceScopeFactory;
-
-            KeySyncSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
             SetDefaultOptions();
         }
@@ -145,11 +123,6 @@ namespace DotCommon.Caching.Hybrid
             DefaultCacheOptions = GetDefaultCacheEntryOptions();
         }
 
-        protected virtual SemaphoreSlim GetSyncSemaphore(TCacheKey key)
-        {
-            return KeySyncSemaphores.GetOrAdd(NormalizeKey(key), static _ => new SemaphoreSlim(1, 1));
-        }
-
         /// <summary>
         /// Gets or Creates a cache item with the given key. If no cache item is found for the given key then adds a cache item
         /// provided by <paramref name="factory" /> delegate and returns the provided cache item.
@@ -158,7 +131,6 @@ namespace DotCommon.Caching.Hybrid
         /// <param name="factory">The factory delegate is used to provide the cache item when no cache item is found for the given <paramref name="key" />.</param>
         /// <param name="optionsFactory">The cache options for the factory delegate.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The cache item.</returns>
         public virtual async Task<TCacheItem?> GetOrCreateAsync(
@@ -166,55 +138,19 @@ namespace DotCommon.Caching.Hybrid
             Func<Task<TCacheItem>> factory,
             Func<HybridCacheEntryOptions>? optionsFactory = null,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             token = CancellationTokenProvider.FallbackToProvider(token);
             hideErrors ??= DistributedCacheOption.HideErrors;
 
-            TCacheItem? value = null;
-
-            if (!considerUow)
-            {
-                try
-                {
-                    value = await HybridCache.GetOrCreateAsync(
-                        key: NormalizeKey(key),
-                        factory: async cancel => await factory(),
-                        options: optionsFactory?.Invoke(),
-                        tags: null,
-                        cancellationToken: token);
-                }
-                catch (Exception ex)
-                {
-                    if (hideErrors == true)
-                    {
-                        await HandleExceptionAsync(ex);
-                        return null;
-                    }
-
-                    throw;
-                }
-
-                return value;
-            }
-
             try
             {
-                var keySemaphore = GetSyncSemaphore(key);
-                using (await keySemaphore.LockAsync(token))
-                {
-
-                    var bytes = await DistributedCacheCache.GetAsync(NormalizeKey(key), token);
-                    if (bytes != null)
-                    {
-                        return ResolveSerializer().Deserialize(new ReadOnlySequence<byte>(bytes, 0, bytes.Length)); ;
-                    }
-
-                    value = await factory();
-
-                    await SetAsync(key, value, optionsFactory?.Invoke(), hideErrors, considerUow, token);
-                }
+                return await HybridCache.GetOrCreateAsync(
+                    key: NormalizeKey(key),
+                    factory: async cancel => await factory(),
+                    options: optionsFactory?.Invoke() ?? DefaultCacheOptions,
+                    tags: null,
+                    cancellationToken: token);
             }
             catch (Exception ex)
             {
@@ -226,8 +162,6 @@ namespace DotCommon.Caching.Hybrid
 
                 throw;
             }
-
-            return value;
         }
 
         /// <summary>
@@ -237,7 +171,6 @@ namespace DotCommon.Caching.Hybrid
         /// <param name="value">The cache item value to set in the cache.</param>
         /// <param name="options">The cache options for the value.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
         public virtual async Task SetAsync(
@@ -245,7 +178,6 @@ namespace DotCommon.Caching.Hybrid
             TCacheItem value,
             HybridCacheEntryOptions? options = null,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             async Task SetRealCache()
@@ -283,16 +215,14 @@ namespace DotCommon.Caching.Hybrid
         /// </summary>
         /// <param name="key">The key of cached item to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
         public virtual async Task RemoveAsync(
             TCacheKey key,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
-            await RemoveManyAsync(new[] { key }, hideErrors, considerUow, token);
+            await RemoveManyAsync(new[] { key }, hideErrors, token);
         }
 
         /// <summary>
@@ -300,13 +230,11 @@ namespace DotCommon.Caching.Hybrid
         /// </summary>
         /// <param name="keys">The keys of cached items to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
         public async Task RemoveManyAsync(
             IEnumerable<TCacheKey> keys,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             var keyArray = keys.ToArray();
@@ -339,50 +267,6 @@ namespace DotCommon.Caching.Hybrid
         {
             Logger.LogError(ex, ex.Message);
             return Task.CompletedTask;
-        }
-
-
-
-        protected virtual string GetUnitOfWorkCacheKey()
-        {
-            return UowCacheName + CacheName;
-        }
-
-
-
-        private readonly ConcurrentDictionary<Type, object> _serializersCache = new();
-
-        protected virtual IHybridCacheSerializer<TCacheItem> ResolveSerializer()
-        {
-            if (_serializersCache.TryGetValue(typeof(TCacheItem), out var serializer))
-            {
-                return serializer.As<IHybridCacheSerializer<TCacheItem>>();
-            }
-
-            serializer = ServiceProvider.GetService<IHybridCacheSerializer<TCacheItem>>();
-            if (serializer is null)
-            {
-                var factories = ServiceProvider.GetServices<IHybridCacheSerializerFactory>().ToArray();
-                Array.Reverse(factories);
-                foreach (var factory in factories)
-                {
-                    if (factory.TryCreateSerializer<TCacheItem>(out var current))
-                    {
-                        serializer = current;
-                        break;
-                    }
-                }
-            }
-
-            if (serializer is null)
-            {
-                throw new InvalidOperationException($"No {nameof(IHybridCacheSerializer<TCacheItem>)} configured for type '{typeof(TCacheItem).Name}'");
-            }
-
-            var resolvedSerializer = serializer.As<IHybridCacheSerializer<TCacheItem>>();
-            _serializersCache.TryAdd(typeof(TCacheItem), resolvedSerializer);
-
-            return resolvedSerializer;
         }
     }
 }

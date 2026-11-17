@@ -19,7 +19,7 @@ namespace DotCommon.Utility
         /// <returns>A new DateTime object truncated to milliseconds.</returns>
         public static DateTime TruncateToMilliseconds(this DateTime datetime)
         {
-            return new DateTime(datetime.Year, datetime.Month, datetime.Day, datetime.Hour, datetime.Minute, datetime.Second, datetime.Millisecond);
+            return DateTime.SpecifyKind(new DateTime(datetime.Year, datetime.Month, datetime.Day, datetime.Hour, datetime.Minute, datetime.Second, datetime.Millisecond), datetime.Kind);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace DotCommon.Utility
         /// <returns>A new DateTime object truncated to seconds.</returns>
         public static DateTime TruncateToSeconds(this DateTime datetime)
         {
-            return new DateTime(datetime.Year, datetime.Month, datetime.Day, datetime.Hour, datetime.Minute, datetime.Second);
+            return DateTime.SpecifyKind(new DateTime(datetime.Year, datetime.Month, datetime.Day, datetime.Hour, datetime.Minute, datetime.Second), datetime.Kind);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace DotCommon.Utility
         /// <returns>A DateTime object representing the first day of the month.</returns>
         public static DateTime GetFirstDayOfMonth(DateTime time)
         {
-            return new DateTime(time.Year, time.Month, 1);
+            return DateTime.SpecifyKind(new DateTime(time.Year, time.Month, 1), time.Kind);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace DotCommon.Utility
         /// <returns>A DateTime object representing the last day of the month.</returns>
         public static DateTime GetLastDayOfMonth(DateTime time)
         {
-            return new DateTime(time.Year, time.Month, DateTime.DaysInMonth(time.Year, time.Month));
+            return DateTime.SpecifyKind(new DateTime(time.Year, time.Month, DateTime.DaysInMonth(time.Year, time.Month)), time.Kind);
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace DotCommon.Utility
         /// <returns>A DateTime object representing the first day of the year.</returns>
         public static DateTime GetFirstDayOfYear(DateTime time)
         {
-            return new DateTime(time.Year, 1, 1);
+            return DateTime.SpecifyKind(new DateTime(time.Year, 1, 1), time.Kind);
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace DotCommon.Utility
         /// <returns>A DateTime object representing the last day of the year.</returns>
         public static DateTime GetLastDayOfYear(DateTime time)
         {
-            return new DateTime(time.Year, 12, 31);
+            return DateTime.SpecifyKind(new DateTime(time.Year, 12, 31), time.Kind);
         }
 
         /// <summary>

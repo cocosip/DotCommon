@@ -1,30 +1,10 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Dynamic;
 
 namespace System.Collections.Generic
 {
     public static class DictionaryExtensions
     {
-        /// <summary>
-        /// This method is used to try to get a value in a dictionary if it does exists.
-        /// </summary>
-        /// <typeparam name="T">Type of the value</typeparam>
-        /// <param name="dictionary">The collection object</param>
-        /// <param name="key">Key</param>
-        /// <param name="value">Value of the key (or default value if key not exists)</param>
-        /// <returns>True if key does exists in the dictionary</returns>
-        internal static bool TryGetValue<T>(this IDictionary<string, object> dictionary, string key, out T? value)
-        {
-            if (dictionary.TryGetValue(key, out object? valueObj) && valueObj is T)
-            {
-                value = (T)valueObj;
-                return true;
-            }
-
-            value = default;
-            return false;
-        }
-
         /// <summary>
         /// Gets a value from the dictionary with given key. Returns default value if can not find.
         /// </summary>
@@ -86,7 +66,7 @@ namespace System.Collections.Generic
         /// <param name="factory">A factory method used to create the value if not found in the dictionary</param>
         /// <typeparam name="TKey">Type of the key</typeparam>
         /// <typeparam name="TValue">Type of the value</typeparam>
-        /// <returns>Value if found, default if can not found.</returns>
+        /// <returns>The existing value, or the newly created (and added) value.</returns>
         public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> factory)
         {
             TValue? obj;

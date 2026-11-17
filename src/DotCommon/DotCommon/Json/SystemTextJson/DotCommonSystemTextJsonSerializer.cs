@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 
 namespace DotCommon.Json.SystemTextJson
 {
-    public class DotCommonSystemTextJsonSerializer : IJsonSerializer
+    public class DotCommonSystemTextJsonSerializer : IJsonSerializer, IUtf8JsonSerializer
     {
         protected DotCommonSystemTextJsonSerializerOptions Options { get; }
 
@@ -27,6 +27,16 @@ namespace DotCommon.Json.SystemTextJson
         public object Deserialize(Type type, string jsonString, bool camelCase = true)
         {
             return JsonSerializer.Deserialize(jsonString, type, CreateJsonSerializerOptions(camelCase))!;
+        }
+
+        public byte[] SerializeToUtf8Bytes(object obj, bool camelCase = true, bool indented = false)
+        {
+            return JsonSerializer.SerializeToUtf8Bytes(obj, CreateJsonSerializerOptions(camelCase, indented));
+        }
+
+        public object Deserialize(Type type, byte[] utf8Json, bool camelCase = true)
+        {
+            return JsonSerializer.Deserialize(utf8Json, type, CreateJsonSerializerOptions(camelCase))!;
         }
 
         private static readonly ConcurrentDictionary<object, JsonSerializerOptions> JsonSerializerOptionsCache =

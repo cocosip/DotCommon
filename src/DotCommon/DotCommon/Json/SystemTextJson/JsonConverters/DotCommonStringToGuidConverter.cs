@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -6,13 +6,14 @@ namespace DotCommon.Json.SystemTextJson.JsonConverters
 {
     public class DotCommonStringToGuidConverter : JsonConverter<Guid>
     {
+        private static readonly string[] Formats = { "N", "D", "B", "P", "X" };
+
         public override Guid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.String)
             {
                 var guidString = reader.GetString();
-                string[] formats = { "N", "D", "B", "P", "X" };
-                foreach (var format in formats)
+                foreach (var format in Formats)
                 {
                     if (Guid.TryParseExact(guidString, format, out var guid))
                     {

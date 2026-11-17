@@ -53,8 +53,9 @@ namespace DotCommon.DistributedLocking
             }
             else
             {
-                // If no timeout is specified, use a very long timeout (effectively infinite)
-                handle = await distributedLock.TryAcquireAsync(TimeSpan.MaxValue, cancellationToken);
+                // No timeout: wait until acquired (or cancelled) instead of passing TimeSpan.MaxValue,
+                // which can overflow backend timers.
+                handle = await distributedLock.AcquireAsync(cancellationToken: cancellationToken);
             }
 
             return handle != null ? new MedallionDistributedLockHandle(handle) : null;

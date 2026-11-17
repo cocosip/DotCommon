@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DotCommon.Test.Serializing
+namespace DotCommon.Test.Scheduling
 {
     public class ScheduleServiceTest
     {
@@ -130,11 +130,12 @@ namespace DotCommon.Test.Serializing
             // Stop the task
             scheduleService.StopTask("testTask");
 
-            // Capture the count
+            // Let any in-flight tick settle before sampling, then verify no further executions.
+            await Task.Delay(120, TestContext.Current.CancellationToken);
             var countAfterStop = callCount;
 
             // Wait a bit more to ensure no more executions
-            await Task.Delay(100, TestContext.Current.CancellationToken);
+            await Task.Delay(120, TestContext.Current.CancellationToken);
 
             // Verify no more executions after stop
             Assert.Equal(countAfterStop, callCount);

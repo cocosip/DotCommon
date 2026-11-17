@@ -26,7 +26,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 })
                 .Configure<DotCommonSm4EncryptionOptions>(options =>
                 {
-                    options.DefaultIv = Encoding.UTF8.GetBytes("DotCommon");
+                    // SM4 block size is 16 bytes; a shorter default makes any CBC call fail.
+                    options.DefaultIv = Encoding.UTF8.GetBytes("DotCommonSm4IV16");
                     options.DefaultMode = Sm4EncryptionNames.ModeECB;
                     options.DefaultPadding = Sm4EncryptionNames.NoPadding;
                 })

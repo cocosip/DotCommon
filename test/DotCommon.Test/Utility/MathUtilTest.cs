@@ -1,4 +1,4 @@
-﻿using DotCommon.Utility;
+using DotCommon.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,6 +82,14 @@ namespace DotCommon.Test.Utility
             var r = MathUtil.Descartes(list1, list2, list3);
             Assert.Equal(6, r.Count);
 
+        }
+
+        [Fact]
+        public void Descartes_WithEmptyList_ShouldReturnEmpty()
+        {
+            var result = MathUtil.Descartes(new List<string>(), new List<string> { "a" });
+
+            Assert.Empty(result);
         }
     }
 }

@@ -34,6 +34,12 @@ namespace DotCommon.Reflecting
         /// </summary>
         private static readonly ReflectionCache ReflectionInfo = new ReflectionCache();
 
+        /// <summary>
+        /// Generic helper used to convert a string to an enum value (enums have no static Parse(string)).
+        /// </summary>
+        private static readonly MethodInfo EnumParseValueMethod = typeof(EmitMapper)
+            .GetMethod(nameof(ParseEnumValue), BindingFlags.NonPublic | BindingFlags.Static)!;
+
         #endregion
 
         #region Public Methods - Dictionary to Object Conversion
@@ -240,13 +246,22 @@ namespace DotCommon.Reflecting
                 return;
             }
 
+            if (targetType.IsEnum)
+            {
+                // Enums expose no public static Parse(string); go through Enum.Parse.
+                il.Emit(OpCodes.Call, EnumParseValueMethod.MakeGenericMethod(targetType));
+                return;
+            }
+
             if (targetType.IsValueType)
             {
                 if (EmitUtil.IsNullable(targetType))
                 {
                     // Nullable value type: Parse underlying type and create nullable
                     var underlyingType = EmitUtil.GetNullableUnderlyingType(targetType);
-                    var parseMethod = GetParseMethod(underlyingType);
+                    var parseMethod = underlyingType.IsEnum
+                        ? EnumParseValueMethod.MakeGenericMethod(underlyingType)
+                        : GetParseMethod(underlyingType);
                     il.Emit(OpCodes.Call, parseMethod);
                     il.Emit(OpCodes.Newobj, targetType.GetConstructor(new[] { underlyingType })!);
                 }
@@ -257,6 +272,14 @@ namespace DotCommon.Reflecting
                     il.Emit(OpCodes.Call, parseMethod);
                 }
             }
+        }
+
+        /// <summary>
+        /// Parses a string into the specified enum type (case-insensitive).
+        /// </summary>
+        private static T ParseEnumValue<T>(string value) where T : struct, Enum
+        {
+            return (T)Enum.Parse(typeof(T), value, true);
         }
 
         /// <summary>

@@ -42,7 +42,7 @@ Interface-based mapping patterns are also used in the codebase. The main impleme
 
 `ExpressionMapper` is a performance-sensitive component for object and dictionary conversion. It compiles and caches conversion logic and is the preferred path for high-throughput reflection-based mapping scenarios.
 
-Related utilities include `EmitMapper`, `PropertyInfoUtil`, `TypeUtil`, and `ReflectionUtil`.
+Related utilities include `EmitMapper`, `PropertyInfoUtil`, and `TypeUtil`.
 
 ### JSON Serialization
 

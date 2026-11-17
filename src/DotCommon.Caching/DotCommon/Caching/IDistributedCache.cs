@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,12 +31,10 @@ namespace DotCommon.Caching
         /// </summary>
         /// <param name="key">The key of cached item to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <returns>The cache item, or null.</returns>
         TCacheItem? Get(
             TCacheKey key,
-            bool? hideErrors = null,
-            bool considerUow = false
+            bool? hideErrors = null
         );
 
         /// <summary>
@@ -48,12 +46,10 @@ namespace DotCommon.Caching
         /// </summary>
         /// <param name="keys">The keys of cached items to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <returns>List of cache items.</returns>
         KeyValuePair<TCacheKey, TCacheItem?>[] GetMany(
             IEnumerable<TCacheKey> keys,
-            bool? hideErrors = null,
-            bool considerUow = false
+            bool? hideErrors = null
         );
 
         /// <summary>
@@ -66,13 +62,11 @@ namespace DotCommon.Caching
         /// </summary>
         /// <param name="keys">The keys of cached items to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>List of cache items.</returns>
         Task<KeyValuePair<TCacheKey, TCacheItem?>[]> GetManyAsync(
             IEnumerable<TCacheKey> keys,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default
         );
 
@@ -81,13 +75,11 @@ namespace DotCommon.Caching
         /// </summary>
         /// <param name="key">The key of cached item to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The cache item, or null.</returns>
         Task<TCacheItem?> GetAsync(
             [NotNull] TCacheKey key,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default
         );
 
@@ -99,14 +91,12 @@ namespace DotCommon.Caching
         /// <param name="factory">The factory delegate is used to provide the cache item when no cache item is found for the given <paramref name="key" />.</param>
         /// <param name="optionsFactory">The cache options for the factory delegate.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <returns>The cache item.</returns>
         TCacheItem? GetOrAdd(
             TCacheKey key,
             Func<TCacheItem> factory,
             Func<DistributedCacheEntryOptions>? optionsFactory = null,
-            bool? hideErrors = null,
-            bool considerUow = false
+            bool? hideErrors = null
         );
 
         /// <summary>
@@ -117,7 +107,6 @@ namespace DotCommon.Caching
         /// <param name="factory">The factory delegate is used to provide the cache item when no cache item is found for the given <paramref name="key" />.</param>
         /// <param name="optionsFactory">The cache options for the factory delegate.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The cache item.</returns>
         Task<TCacheItem?> GetOrAddAsync(
@@ -125,7 +114,6 @@ namespace DotCommon.Caching
             Func<Task<TCacheItem>> factory,
             Func<DistributedCacheEntryOptions>? optionsFactory = null,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default
         );
 
@@ -137,14 +125,12 @@ namespace DotCommon.Caching
         /// <param name="factory">The factory delegate is used to provide the cache items when no cache items are found for the given <paramref name="keys" />.</param>
         /// <param name="optionsFactory">The cache options for the factory delegate.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <returns>The cache items.</returns>
         KeyValuePair<TCacheKey, TCacheItem?>[] GetOrAddMany(
             IEnumerable<TCacheKey> keys,
             Func<IEnumerable<TCacheKey>, List<KeyValuePair<TCacheKey, TCacheItem>>> factory,
             Func<DistributedCacheEntryOptions>? optionsFactory = null,
-            bool? hideErrors = null,
-            bool considerUow = false
+            bool? hideErrors = null
         );
 
         /// <summary>
@@ -155,7 +141,6 @@ namespace DotCommon.Caching
         /// <param name="factory">The factory delegate is used to provide the cache items when no cache items are found for the given <paramref name="keys" />.</param>
         /// <param name="optionsFactory">The cache options for the factory delegate.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The cache items.</returns>
         Task<KeyValuePair<TCacheKey, TCacheItem?>[]> GetOrAddManyAsync(
@@ -163,7 +148,6 @@ namespace DotCommon.Caching
             Func<IEnumerable<TCacheKey>, Task<List<KeyValuePair<TCacheKey, TCacheItem>>>> factory,
             Func<DistributedCacheEntryOptions>? optionsFactory = null,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default
         );
 
@@ -174,13 +158,11 @@ namespace DotCommon.Caching
         /// <param name="value">The cache item value to set in the cache.</param>
         /// <param name="options">The cache options for the value.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         void Set(
             TCacheKey key,
             TCacheItem value,
             DistributedCacheEntryOptions? options = null,
-            bool? hideErrors = null,
-            bool considerUow = false
+            bool? hideErrors = null
         );
 
         /// <summary>
@@ -190,7 +172,6 @@ namespace DotCommon.Caching
         /// <param name="value">The cache item value to set in the cache.</param>
         /// <param name="options">The cache options for the value.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
         Task SetAsync(
@@ -198,7 +179,6 @@ namespace DotCommon.Caching
             [NotNull] TCacheItem value,
             DistributedCacheEntryOptions? options = null,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default
         );
 
@@ -209,12 +189,10 @@ namespace DotCommon.Caching
         /// <param name="items">Items to set on the cache</param>
         /// <param name="options">The cache options for the value.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         void SetMany(
             IEnumerable<KeyValuePair<TCacheKey, TCacheItem>> items,
             DistributedCacheEntryOptions? options = null,
-            bool? hideErrors = null,
-            bool considerUow = false
+            bool? hideErrors = null
         );
 
         /// <summary>
@@ -224,14 +202,12 @@ namespace DotCommon.Caching
         /// <param name="items">Items to set on the cache</param>
         /// <param name="options">The cache options for the value.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
         Task SetManyAsync(
             IEnumerable<KeyValuePair<TCacheKey, TCacheItem>> items,
             DistributedCacheEntryOptions? options = null,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default
         );
 
@@ -286,11 +262,9 @@ namespace DotCommon.Caching
         /// </summary>
         /// <param name="key">The key of cached item to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         void Remove(
             TCacheKey key,
-            bool? hideErrors = null,
-            bool considerUow = false
+            bool? hideErrors = null
         );
 
         /// <summary>
@@ -298,13 +272,11 @@ namespace DotCommon.Caching
         /// </summary>
         /// <param name="key">The key of cached item to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
         Task RemoveAsync(
             TCacheKey key,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default
         );
 
@@ -313,11 +285,9 @@ namespace DotCommon.Caching
         /// </summary>
         /// <param name="keys">The keys of cached items to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         void RemoveMany(
             IEnumerable<TCacheKey> keys,
-            bool? hideErrors = null,
-            bool considerUow = false
+            bool? hideErrors = null
         );
 
         /// <summary>
@@ -325,13 +295,11 @@ namespace DotCommon.Caching
         /// </summary>
         /// <param name="keys">The keys of cached items to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
         Task RemoveManyAsync(
             IEnumerable<TCacheKey> keys,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default
         );
     }

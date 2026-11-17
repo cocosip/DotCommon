@@ -19,15 +19,6 @@ namespace DotCommon.Encrypt
         /// <summary>Fixed version number
         /// </summary>
         private static readonly byte[] Version = { 0x02, 0x01, 0x00 };
-
-        private static readonly Dictionary<string, HashAlgorithmName> HashAlgorithmNameDict = new Dictionary<string, HashAlgorithmName>()
-        {
-            {"MD5",HashAlgorithmName.MD5 },
-            {"SHA1",HashAlgorithmName.SHA1 },
-            {"SHA256",HashAlgorithmName.SHA256 },
-            {"SHA384",HashAlgorithmName.SHA384 },
-            {"SHA512",HashAlgorithmName.SHA512 },
-        };
 #endif
 
         /// <summary>

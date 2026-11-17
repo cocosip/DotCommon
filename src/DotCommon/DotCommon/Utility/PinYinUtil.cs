@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DotCommon.Utility
@@ -8,6 +8,8 @@ namespace DotCommon.Utility
     /// </summary>
     public static class PinYinUtil
     {
+        private static readonly Regex ChineseCharRegex = new Regex("^[\u4e00-\u9fa5]$", RegexOptions.Compiled);
+
         #region Pinyin Data Arrays
 
         // Pinyin encoding range array
@@ -91,8 +93,7 @@ namespace DotCommon.Utility
         /// </summary>
         private static bool IsChinese(string input)
         {
-            Regex reg = new Regex("^[\u4e00-\u9fa5]$");
-            return reg.IsMatch(input);
+            return ChineseCharRegex.IsMatch(input);
         }
 
         #endregion

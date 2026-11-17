@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -187,6 +187,10 @@ namespace DotCommon.Utility
             foreach (var item in array)
             {
                 total *= item.Count;
+            }
+            if (total == 0)
+            {
+                return new List<List<T>>();
             }
             var result = new List<T>[total];
             int itemLoopNum = 1;

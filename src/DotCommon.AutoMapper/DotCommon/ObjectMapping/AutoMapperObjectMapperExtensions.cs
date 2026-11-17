@@ -1,9 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
 using DotCommon.AutoMapper;
 
 namespace DotCommon.ObjectMapping
 {
-    public static class AbpAutoMapperObjectMapperExtensions
+    public static class DotCommonAutoMapperObjectMapperExtensions
     {
         public static IMapper GetMapper(this IObjectMapper objectMapper)
         {

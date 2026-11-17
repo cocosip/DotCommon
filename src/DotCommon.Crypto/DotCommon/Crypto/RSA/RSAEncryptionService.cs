@@ -54,18 +54,7 @@ namespace DotCommon.Crypto.RSA
         /// <returns>An <see cref="AsymmetricKeyParameter"/> representing the private key.</returns>
         public virtual AsymmetricKeyParameter ImportPrivateKeyPem(string privateKeyPem)
         {
-            using var stringReader = new StringReader(privateKeyPem);
-            using var pemReader = new PemReader(stringReader);
-            var obj = pemReader.ReadObject();
-            if (obj is AsymmetricCipherKeyPair keyPair)
-            {
-                return keyPair.Private;
-            }
-            else if (obj is AsymmetricKeyParameter keyParam)
-            {
-                return keyParam;
-            }
-            throw new ArgumentException("Invalid private key PEM format.");
+            return ReadPrivateKey(privateKeyPem, "Invalid private key PEM format.");
         }
 
         /// <summary>
@@ -74,6 +63,11 @@ namespace DotCommon.Crypto.RSA
         /// <param name="privateKeyPem">The PEM formatted string containing the private key.</param>
         /// <returns>An <see cref="AsymmetricKeyParameter"/> representing the private key.</returns>
         public virtual AsymmetricKeyParameter ImportPrivateKeyPkcs8Pem(string privateKeyPem)
+        {
+            return ReadPrivateKey(privateKeyPem, "Invalid PKCS#8 private key PEM format.");
+        }
+
+        private static AsymmetricKeyParameter ReadPrivateKey(string privateKeyPem, string errorMessage)
         {
             using var stringReader = new StringReader(privateKeyPem);
             using var pemReader = new PemReader(stringReader);
@@ -86,7 +80,7 @@ namespace DotCommon.Crypto.RSA
             {
                 return keyParam;
             }
-            throw new ArgumentException("Invalid PKCS#8 private key PEM format.");
+            throw new ArgumentException(errorMessage);
         }
 
         /// <summary>

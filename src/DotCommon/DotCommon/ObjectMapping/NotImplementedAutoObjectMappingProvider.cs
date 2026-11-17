@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace DotCommon.ObjectMapping
 {
@@ -6,12 +6,12 @@ namespace DotCommon.ObjectMapping
     {
         public TDestination Map<TSource, TDestination>(object source)
         {
-            throw new NotImplementedException($"Can not map from given object ({source}) to {typeof(TDestination).AssemblyQualifiedName}.");
+            throw new NotImplementedException($"Cannot map from given object ({source}) to {typeof(TDestination).AssemblyQualifiedName}.");
         }
 
         public TDestination Map<TSource, TDestination>(TSource source, TDestination destination)
         {
-            throw new NotImplementedException($"Can no map from {typeof(TSource).AssemblyQualifiedName} to {typeof(TDestination).AssemblyQualifiedName}.");
+            throw new NotImplementedException($"Cannot map from {typeof(TSource).AssemblyQualifiedName} to {typeof(TDestination).AssemblyQualifiedName}.");
         }
     }
 }

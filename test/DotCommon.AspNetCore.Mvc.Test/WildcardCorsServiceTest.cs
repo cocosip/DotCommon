@@ -31,30 +31,20 @@ namespace DotCommon.AspNetCore.Mvc.Test
         [InlineData("http://another.com", "*.example.com", false)]
         [InlineData("http://test.com", "http://test.com", true)]
         [InlineData("http://test.com", "*", true)] // Universal wildcard
-        public void EvaluateOriginForWildcard_ShouldAddOriginWhenWildcardMatches(string requestOrigin, string policyOrigin, bool expectedToBeAdded)
+        public void IsOriginAllowed_ShouldMatchExpected(string requestOrigin, string policyOrigin, bool expected)
         {
             // Arrange
             var originsList = new List<string> { policyOrigin };
 
             // Act
-            var method = typeof(WildcardCorsService).GetMethod("EvaluateOriginForWildcard", BindingFlags.NonPublic | BindingFlags.Instance);
-            if (method != null)
-            {
-                method.Invoke(_wildcardCorsService, [originsList, requestOrigin]);
-            }
+            var method = typeof(WildcardCorsService).GetMethod("IsOriginAllowed", BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.NotNull(method);
+            var result = (bool)method!.Invoke(null, new object[] { originsList, requestOrigin })!;
 
             // Assert
-            if (expectedToBeAdded)
-            {
-                Assert.Contains(requestOrigin, originsList);
-            }
-            else
-            {
-                if (!originsList.Contains(requestOrigin, StringComparer.OrdinalIgnoreCase))
-                {
-                    Assert.DoesNotContain(requestOrigin, originsList);
-                }
-            }
+            Assert.Equal(expected, result);
+            // The shared policy origins must never be mutated.
+            Assert.Single(originsList);
         }
 
         [Fact]

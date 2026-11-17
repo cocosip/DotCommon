@@ -12,7 +12,7 @@ namespace DotCommon.Scheduling
         private readonly object _lockObject = new object();
         private readonly ILogger _logger;
         private readonly Action _action;
-        private Status _status;
+        private volatile Status _status;
 
         /// <summary>
         /// Gets the name of the current worker's operation.
@@ -42,9 +42,11 @@ namespace DotCommon.Scheduling
         {
             lock (_lockObject)
             {
-                if (_status == Status.Running)
+                // Once started (running or stop requested) a worker cannot be started again;
+                // guarding on Initial avoids spawning a second loop if Start is called after Stop.
+                if (_status != Status.Initial)
                 {
-                    _logger.LogInformation("Worker '{WorkerName}' is already running.", ActionName);
+                    _logger.LogInformation("Worker '{WorkerName}' has already been started.", ActionName);
                     return this;
                 }
 

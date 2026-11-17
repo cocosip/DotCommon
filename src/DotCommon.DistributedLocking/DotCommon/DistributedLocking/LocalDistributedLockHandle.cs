@@ -10,7 +10,7 @@ namespace DotCommon.DistributedLocking
     internal class LocalDistributedLockHandle : IDistributedLockHandle
     {
         private readonly SemaphoreSlim _semaphore;
-        private bool _disposed;
+        private int _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalDistributedLockHandle"/> class.
@@ -26,13 +26,12 @@ namespace DotCommon.DistributedLocking
         /// </summary>
         public void Dispose()
         {
-            if (_disposed)
+            if (Interlocked.Exchange(ref _disposed, 1) != 0)
             {
                 return;
             }
 
             _semaphore.Release();
-            _disposed = true;
         }
 
         /// <summary>
@@ -40,13 +39,12 @@ namespace DotCommon.DistributedLocking
         /// </summary>
         public ValueTask DisposeAsync()
         {
-            if (_disposed)
+            if (Interlocked.Exchange(ref _disposed, 1) != 0)
             {
                 return default;
             }
 
             _semaphore.Release();
-            _disposed = true;
             return default;
         }
     }

@@ -1,5 +1,4 @@
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -29,7 +28,6 @@ namespace DotCommon.Caching.StackExchangeRedis
         protected static readonly MethodInfo GetAbsoluteExpirationMethod;
         protected static readonly MethodInfo GetExpirationInSecondsMethod;
         protected static readonly MethodInfo OnRedisErrorMethod;
-        protected static readonly MethodInfo RecycleMethodInfo;
 
         protected RedisKey InstancePrefix { get; }
 
@@ -50,8 +48,6 @@ namespace DotCommon.Caching.StackExchangeRedis
             GetExpirationInSecondsMethod = GetRequiredMethod(type, "GetExpirationInSeconds", BindingFlags.Static | BindingFlags.NonPublic);
 
             OnRedisErrorMethod = GetRequiredMethod(type, "OnRedisError", BindingFlags.Instance | BindingFlags.NonPublic);
-
-            RecycleMethodInfo = GetRequiredMethod(type, "Recycle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
 
             AbsoluteExpirationKey = GetRequiredFieldValue(type, "AbsoluteExpirationKey", BindingFlags.Static | BindingFlags.NonPublic);
 
@@ -86,11 +82,6 @@ namespace DotCommon.Caching.StackExchangeRedis
             return await (ValueTask<IDatabase>)ConnectAsyncMethod.Invoke(this, new object[] { token })!;
         }
 
-        protected virtual void Recycle(byte[]? lease)
-        {
-            RecycleMethodInfo.Invoke(this, new object[] { lease! });
-        }
-
         public virtual byte[]?[] GetMany(IEnumerable<string> keys)
         {
             if (keys == null)
@@ -117,11 +108,7 @@ namespace DotCommon.Caching.StackExchangeRedis
 
             try
             {
-                Task.WhenAll(PipelineSetMany(cache, items, options, out var leases)).GetAwaiter().GetResult();
-                foreach (var lease in leases)
-                {
-                    Recycle(lease);
-                }
+                Task.WhenAll(PipelineSetMany(cache, items, options)).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -138,11 +125,7 @@ namespace DotCommon.Caching.StackExchangeRedis
 
             try
             {
-                await Task.WhenAll(PipelineSetMany(cache, items, options, out var leases));
-                foreach (var lease in leases)
-                {
-                    Recycle(lease);
-                }
+                await Task.WhenAll(PipelineSetMany(cache, items, options));
             }
             catch (Exception ex)
             {
@@ -352,10 +335,9 @@ namespace DotCommon.Caching.StackExchangeRedis
             return tasks;
         }
 
-        protected virtual Task[] PipelineSetMany(IDatabase cache, IEnumerable<KeyValuePair<string, byte[]>> items, DistributedCacheEntryOptions options, out List<byte[]?> leases)
+        protected virtual Task[] PipelineSetMany(IDatabase cache, IEnumerable<KeyValuePair<string, byte[]>> items, DistributedCacheEntryOptions options)
         {
             var tasks = new List<Task>();
-            leases = new List<byte[]?>();
 
             var creationTime = DateTimeOffset.UtcNow;
 
@@ -365,8 +347,7 @@ namespace DotCommon.Caching.StackExchangeRedis
             {
                 var prefixedKey = InstancePrefix.Append(item.Key);
                 var ttl = GetExpirationInSeconds(creationTime, absoluteExpiration, options);
-                var fields = GetHashEntries(Linearize(new ReadOnlySequence<byte>(item.Value), out var lease), absoluteExpiration, options.SlidingExpiration);
-                leases.Add(lease);
+                var fields = GetHashEntries(item.Value, absoluteExpiration, options.SlidingExpiration);
                 if (ttl is null)
                 {
                     tasks.Add(cache.HashSetAsync(prefixedKey, fields));
@@ -403,19 +384,6 @@ namespace DotCommon.Caching.StackExchangeRedis
         protected virtual void OnRedisError(Exception ex, IDatabase cache)
         {
             OnRedisErrorMethod.Invoke(this, new object[] { ex, cache });
-        }
-
-        private static ReadOnlyMemory<byte> Linearize(in ReadOnlySequence<byte> value, out byte[]? lease)
-        {
-            if (value.IsSingleSegment)
-            {
-                lease = null;
-                return value.First;
-            }
-            var length = checked((int)value.Length);
-            lease = ArrayPool<byte>.Shared.Rent(length);
-            value.CopyTo(lease);
-            return new ReadOnlyMemory<byte>(lease, 0, length);
         }
 
         private static RedisValue[] GetHashFields(bool getData)

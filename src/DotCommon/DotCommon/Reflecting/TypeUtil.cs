@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace DotCommon.Reflecting
 {
@@ -92,13 +91,13 @@ namespace DotCommon.Reflecting
         /// </summary>
         /// <param name="method">The MethodInfo to check.</param>
         /// <returns>True if the method is async; otherwise, false.</returns>
-        public static bool IsAsync(this MethodInfo method)
+        public static bool IsAsync(MethodInfo method)
         {
             if (method == null)
             {
                 throw new ArgumentNullException(nameof(method));
             }
-            return method.ReturnType.IsTaskOrTaskOfT();
+            return DotCommon.Threading.AsyncHelper.IsTaskOrTaskOfT(method.ReturnType);
         }
 
         /// <summary>
@@ -106,13 +105,13 @@ namespace DotCommon.Reflecting
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>True if the type is Task or Task&lt;T&gt;; otherwise, false.</returns>
-        public static bool IsTaskOrTaskOfT(this Type type)
+        public static bool IsTaskOrTaskOfT(Type type)
         {
             if (type == null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
-            return type == typeof(Task) || (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>));
+            return DotCommon.Threading.AsyncHelper.IsTaskOrTaskOfT(type);
         }
 
         /// <summary>

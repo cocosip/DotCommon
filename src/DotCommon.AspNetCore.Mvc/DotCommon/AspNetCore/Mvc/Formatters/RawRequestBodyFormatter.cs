@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.IO;
@@ -38,12 +38,22 @@ namespace DotCommon.AspNetCore.Mvc.Formatters
                 throw new ArgumentNullException(nameof(context));
             }
             var contentType = context.HttpContext.Request.ContentType;
-            if (string.IsNullOrEmpty(contentType) || contentType == "text/plain" ||
-                contentType == "application/octet-stream")
+            if (string.IsNullOrEmpty(contentType))
             {
                 return true;
             }
-            return false;
+
+            return IsMediaType(contentType, "text/plain") || IsMediaType(contentType, "application/octet-stream");
+        }
+
+        /// <summary>
+        /// Compares the media type only, ignoring parameters such as charset.
+        /// </summary>
+        private static bool IsMediaType(string? contentType, string expected)
+        {
+            return !string.IsNullOrEmpty(contentType)
+                && MediaTypeHeaderValue.TryParse(contentType, out var mediaType)
+                && string.Equals(mediaType.MediaType.ToString(), expected, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -58,7 +68,7 @@ namespace DotCommon.AspNetCore.Mvc.Formatters
             var contentType = context.HttpContext.Request.ContentType;
 
 
-            if (string.IsNullOrEmpty(contentType) || contentType == "text/plain")
+            if (string.IsNullOrEmpty(contentType) || IsMediaType(contentType, "text/plain"))
             {
                 using (var reader = new StreamReader(request.Body))
                 {
@@ -66,7 +76,7 @@ namespace DotCommon.AspNetCore.Mvc.Formatters
                     return await InputFormatterResult.SuccessAsync(content);
                 }
             }
-            if (contentType == "application/octet-stream")
+            if (IsMediaType(contentType, "application/octet-stream"))
             {
                 using (var ms = new MemoryStream(2048))
                 {

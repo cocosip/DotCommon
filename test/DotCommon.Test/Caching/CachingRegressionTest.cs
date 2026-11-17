@@ -69,6 +69,23 @@ namespace DotCommon.Test.Caching
                 x => x.ServiceType == typeof(IHybridCache<,>) && x.ImplementationType == typeof(DotCommonHybridCache<,>));
         }
 
+        [Fact]
+        public void Utf8JsonDistributedCacheSerializer_RoundTrips()
+        {
+            var services = new ServiceCollection();
+            services.AddDotCommon();
+            var provider = services.BuildServiceProvider();
+
+            var serializer = new Utf8JsonDistributedCacheSerializer(
+                provider.GetRequiredService<DotCommon.Json.IJsonSerializer>());
+            var item = new TestCacheItem("hello");
+
+            var bytes = serializer.Serialize(item);
+            var roundTripped = serializer.Deserialize<TestCacheItem>(bytes);
+
+            Assert.Equal("hello", roundTripped?.Value);
+        }
+
         private static DistributedCache<TestCacheItem, string> CreateCache()
         {
             var options = Options.Create(new DotCommonDistributedCacheOptions
@@ -79,15 +96,13 @@ namespace DotCommon.Test.Caching
 
             var serializer = new TestDistributedCacheSerializer();
             var normalizer = new DistributedCacheKeyNormalizer(options);
-            var serviceScopeFactory = new Mock<IServiceScopeFactory>().Object;
 
             return new DistributedCache<TestCacheItem, string>(
                 options,
                 new InMemoryMultiItemCache(),
                 NullCancellationTokenProvider.Instance,
                 serializer,
-                normalizer,
-                serviceScopeFactory);
+                normalizer);
         }
 
         private sealed class TestCacheItem

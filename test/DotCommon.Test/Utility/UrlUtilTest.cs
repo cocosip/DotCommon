@@ -73,7 +73,7 @@ namespace DotCommon.Test.Utility
         [Theory]
         [InlineData("http://www.baidu.com#aaa", "id", "10", true, "http://www.baidu.com/?id=10#aaa")]
         [InlineData("http://www.baidu.com?id=20", "id", "10", false, "http://www.baidu.com/?id=20")]
-        [InlineData("http://test.yjyj.com/Web/Product/Search?Key=沙发", "page", "2", false, "http://test.yjyj.com/Web/Product/Search?Key=沙发&page=2")]
+        [InlineData("http://test.yjyj.com/Web/Product/Search?Key=沙发", "page", "2", false, "http://test.yjyj.com/Web/Product/Search?Key=%E6%B2%99%E5%8F%91&page=2")]
         [InlineData("http://127.0.0.1?id=3", "id", "10", true, "http://127.0.0.1/?id=10")]
         [InlineData("http://127.0.0.1/", "", "30", true, "http://127.0.0.1/")]
         [InlineData("http://127.0.0.1/", "name", "", false, "http://127.0.0.1/")]

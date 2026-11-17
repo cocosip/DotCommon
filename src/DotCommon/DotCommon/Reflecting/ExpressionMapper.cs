@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -6,7 +6,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Globalization;
 using System.Reflection;
-using System.Security;
 
 namespace DotCommon.Reflecting
 {
@@ -157,6 +156,7 @@ namespace DotCommon.Reflecting
             // Define parameters and variables
             var parameterExpr = Expression.Parameter(sourceType, "dictionary");
             var objectVar = Expression.Variable(targetType, "obj");
+            var variables = new List<ParameterExpression> { objectVar };
             var bodyExpressions = new List<Expression>();
 
             // Create new instance: var obj = new T();
@@ -168,7 +168,7 @@ namespace DotCommon.Reflecting
             foreach (var property in properties)
             {
                 var propertyAssignExpr = CreateDictionaryToObjectPropertyExpression(
-                    parameterExpr, objectVar, property);
+                    parameterExpr, objectVar, property, variables);
                 bodyExpressions.Add(propertyAssignExpr);
             }
 
@@ -176,7 +176,7 @@ namespace DotCommon.Reflecting
             bodyExpressions.Add(objectVar);
 
             // Create method body
-            var methodBodyExpr = Expression.Block(targetType, new[] { objectVar }, bodyExpressions);
+            var methodBodyExpr = Expression.Block(targetType, variables, bodyExpressions);
             var lambdaExpr = Expression.Lambda<Func<Dictionary<string, object>, T>>(methodBodyExpr, parameterExpr);
 
             try
@@ -195,9 +195,10 @@ namespace DotCommon.Reflecting
         /// <param name="dictionaryParam">The dictionary parameter expression</param>
         /// <param name="objectVar">The object variable expression</param>
         /// <param name="property">The property to convert</param>
+        /// <param name="variables">The collection of block-local variables the expression may declare into</param>
         /// <returns>An expression for property assignment</returns>
         private static Expression CreateDictionaryToObjectPropertyExpression(
-            ParameterExpression dictionaryParam, ParameterExpression objectVar, PropertyInfo property)
+            ParameterExpression dictionaryParam, ParameterExpression objectVar, PropertyInfo property, List<ParameterExpression> variables)
         {
             var propertyNameExpr = Expression.Constant(property.Name);
             var propertyExpr = Expression.Property(objectVar, property);
@@ -205,22 +206,25 @@ namespace DotCommon.Reflecting
             // Check if dictionary contains the key
             var containsKeyExpr = Expression.Call(dictionaryParam, ReflectionInfo.DictionaryContainsKey, propertyNameExpr);
 
-            // Get value from dictionary
+            // Read the dictionary value once into a local so it is not looked up twice.
+            var valueVar = Expression.Variable(typeof(object), "value_" + property.Name);
+            variables.Add(valueVar);
             var indexerExpr = Expression.Property(dictionaryParam, ReflectionInfo.DictionaryIndexer, propertyNameExpr);
+            var assignValueExpr = Expression.Assign(valueVar, indexerExpr);
 
             // Convert value to property type
-            var convertedValueExpr = CreateValueConversionExpression(indexerExpr, property.PropertyType);
+            var convertedValueExpr = CreateValueConversionExpression(valueVar, property.PropertyType);
 
             // Assign property value
             var assignExpr = Expression.Assign(propertyExpr, convertedValueExpr);
 
             // Check for null value
             var notNullExpr = Expression.IfThen(
-                Expression.NotEqual(indexerExpr, Expression.Constant(null)),
+                Expression.NotEqual(valueVar, Expression.Constant(null)),
                 assignExpr);
 
-            // Combine conditions: if (dictionary.ContainsKey(key) && value != null) assign value
-            return Expression.IfThen(containsKeyExpr, notNullExpr);
+            // if (dictionary.ContainsKey(key)) { value = dictionary[key]; if (value != null) obj.Prop = Convert(value); }
+            return Expression.IfThen(containsKeyExpr, Expression.Block(assignValueExpr, notNullExpr));
         }
 
         /// <summary>

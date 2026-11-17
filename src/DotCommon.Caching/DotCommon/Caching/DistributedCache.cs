@@ -28,64 +28,64 @@ namespace DotCommon.Caching
             InternalCache = internalCache;
         }
 
-        public TCacheItem? Get(string key, bool? hideErrors = null, bool considerUow = false)
+        public TCacheItem? Get(string key, bool? hideErrors = null)
         {
-            return InternalCache.Get(key, hideErrors, considerUow);
+            return InternalCache.Get(key, hideErrors);
         }
 
-        public KeyValuePair<string, TCacheItem?>[] GetMany(IEnumerable<string> keys, bool? hideErrors = null, bool considerUow = false)
+        public KeyValuePair<string, TCacheItem?>[] GetMany(IEnumerable<string> keys, bool? hideErrors = null)
         {
-            return InternalCache.GetMany(keys, hideErrors, considerUow);
+            return InternalCache.GetMany(keys, hideErrors);
         }
 
-        public Task<KeyValuePair<string, TCacheItem?>[]> GetManyAsync(IEnumerable<string> keys, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default)
+        public Task<KeyValuePair<string, TCacheItem?>[]> GetManyAsync(IEnumerable<string> keys, bool? hideErrors = null, CancellationToken token = default)
         {
-            return InternalCache.GetManyAsync(keys, hideErrors, considerUow, token);
+            return InternalCache.GetManyAsync(keys, hideErrors, token);
         }
 
-        public Task<TCacheItem?> GetAsync(string key, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default)
+        public Task<TCacheItem?> GetAsync(string key, bool? hideErrors = null, CancellationToken token = default)
         {
-            return InternalCache.GetAsync(key, hideErrors, considerUow, token);
+            return InternalCache.GetAsync(key, hideErrors, token);
         }
 
-        public TCacheItem? GetOrAdd(string key, Func<TCacheItem> factory, Func<DistributedCacheEntryOptions>? optionsFactory = null, bool? hideErrors = null, bool considerUow = false)
+        public TCacheItem? GetOrAdd(string key, Func<TCacheItem> factory, Func<DistributedCacheEntryOptions>? optionsFactory = null, bool? hideErrors = null)
         {
-            return InternalCache.GetOrAdd(key, factory, optionsFactory, hideErrors, considerUow);
+            return InternalCache.GetOrAdd(key, factory, optionsFactory, hideErrors);
         }
 
-        public Task<TCacheItem?> GetOrAddAsync(string key, Func<Task<TCacheItem>> factory, Func<DistributedCacheEntryOptions>? optionsFactory = null, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default)
+        public Task<TCacheItem?> GetOrAddAsync(string key, Func<Task<TCacheItem>> factory, Func<DistributedCacheEntryOptions>? optionsFactory = null, bool? hideErrors = null, CancellationToken token = default)
         {
-            return InternalCache.GetOrAddAsync(key, factory, optionsFactory, hideErrors, considerUow, token);
+            return InternalCache.GetOrAddAsync(key, factory, optionsFactory, hideErrors, token);
         }
 
-        public KeyValuePair<string, TCacheItem?>[] GetOrAddMany(IEnumerable<string> keys, Func<IEnumerable<string>, List<KeyValuePair<string, TCacheItem>>> factory, Func<DistributedCacheEntryOptions>? optionsFactory = null, bool? hideErrors = null, bool considerUow = false)
+        public KeyValuePair<string, TCacheItem?>[] GetOrAddMany(IEnumerable<string> keys, Func<IEnumerable<string>, List<KeyValuePair<string, TCacheItem>>> factory, Func<DistributedCacheEntryOptions>? optionsFactory = null, bool? hideErrors = null)
         {
-            return InternalCache.GetOrAddMany(keys, factory, optionsFactory, hideErrors, considerUow);
+            return InternalCache.GetOrAddMany(keys, factory, optionsFactory, hideErrors);
         }
 
-        public Task<KeyValuePair<string, TCacheItem?>[]> GetOrAddManyAsync(IEnumerable<string> keys, Func<IEnumerable<string>, Task<List<KeyValuePair<string, TCacheItem>>>> factory, Func<DistributedCacheEntryOptions>? optionsFactory = null, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default)
+        public Task<KeyValuePair<string, TCacheItem?>[]> GetOrAddManyAsync(IEnumerable<string> keys, Func<IEnumerable<string>, Task<List<KeyValuePair<string, TCacheItem>>>> factory, Func<DistributedCacheEntryOptions>? optionsFactory = null, bool? hideErrors = null, CancellationToken token = default)
         {
-            return InternalCache.GetOrAddManyAsync(keys, factory, optionsFactory, hideErrors, considerUow, token);
+            return InternalCache.GetOrAddManyAsync(keys, factory, optionsFactory, hideErrors, token);
         }
 
-        public void Set(string key, TCacheItem value, DistributedCacheEntryOptions? options = null, bool? hideErrors = null, bool considerUow = false)
+        public void Set(string key, TCacheItem value, DistributedCacheEntryOptions? options = null, bool? hideErrors = null)
         {
-            InternalCache.Set(key, value, options, hideErrors, considerUow);
+            InternalCache.Set(key, value, options, hideErrors);
         }
 
-        public Task SetAsync(string key, TCacheItem value, DistributedCacheEntryOptions? options = null, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default)
+        public Task SetAsync(string key, TCacheItem value, DistributedCacheEntryOptions? options = null, bool? hideErrors = null, CancellationToken token = default)
         {
-            return InternalCache.SetAsync(key, value, options, hideErrors, considerUow, token);
+            return InternalCache.SetAsync(key, value, options, hideErrors, token);
         }
 
-        public void SetMany(IEnumerable<KeyValuePair<string, TCacheItem>> items, DistributedCacheEntryOptions? options = null, bool? hideErrors = null, bool considerUow = false)
+        public void SetMany(IEnumerable<KeyValuePair<string, TCacheItem>> items, DistributedCacheEntryOptions? options = null, bool? hideErrors = null)
         {
-            InternalCache.SetMany(items, options, hideErrors, considerUow);
+            InternalCache.SetMany(items, options, hideErrors);
         }
 
-        public Task SetManyAsync(IEnumerable<KeyValuePair<string, TCacheItem>> items, DistributedCacheEntryOptions? options = null, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default)
+        public Task SetManyAsync(IEnumerable<KeyValuePair<string, TCacheItem>> items, DistributedCacheEntryOptions? options = null, bool? hideErrors = null, CancellationToken token = default)
         {
-            return InternalCache.SetManyAsync(items, options, hideErrors, considerUow, token);
+            return InternalCache.SetManyAsync(items, options, hideErrors, token);
         }
 
         public void Refresh(string key, bool? hideErrors = null)
@@ -108,25 +108,25 @@ namespace DotCommon.Caching
             return InternalCache.RefreshManyAsync(keys, hideErrors, token);
         }
 
-        public void Remove(string key, bool? hideErrors = null, bool considerUow = false)
+        public void Remove(string key, bool? hideErrors = null)
         {
-            InternalCache.Remove(key, hideErrors, considerUow);
+            InternalCache.Remove(key, hideErrors);
         }
 
-        public Task RemoveAsync(string key, bool? hideErrors = null, bool considerUow = false, CancellationToken token = default)
+        public Task RemoveAsync(string key, bool? hideErrors = null, CancellationToken token = default)
         {
-            return InternalCache.RemoveAsync(key, hideErrors, considerUow, token);
+            return InternalCache.RemoveAsync(key, hideErrors, token);
         }
 
-        public void RemoveMany(IEnumerable<string> keys, bool? hideErrors = null, bool considerUow = false)
+        public void RemoveMany(IEnumerable<string> keys, bool? hideErrors = null)
         {
-            InternalCache.RemoveMany(keys, hideErrors, considerUow);
+            InternalCache.RemoveMany(keys, hideErrors);
         }
 
-        public Task RemoveManyAsync(IEnumerable<string> keys, bool? hideErrors = null, bool considerUow = false,
+        public Task RemoveManyAsync(IEnumerable<string> keys, bool? hideErrors = null,
             CancellationToken token = default)
         {
-            return InternalCache.RemoveManyAsync(keys, hideErrors, considerUow, token);
+            return InternalCache.RemoveManyAsync(keys, hideErrors, token);
         }
     }
 
@@ -140,8 +140,6 @@ namespace DotCommon.Caching
         where TCacheItem : class
         where TCacheKey : notnull
     {
-        public const string UowCacheName = "DotCommonDistributedCache";
-
         public ILogger<DistributedCache<TCacheItem, TCacheKey>> Logger { get; set; }
 
         protected string CacheName { get; set; } = default!;
@@ -156,8 +154,6 @@ namespace DotCommon.Caching
 
         protected IDistributedCacheKeyNormalizer KeyNormalizer { get; }
 
-        protected IServiceScopeFactory ServiceScopeFactory { get; }
-
         protected ConcurrentDictionary<string, SemaphoreSlim> KeySyncSemaphores { get; }
 
         protected DistributedCacheEntryOptions DefaultCacheOptions = default!;
@@ -169,8 +165,7 @@ namespace DotCommon.Caching
             IDistributedCache cache,
             ICancellationTokenProvider cancellationTokenProvider,
             IDistributedCacheSerializer serializer,
-            IDistributedCacheKeyNormalizer keyNormalizer,
-            IServiceScopeFactory serviceScopeFactory)
+            IDistributedCacheKeyNormalizer keyNormalizer)
         {
             _distributedCacheOption = distributedCacheOption.Value;
             Cache = cache;
@@ -178,7 +173,6 @@ namespace DotCommon.Caching
             Logger = NullLogger<DistributedCache<TCacheItem, TCacheKey>>.Instance;
             Serializer = serializer;
             KeyNormalizer = keyNormalizer;
-            ServiceScopeFactory = serviceScopeFactory;
 
             KeySyncSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
@@ -233,12 +227,10 @@ namespace DotCommon.Caching
         /// </summary>
         /// <param name="key">The key of cached item to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <returns>The cache item, or null.</returns>
         public virtual TCacheItem? Get(
             TCacheKey key,
-            bool? hideErrors = null,
-            bool considerUow = false)
+            bool? hideErrors = null)
         {
             hideErrors = hideErrors ?? _distributedCacheOption.HideErrors;
 
@@ -264,8 +256,7 @@ namespace DotCommon.Caching
 
         public virtual KeyValuePair<TCacheKey, TCacheItem?>[] GetMany(
             IEnumerable<TCacheKey> keys,
-            bool? hideErrors = null,
-            bool considerUow = false)
+            bool? hideErrors = null)
         {
             var keyArray = keys.ToArray();
 
@@ -274,8 +265,7 @@ namespace DotCommon.Caching
             {
                 return GetManyFallback(
                     keyArray,
-                    hideErrors,
-                    considerUow
+                    hideErrors
                 );
             }
 
@@ -306,8 +296,7 @@ namespace DotCommon.Caching
 
         protected virtual KeyValuePair<TCacheKey, TCacheItem?>[] GetManyFallback(
             TCacheKey[] keys,
-            bool? hideErrors = null,
-            bool considerUow = false)
+            bool? hideErrors = null)
         {
             hideErrors = hideErrors ?? _distributedCacheOption.HideErrors;
 
@@ -316,7 +305,7 @@ namespace DotCommon.Caching
                 return keys
                     .Select(key => new KeyValuePair<TCacheKey, TCacheItem?>(
                             key,
-                            Get(key, false, considerUow)
+                            Get(key, false)
                         )
                     ).ToArray();
             }
@@ -335,7 +324,6 @@ namespace DotCommon.Caching
         public virtual async Task<KeyValuePair<TCacheKey, TCacheItem?>[]> GetManyAsync(
             IEnumerable<TCacheKey> keys,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             var keyArray = keys.ToArray();
@@ -346,7 +334,6 @@ namespace DotCommon.Caching
                 return await GetManyFallbackAsync(
                     keyArray,
                     hideErrors,
-                    considerUow,
                     token
                 );
             }
@@ -384,7 +371,6 @@ namespace DotCommon.Caching
         protected virtual async Task<KeyValuePair<TCacheKey, TCacheItem?>[]> GetManyFallbackAsync(
             TCacheKey[] keys,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             hideErrors = hideErrors ?? _distributedCacheOption.HideErrors;
@@ -397,7 +383,7 @@ namespace DotCommon.Caching
                 {
                     result.Add(new KeyValuePair<TCacheKey, TCacheItem?>(
                         key,
-                        await GetAsync(key, false, considerUow, token: token))
+                        await GetAsync(key, false, token: token))
                     );
                 }
 
@@ -420,13 +406,11 @@ namespace DotCommon.Caching
         /// </summary>
         /// <param name="key">The key of cached item to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The cache item, or null.</returns>
         public virtual async Task<TCacheItem?> GetAsync(
             TCacheKey key,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             hideErrors = hideErrors ?? _distributedCacheOption.HideErrors;
@@ -466,16 +450,14 @@ namespace DotCommon.Caching
         /// <param name="factory">The factory delegate is used to provide the cache item when no cache item is found for the given <paramref name="key" />.</param>
         /// <param name="optionsFactory">The cache options for the factory delegate.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <returns>The cache item.</returns>
         public virtual TCacheItem? GetOrAdd(
             TCacheKey key,
             Func<TCacheItem> factory,
             Func<DistributedCacheEntryOptions>? optionsFactory = null,
-            bool? hideErrors = null,
-            bool considerUow = false)
+            bool? hideErrors = null)
         {
-            var value = Get(key, hideErrors, considerUow);
+            var value = Get(key, hideErrors);
             if (value != null)
             {
                 return value;
@@ -484,14 +466,14 @@ namespace DotCommon.Caching
             var keySemaphore = GetSyncSemaphore(key);
             using (keySemaphore.Lock())
             {
-                value = Get(key, hideErrors, considerUow);
+                value = Get(key, hideErrors);
                 if (value != null)
                 {
                     return value;
                 }
 
                 value = factory();
-                Set(key, value, optionsFactory?.Invoke(), hideErrors, considerUow);
+                Set(key, value, optionsFactory?.Invoke(), hideErrors);
             }
 
             return value;
@@ -505,7 +487,6 @@ namespace DotCommon.Caching
         /// <param name="factory">The factory delegate is used to provide the cache item when no cache item is found for the given <paramref name="key" />.</param>
         /// <param name="optionsFactory">The cache options for the factory delegate.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The cache item.</returns>
         public virtual async Task<TCacheItem?> GetOrAddAsync(
@@ -513,11 +494,10 @@ namespace DotCommon.Caching
             Func<Task<TCacheItem>> factory,
             Func<DistributedCacheEntryOptions>? optionsFactory = null,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             token = CancellationTokenProvider.FallbackToProvider(token);
-            var value = await GetAsync(key, hideErrors, considerUow, token);
+            var value = await GetAsync(key, hideErrors, token);
             if (value != null)
             {
                 return value;
@@ -526,7 +506,7 @@ namespace DotCommon.Caching
             var keySemaphore = GetSyncSemaphore(key);
             using (await keySemaphore.LockAsync(token))
             {
-                value = await GetAsync(key, hideErrors, considerUow, token);
+                value = await GetAsync(key, hideErrors, token);
                 if (value != null)
                 {
                     return value;
@@ -534,7 +514,7 @@ namespace DotCommon.Caching
 
                 value = await factory();
 
-                await SetAsync(key, value, optionsFactory?.Invoke(), hideErrors, considerUow, token);
+                await SetAsync(key, value, optionsFactory?.Invoke(), hideErrors, token);
             }
 
             return value;
@@ -544,8 +524,7 @@ namespace DotCommon.Caching
             IEnumerable<TCacheKey> keys,
             Func<IEnumerable<TCacheKey>, List<KeyValuePair<TCacheKey, TCacheItem>>> factory,
             Func<DistributedCacheEntryOptions>? optionsFactory = null,
-            bool? hideErrors = null,
-            bool considerUow = false)
+            bool? hideErrors = null)
         {
 
             KeyValuePair<TCacheKey, TCacheItem?>[] result;
@@ -556,8 +535,7 @@ namespace DotCommon.Caching
             {
                 result = GetManyFallback(
                     keyArray,
-                    hideErrors,
-                    considerUow
+                    hideErrors
                 );
             }
             else
@@ -638,7 +616,7 @@ namespace DotCommon.Caching
                 }
             }
 
-            SetMany(missingValuesArray, optionsFactory?.Invoke(), hideErrors, considerUow);
+            SetMany(missingValuesArray, optionsFactory?.Invoke(), hideErrors);
 
             foreach (var index in missingValuesIndex)
             {
@@ -655,7 +633,6 @@ namespace DotCommon.Caching
             Func<IEnumerable<TCacheKey>, Task<List<KeyValuePair<TCacheKey, TCacheItem>>>> factory,
             Func<DistributedCacheEntryOptions>? optionsFactory = null,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             KeyValuePair<TCacheKey, TCacheItem?>[] result;
@@ -666,8 +643,7 @@ namespace DotCommon.Caching
             {
                 result = await GetManyFallbackAsync(
                     keyArray,
-                    hideErrors,
-                    considerUow, token);
+                    hideErrors, token);
             }
             else
             {
@@ -747,7 +723,7 @@ namespace DotCommon.Caching
                 }
             }
 
-            await SetManyAsync(missingValuesArray, optionsFactory?.Invoke(), hideErrors, considerUow, token);
+            await SetManyAsync(missingValuesArray, optionsFactory?.Invoke(), hideErrors, token);
 
             foreach (var index in missingValuesIndex)
             {
@@ -765,13 +741,11 @@ namespace DotCommon.Caching
         /// <param name="value">The cache item value to set in the cache.</param>
         /// <param name="options">The cache options for the value.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         public virtual void Set(
             TCacheKey key,
             TCacheItem value,
             DistributedCacheEntryOptions? options = null,
-            bool? hideErrors = null,
-            bool considerUow = false)
+            bool? hideErrors = null)
         {
             void SetRealCache()
             {
@@ -807,7 +781,6 @@ namespace DotCommon.Caching
         /// <param name="value">The cache item value to set in the cache.</param>
         /// <param name="options">The cache options for the value.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
         public virtual async Task SetAsync(
@@ -815,7 +788,6 @@ namespace DotCommon.Caching
             TCacheItem value,
             DistributedCacheEntryOptions? options = null,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             async Task SetRealCache()
@@ -850,8 +822,7 @@ namespace DotCommon.Caching
         public void SetMany(
             IEnumerable<KeyValuePair<TCacheKey, TCacheItem>> items,
             DistributedCacheEntryOptions? options = null,
-            bool? hideErrors = null,
-            bool considerUow = false)
+            bool? hideErrors = null)
         {
             var itemsArray = items.ToArray();
 
@@ -861,8 +832,7 @@ namespace DotCommon.Caching
                 SetManyFallback(
                     itemsArray,
                     options,
-                    hideErrors,
-                    considerUow
+                    hideErrors
                 );
 
                 return;
@@ -897,8 +867,7 @@ namespace DotCommon.Caching
         protected virtual void SetManyFallback(
             KeyValuePair<TCacheKey, TCacheItem>[] items,
             DistributedCacheEntryOptions? options = null,
-            bool? hideErrors = null,
-            bool considerUow = false)
+            bool? hideErrors = null)
         {
             hideErrors = hideErrors ?? _distributedCacheOption.HideErrors;
 
@@ -910,8 +879,7 @@ namespace DotCommon.Caching
                         item.Key,
                         item.Value,
                         options,
-                        false,
-                        considerUow
+                        false
                     );
                 }
             }
@@ -931,7 +899,6 @@ namespace DotCommon.Caching
             IEnumerable<KeyValuePair<TCacheKey, TCacheItem>> items,
             DistributedCacheEntryOptions? options = null,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             var itemsArray = items.ToArray();
@@ -943,7 +910,6 @@ namespace DotCommon.Caching
                     itemsArray,
                     options,
                     hideErrors,
-                    considerUow,
                     token
                 );
 
@@ -982,7 +948,6 @@ namespace DotCommon.Caching
             KeyValuePair<TCacheKey, TCacheItem>[] items,
             DistributedCacheEntryOptions? options = null,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             hideErrors = hideErrors ?? _distributedCacheOption.HideErrors;
@@ -996,7 +961,6 @@ namespace DotCommon.Caching
                         item.Value,
                         options,
                         false,
-                        considerUow,
                         token: token
                     );
                 }
@@ -1139,12 +1103,10 @@ namespace DotCommon.Caching
         /// Removes the cache item for given key from cache.
         /// </summary>
         /// <param name="key">The key of cached item to be retrieved from the cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
         public virtual void Remove(
             TCacheKey key,
-            bool? hideErrors = null,
-            bool considerUow = false)
+            bool? hideErrors = null)
         {
             void RemoveRealCache()
             {
@@ -1174,13 +1136,11 @@ namespace DotCommon.Caching
         /// </summary>
         /// <param name="key">The key of cached item to be retrieved from the cache.</param>
         /// <param name="hideErrors">Indicates to throw or hide the exceptions for the distributed cache.</param>
-        /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
         /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
         /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
         public virtual async Task RemoveAsync(
             TCacheKey key,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             async Task RemoveRealCache()
@@ -1209,8 +1169,7 @@ namespace DotCommon.Caching
 
         public void RemoveMany(
             IEnumerable<TCacheKey> keys,
-            bool? hideErrors = null,
-            bool considerUow = false)
+            bool? hideErrors = null)
         {
             var keyArray = keys.ToArray();
 
@@ -1245,7 +1204,7 @@ namespace DotCommon.Caching
             {
                 foreach (var key in keyArray)
                 {
-                    Remove(key, hideErrors, considerUow);
+                    Remove(key, hideErrors);
                 }
             }
         }
@@ -1253,7 +1212,6 @@ namespace DotCommon.Caching
         public async Task RemoveManyAsync(
             IEnumerable<TCacheKey> keys,
             bool? hideErrors = null,
-            bool considerUow = false,
             CancellationToken token = default)
         {
             var keyArray = keys.ToArray();
@@ -1288,7 +1246,7 @@ namespace DotCommon.Caching
             {
                 foreach (var key in keyArray)
                 {
-                    await RemoveAsync(key, hideErrors, considerUow, token);
+                    await RemoveAsync(key, hideErrors, token);
                 }
             }
         }
@@ -1304,12 +1262,6 @@ namespace DotCommon.Caching
         {
             Logger.LogError(ex, ex.Message);
             return Task.CompletedTask;
-            //using (var scope = ServiceScopeFactory.CreateScope())
-            //{
-            //    await scope.ServiceProvider
-            //        .GetRequiredService<IExceptionNotifier>()
-            //        .NotifyAsync(new ExceptionNotificationContext(ex, LogLevel.Warning));
-            //}
         }
 
         protected virtual KeyValuePair<TCacheKey, TCacheItem?>[] ToCacheItems(byte[]?[] itemBytes, TCacheKey[] itemKeys)
@@ -1361,13 +1313,5 @@ namespace DotCommon.Caching
                 .Select(key => new KeyValuePair<TCacheKey, TCacheItem?>(key, default))
                 .ToArray();
         }
-
-
-        protected virtual string GetUnitOfWorkCacheKey()
-        {
-            return UowCacheName + CacheName;
-        }
-
-
     }
 }

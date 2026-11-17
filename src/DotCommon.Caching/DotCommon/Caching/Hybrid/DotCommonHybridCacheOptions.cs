@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Caching.Hybrid;
 
@@ -10,11 +10,6 @@ namespace DotCommon.Caching.Hybrid
         /// Throw or hide exceptions for the distributed cache.
         /// </summary>
         public bool HideErrors { get; set; } = true;
-
-        /// <summary>
-        /// Cache key prefix.
-        /// </summary>
-        public string KeyPrefix { get; set; }
 
         /// <summary>
         /// Global Cache entry options.
@@ -31,7 +26,6 @@ namespace DotCommon.Caching.Hybrid
         {
             CacheConfigurators = new List<Func<string, HybridCacheEntryOptions?>>();
             GlobalHybridCacheEntryOptions = new HybridCacheEntryOptions();
-            KeyPrefix = "";
         }
 
         public void ConfigureCache<TCacheItem>(HybridCacheEntryOptions? options)

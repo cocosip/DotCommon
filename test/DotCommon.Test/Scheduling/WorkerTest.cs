@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using Xunit;
 
-namespace DotCommon.Test.Serializing
+namespace DotCommon.Test.Scheduling
 {
     public class WorkerTest
     {

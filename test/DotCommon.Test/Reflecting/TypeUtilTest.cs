@@ -95,14 +95,14 @@ namespace DotCommon.Test.Reflecting
         public void IsAsync_MethodInfo_ReturnsTrueForAsync()
         {
             var method = typeof(TypeUtilTest).GetMethod(nameof(AsyncMethod), BindingFlags.NonPublic | BindingFlags.Instance);
-            Assert.True(method.IsAsync());
+            Assert.True(TypeUtil.IsAsync(method));
         }
 
         [Fact]
         public void IsAsync_MethodInfo_ReturnsFalseForSync()
         {
             var method = typeof(TypeUtilTest).GetMethod(nameof(SyncMethod), BindingFlags.NonPublic | BindingFlags.Instance);
-            Assert.False(method.IsAsync());
+            Assert.False(TypeUtil.IsAsync(method));
         }
 
         [Fact]

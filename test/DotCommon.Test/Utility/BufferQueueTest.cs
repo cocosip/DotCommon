@@ -13,7 +13,7 @@ namespace DotCommon.Test.Utility
         public void EnqueueMessage_ShouldHandleMessage()
         {
             var processedMessages = new ConcurrentBag<int>();
-            var queue = new BufferQueue<int>("TestQueue", 1, msg => processedMessages.Add(msg));
+            var queue = new BufferQueue<int>("TestQueue", msg => processedMessages.Add(msg));
 
             queue.EnqueueMessage(1);
 
@@ -26,7 +26,7 @@ namespace DotCommon.Test.Utility
         public void EnqueueMessage_MultipleMessages_ShouldHandleAll()
         {
             var processedMessages = new ConcurrentBag<int>();
-            var queue = new BufferQueue<int>("TestQueue", 1, msg => processedMessages.Add(msg));
+            var queue = new BufferQueue<int>("TestQueue", msg => processedMessages.Add(msg));
 
             for (var i = 0; i < 10; i++)
             {
@@ -43,7 +43,7 @@ namespace DotCommon.Test.Utility
         public void EnqueueMessage_WithException_ShouldContinueProcessing()
         {
             var processedCount = 0;
-            var queue = new BufferQueue<int>("TestQueue", 1, msg =>
+            var queue = new BufferQueue<int>("TestQueue", msg =>
             {
                 if (msg == 1) throw new Exception("Test exception");
                 Interlocked.Increment(ref processedCount);
@@ -61,10 +61,10 @@ namespace DotCommon.Test.Utility
         }
 
         [Fact]
-        public void EnqueueMessage_WithThreshold_ShouldTriggerProcessing()
+        public void EnqueueMessage_ManyMessages_ShouldBeProcessed()
         {
             var processedMessages = new ConcurrentBag<int>();
-            var queue = new BufferQueue<int>("TestQueue", 5, msg => processedMessages.Add(msg));
+            var queue = new BufferQueue<int>("TestQueue", msg => processedMessages.Add(msg));
 
             for (var i = 0; i < 10; i++)
             {
@@ -80,7 +80,7 @@ namespace DotCommon.Test.Utility
         public async Task EnqueueMessage_Concurrent_ShouldHandleAll()
         {
             var processedMessages = new ConcurrentBag<int>();
-            var queue = new BufferQueue<int>("TestQueue", 1, msg => processedMessages.Add(msg));
+            var queue = new BufferQueue<int>("TestQueue", msg => processedMessages.Add(msg));
 
             var tasks = new Task[50];
             for (var i = 0; i < 50; i++)

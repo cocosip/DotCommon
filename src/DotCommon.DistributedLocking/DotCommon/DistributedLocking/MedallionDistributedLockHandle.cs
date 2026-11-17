@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Medallion.Threading;
 
@@ -11,7 +12,7 @@ namespace DotCommon.DistributedLocking
     internal class MedallionDistributedLockHandle : IDistributedLockHandle
     {
         private readonly IDistributedSynchronizationHandle _handle;
-        private bool _disposed;
+        private int _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MedallionDistributedLockHandle"/> class.
@@ -27,13 +28,12 @@ namespace DotCommon.DistributedLocking
         /// </summary>
         public void Dispose()
         {
-            if (_disposed)
+            if (Interlocked.Exchange(ref _disposed, 1) != 0)
             {
                 return;
             }
 
             _handle.Dispose();
-            _disposed = true;
         }
 
         /// <summary>
@@ -41,13 +41,12 @@ namespace DotCommon.DistributedLocking
         /// </summary>
         public async ValueTask DisposeAsync()
         {
-            if (_disposed)
+            if (Interlocked.Exchange(ref _disposed, 1) != 0)
             {
                 return;
             }
 
             await _handle.DisposeAsync();
-            _disposed = true;
         }
     }
 }

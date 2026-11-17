@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotCommon.Crypto;
 using DotCommon.Crypto.SM2;
 using DotCommon.Utility;
@@ -73,19 +73,4 @@ namespace DotCommon.ConsoleTest
             }
         }
     }
-
-    public class LoggerService
-    {
-        private readonly Microsoft.Extensions.Logging.ILogger _logger;
-        public LoggerService(ILogger<LoggerService> logger)
-        {
-            _logger = logger;
-        }
-
-        public void Write()
-        {
-            _logger.LogInformation("生成随机Guid:{0}", GuidUtil.NewGuidString("N"));
-        }
-    }
-
 }
