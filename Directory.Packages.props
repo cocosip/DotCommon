@@ -45,7 +45,7 @@
 
   <!-- Third-party libraries with a line of their own -->
   <PropertyGroup>
-    <DotCommonTimeZoneConverterRange>[8.0.0,9.0.0)</DotCommonTimeZoneConverterRange>
+    <DotCommonTimeZoneConverterRange>[8.0.1,9.0.0)</DotCommonTimeZoneConverterRange>
     <DotCommonBouncyCastleRange>[2.7.0,3.0.0)</DotCommonBouncyCastleRange>
     <DotCommonDistributedLockRange>[1.0.9,2.0.0)</DotCommonDistributedLockRange>
   </PropertyGroup>
@@ -70,15 +70,15 @@
     <PackageVersion Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
     <PackageVersion Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.404" />
   </ItemGroup>
 
   <!-- Test tooling -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
-    <PackageVersion Include="xunit.v3" Version="4.0.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
+    <PackageVersion Include="xunit.v3" Version="4.0.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
     <PackageVersion Include="Moq" Version="4.21.0" />
-    <PackageVersion Include="coverlet.collector" Version="10.1.0" />
+    <PackageVersion Include="coverlet.collector" Version="10.1.1" />
   </ItemGroup>
 </Project>
